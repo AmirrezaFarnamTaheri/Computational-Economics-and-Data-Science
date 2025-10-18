@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Graphviz
+*.gv
+*.gv.pdf
+
+# OS
+.DS_Store
+
+# Scratch

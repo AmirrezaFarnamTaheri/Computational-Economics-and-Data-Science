@@ -1,0 +1,1 @@
+Source: Sutton & Barto RL Book\nLicense: Educational Use\nURL: http://incompleteideas.net/book/first/ebook/figtmp1.png\n

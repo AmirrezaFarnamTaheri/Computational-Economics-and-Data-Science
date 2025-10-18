@@ -1,0 +1,1 @@
+Source: EconGraphs.org\nLicense: Open Source\nURL: https://www.econgraphs.org/graphs/v1/micro/supply_and_demand/supply_and_demand?textbook=varian\n

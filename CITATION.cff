@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+title: Computational Economics and Data Science Course
+message: If you use these notebooks in your teaching or research, please cite this project.
+authors:
+  - family-names: "Taheri"
+    given-names: "Amirreza ``Farnam''"
+    affiliation: "Tehran Institute for Advanced Studies"
+    email: "taherifarnam@gmail.com"
+license: MIT AND CC-BY-4.0
+keywords:
+  - computational economics
+  - data science
+  - teaching materials
+  - graduate course
+abstract: >-
+  A comprehensive collection of Jupyter notebooks covering numerical methods,
+  econometric tools, machine learning techniques, and applied models for a
+  PhD-level course in computational economics and data science. Code is
+  released under the MIT License, while textual and visual content is
+  released under the Creative Commons Attribution 4.0 International License.
+date-released: 2025-10-17
