@@ -49,7 +49,7 @@ def generate_stochastic_process_plot():
     if not os.path.exists('images'):
         os.makedirs('images')
 
-    save_path = 'images/stochastic_process_realizations.png'
+    save_path = 'images\png\stochastic_process_realizations.png'
     plt.savefig(save_path, dpi=150, bbox_inches='tight')
     print(f"Plot saved to {save_path}")
 

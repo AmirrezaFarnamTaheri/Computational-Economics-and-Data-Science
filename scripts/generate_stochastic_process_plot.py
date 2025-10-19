@@ -38,7 +38,7 @@ ax.legend()
 ax.grid(True, which='both', linestyle='--', linewidth=0.5)
 
 # --- Save the Plot ---
-output_path = 'images/stochastic_process_realizations.png'
+output_path = 'images\png\stochastic_process_realizations.png'
 plt.savefig(output_path, dpi=300, bbox_inches='tight')
 
 print(f"Plot saved to {output_path}")

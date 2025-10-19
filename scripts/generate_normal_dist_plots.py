@@ -30,7 +30,7 @@ ax1.text(1, 0.1, r'$P(X \leq 1)$', horizontalalignment='center', fontsize=12)
 ax1.axvline(1, color='gray', linestyle='--')
 
 plt.tight_layout()
-fig1.savefig('images/appendix/normal_pdf.png')
+fig1.savefig('images\png\normal_pdf.png')
 print("Saved normal_pdf.png")
 
 
@@ -50,5 +50,5 @@ ax2.plot(1, prob_at_1, 'ko')
 ax2.text(1.1, prob_at_1 - 0.1, f'${prob_at_1:.2f}$', fontsize=12)
 
 plt.tight_layout()
-fig2.savefig('images/appendix/normal_cdf.png')
+fig2.savefig('images\png\normal_cdf.png')
 print("Saved normal_cdf.png")

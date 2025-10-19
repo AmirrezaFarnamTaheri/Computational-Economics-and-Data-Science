@@ -33,7 +33,7 @@ ax1.text(p2_c[0] + 0.02, p2_c[1], '$y$', fontsize=14)
 ax1.text(np.mean([p1_c[0], p2_c[0]]), np.mean([p1_c[1], p2_c[1]]) + 0.03, r'$\theta x + (1-\theta)y$', fontsize=12)
 
 plt.tight_layout()
-fig1.savefig('images/appendix/convex_set.png')
+fig1.savefig('images\png\convex_set.png')
 print("Saved convex_set.png")
 
 
@@ -57,5 +57,5 @@ ax2.text(p1_nc[0] - 0.05, p1_nc[1], '$x$', fontsize=14)
 ax2.text(p2_nc[0] + 0.02, p2_nc[1], '$y$', fontsize=14)
 
 plt.tight_layout()
-fig2.savefig('images/appendix/non_convex_set.png')
+fig2.savefig('images\png\non_convex_set.png')
 print("Saved non_convex_set.png")

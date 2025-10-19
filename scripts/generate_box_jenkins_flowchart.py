@@ -31,7 +31,7 @@ def generate_box_jenkins_flowchart():
         os.makedirs('images')
 
     dot.render('images/box_jenkins_methodology', format='png', view=False, cleanup=True)
-    print("Flowchart 'images/box_jenkins_methodology.png' created successfully.")
+    print("Flowchart 'images\png\box_jenkins_methodology.png' created successfully.")
 
 if __name__ == '__main__':
     generate_box_jenkins_flowchart()

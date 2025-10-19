@@ -52,7 +52,7 @@ ax2.grid(True)
 import os
 output_dir = 'images/finance/options'
 os.makedirs(output_dir, exist_ok=True)
-output_path = f'{output_dir}/call_put_payoffs.png'
+output_path = f'images\png\call_put_payoffs.png'
 
 plt.tight_layout(rect=[0, 0, 1, 0.96])
 plt.savefig(output_path, dpi=300, bbox_inches='tight')

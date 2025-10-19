@@ -33,7 +33,7 @@ def generate_bgg_accelerator_flowchart():
         os.makedirs('images')
 
     dot.render('images/bgg_accelerator', format='png', view=False, cleanup=True)
-    print("Flowchart 'images/bgg_accelerator.png' created successfully.")
+    print("Flowchart 'images\png\bgg_accelerator.png' created successfully.")
 
 if __name__ == '__main__':
     generate_bgg_accelerator_flowchart()

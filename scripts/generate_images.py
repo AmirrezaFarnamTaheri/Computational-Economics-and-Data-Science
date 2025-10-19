@@ -86,7 +86,7 @@ def generate_phase_diagrams():
     ax.grid(True, alpha=0.3)
 
     plt.tight_layout()
-    plt.savefig(IMAGE_BASE / "numerical_methods/phase_diagrams/lotka_volterra.png",
+    plt.savefig(IMAGE_BASE / "images\png\lotka_volterra.png",
                dpi=DPI, bbox_inches='tight')
     plt.close()
 
@@ -148,7 +148,7 @@ def generate_phase_diagrams():
     ax.grid(True, alpha=0.3)
 
     plt.tight_layout()
-    plt.savefig(IMAGE_BASE / "numerical_methods/phase_diagrams/rck_model.png",
+    plt.savefig(IMAGE_BASE / "images\png\rck_model.png",
                dpi=DPI, bbox_inches='tight')
     plt.close()
 
@@ -208,7 +208,7 @@ def generate_option_diagrams():
     ax2.grid(True, alpha=0.3)
 
     plt.tight_layout()
-    plt.savefig(IMAGE_BASE / "finance/options/call_put_payoffs.png",
+    plt.savefig(IMAGE_BASE / "images\png\call_put_payoffs.png",
                dpi=DPI, bbox_inches='tight')
     plt.close()
 
@@ -243,7 +243,7 @@ def generate_option_diagrams():
     ax.grid(True, alpha=0.3)
 
     plt.tight_layout()
-    plt.savefig(IMAGE_BASE / "finance/options/iron_condor.png",
+    plt.savefig(IMAGE_BASE / "images\png\iron_condor.png",
                dpi=DPI, bbox_inches='tight')
     plt.close()
 
@@ -297,7 +297,7 @@ def generate_complexity_charts():
            bbox=dict(boxstyle='round', facecolor='lightcoral', alpha=0.7))
 
     plt.tight_layout()
-    plt.savefig(IMAGE_BASE / "foundations/complexity/big_o_chart.png",
+    plt.savefig(IMAGE_BASE / "images\png\big_o_chart.png",
                dpi=DPI, bbox_inches='tight')
     plt.close()
 

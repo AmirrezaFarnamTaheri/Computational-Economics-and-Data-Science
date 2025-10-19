@@ -46,7 +46,7 @@ handles, labels = axes[0].get_legend_handles_labels()
 fig.legend(handles, labels, loc='upper right', bbox_to_anchor=(0.95, 0.9))
 
 plt.tight_layout(rect=[0, 0, 1, 0.9])
-output_path = 'images/timeseries_split_visualization.png'
+output_path = 'images\png\timeseries_split_visualization.png'
 plt.savefig(output_path, dpi=300, bbox_inches='tight')
 
 print(f"Plot saved to {output_path}")

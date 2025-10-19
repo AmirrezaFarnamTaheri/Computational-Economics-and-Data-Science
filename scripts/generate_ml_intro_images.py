@@ -11,7 +11,7 @@ def generate_bias_variance_tradeoff_image():
     """
     output_dir = "images/ml_intro"
     os.makedirs(output_dir, exist_ok=True)
-    output_path = os.path.join(output_dir, "figure1_bias_variance_tradeoff.png")
+    output_path = os.path.join(output_dir, "images\png\figure1_bias_variance_tradeoff.png")
 
     # Define the true function
     def true_function(X):
@@ -86,7 +86,7 @@ def generate_lasso_ridge_geometry_image():
     """
     output_dir = "images/ml_intro"
     os.makedirs(output_dir, exist_ok=True)
-    output_path = os.path.join(output_dir, "figure2_lasso_ridge_geometry.png")
+    output_path = os.path.join(output_dir, "images\png\figure2_lasso_ridge_geometry.png")
 
     # Create a grid for plotting
     b1 = np.linspace(-1, 1, 400)

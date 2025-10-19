@@ -31,7 +31,7 @@ def generate_var_identification_diagram():
         os.makedirs('images')
 
     dot.render('images/var_identification_diagram', format='png', view=False, cleanup=True)
-    print("Diagram 'images/var_identification_diagram.png' created successfully.")
+    print("Diagram 'images\png\var_identification_diagram.png' created successfully.")
 
 if __name__ == '__main__':
     generate_var_identification_diagram()

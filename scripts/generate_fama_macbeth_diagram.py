@@ -41,7 +41,7 @@ def generate_fama_macbeth_diagram():
         os.makedirs('images')
 
     dot.render('images/fama_macbeth_procedure', format='png', view=False, cleanup=True)
-    print("Diagram 'images/fama_macbeth_procedure.png' created successfully.")
+    print("Diagram 'images\png\fama_macbeth_procedure.png' created successfully.")
 
 if __name__ == '__main__':
     generate_fama_macbeth_diagram()

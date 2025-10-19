@@ -72,7 +72,7 @@ def generate_cml_sml_plot():
     if not os.path.exists('images'):
         os.makedirs('images')
 
-    save_path = 'images/cml_sml_distinction.png'
+    save_path = 'images\png\cml_sml_distinction.png'
     plt.savefig(save_path, dpi=150, bbox_inches='tight')
     print(f"Plot saved to {save_path}")
 

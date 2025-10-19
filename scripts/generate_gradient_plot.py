@@ -31,5 +31,5 @@ import os
 if not os.path.exists('images/appendix'):
     os.makedirs('images/appendix')
 
-plt.savefig('images/appendix/gradient_field.png')
-print("Image saved to images/appendix/gradient_field.png")
+plt.savefig('images\png\gradient_field.png')
+print("images\png\gradient_field.png")

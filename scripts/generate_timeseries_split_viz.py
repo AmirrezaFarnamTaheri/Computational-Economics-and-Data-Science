@@ -38,7 +38,7 @@ def plot_time_series_split():
     if not os.path.exists('images'):
         os.makedirs('images')
 
-    save_path = 'images/timeseries_split_visualization.png'
+    save_path = 'images\png\timeseries_split_visualization.png'
     plt.savefig(save_path, dpi=150, bbox_inches='tight')
     print(f"Plot saved to {save_path}")
 

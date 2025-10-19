@@ -40,7 +40,7 @@ ax2.legend()
 ax2.set_xlabel('Time')
 
 plt.tight_layout(rect=[0, 0, 1, 0.95])
-output_path = 'images/cointegration_visualization.png'
+output_path = 'images\png\cointegration_visualization.png'
 plt.savefig(output_path, dpi=300, bbox_inches='tight')
 
 print(f"Plot saved to {output_path}")

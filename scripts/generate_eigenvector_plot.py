@@ -63,6 +63,6 @@ ax.text(1.8, 0.0, 'Transformed Vectors (Dashed)', fontsize=12)
 plt.tight_layout()
 
 # --- Save the Figure ---
-output_path = 'images/appendix/eigenvectors.png'
+output_path = 'images\png\eigenvectors.png'
 plt.savefig(output_path)
 print(f"Plot saved to {output_path}")

@@ -62,6 +62,6 @@ ax.grid(True)
 plt.tight_layout()
 
 # --- Save the Figure ---
-output_path = 'images/appendix/jensen_inequality.png'
+output_path = 'images\png\jensen_inequality.png'
 plt.savefig(output_path)
 print(f"Plot saved to {output_path}")

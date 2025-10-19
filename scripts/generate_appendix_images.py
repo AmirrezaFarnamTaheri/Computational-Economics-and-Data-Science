@@ -60,7 +60,7 @@ def generate_convergence_rates():
     ax.set_xticks(k)
     ax.legend(fontsize=FONT_SIZE - 2)
     ax.set_ylim(1e-10, 1)
-    save_plot(fig, "convergence_rates.png")
+    save_plot(fig, "images\png\convergence_rates.png")
 
 def generate_intermediate_value_theorem():
     """Generates a plot illustrating the Intermediate Value Theorem."""
@@ -97,7 +97,7 @@ def generate_intermediate_value_theorem():
     ax.set_yticklabels(['f(a)', 'y', 'f(b)'])
 
     ax.legend()
-    save_plot(fig, "intermediate_value_theorem.png")
+    save_plot(fig, "images\png\intermediate_value_theorem.png")
 
 def generate_convex_sets():
     """Generates plots for a convex and a non-convex set."""
@@ -117,7 +117,7 @@ def generate_convex_sets():
     ax.set_ylim(0, 1)
     ax.set_aspect('equal', adjustable='box')
     ax.axis('off')
-    save_plot(fig, "convex_set.png")
+    save_plot(fig, "images\png\convex_set.png")
 
     # Non-Convex Set
     fig, ax = setup_plot("A Non-Convex Set", "", "")
@@ -137,7 +137,7 @@ def generate_convex_sets():
     ax.set_ylim(0, 1)
     ax.set_aspect('equal', adjustable='box')
     ax.axis('off')
-    save_plot(fig, "non_convex_set.png")
+    save_plot(fig, "images\png\non_convex_set.png")
 
 def generate_separating_hyperplane():
     """Generates a plot illustrating the Separating Hyperplane Theorem."""
@@ -167,7 +167,7 @@ def generate_separating_hyperplane():
     ax.set_aspect('equal', adjustable='box')
     ax.axis('off')
     ax.legend(loc='upper right')
-    save_plot(fig, "separating_hyperplane_theorem.png")
+    save_plot(fig, "images\png\separating_hyperplane_theorem.png")
 
 def generate_taylor_sin():
     """Generates a plot of Taylor series approximations for sin(x)."""
@@ -188,7 +188,7 @@ def generate_taylor_sin():
     ax.axhline(0, color='gray', lw=0.5)
     ax.axvline(0, color='gray', lw=0.5)
     ax.legend()
-    save_plot(fig, "taylor_sin.png")
+    save_plot(fig, "images\png\taylor_sin.png")
 
 def generate_gradient_field():
     """Generates a visualization of a function's gradient field."""
@@ -227,7 +227,7 @@ def generate_gradient_field():
     ax2.set_aspect('equal', adjustable='box')
 
     plt.tight_layout()
-    save_plot(fig, "gradient_field.png")
+    save_plot(fig, "images\png\gradient_field.png")
 
 def generate_comparative_statics():
     """Generates a plot for a supply-demand comparative statics exercise."""
@@ -263,7 +263,7 @@ def generate_comparative_statics():
     ax.set_xlim(0, 11)
     ax.set_ylim(0, 14)
     ax.legend()
-    save_plot(fig, "comparative_statics.png")
+    save_plot(fig, "images\png\comparative_statics.png")
 
 def generate_normal_plots():
     """Generates plots for the Normal PDF and CDF."""
@@ -277,7 +277,7 @@ def generate_normal_plots():
     x_fill = np.linspace(-4, 1, 500)
     ax.fill_between(x_fill, norm.pdf(x_fill, 0, 1), color='skyblue', alpha=0.5)
     ax.text(0, 0.1, r'$P(Z \leq 1) = \int_{-\infty}^{1} \phi(z)dz$', ha='center', fontsize=12)
-    save_plot(fig, "normal_pdf.png")
+    save_plot(fig, "images\png\normal_pdf.png")
 
     # CDF
     fig, ax = setup_plot("Normal Cumulative Distribution Function (CDF)", "z", "Cumulative Probability")
@@ -291,7 +291,7 @@ def generate_normal_plots():
     ax.set_yticks([0, 0.5, prob_at_1, 1.0])
     ax.set_yticklabels(['0', '0.5', f'{prob_at_1:.2f}', '1.0'])
     ax.set_xticks([-4, 0, 1, 4])
-    save_plot(fig, "normal_cdf.png")
+    save_plot(fig, "images\png\normal_cdf.png")
 
 def generate_jensen_inequality():
     """Generates a plot illustrating Jensen's Inequality."""
@@ -328,7 +328,7 @@ def generate_jensen_inequality():
     ax.legend()
     ax.set_ylim(0, 3.5)
     ax.set_xlim(0, 21)
-    save_plot(fig, "jensen_inequality.png")
+    save_plot(fig, "images\png\jensen_inequality.png")
 
 def generate_clt_plots():
     """Generates plots illustrating the Central Limit Theorem with dice rolls."""
@@ -358,15 +358,15 @@ def generate_clt_plots():
     # Plot for n=1, 2, 3
     fig1, ax1 = setup_plot("", "", "", fig_size=(8,5))
     plot_sum_dist(1, ax1)
-    save_plot(fig1, "clt_1.png")
+    save_plot(fig1, "images\png\clt_1.png")
 
     fig2, ax2 = setup_plot("", "", "", fig_size=(8,5))
     plot_sum_dist(2, ax2)
-    save_plot(fig2, "clt_2.png")
+    save_plot(fig2, "images\png\clt_2.png")
 
     fig3, ax3 = setup_plot("", "", "", fig_size=(8,5))
     plot_sum_dist(3, ax3)
-    save_plot(fig3, "clt_3.png")
+    save_plot(fig3, "images\png\clt_3.png")
 
 def generate_multivariate_normal():
     """Generates scatter plots of bivariate normal distributions."""
@@ -391,7 +391,7 @@ def generate_multivariate_normal():
 
     fig.suptitle("Samples from Bivariate Normal Distributions", fontsize=FONT_SIZE + 4)
     plt.tight_layout(rect=[0, 0, 1, 0.95])
-    save_plot(fig, "multivariate_normal_distribution.png")
+    save_plot(fig, "images\png\multivariate_normal_distribution.png")
 
 def generate_martingale_paths():
     """Generates a plot of simulated martingale (random walk) paths."""
@@ -406,7 +406,7 @@ def generate_martingale_paths():
         ax.plot(np.arange(n_steps + 1), np.insert(path, 0, 0), alpha=0.7)
 
     ax.axhline(0, color='k', linestyle='--')
-    save_plot(fig, "martingale_paths.png")
+    save_plot(fig, "images\png\martingale_paths.png")
 
 def generate_eigenvectors():
     """Generates a plot illustrating the effect of a matrix transformation on eigenvectors."""
@@ -445,7 +445,7 @@ def generate_eigenvectors():
     ax.axvline(0, color='gray', lw=0.5)
     ax.set_aspect('equal', adjustable='box')
 
-    save_plot(fig, "eigenvectors.png")
+    save_plot(fig, "images\png\eigenvectors.png")
 
 # --- Main Execution ---
 def main():

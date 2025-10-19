@@ -48,7 +48,7 @@ ax.set_xlim(0, 200)
 ax.set_ylim(0, 200)
 
 # --- Save Plot ---
-output_path = 'images/merton_model_payoffs.png'
+output_path = 'images\png\merton_model_payoffs.png'
 plt.savefig(output_path, dpi=300, bbox_inches='tight')
 
 print(f"Plot saved to {output_path}")

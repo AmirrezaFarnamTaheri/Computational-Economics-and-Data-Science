@@ -58,7 +58,7 @@ def generate_merton_payoffs_diagram():
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
 
-    save_path = os.path.join(save_dir, 'merton_model_payoffs.png')
+    save_path = os.path.join(save_dir, 'images\png\merton_model_payoffs.png')
     plt.savefig(save_path, dpi=150, bbox_inches='tight')
     print(f"Plot saved to {save_path}")
 

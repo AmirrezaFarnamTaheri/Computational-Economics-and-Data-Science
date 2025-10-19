@@ -58,7 +58,7 @@ ax.set_ylim(0, 1.05)
 ax.axis('off')
 
 # Save the figure
-output_path = 'images/1.1-modelers-trilemma.png'
+output_path = 'images\png\1.1-modelers-trilemma.png'
 plt.savefig(output_path, dpi=300, bbox_inches='tight', pad_inches=0.1)
 
 print(f"Diagram saved to {output_path}")
