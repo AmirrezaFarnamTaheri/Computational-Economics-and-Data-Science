@@ -39,6 +39,7 @@ if __name__ == "__main__":
         "09-Finance",
         "10-Specialized-Models",
         "Appendix",
+        "high_performance_python",
     ]:
         all_notebooks.extend(find_notebooks(module))
 
