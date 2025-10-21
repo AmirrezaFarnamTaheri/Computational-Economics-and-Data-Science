@@ -1,0 +1,13 @@
+digraph {
+	A [label=Data]
+	B [label=Aesthetics]
+	C [label=Geoms]
+	D [label=Facets]
+	E [label=Stats]
+	F [label=Coords]
+	A -> B
+	A -> C
+	A -> D
+	A -> E
+	A -> F
+}
