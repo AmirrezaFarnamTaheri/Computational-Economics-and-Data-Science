@@ -1,0 +1,7 @@
+digraph {
+	A [label=Car]
+	B [label=Engine]
+	C [label=Tires]
+	A -> B
+	A -> C
+}
