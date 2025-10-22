@@ -1,0 +1,29 @@
+digraph {
+	rankdir=LR
+	xt -> forget
+	ht_1 -> forget
+	xt -> input
+	ht_1 -> input
+	xt -> candidate
+	ht_1 -> candidate
+	xt -> output
+	ht_1 -> output
+	forget -> ct_1 [ltail=cluster_lstm]
+	input -> ct
+	candidate -> ct
+	ct_1 -> ct
+	ct -> ht
+	output -> ht
+	subgraph cluster_lstm {
+		label="LSTM Cell"
+		xt [label=x_t]
+		ht_1 [label="h_{t-1}"]
+		ct_1 [label="c_{t-1}"]
+		ht [label=h_t]
+		ct [label=c_t]
+		forget [label="Forget Gate" shape=box]
+		input [label="Input Gate" shape=box]
+		output [label="Output Gate" shape=box]
+		candidate [label=Candidate shape=box]
+	}
+}

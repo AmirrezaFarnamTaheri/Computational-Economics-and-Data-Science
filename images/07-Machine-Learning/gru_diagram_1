@@ -1,0 +1,21 @@
+digraph {
+	rankdir=LR
+	xt -> reset
+	ht_1 -> reset
+	xt -> update
+	ht_1 -> update
+	xt -> candidate
+	reset -> candidate
+	update -> ht
+	candidate -> ht
+	ht_1 -> ht
+	subgraph cluster_gru {
+		label="GRU Cell"
+		xt [label=x_t]
+		ht_1 [label="h_{t-1}"]
+		ht [label=h_t]
+		reset [label="Reset Gate" shape=box]
+		update [label="Update Gate" shape=box]
+		candidate [label=Candidate shape=box]
+	}
+}
