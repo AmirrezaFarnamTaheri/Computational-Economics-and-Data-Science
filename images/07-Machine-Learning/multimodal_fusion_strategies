@@ -1,0 +1,49 @@
+// Multi-modal Fusion Strategies
+digraph {
+	fontsize=20 label="Multi-modal Fusion Strategies" rankdir=TB size="12,12"
+	subgraph cluster_early {
+		node [color=white style=filled]
+		color=lightgrey label="Early Fusion (Feature-level)" style=filled
+		early_in1 [label="Modality 1 (e.g., Text)"]
+		early_in2 [label="Modality 2 (e.g., Tabular)"]
+		early_concat [label="Concatenate Features"]
+		early_model [label="Unified Model"]
+		early_out [label=Prediction]
+		early_in1 -> early_concat
+		early_in2 -> early_concat
+		early_concat -> early_model
+		early_model -> early_out
+	}
+	subgraph cluster_late {
+		node [color=white style=filled]
+		color=lightgrey label="Late Fusion (Decision-level)" style=filled
+		late_in1 [label="Modality 1 (e.g., Text)"]
+		late_in2 [label="Modality 2 (e.g., Tabular)"]
+		late_model1 [label="Model 1"]
+		late_model2 [label="Model 2"]
+		late_combine [label="Combine Decisions"]
+		late_out [label=Prediction]
+		late_in1 -> late_model1
+		late_in2 -> late_model2
+		late_model1 -> late_combine
+		late_model2 -> late_combine
+		late_combine -> late_out
+	}
+	subgraph cluster_intermediate {
+		node [color=white style=filled]
+		color=lightgrey label="Intermediate Fusion (Hybrid)" style=filled
+		inter_in1 [label="Modality 1 (e.g., Text)"]
+		inter_in2 [label="Modality 2 (e.g., Tabular)"]
+		inter_branch1 [label="Branch 1"]
+		inter_branch2 [label="Branch 2"]
+		inter_fuse [label="Fuse Intermediate Representations"]
+		inter_joint [label="Joint Model"]
+		inter_out [label=Prediction]
+		inter_in1 -> inter_branch1
+		inter_in2 -> inter_branch2
+		inter_branch1 -> inter_fuse
+		inter_branch2 -> inter_fuse
+		inter_fuse -> inter_joint
+		inter_joint -> inter_out
+	}
+}
