@@ -167,7 +167,7 @@ When reusing or remixing the notebooks, please retain attribution to the course 
 ## Author
 
 *   **Amirreza ``Farnam'' Taheri**
-*   **Affiliation**: Tehran Institute for Advanced Studies
+*   **Affiliation**: Graduate Student - Tehran Institute for Advanced Studies
 *   **Email**: [taherifarnam@gmail.com](mailto:taherifarnam@gmail.com)
 
 This course was finalized on **October 2025**.
