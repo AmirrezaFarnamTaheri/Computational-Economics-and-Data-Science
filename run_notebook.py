@@ -1,9 +1,14 @@
 import nbformat
 from nbconvert.preprocessors import ExecutePreprocessor
 import os
+import sys
 
-# Set the notebook path
-notebook_filename = '08-Time-Series/01_Introduction_to_Time_Series.ipynb'
+# Set the notebook path from the command-line argument
+if len(sys.argv) < 2:
+    print("Usage: python run_notebook.py <path_to_notebook>")
+    sys.exit(1)
+notebook_filename = sys.argv[1]
+notebook_path = os.path.dirname(notebook_filename)
 
 # Read the notebook
 with open(notebook_filename, 'r', encoding='utf-8') as f:
@@ -15,7 +20,7 @@ ep = ExecutePreprocessor(timeout=600, kernel_name='python3')
 # Execute the notebook
 try:
     # The second argument is a dictionary for metadata, which can be empty
-    ep.preprocess(nb, {'metadata': {'path': '08-Time-Series/'}})
+    ep.preprocess(nb, {'metadata': {'path': notebook_path}})
     print(f"Successfully executed {notebook_filename}")
 except Exception as e:
     print(f"Error executing {notebook_filename}:")
