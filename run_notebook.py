@@ -1,29 +1,26 @@
 import nbformat
 from nbconvert.preprocessors import ExecutePreprocessor
-import io
-import sys
+import os
 
-def run_notebook(notebook_path):
-    """
-    Executes a notebook and returns the executed notebook object.
-    """
-    with open(notebook_path, 'r', encoding='utf-8') as f:
-        nb = nbformat.read(f, as_version=4)
+# Set the notebook path
+notebook_filename = '08-Time-Series/01_Introduction_to_Time_Series.ipynb'
 
-    ep = ExecutePreprocessor(timeout=600, kernel_name='python3')
+# Read the notebook
+with open(notebook_filename, 'r', encoding='utf-8') as f:
+    nb = nbformat.read(f, as_version=4)
 
-    try:
-        ep.preprocess(nb, {'metadata': {'path': '07-Machine-Learning/'}})
-        print(f"Successfully executed {notebook_path}")
-        return nb
-    except Exception as e:
-        print(f"Error executing notebook {notebook_path}:")
-        print(e)
-        raise
+# Configure the preprocessor
+ep = ExecutePreprocessor(timeout=600, kernel_name='python3')
 
-if __name__ == '__main__':
-    if len(sys.argv) > 1:
-        notebook_path = sys.argv[1]
-        run_notebook(notebook_path)
-    else:
-        print("Please provide a notebook path to execute.")
+# Execute the notebook
+try:
+    # The second argument is a dictionary for metadata, which can be empty
+    ep.preprocess(nb, {'metadata': {'path': '08-Time-Series/'}})
+    print(f"Successfully executed {notebook_filename}")
+except Exception as e:
+    print(f"Error executing {notebook_filename}:")
+    print(e)
+
+# You can optionally save the executed notebook
+# with open('path/to/executed_notebook.ipynb', 'w', encoding='utf-8') as f:
+#     nbformat.write(nb, f)
