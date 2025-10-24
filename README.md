@@ -4,7 +4,7 @@
 
 ## Overview
 
-This repository hosts a PhD-level course on modern computational methods in economics and data science. It is designed to be a comprehensive, self-contained resource for graduate students and researchers. The curriculum begins with a rigorous introduction to the mathematical foundations of economic theory and progresses to the computational frontier of economic research, including deep learning and causal machine learning.
+This repository hosts a Graduate-level course on modern computational methods in economics and data science. It is designed to be a comprehensive, self-contained resource for graduate students and researchers. The curriculum begins with a rigorous introduction to the mathematical foundations of economic theory and progresses to the computational frontier of economic research, including deep learning and causal machine learning.
 
 The course takes a "code-first" approach, emphasizing the practical implementation of economic models and econometric techniques. Each notebook is a self-contained lesson, complete with theoretical explanations, historical context, mathematical derivations, and fully executable Python code.
 
