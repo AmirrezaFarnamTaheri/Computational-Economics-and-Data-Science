@@ -77,6 +77,6 @@ ax.set_ylim(0, 110)
 plt.tight_layout()
 
 # --- Save the Figure ---
-output_path = 'images\png\comparative_statics.png'
+output_path = 'images/png/comparative_statics.png'
 plt.savefig(output_path)
 print(f"Plot saved to {output_path}")

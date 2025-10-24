@@ -1,0 +1,257 @@
+# MkDocs configuration for Computational Economics and Data Science course website
+
+site_name: Computational Economics and Data Science
+site_description: A comprehensive graduate-level course in computational methods for economics and data science
+site_author: Amirreza Farnam Taheri
+site_url: https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/
+
+# Repository
+repo_name: AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science
+repo_url: https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science
+edit_uri: edit/main/docs/
+
+# Copyright
+copyright: >
+  Copyright &copy; 2024-2025 Amirreza Farnam Taheri, Tehran Institute for Advanced Studies (TeIAS).
+  Licensed under <a href="https://opensource.org/licenses/MIT">MIT</a> (code) and
+  <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> (content).
+
+# Configuration
+theme:
+  name: material
+  language: en
+
+  # Color scheme
+  palette:
+    # Light mode
+    - scheme: default
+      primary: indigo
+      accent: deep purple
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Dark mode
+    - scheme: slate
+      primary: indigo
+      accent: deep purple
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+  # Font
+  font:
+    text: Roboto
+    code: Roboto Mono
+
+  # Logo and favicon
+  icon:
+    repo: fontawesome/brands/github
+    logo: material/school
+
+  # Features
+  features:
+    - navigation.instant      # Instant loading
+    - navigation.tracking     # Track URL
+    - navigation.tabs         # Top-level tabs
+    - navigation.tabs.sticky  # Sticky tabs
+    - navigation.sections     # Sections in sidebar
+    - navigation.expand       # Expand sections by default
+    - navigation.path         # Breadcrumbs
+    - navigation.indexes      # Section index pages
+    - navigation.top          # Back to top button
+    - navigation.footer       # Footer navigation
+    - toc.follow              # TOC follows scroll
+    - toc.integrate           # Integrate TOC into navigation
+    - search.suggest          # Search suggestions
+    - search.highlight        # Highlight search results
+    - search.share            # Share search results
+    - content.code.copy       # Copy code button
+    - content.code.annotate   # Code annotations
+    - content.tabs.link       # Link tabs
+
+# Extensions
+markdown_extensions:
+  # Python Markdown
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - meta
+  - tables
+  - toc:
+      permalink: true
+      title: On this page
+
+  # Python Markdown Extensions
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+# Plugins
+plugins:
+  - search:
+      lang: en
+      separator: '[\s\-,:!=\[\]()"/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+  - tags
+  - git-revision-date-localized:
+      enable_creation_date: true
+      type: timeago
+
+# Additional JavaScript
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+# Additional CSS
+extra_css:
+  - stylesheets/extra.css
+
+# Extra
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/AmirrezaFarnamTaheri
+      name: GitHub Profile
+    - icon: fontawesome/brands/linkedin
+      link: https://linkedin.com/in/amirrezafarnamtaheri
+      name: LinkedIn Profile
+
+  analytics:
+    provider: google
+    property: !ENV GOOGLE_ANALYTICS_KEY
+
+  version:
+    provider: mike
+
+# Navigation
+nav:
+  - Home: index.md
+
+  - Getting Started:
+    - Installation: getting-started/installation.md
+    - Quick Start: getting-started/quickstart.md
+    - Course Structure: getting-started/structure.md
+    - Prerequisites: getting-started/prerequisites.md
+
+  - Modules:
+    - modules/index.md
+    - Module 1 - Foundations:
+      - modules/01-foundations/index.md
+      - Introduction: modules/01-foundations/01-introduction.md
+      - Development Environment: modules/01-foundations/02-dev-environment.md
+      - Python Fundamentals: modules/01-foundations/03-python-fundamentals.md
+      - NumPy & Pandas: modules/01-foundations/12-13-numpy-pandas.md
+      - Data Visualization: modules/01-foundations/16-visualization.md
+      - APIs & Data: modules/01-foundations/15-apis.md
+
+    - Module 2 - Numerical Methods:
+      - modules/02-numerical-methods/index.md
+      - Linear Algebra: modules/02-numerical-methods/01-linear-algebra.md
+      - Root Finding: modules/02-numerical-methods/04-root-finding.md
+      - Optimization: modules/02-numerical-methods/05-optimization.md
+      - Integration: modules/02-numerical-methods/07-integration.md
+
+    - Module 3 - Economic Modeling:
+      - modules/03-economic-modeling/index.md
+      - Dynamic Programming: modules/03-economic-modeling/01-dynamic-programming.md
+      - Continuous States: modules/03-economic-modeling/02-continuous-states.md
+      - Estimation & Calibration: modules/03-economic-modeling/04-estimation.md
+
+    - Module 4 - Macro Models:
+      - modules/04-macro-models/index.md
+      - Job Search: modules/04-macro-models/01-job-search.md
+      - Growth Models: modules/04-macro-models/02-growth.md
+      - RBC Models: modules/04-macro-models/03-rbc.md
+      - New Keynesian: modules/04-macro-models/05-new-keynesian.md
+
+    - Module 5 - Micro Models:
+      - modules/05-micro-models/index.md
+      - Consumer Theory: modules/05-micro-models/01-consumer-producer.md
+      - General Equilibrium: modules/05-micro-models/02-general-equilibrium.md
+      - Game Theory: modules/05-micro-models/03-game-theory.md
+      - Discrete Choice: modules/05-micro-models/04-discrete-choice.md
+
+    - Module 6 - Econometrics:
+      - modules/06-econometrics/index.md
+      - OLS & Linear Models: modules/06-econometrics/01-ols.md
+      - Maximum Likelihood: modules/06-econometrics/02-mle.md
+      - Causal Inference: modules/06-econometrics/03-causal-inference.md
+      - GMM & IV: modules/06-econometrics/04-05-gmm-iv.md
+      - Time Series: modules/06-econometrics/09-10-time-series.md
+
+    - Module 7 - Machine Learning:
+      - modules/07-machine-learning/index.md
+      - ML for Economists: modules/07-machine-learning/01-intro.md
+      - Deep Learning: modules/07-machine-learning/06-deep-learning.md
+      - CNNs & RNNs: modules/07-machine-learning/07-09-sequences.md
+      - Transformers: modules/07-machine-learning/10-transformers.md
+      - Causal ML: modules/07-machine-learning/17-causal-ml.md
+
+    - Module 8 - Time Series:
+      - modules/08-time-series/index.md
+      - ARMA Models: modules/08-time-series/02-arma.md
+      - ARIMA & Forecasting: modules/08-time-series/03-arima.md
+      - VAR Models: modules/08-time-series/04-var.md
+      - GARCH Models: modules/08-time-series/05-garch.md
+
+    - Module 9 - Finance:
+      - modules/09-finance/index.md
+      - Portfolio Theory: modules/09-finance/02-portfolio.md
+      - Asset Pricing: modules/09-finance/03-asset-pricing.md
+      - Option Pricing: modules/09-finance/04-options.md
+      - Continuous Time: modules/09-finance/05-continuous-time.md
+
+    - Module 10 - Specialized:
+      - modules/10-specialized/index.md
+      - Agent-Based Models: modules/10-specialized/01-abm.md
+      - Heterogeneous Agents: modules/10-specialized/02-heterogeneous.md
+      - Network Economics: modules/10-specialized/03-networks.md
+
+  - Resources:
+    - resources/index.md
+    - Code Style Guide: resources/code-style.md
+    - References: resources/references.md
+    - Software Tools: resources/tools.md
+    - Datasets: resources/datasets.md
+    - FAQ: resources/faq.md
+
+  - Appendices:
+    - appendices/index.md
+    - Mathematics Review: appendices/mathematics.md
+    - Publishing with Quarto: appendices/publishing.md
+    - Autograding: appendices/autograding.md
+
+  - About:
+    - about/index.md
+    - License: about/license.md
+    - Contributing: about/contributing.md
+    - Citation: about/citation.md
+    - Contact: about/contact.md

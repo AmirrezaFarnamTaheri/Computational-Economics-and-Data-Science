@@ -36,6 +36,6 @@ plt.tight_layout()
 
 # --- Save the Figure ---
 # Note: The original file was an SVG, but PNG is fine for consistency.
-output_path = 'images\png\martingale_paths.png'
+output_path = 'images/png/martingale_paths.png'
 plt.savefig(output_path)
 print(f"Plot saved to {output_path}")

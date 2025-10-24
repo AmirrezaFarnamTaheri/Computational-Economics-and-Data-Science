@@ -7,7 +7,7 @@ dot.attr(rankdir='TB', size='8,5', label='The Box-Jenkins Methodology', fontsize
 # Define nodes
 dot.attr('node', shape='box', style='rounded,filled', fillcolor='lightblue', fontname='Helvetica')
 dot.node('A', '1. Identification\n- Check Stationarity (Difference if needed)\n- Plot ACF/PACF to find candidate (p,q) orders')
-dot.node('B', '2. Estimation\n- Estimate parameters of candidate models\n(e.g., via Maximum Likelihood)')
+dot.node('B', '2. Estimation/n- Estimate parameters of candidate models/n(e.g., via Maximum Likelihood)')
 dot.node('C', '3. Diagnostic Checking\n- Analyze model residuals (ACF, Ljung-Box test)\n- Are residuals white noise?')
 
 dot.attr('node', shape='diamond', style='filled', fillcolor='lightyellow')

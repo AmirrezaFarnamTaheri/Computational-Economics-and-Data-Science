@@ -71,7 +71,7 @@ ax2.set_ylim(0, 0.16)
 ax2.legend()
 
 # --- Save Plot ---
-output_path = 'images\png\cml_sml_distinction.png'
+output_path = 'images/png/cml_sml_distinction.png'
 plt.tight_layout(rect=[0, 0, 1, 0.96])
 plt.savefig(output_path, dpi=300, bbox_inches='tight')
 

@@ -1,9 +1,11 @@
 import numpy as np
-from numba import njit
 from scipy.stats import norm
 
+# Note: @njit decorator removed due to incompatibility with scipy.stats.norm
+# For performance-critical applications, consider implementing a custom
+# norm.cdf approximation that is compatible with Numba
+# Or use the quantecon library: from quantecon import tauchen
 
-@njit
 def tauchen(rho, sigma_e, n_states=7, m=3):
     """
     Implements Tauchen's (1986) method for discretizing an AR(1) process.

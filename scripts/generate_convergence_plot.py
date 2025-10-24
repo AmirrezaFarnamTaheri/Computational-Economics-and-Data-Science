@@ -40,7 +40,7 @@ plt.tight_layout()
 
 # --- Save the Figure ---
 # The target directory should already exist
-output_path = 'images\png\convergence_rates.png'
+output_path = 'images/png/convergence_rates.png'
 plt.savefig(output_path)
 
 print(f"Plot saved to {output_path}")
