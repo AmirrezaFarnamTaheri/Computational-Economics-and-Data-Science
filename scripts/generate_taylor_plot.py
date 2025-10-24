@@ -47,7 +47,7 @@ ax.axvline(0, color='black', lw=0.5)
 plt.tight_layout()
 
 # --- Save the Figure ---
-output_path = 'images\png\taylor_sin.png'
+output_path = 'images/png/taylor_sin.png'
 plt.savefig(output_path)
 
 print(f"Plot saved to {output_path}")

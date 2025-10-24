@@ -59,6 +59,6 @@ fig.colorbar(quiver, ax=ax2, label='Magnitude of Gradient')
 plt.tight_layout()
 
 # --- Save the Figure ---
-output_path = 'images\png\gradient_field.png'
+output_path = 'images/png/gradient_field.png'
 plt.savefig(output_path)
 print(f"Plot saved to {output_path}")

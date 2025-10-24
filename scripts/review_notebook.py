@@ -14,7 +14,7 @@ def add_granularity(notebook_path):
                     line += (
                         '\\n\\n'
                         '> 📖 **First Principles: The Lag Operator**\\n'
-                        '> The lag operator, denoted by \\(L\\), is a mathematical tool used to represent the relationship between a value at time \\(t\\) and its value at a previous time. It simplifies the notation of time series models by transforming an equation into a more compact polynomial form. For example, \\(Ly_t = y_{t-1}\\) means that applying the lag operator to \\(y_t\\) gives its value in the previous period.'
+                        '> The lag operator, denoted by /(L/), is a mathematical tool used to represent the relationship between a value at time /(t/) and its value at a previous time. It simplifies the notation of time series models by transforming an equation into a more compact polynomial form. For example, /(Ly_t = y_{t-1}/) means that applying the lag operator to /(y_t/) gives its value in the previous period.'
                     )
                 elif 'An **ARMA(p,q)** model combines the AR(p) and MA(q) components:' in line:
                     line += (

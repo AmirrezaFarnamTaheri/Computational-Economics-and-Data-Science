@@ -60,7 +60,7 @@ def generate_lob_plot():
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
 
-    save_path = os.path.join(save_dir, 'images\png\limit_order_book.png')
+    save_path = os.path.join(save_dir, 'images/png/limit_order_book.png')
     plt.savefig(save_path, dpi=150, bbox_inches='tight')
     print(f"Plot saved to {save_path}")
 

@@ -43,6 +43,6 @@ for ax, (title, cov) in zip(axes, covariances.items()):
 plt.tight_layout(rect=[0, 0, 1, 0.96])
 
 # --- Save the Figure ---
-output_path = 'images\png\multivariate_normal_distribution.png'
+output_path = 'images/png/multivariate_normal_distribution.png'
 plt.savefig(output_path)
 print(f"Plot saved to {output_path}")

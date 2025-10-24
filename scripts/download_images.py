@@ -16,14 +16,14 @@ IMAGE_BASE = Path(__file__).parent.parent / "images"
 
 DOWNLOAD_MANIFEST = {
     # Sutton & Barto RL Figures (Educational Use)
-    "images\png\agent_environment_loop.png": {
+    "images/png/agent_environment_loop.png": {
         "url": "http://incompleteideas.net/book/first/ebook/figtmp1.png",
         "license": "Educational Use",
         "source": "Sutton & Barto RL Book"
     },
 
     # Economic Diagrams from EconGraphs (Open Source)
-    "images\png\supply_demand.png": {
+    "images/png/supply_demand.png": {
         "url": "https://www.econgraphs.org/graphs/v1/micro/supply_and_demand/supply_and_demand?textbook=varian",
         "license": "Open Source",
         "source": "EconGraphs.org"

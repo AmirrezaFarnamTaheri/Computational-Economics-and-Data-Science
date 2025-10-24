@@ -1,11 +1,23 @@
 import numpy as np
 import pandas as pd
-from snowdrop import SmallOpenEconomy
+
+# Note: The snowdrop library is a placeholder for DSGE model solving
+# In practice, you might use libraries like:
+# - pydsge (https://github.com/gboehl/pydsge)
+# - DSGE.jl via PyJulia
+# - gEcon
+# Or implement your own solver using the methods in the course notebooks
 
 def solve_bgg_and_get_irfs(chi=0.05, T=40):
     """
-    This function defines, solves, and simulates the BGG model
-    using the pysnowdrop library.
+    This function defines, solves, and simulates the BGG model.
+
+    NOTE: This is a template/placeholder implementation. To run this function,
+    you need to install a DSGE model solver library or implement your own solver.
+
+    Recommended libraries:
+    - pydsge: pip install pydsge
+    - Or use the linearization and solution methods taught in Module 04
     """
 
     # 1. Define Model Parameters
@@ -50,11 +62,19 @@ def solve_bgg_and_get_irfs(chi=0.05, T=40):
 
     try:
         # 3. Create and solve the model
-        model = SmallOpenEconomy(model_definition, params)
-        model.solve()
+        # NOTE: Replace this with your preferred DSGE solver
+        # Example using hypothetical API:
+        # from pydsge import DSGE
+        # model = DSGE(model_definition, params)
+        # model.solve()
+
+        # For now, return empty DataFrame with informative message
+        print("Warning: DSGE solver not configured. Install a DSGE library to enable this function.")
+        print("See function docstring for recommended libraries.")
+        return pd.DataFrame()
 
         # 4. Generate Impulse Responses to a technology shock
-        irfs = model.impulse_response_functions(periods=T, shock_name='e_tech')
+        # irfs = model.impulse_response_functions(periods=T, shock_name='e_tech')
 
         # 5. Format the output to be similar to the original notebook's dataframe
         # We need to select the variables of interest and rename them

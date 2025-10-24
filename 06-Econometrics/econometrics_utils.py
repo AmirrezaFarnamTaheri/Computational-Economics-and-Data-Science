@@ -32,8 +32,7 @@ class MLEstimator:
         """
         self.loglike = loglike_func
         self.data = data
-        if param_names is not None:
-            self.param_names = param_names
+        self.param_names = param_names  # Initialize unconditionally to avoid AttributeError
         self.results = None
 
     def fit(self, start_params):

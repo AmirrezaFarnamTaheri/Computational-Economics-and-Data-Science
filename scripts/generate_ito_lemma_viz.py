@@ -75,7 +75,7 @@ def generate_ito_lemma_viz():
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
 
-    save_path = os.path.join(save_dir, 'images\png\ito_lemma_intuition.png')
+    save_path = os.path.join(save_dir, 'images/png/ito_lemma_intuition.png')
     plt.savefig(save_path, dpi=150, bbox_inches='tight')
     print(f"Plot saved to {save_path}")
 
