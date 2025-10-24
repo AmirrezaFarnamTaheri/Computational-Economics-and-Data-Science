@@ -1,49 +1,44 @@
-import graphviz
+from graphviz import Digraph
+import os
 
-def generate_emergence_diagram():
+def create_emergence_diagram():
     """
-    Generates a diagram illustrating the concept of emergence in ABMs.
+    Generates a diagram illustrating the concept of emergence using Graphviz.
     """
-    dot = graphviz.Digraph('Emergence', comment='Emergence in Agent-Based Models')
-    dot.attr(rankdir='TB', splines='spline')
+    dot = Digraph(comment='Emergence Concept')
+    dot.attr('graph', rankdir='BT', bgcolor='transparent', label='The Concept of Emergence', fontname='Helvetica', fontsize='20')
 
-    # --- Micro Level ---
+    # Node attributes
+    dot.attr('node', shape='box', style='rounded,filled', fillcolor='lightblue', fontname='Helvetica')
+
+    # Micro-level nodes
     with dot.subgraph(name='cluster_micro') as c:
-        c.attr(label='Micro Level: Agent Interactions', style='rounded', color='blue', fontname="Helvetica", fontsize="12")
-        c.node_attr.update(style='filled', color='lightblue', shape='ellipse', fontname="Helvetica", fontsize="10")
+        c.attr(label='Micro Level: Agent Rules & Local Interactions', style='rounded', color='grey')
+        c.node('A1', 'Agent 1\\n(Simple Rules)')
+        c.node('A2', 'Agent 2\\n(Simple Rules)')
+        c.node('A3', 'Agent N\\n(Simple Rules)')
+        c.edge('A1', 'A2', label='interacts', arrowhead='none')
+        c.edge('A2', 'A3', label='interacts', arrowhead='none')
 
-        c.node('A1', 'Agent 1\n(Rules, State)')
-        c.node('A2', 'Agent 2\n(Rules, State)')
-        c.node('A3', 'Agent 3\n(Rules, State)')
-        c.node('A_etc', '...')
+    # Macro-level node
+    dot.attr('node', shape='ellipse', style='filled', fillcolor='lightgreen')
+    dot.node('M1', 'Macro Level: Complex System-Wide Patterns\\n(e.g., Market Crashes, Segregation, Flocking)')
 
-        c.edge('A1', 'A2', label='Local Interaction')
-        c.edge('A2', 'A3', label='Local Interaction')
-        c.edge('A3', 'A1', label='Local Interaction')
-        c.edge('A2', 'A_etc', label='Local Interaction')
+    # Emergence arrow
+    dot.edge('A2', 'M1', label='Leads to (Emergence)', dir='back', constraint='false',
+             fontsize='12', fontcolor='darkgreen', color='darkgreen', style='dashed', penwidth='2')
 
-    # --- Macro Level ---
-    with dot.subgraph(name='cluster_macro') as c:
-        c.attr(label='Macro Level: System-Wide Patterns', style='rounded', color='green', fontname="Helvetica", fontsize="12")
-        c.node_attr.update(style='filled', color='lightgreen', shape='box', fontname="Helvetica", fontsize="10")
+    # Save the file
+    output_dir = 'images/10-Specialized-Models'
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    output_path = os.path.join(output_dir, 'emergence_diagram')
 
-        c.node('P1', 'Bubbles & Crashes')
-        c.node('P2', 'Segregation Patterns')
-        c.node('P3', 'Business Cycles')
-        c.node('P_etc', '...')
+    # Using .render() will save the file as 'emergence_diagram.png'
+    dot.render(output_path, format='png', view=False, cleanup=True)
 
-    # --- Emergence Arrow ---
-    dot.edge('cluster_micro', 'cluster_macro', label=' Leads to (Emergence) ', style='dashed', arrowhead='normal', minlen='2', fontname="Helvetica", fontsize="12", color="purple", fontcolor="purple")
+    return f"{output_path}.png"
 
-    # Render and save
-    import os
-    save_dir = 'images'
-    if not os.path.exists(save_dir):
-        os.makedirs(save_dir)
-
-    save_path = os.path.join(save_dir, 'emergence_diagram')
-    dot.render(save_path, format='png', view=False, cleanup=True)
-    print(f"Diagram '{save_path}.png' created successfully.")
-
-if __name__ == '__main__':
-    generate_emergence_diagram()
+if __name__ == "__main__":
+    generated_file = create_emergence_diagram()
+    print(f"Diagram saved to: {generated_file}")
