@@ -18,24 +18,15 @@ FIGSIZE = (10, 7)
 plt.style.use('seaborn-v0_8-whitegrid')
 
 def setup_dirs():
-    """Create all necessary image directories"""
+    """Create all necessary image directories matching the repo structure"""
     dirs = [
-        "foundations/git",
-        "foundations/sets",
-        "foundations/complexity",
-        "numerical_methods/phase_diagrams",
-        "numerical_methods/optimization",
-        "numerical_methods/integration",
-        "machine_learning/architectures",
-        "machine_learning/rl",
-        "machine_learning/concepts",
-        "finance/options",
-        "finance/portfolio",
-        "finance/risk",
-        "econometrics/causal",
-        "econometrics/time_series",
-        "micro_macro/micro",
-        "micro_macro/macro"
+        "01-Foundations",
+        "02-Numerical-Methods",
+        "07-Machine-Learning",
+        "08-Time-Series",
+        "09-Finance",
+        "10-Specialized-Models",
+        "png" # Legacy/Catch-all
     ]
     for d in dirs:
         (IMAGE_BASE / d).mkdir(parents=True, exist_ok=True)
@@ -86,7 +77,8 @@ def generate_phase_diagrams():
     ax.grid(True, alpha=0.3)
 
     plt.tight_layout()
-    plt.savefig(IMAGE_BASE / "images/png/lotka_volterra.png",
+    # Saving to Numerical Methods folder
+    plt.savefig(IMAGE_BASE / "02-Numerical-Methods/lotka_volterra.png",
                dpi=DPI, bbox_inches='tight')
     plt.close()
 
@@ -148,7 +140,7 @@ def generate_phase_diagrams():
     ax.grid(True, alpha=0.3)
 
     plt.tight_layout()
-    plt.savefig(IMAGE_BASE / "images/png/rck_model.png",
+    plt.savefig(IMAGE_BASE / "02-Numerical-Methods/rck_model.png",
                dpi=DPI, bbox_inches='tight')
     plt.close()
 
@@ -208,7 +200,7 @@ def generate_option_diagrams():
     ax2.grid(True, alpha=0.3)
 
     plt.tight_layout()
-    plt.savefig(IMAGE_BASE / "images/png/call_put_payoffs.png",
+    plt.savefig(IMAGE_BASE / "09-Finance/call_put_payoffs.png",
                dpi=DPI, bbox_inches='tight')
     plt.close()
 
@@ -243,7 +235,7 @@ def generate_option_diagrams():
     ax.grid(True, alpha=0.3)
 
     plt.tight_layout()
-    plt.savefig(IMAGE_BASE / "images/png/iron_condor.png",
+    plt.savefig(IMAGE_BASE / "09-Finance/iron_condor.png",
                dpi=DPI, bbox_inches='tight')
     plt.close()
 
@@ -297,7 +289,8 @@ def generate_complexity_charts():
            bbox=dict(boxstyle='round', facecolor='lightcoral', alpha=0.7))
 
     plt.tight_layout()
-    plt.savefig(IMAGE_BASE / "images/png/big_o_chart.png",
+    # Saving to Numerical Methods as it relates to complexity/profiling
+    plt.savefig(IMAGE_BASE / "02-Numerical-Methods/big_o_complexity.png",
                dpi=DPI, bbox_inches='tight')
     plt.close()
 
