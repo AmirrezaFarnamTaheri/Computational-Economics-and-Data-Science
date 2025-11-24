@@ -1,0 +1,22 @@
+./03-Economic-Modeling/02_DP_with_Continuous_States.ipynb:    "display(Image(filename='../images/03-Economic-Modeling/policy_comparison.png'))"
+./03-Economic-Modeling/01_Dynamic_Programming.ipynb:    "display(Image(filename='../images/03-Economic-Modeling/cake_eating_solution.png'))"
+./03-Economic-Modeling/01_Dynamic_Programming.ipynb:    "display(Image(filename='../images/03-Economic-Modeling/policy_functions.png'))"
+./03-Economic-Modeling/01_Dynamic_Programming.ipynb:    "display(Image(filename='../images/03-Economic-Modeling/vfi_convergence.png'))"
+./03-Economic-Modeling/01_Dynamic_Programming.ipynb:    "display(Image(filename='../images/03-Economic-Modeling/stationary_distribution.png'))"
+./01-Foundations/02_Professional_Development_Environment.ipynb:    "        display(Image(filename=IMAGE_BASE / path, width=width))\n",
+./01-Foundations/02_Professional_Development_Environment.ipynb:    "        display(Image(filename=IMAGE_BASE / path))\n",
+./07-Machine-Learning/03_Support_Vector_Machines.ipynb:    "display(Image(filename='images/07-Machine-Learning/svm_hyperplanes.png'))"
+./07-Machine-Learning/03_Support_Vector_Machines.ipynb:    "display(Image(filename='images/07-Machine-Learning/svm_margin.png'))"
+./07-Machine-Learning/03_Support_Vector_Machines.ipynb:    "display(Image(filename='images/07-Machine-Learning/kernel_trick.png'))\n",
+./07-Machine-Learning/16_Advanced_Deep_RL.ipynb:    "# This diagram illustrates the Dueling DQN architecture.\\n# The network splits into two streams: one for the state-value function (V) and one for the advantage function (A).\\n# These streams are then combined to produce the final Q-values.\\ndisplay(Image(filename='../images/07-Machine-Learning/dueling_dqn_architecture.png'))"
+./07-Machine-Learning/15_Reinforcement_Learning.ipynb:    "display(Image(filename='../images/07-Machine-Learning/actor_critic_architecture.png'))"
+./07-Machine-Learning/06_Deep_Learning_Foundations.ipynb:    "display(Image(filename='images/07-Machine-Learning/shap_summary_plot.png'))\n",
+./07-Machine-Learning/06_Deep_Learning_Foundations.ipynb:    "display(Image(filename='images/07-Machine-Learning/shap_dependence_plot.png'))\n"
+./07-Machine-Learning/14_Multi_modal_Fusion.ipynb:    "display(Image(filename='../images/07-Machine-Learning/multimodal_fusion_strategies.png'))"
+./07-Machine-Learning/01_Introduction_to_ML_for_Economists.ipynb:    "display(Image(filename='images/07-Machine-Learning/lasso_coefficients.png'))"
+./07-Machine-Learning/01_Introduction_to_ML_for_Economists.ipynb:    "    display(Image(filename='images/07-Machine-Learning/clustering.png'))\n",
+./07-Machine-Learning/13_Generative_Models.ipynb:    "display(Image(filename='../images/07-Machine-Learning/VAE_architecture.png'))"
+./07-Machine-Learning/13_Generative_Models.ipynb:    "display(Image(filename='../images/07-Machine-Learning/gan_architecture.png'))"
+./07-Machine-Learning/13_Generative_Models.ipynb:    "display(Image(filename='../images/07-Machine-Learning/dbn_architecture.png'))"
+./07-Machine-Learning/02_Gradient_Boosting_Machines.ipynb:    "display(Image(filename='images/07-Machine-Learning/feature_importance.png'))"
+./IMPROVEMENT_ROADMAP.md:    *   [ ] **Task 2 (Vis):** Replace `display(Image(...))` with direct plot generation where feasible, or use high-quality SVG diagrams.

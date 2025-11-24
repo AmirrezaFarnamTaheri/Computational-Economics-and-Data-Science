@@ -1,0 +1,1 @@
+./02-Numerical-Methods/08_Differential_Equations.ipynb:    "sys.path.append(str(Path.cwd().parent.parent / 'src'))\n",
