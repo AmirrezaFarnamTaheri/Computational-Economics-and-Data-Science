@@ -1,184 +1,133 @@
-# Comprehensive Improvement Roadmap
+# The Codex: Computational Economics & Data Science Improvement Plan
 
-This document is the **definitive master plan** for elevating the Computational Economics course repository to a "Gold Standard" of pedagogical, visual, and technical excellence. It is the result of a deep, file-by-file audit of all 116 notebooks.
-
-## 1. Executive Summary & Philosophy
-
-The goal is to transform the repository into a cohesive, self-contained, and visually stunning educational resource.
-
-**The "Gold Standard" Philosophy:**
-1.  **Context before Code:** Every notebook must start with a narrative introduction (The "Lens") that motivates the economic problem before any code is written.
-2.  **No Magic:** Remove custom helper functions (e.g., `sec()`, `note()`) that hide logic or non-standard styling. Use standard Markdown and standard library calls.
-3.  **Self-Containment:** Every notebook runs from top to bottom. External dependencies (data, scripts) must be explicitly handled with robust fallbacks.
-4.  **Visual Consistency:** All plots use a unified style context; all diagrams have metadata.
-5.  **Rigor:** Derivations are complete; code is robust (e.g., no `inv(A)`).
+**Status:** 🚧 Execution Phase
+**Target:** World-Class Educational Repository ("The Gold Standard")
+**Governing Documents:**
+*   [📜 Code Constitution (Style & Standards)](CODE_STYLE.md)
+*   [📋 Refactoring Briefs (Specific Instructions)](REFACTORING_BRIEFS.md)
 
 ---
 
-## 2. Global Technical Standards
-*These standards apply to every single notebook in the repository.*
+## 1. Executive Summary
 
-### A. Standard Header
-Every notebook must begin with this cell (Markdown):
-```markdown
-# [Module Name]
-## [Chapter Number]: [Chapter Title]
+This roadmap outlines the transformation of the repository from a "functional collection of scripts" to a **cohesive, polished, and pedagogically rigorous educational product**. The goal is to eliminate technical debt, standardize visual and code quality, and deepen the theoretical and historical context across all 100+ notebooks.
 
-[![Code License: MIT](https://img.shields.io/badge/Code%20License-MIT-yellow.svg)](../LICENSE)
-[![Content License: CC BY 4.0](https://img.shields.io/badge/Content%20License-CC%20BY%204.0-blue.svg)](https://creativecommons.org/licenses/by/4.0/)
-```
-
-### B. Standard Imports & Setup
-Replace the ad-hoc `sec()`, `note()` setups with this standard block:
-```python
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import scipy.stats as stats
-# Module specific imports...
-
-# Visual Configuration
-plt.style.use('seaborn-v0_8-whitegrid')
-plt.rcParams.update({
-    'figure.figsize': (10, 6),
-    'font.size': 12,
-    'axes.titlesize': 14,
-    'axes.grid': True
-})
-```
-
-### C. Formatting & Tone (Task 6)
-*   **Remove:** `def sec(title): print(...)` -> Use `### Title` in Markdown.
-*   **Remove:** `def note(msg): ...` -> Use `> **Note:** [Message]` in Markdown.
-*   **Math:** Ensure all LaTeX equations are properly rendered (use `$$` for block math).
+**Current State Metrics (from AST Audit):**
+*   **Notebooks:** 116
+*   **Average Markdown Ratio:** 0.72 (Good, but inconsistent)
+*   **Visual Score:** 0.42 / 1.0 (Critical Weakness: Lack of titles, labels, unified style)
+*   **Anti-Patterns:** ~200 instances of `sec()`/`note()` custom helpers.
+*   **Code Structure:** Heavy reliance on procedural code (627 functions vs 83 classes).
 
 ---
 
-## 3. Module-by-Module Audit & Action Plan
+## 2. Six-Pillar Strategy (The "Double Down")
 
-### Module 01: Foundations
-*   **Status:** Strong content, missing summaries.
-*   **Anti-Patterns:** `sec()`/`note()` helpers found in most files.
-*   **Action Items:**
-    *   [ ] **Structure:** Add explicit `# Summary` sections to all 24 notebooks.
-    *   [ ] **Refactor:** Move `finance_utils.py` to `utils/` and document it.
-    *   [ ] **Metadata:** Ensure all 22 images in this module have descriptions in `metadata.json`.
+We will execute the user's 6 Tasks through the following pillars:
 
-### Module 02: Numerical Methods
-*   **Status:** Code-heavy, needs visual uplift.
-*   **Anti-Patterns:** `sec()` found in all 8 notebooks.
-*   **Action Items:**
-    *   [ ] **01_Linear_Algebra:** Fix "Condition Number" seed.
-    *   [ ] **04_Root_Finding:** Replace generic plots with "Bond Yield" visualization.
-    *   [ ] **05_Optimization:** Add `scipy.optimize.minimize(constraints=...)` example.
-    *   [ ] **Global:** Remove `sec()`/`note()` definitions.
+### Pillar I: The Narrative Arc (Structure & Writing)
+*   **Objective:** Ensure every notebook tells a story.
+*   **Actions:**
+    *   **The "Lens" Introduction:** Add a dedicated, standardized introduction to *every* notebook explaining the *why* and *how* before the code.
+    *   **The "Takeaway" Conclusion:** Ensure every notebook ends with a summary of learned concepts, not just a final plot.
+    *   **Historical Context:** Enrich `01-Foundations`, `06-Econometrics`, and `03-Economic-Modeling` with sidebar notes on the economists behind the methods (Fisher, Ramsey, Nash, etc.).
+    *   **Flow:** Reorder cells to ensure intermediate steps in derivations are shown (Markdown) rather than skipped.
 
-### Module 03: Economic Modeling
-*   **Status:** Good theory, technical debt in utils.
-*   **Action Items:**
-    *   [ ] **01_Dynamic_Programming:** Replace custom `tauchen` with `quantecon` or robust utility.
-    *   [ ] **01_Dynamic_Programming:** Remove `display(Image(...))` for `cake_eating_solution.png` -> Generate plot inline.
-    *   [ ] **04_Estimation:** Remove "Dummy Objective" in SMM class -> Implement real estimation logic.
+### Pillar II: Visual Excellence (Design)
+*   **Objective:** Publication-quality figures that facilitate intuition.
+*   **Actions:**
+    *   **Global Style:** Enforce the `seaborn-v0_8-whitegrid` style defined in `CODE_STYLE.md`.
+    *   **Diagrams:** Replace ASCII/text diagrams with high-quality static images generated by `scripts/generate_diagrams.py`.
+    *   **Interactive Fallbacks:** Ensure all `ipywidgets` or animations have static image fallbacks for GitHub rendering.
+    *   **3D Plots:** Fix camera angles and lighting on Likelihood/Optimization surfaces for clarity.
 
-### Module 04: Macro Models
-*   **Status:** Hardcoding issues.
-*   **Action Items:**
-    *   [ ] **03_RBC_Models:** **CRITICAL:** Remove hardcoded `P_sol`, `Q_sol`. Implement QZ decomposition solver.
-    *   [ ] **05_New_Keynesian:** Upgrade IRF plots to interactive Plotly.
-    *   [ ] **06_Heterogeneous_Agents:** Ensure `macro_vfi_utils` import is clean.
+### Pillar III: Code Hygiene (Refactoring)
+*   **Objective:** Pythonic, robust, and reusable code.
+*   **Actions:**
+    *   **Eradicate Anti-Patterns:** Regex-remove all `sec()`, `note()` calls.
+    *   **Object-Orientation:** Refactor complex models (RBC, OLG, Auctions) into Python classes (e.g., `RBCModel`) to encapsulate state and parameters.
+    *   **Vectorization:** Replace nested loops in VFI (Value Function Iteration) with NumPy broadcasting.
+    *   **Type Hinting:** Add type hints to all solver functions.
 
-### Module 05: Micro Models
-*   **Status:** Visual gaps.
-*   **Action Items:**
-    *   [ ] **02_General_Equilibrium:** **CRITICAL:** Implement the Heckscher-Ohlin trade solver (currently missing logic).
-    *   [ ] **03_Game_Theory:** Add `graphviz` game trees.
-    *   [ ] **Dependency:** Add `nashpy` to `requirements.txt`.
+### Pillar IV: Mathematical & Computational Rigor (Correctness)
+*   **Objective:** Zero "magic numbers," zero hardcoded solutions.
+*   **Actions:**
+    *   **Solvers:** Implement the QZ decomposition (Klein/Sims) for RBC models instead of loading pre-computed matrices.
+    *   **Optimization:** Replace dummy objective functions in SMM with real moment-matching logic.
+    *   **Tests:** Add a "Sanity Check" cell to every notebook that validates the model against a known analytical result (e.g., $\beta(1+r)=1$).
 
-### Module 06: Econometrics
-*   **Status:** Hidden pedagogy.
-*   **Action Items:**
-    *   [ ] **02_Maximum_Likelihood:** Expose `MLEstimator` class from `econometrics_utils.py`.
-    *   [ ] **03_Causal_Inference:** Ensure `graphviz` fallback is robust.
-    *   [ ] **Data:** Verify `Guerry` dataset loading (local vs remote).
+### Pillar V: Infrastructure & Data (Robustness)
+*   **Objective:** "Batteries Included" / Offline-First.
+*   **Actions:**
+    *   **Data Cache:** Create `scripts/download_data.py` to fetch FRED/Yahoo/Fama-French data once and save to `data/`.
+    *   **Loaders:** Update notebooks to try loading local CSVs first, failing over to remote APIs only if missing.
+    *   **CI Checks:** Expand `audit_notebooks.py` to check for "Visual Score" (presence of titles/labels).
 
-### Module 07: Machine Learning
-*   **Status:** Legacy code, ethical issues.
-*   **Action Items:**
-    *   [ ] **01_Intro_to_ML:** Replace **Boston Housing** with **California Housing**.
-    *   [ ] **Cleanup:** Delete `*_executed.ipynb` duplicates.
-    *   [ ] **Technical Debt:** Convert `tensorflow` code to `pytorch` or `sklearn` where appropriate (or mark as Legacy Keras).
-
-### Module 08: Time Series
-*   **Status:** Data dependency risks.
-*   **Action Items:**
-    *   [ ] **All Notebooks:** Wrap `pandas_datareader` in `try/except` blocks with local CSV fallbacks.
-    *   [ ] **04_VAR:** Upgrade IRF plots to interactive.
-
-### Module 09: Finance
-*   **Status:** Strong, needs robustness.
-*   **Action Items:**
-    *   [ ] **04_Option_Pricing:** Ensure `yfinance` calls have try/except blocks.
-    *   [ ] **04_Option_Pricing:** Add 3D Greeks Surface plot.
-
-### Module 10: Specialized Models
-*   **Status:** Inline installs.
-*   **Action Items:**
-    *   [ ] **01_Agent_Based_Models:** Remove `!pip install networkx`.
-    *   [ ] **03_Network_Economics:** Ensure Centrality visualizations use clear colormaps.
-
-### Appendices
-*   **Action Items:**
-    *   [ ] **A1_Real_Analysis:** Standardize `theorem()` display function to Markdown.
-    *   [ ] **02_Autograding:** Preserve `otter` tags.
+### Pillar VI: Completeness (Gap Filling)
+*   **Objective:** Address the "missing middle" between theory and code.
+*   **Actions:**
+    *   **Deep Learning:** Clarify the "DeepIV" causal inference logic.
+    *   **Game Theory:** Add visualization for payoff matrices.
+    *   **Time Series:** Visual explanation of Cholesky ordering assumptions.
 
 ---
 
-## 4. Search & Destroy: Specific Technical Debt
+## 3. Execution Phase: The Task List
 
-### A. Remove Inline Pip Installs
-*   `10-Specialized-Models/01_Agent_Based_Models.ipynb`
-*   `07-Machine-Learning/06_Deep_Learning_Foundations.ipynb` (if present)
-*   **Action:** Move all to `requirements.txt`.
+### Phase 1: The Foundation (Infrastructure)
+- [ ] **Create `scripts/download_data.py`:** Centralize data fetching.
+- [ ] **Run `download_data.py`:** Populate `data/` directory.
+- [ ] **Create `scripts/fix_headers.py`:** Automate license/header standardization.
+- [ ] **Refine `audit_notebooks.py`:** Add visual scoring metrics.
 
-### B. Fix Data Fetching (`pandas_datareader`)
-*   `08-Time-Series/04_Vector_Autoregression.ipynb`
-*   `09-Finance/02_Portfolio_Theory.ipynb`
-*   **Action:** Ensure `data/` folder contains CSV mirrors for all fetched series.
+### Phase 2: The Decimation (Refactoring & Standardization)
+- [ ] **Module 01 (Foundations):**
+    - [ ] Rewrite Intro/Summary for all 24 notebooks.
+    - [ ] Remove `sec()`/`note()`.
+- [ ] **Module 04 (Macro):**
+    - [ ] **RBC Model:** Implement QZ solver (`utils/macro.py`).
+    - [ ] **NK Model:** Add Phillips Curve derivation.
+- [ ] **Module 03 (Econ Modeling):**
+    - [ ] **DP:** Vectorize Bellman operator.
+    - [ ] **SMM:** Fix dummy objective function.
+- [ ] **Module 05 (Micro):**
+    - [ ] **GE:** Implement 2x2x2 CGE solver.
+    - [ ] **Auctions:** Refactor VCG into a Class.
+- [ ] **Module 09 (Finance):**
+    - [ ] **Asset Pricing:** Fix Hansen-Jagannathan plot.
+    - [ ] **Data:** Switch to local CSVs.
 
-### C. Refactor Utilities
-*   `finance_utils.py` -> `utils/finance.py`
-*   `econometrics_utils.py` -> `utils/econometrics.py`
-*   `macro_vfi_utils.py` -> Fix Numba compatibility.
+### Phase 3: The Polish (Visuals & Narrative)
+- [ ] **Generate Diagrams:** Run `scripts/generate_diagrams.py` for static assets.
+- [ ] **3D Plots:** Polish `02_Maximum_Likelihood.ipynb` surfaces.
+- [ ] **Historical Notes:** Add sidebars for key economists.
+
+### Phase 4: Final Verification
+- [ ] **Run `validate_notebooks.py`:** Ensure clean pass.
+- [ ] **Manual Sample:** Read 1 random notebook from each module to verify "Gold Standard".
 
 ---
 
-## 5. Phased Execution Plan
+## 4. Specific "Hit List" (From Manual Audit)
 
-### Phase 1: The "Sweep" (Structure & Design)
-*   **Target:** All 116 Notebooks.
-*   **Action:**
-    1.  Run script to replace Header cell.
-    2.  Run script to replace Import/Setup cell (removing `sec`/`note`).
-    3.  Run script to add `# Summary` if missing.
+| Notebook | Priority | Task |
+| :--- | :---: | :--- |
+| `03_RBC_Models.ipynb` | 🔴 High | Remove hardcoded `P_sol`; implement solver. |
+| `02_General_Equilibrium.ipynb` | 🔴 High | Implement actual root-finding for prices. |
+| `04_Estimation_and_Calibration.ipynb` | 🔴 High | Replace dummy SMM objective with real moments. |
+| `01_Dynamic_Programming.ipynb` | 🟡 Med | Vectorize VFI loop; improve math notation. |
+| `02_Maximum_Likelihood.ipynb` | 🟡 Med | Improve 3D likelihood surface plot. |
+| `04_Option_Pricing.ipynb` | 🟡 Med | Remove hardcoded BSM formula; use `scipy.stats`. |
+| `04_Vector_Autoregression.ipynb` | 🟡 Med | Visualize Cholesky ordering assumptions. |
+| `06_Deep_Learning_Foundations.ipynb` | 🟢 Low | Add causal graph for DeepIV. |
 
-### Phase 2: The "Fix" (Correctness & Refactoring)
-*   **Target:** Modules 04, 05, 07.
-*   **Action:**
-    1.  Implement RBC Solver (M04).
-    2.  Implement HO Trade Solver (M05).
-    3.  Swap Boston -> California Housing (M07).
+---
 
-### Phase 3: The "Enrichment" (Gaps & Writing)
-*   **Target:** Modules 02, 03, 06, 09.
-*   **Action:**
-    1.  Add Bond Yield Vis (M02).
-    2.  Refactor SMM estimation (M03).
-    3.  Expose MLEstimator (M06).
-    4.  Add 3D Greeks (M09).
-
-### Phase 4: The "Polish" (Assets & Metadata)
-*   **Target:** `images/`, `scripts/`, `utils/`.
-*   **Action:**
-    1.  Refactor utilities.
-    2.  Complete `metadata.json`.
-    3.  Generate missing static assets.
+## 5. Definition of Done
+A notebook is "Done" when:
+1.  [ ] Starts with "The Lens" (Intro).
+2.  [ ] Ends with "The Takeaway" (Summary).
+3.  [ ] Contains NO `sec()` or `note()` calls.
+4.  [ ] All plots have Titles, X-Labels, and Y-Labels.
+5.  [ ] Runs top-to-bottom without error (using local data).
+6.  [ ] Passes `validate_notebooks.py`.
