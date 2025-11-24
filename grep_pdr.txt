@@ -1,0 +1,31 @@
+./01-Foundations/14_Introduction_to_Data_Acquisition.ipynb:    "import pandas_datareader.data as web\n",
+./06-Econometrics/09_Classical_Time_Series_Analysis.ipynb:    "    import pandas_datareader.data as web\n",
+./06-Econometrics/09_Classical_Time_Series_Analysis.ipynb:    "note(f\"Environment initialized. ARCH available: {ARCH_AVAILABLE}, pandas_datareader available: {PD_READER_AVAILABLE}\")"
+./08-Time-Series/02_ARMA_Models.ipynb:    "    import pandas_datareader.data as web\n",
+./08-Time-Series/06_Cointegration_and_Error_Correction_Models.ipynb:    "    import pandas_datareader.data as web\n",
+./08-Time-Series/06_Cointegration_and_Error_Correction_Models.ipynb:    "    note(\"pandas_datareader not available. Loading data from local CSVs.\")\n",
+./08-Time-Series/04_Vector_Autoregression.ipynb:    "    import pandas_datareader.data as web\n",
+./08-Time-Series/04_Vector_Autoregression.ipynb:    "    note(\"pandas_datareader not available. Loading data from local CSVs.\")\n",
+./08-Time-Series/03_ARIMA_and_Forecasting.ipynb:    "    import pandas_datareader.data as web\n",
+./08-Time-Series/03_ARIMA_and_Forecasting.ipynb:    "    note(\"pandas_datareader not available. Loading data from local CSV.\")\n",
+./09-Finance/02_Portfolio_Theory.ipynb:    "    import pandas_datareader.data as web\n",
+./09-Finance/03_Asset_Pricing.ipynb:    "    import pandas_datareader.data as web\n",
+./09-Finance/03_Asset_Pricing.ipynb:    "if not PD_READER_AVAILABLE: note(\"The 'pandas_datareader' library is not installed (`pip install pandas-datareader`). Some sections will be skipped.\")"
+./09-Finance/03_Asset_Pricing.ipynb:    "    note(\"pandas_datareader is not installed. Case study will be skipped.\")\n",
+./scripts/download_sp500.py:import pandas_datareader.data as web
+./scripts/download_sp500.py:    print("Falling back to pandas_datareader with stooq...")
+./scripts/download_industry_portfolios.py:import pandas_datareader.data as web
+./scripts/download_portfolio_data.py:import pandas_datareader.data as web
+./scripts/generate_phillips_curve_diagram.py:import pandas_datareader.data as web
+./docs/getting-started/quickstart.md:from pandas_datareader import data as pdr
+./docs/getting-started/quickstart.md:    from pandas_datareader import data as pdr
+./docs/resources/datasets.md:from pandas_datareader import data
+./07-Machine-Learning/09_LSTMs_and_GRUs.ipynb:    "# This example requires the 'pandas_datareader' library\n",
+./07-Machine-Learning/09_LSTMs_and_GRUs.ipynb:    "    import pandas_datareader.data as web\n",
+./07-Machine-Learning/09_LSTMs_and_GRUs.ipynb:    "    note(\"Skipping macro example: 'pandas_datareader' is not installed. You can install it with 'pip install pandas_datareader'.\")\n",
+./07-Machine-Learning/21_ML_for_Macro_Forecasting.ipynb:    "# pandas_datareader is used to fetch data directly from online sources like the FRED database.\n",
+./07-Machine-Learning/21_ML_for_Macro_Forecasting.ipynb:    "import pandas_datareader.data as web\n",
+./07-Machine-Learning/09_LSTMs_and_GRUs_executed.ipynb:       "<div class='alert alert-block alert-info'>📝 **Note:** Skipping macro example: 'pandas_datareader' is not installed. You can install it with 'pip install pandas_datareader'.</div>"
+./07-Machine-Learning/09_LSTMs_and_GRUs_executed.ipynb:    "# This example requires the 'pandas_datareader' library\n",
+./07-Machine-Learning/09_LSTMs_and_GRUs_executed.ipynb:    "    import pandas_datareader.data as web\n",
+./07-Machine-Learning/09_LSTMs_and_GRUs_executed.ipynb:    "    note(\"Skipping macro example: 'pandas_datareader' is not installed. You can install it with 'pip install pandas_datareader'.\")\n",
