@@ -1,10 +1,17 @@
 # Comprehensive Improvement Roadmap
 
-This document is the **definitive master plan** for elevating the Computational Economics course repository to a "Gold Standard" of pedagogical, visual, and technical excellence. It is the result of a deep, file-by-file audit of all 116 notebooks.
+This document outlines the "Master Plan" for elevating the Computational Economics repository to a "Gold Standard" of pedagogical, visual, and technical excellence. It is the result of a deep, file-by-file audit of all 116 notebooks.
+
+**Status:** 🚧 In Progress
+**Target:** Production-Ready Open Source Course
+**Author:** [Agent Name]
+**Date:** October 2025
+
+---
 
 ## 1. Executive Summary & Philosophy
 
-The goal is to transform the repository into a cohesive, self-contained, and visually stunning educational resource.
+The goal is to transform the repository into a cohesive, self-contained, and visually stunning educational resource. The "Production Ready" status claimed in `FINAL_PROJECT_REPORT.md` is aspirational; this roadmap bridges the gap to reality.
 
 **The "Gold Standard" Philosophy:**
 1.  **Context before Code:** Every notebook must start with a narrative introduction (The "Lens") that motivates the economic problem before any code is written.
@@ -34,7 +41,7 @@ Replace the ad-hoc `sec()`, `note()` setups with this standard block:
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import scipy.stats as stats
+import seaborn as sns
 # Module specific imports...
 
 # Visual Configuration
@@ -78,7 +85,7 @@ plt.rcParams.update({
 *   **Action Items:**
     *   [ ] **01_Dynamic_Programming:** Replace custom `tauchen` with `quantecon` or robust utility.
     *   [ ] **01_Dynamic_Programming:** Remove `display(Image(...))` for `cake_eating_solution.png` -> Generate plot inline.
-    *   [ ] **04_Estimation:** Remove "Dummy Objective" in SMM class -> Implement real estimation logic.
+    *   [ ] **04_Estimation:** Remove "Dummy Objective" in SMM class -> Implement real estimation logic with simulated data (e.g., Aiyagari).
 
 ### Module 04: Macro Models
 *   **Status:** Hardcoding issues.
@@ -97,7 +104,7 @@ plt.rcParams.update({
 ### Module 06: Econometrics
 *   **Status:** Hidden pedagogy.
 *   **Action Items:**
-    *   [ ] **02_Maximum_Likelihood:** Expose `MLEstimator` class from `econometrics_utils.py`.
+    *   [ ] **02_Maximum_Likelihood:** Expose `MLEstimator` class from `econometrics_utils.py` or define inline.
     *   [ ] **03_Causal_Inference:** Ensure `graphviz` fallback is robust.
     *   [ ] **Data:** Verify `Guerry` dataset loading (local vs remote).
 
@@ -119,6 +126,7 @@ plt.rcParams.update({
 *   **Action Items:**
     *   [ ] **04_Option_Pricing:** Ensure `yfinance` calls have try/except blocks.
     *   [ ] **04_Option_Pricing:** Add 3D Greeks Surface plot.
+    *   [ ] **Refactor:** Create `OptionPricer` class for reusability.
 
 ### Module 10: Specialized Models
 *   **Status:** Inline installs.
