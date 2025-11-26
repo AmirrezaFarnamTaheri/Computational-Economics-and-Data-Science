@@ -31,3 +31,8 @@
     *   Removed `sec()` and `note()` from `01-Foundations/04_Python_Data_Model.ipynb`.
     *   Removed `sec()` and `note()` from `01-Foundations/05_Lists_and_Tuples.ipynb`.
     *   Removed `sec()` and `note()` from `01-Foundations/06_Advanced_String_Processing.ipynb`.
+
+- **Refactor:** Made  self-contained.
+  - Embedded the  class directly into the notebook.
+  - Removed the external  file.
+  - Replaced custom  and  calls with standard Markdown headers and notes for better readability and portability.
