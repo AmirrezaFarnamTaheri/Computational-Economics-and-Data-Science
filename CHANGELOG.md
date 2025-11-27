@@ -1,5 +1,61 @@
 # Changelog
 
+## Session 9: Module 01 (Foundations) Comprehensive Refactor
+*   **Refactor:** `01-Foundations/03_Python_Fundamentals_Data_Types.ipynb`
+    *   **Structure:** Added "The Lens" introduction and "Summary".
+    *   **Content:** Strengthened explanations of `int` precision, `float` (IEEE 754), and `Decimal` context.
+    *   **Visuals:** Improved visual diagrams.
+*   **Refactor:** `01-Foundations/04_Python_Data_Model.ipynb`
+    *   **Structure:** Added "The Lens" (The Grammar of Pythonic Objects) and "Summary".
+    *   **Visuals:** Redesigned `1.4-descriptor-protocol-new.png` using Graphviz for clarity.
+*   **Refactor:** `01-Foundations/05_Lists_and_Tuples.ipynb`
+    *   **Structure:** Added "The Lens" (Sequences, Mutability, and Semantic Meaning) and "Summary".
+    *   **Content:** Deepened explanation of list internals (dynamic arrays) and tuple semantics.
+    *   **Visuals:** Redesigned `1.5-list-overallocation.png` using Graphviz.
+*   **Refactor:** `01-Foundations/06_Advanced_String_Processing.ipynb`
+    *   **Structure:** Added "The Lens" (Text as Data) and "Summary".
+    *   **Content:** Focused on Unicode normalization and regex best practices.
+*   **Refactor:** `01-Foundations/07_Dictionaries.ipynb`
+    *   **Structure:** Added "The Lens" (The Engine of Modern Python) and "Summary".
+    *   **Visuals:** Redesigned `1.7-hash-map-new.png` using Graphviz.
+*   **Refactor:** `01-Foundations/08_Sets.ipynb`
+    *   **Structure:** Added "The Lens" (Sets as Mathematical Foundations) and "Summary".
+*   **Refactor:** `01-Foundations/09_Control_Flow_and_Error_Handling.ipynb`
+    *   **Structure:** Added "The Lens" (Directing Logic and Managing Failure) and "Summary".
+    *   **Visuals:** Redesigned `1.9-iterator-protocol.png` using Graphviz.
+*   **Refactor:** `01-Foundations/10_Advanced_Functions.ipynb`
+    *   **Structure:** Added "The Lens" (Functions as First-Class Citizens) and "Summary".
+    *   **Visuals:** Redesigned `1.10-closure-diagram.png` and `1.10-decorator-pattern-new.png`.
+*   **Refactor:** `01-Foundations/11_Object_Oriented_Programming.ipynb`
+    *   **Structure:** Added "The Lens" (Managing Complexity with OOP) and "Summary".
+    *   **Visuals:** Redesigned `1.11-mro-diamond.png` and `1.11-composition-vs-inheritance.png`.
+*   **Refactor:** `01-Foundations/12_NumPy.ipynb`
+    *   **Structure:** Added "The Lens" (Vectorization and the Scientific Stack) and "Summary".
+*   **Refactor:** `01-Foundations/13_Pandas.ipynb`
+    *   **Structure:** Added "The Lens" (Tabular Data and the Relational Model) and "Summary".
+*   **Refactor:** `01-Foundations/14_Introduction_to_Data_Acquisition.ipynb`
+    *   **Structure:** Added "The Lens" (Data as Fuel) and "Summary".
+*   **Refactor:** `01-Foundations/15_Accessing_Economic_Data_via_APIs.ipynb`
+    *   **Structure:** Added "The Lens" (Live Data and the Economic Pulse) and "Summary".
+*   **Refactor:** `01-Foundations/16_Data_Visualization.ipynb`
+    *   **Structure:** Added "The Lens" (From Data to Insight) and "Summary".
+*   **Refactor:** `01-Foundations/17_Effective_Debugging.ipynb`
+    *   **Structure:** Added "The Lens" (Debugging as a Scientific Process) and "Summary".
+*   **Refactor:** `01-Foundations/18_Data_Acquisition_Web_Scraping.ipynb`
+    *   **Structure:** Added "The Lens" (Web Scraping as Data Excavation) and "Summary".
+*   **Refactor:** `01-Foundations/19_Introduction_to_SQL.ipynb`
+    *   **Structure:** Added "The Lens" (SQL as the Lingua Franca of Data) and "Summary".
+*   **Refactor:** `01-Foundations/20_Introduction_to_SciPy.ipynb`
+    *   **Structure:** Added "The Lens" (SciPy as the Scientific Toolkit) and "Summary".
+*   **Refactor:** `01-Foundations/21_Symbolic_Computation_with_SymPy.ipynb`
+    *   **Structure:** Added "The Lens" (Symbolic vs. Numerical Computation) and "Summary".
+*   **Refactor:** `01-Foundations/22_Computational_Complexity.ipynb`
+    *   **Structure:** Added "The Lens" (Why Algorithm Speed Matters) and "Summary".
+*   **Refactor:** `01-Foundations/23_Profiling_and_Performance.ipynb`
+    *   **Structure:** Added "The Lens" (From Correctness to Speed) and "Summary".
+*   **Refactor:** `01-Foundations/24_Production_Code_Standards.ipynb`
+    *   **Structure:** Added "The Lens" (From Research to Production) and "Summary".
+
 ## Session 8: Foundations Module Deep Polish (Module 01)
 *   **Refactor:** `01-Foundations/01_Introduction.ipynb`
     *   **Structure:** Further refined the "Lens" introduction and "Summary" to meet the highest pedagogical standards.
