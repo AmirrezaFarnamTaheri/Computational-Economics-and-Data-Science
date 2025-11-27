@@ -1,5 +1,20 @@
 # Changelog
 
+## Session 4: Deep Dive and Refactor - Macro Models (Module 04)
+*   **Refactor:** `04-Macro-Models/03_RBC_Models.ipynb`
+    *   Replaced manual and potentially unstable QZ solver with a robust implementation using `scipy.linalg.ordqz`.
+    *   Implemented sorting of eigenvalues to satisfy Blanchard-Kahn conditions (2 stable eigenvalues for states K and A).
+    *   Implemented `scripts/klein_solver.py` as a reference robust solver.
+    *   Standardized notebook header and removed antipatterns.
+
+## Session 3: Standardization of Foundations (Module 01)
+*   **Fixes:**
+    *   Repaired corrupted JSON structure in `01-Foundations/04_Python_Data_Model.ipynb`.
+    *   Repaired corrupted JSON structure in `01-Foundations/15_Accessing_Economic_Data_via_APIs.ipynb`.
+*   **Standardization:**
+    *   Applied `scripts/fix_headers.py` to all notebooks in `01-Foundations/` to ensure consistent License headers.
+    *   Applied `scripts/remove_antipatterns.py` to all notebooks in `01-Foundations/` to replace custom `sec()` and `note()` calls with standard Markdown.
+
 ## Session 2: Comprehensive Overhaul (Starting Nov 27)
 
 *   **Infrastructure:**
