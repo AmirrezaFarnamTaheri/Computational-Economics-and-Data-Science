@@ -1,5 +1,37 @@
 # Changelog
 
+## Session 6: Global Standardization and Core Module Refactors
+*   **Global Standardization (All Modules):**
+    *   Executed `scripts/remove_antipatterns.py` across all remaining modules (`02-10`, `Appendix`, `high_performance_python`) to replace custom `sec()` and `note()` calls with standard Markdown.
+    *   Executed `scripts/standardize_notebooks.py` across all remaining modules to enforce consistent license headers and Matplotlib styling.
+    *   Validated all 116 notebooks using `validate_notebooks.py` to ensure JSON integrity.
+*   **Refactor:** `02-Numerical-Methods/01_Linear_Algebra.ipynb`
+    *   **Structure:** Implemented the "Lens" introduction ("The Engine of Computational Economics") and a robust "Summary".
+    *   **Content:** Clarified the geometric intuition of linear algebra and emphasized numerical stability (e.g., condition numbers, avoiding `inv(A)`).
+    *   **Design:** Cleaned up code/markdown mixing and standardized imports.
+*   **Refactor:** `03-Economic-Modeling/01_Dynamic_Programming.ipynb`
+    *   **Structure:** Implemented the "Lens" introduction ("The Recursive Structure of Choice") and "Summary".
+    *   **Content:** Strengthened the explanation of the Bellman Equation and Contraction Mapping Theorem.
+    *   **Design:** Standardized visual configuration and imports.
+*   **Refactor:** `04-Macro-Models/01_Job_Search.ipynb`
+    *   **Structure:** Implemented the "Lens" introduction ("Frictions in the Labor Market") and "Summary".
+    *   **Content:** Unified the narrative around search and matching frictions (McCall, DMP, Burdett-Mortensen).
+    *   **Design:** Standardized visual configuration and imports.
+
+## Session 5: Foundations Module Overhaul (Module 01)
+*   **Refactor:** `01-Foundations/01_Introduction.ipynb`
+    *   **Structure:** Strengthened the "Lens" introduction to strictly answer "What problem are we solving?" and "Why this method?". Added a robust "Summary" section.
+    *   **Visuals:** Audited images and ensured metadata compliance. Improved visual layout and rhythm.
+    *   **Writing:** Polished narrative tone for professional clarity.
+    *   **Code:** Refined the Lucas Critique simulation code for better robustness and clarity.
+*   **Refactor:** `01-Foundations/02_Professional_Development_Environment.ipynb`
+    *   **Structure:** Added "The Lens" introduction: "From Disposable Scripts to Durable Scientific Artifacts". Added "Summary" section.
+    *   **Standards:** Replaced custom helpers with standard Markdown. Cleaned up imports and visual configuration.
+*   **Global Standardization (Batch 1):**
+    *   Executed `scripts/remove_antipatterns.py` on `01-Foundations` to replace custom `sec()` and `note()` calls with standard Markdown.
+    *   Executed `scripts/standardize_notebooks.py` on `01-Foundations` to enforce license headers and Matplotlib styling.
+    *   Validated all notebooks in `01-Foundations` using `validate_notebooks.py`.
+
 ## Session 4: Deep Dive and Refactor - Macro Models (Module 04)
 *   **Refactor:** `04-Macro-Models/03_RBC_Models.ipynb`
     *   Replaced manual and potentially unstable QZ solver with a robust implementation using `scipy.linalg.ordqz`.
