@@ -1,5 +1,12 @@
 # Changelog
 
+## Session 2: Comprehensive Overhaul (Starting Nov 27)
+
+*   **Infrastructure:**
+    *   Initiated comprehensive audit of all 116 notebooks.
+    *   Verified `images/metadata.json` integrity.
+    *   Started standardization of License headers and removal of anti-patterns (`sec()`, `note()`).
+
 ## Session 1: Standardization and Overhaul
 
 *   **Standardization:**

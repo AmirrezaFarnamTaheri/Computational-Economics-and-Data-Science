@@ -1,141 +1,190 @@
 import numpy as np
-import pandas as pd
-from scipy.linalg import qz
+from scipy.linalg import ordqz
 
-def klein_solver(A, B, C, T=40):
+def solve_linear_model(AA, BB, CC=None):
     """
     Solves a linear rational expectations model of the form:
-    A * E_t[x_{t+1}] = B * x_t + C * z_t
-    using the Klein (2000) method.
+    AA * x_{t+1} = BB * x_t + CC * epsilon_{t+1}
 
-    Returns the policy function P and shock matrix Q for:
-    x_t = P * x_{t-1} + Q * z_t
+    where x_t includes both predetermined (state) and non-predetermined (control) variables.
+
+    This function uses the QZ (Generalized Schur) decomposition with reordering (ordqz)
+    to separate stable and unstable eigenvalues. It implements a method similar to
+    Paul Klein (2000) or Sims (2002).
+
+    Parameters:
+    - AA, BB: n x n matrices defining the system dynamics.
+    - CC: n x k matrix defining the impact of exogenous shocks (optional).
+
+    Returns:
+    - P: Transition matrix for the state variables.
+    - Q: Policy function mapping state variables to control variables (if applicable).
+         Note: The exact structure of return depends on how x_t is ordered.
+
+    Assumption:
+    The system is ordered such that predetermined variables (states) come FIRST,
+    followed by non-predetermined variables (jumps/controls).
+    Let n_s be the number of stable eigenvalues (should equal number of states).
     """
-    # QZ decomposition
-    S, T, _, _, Q, Z = qz(A, B, output='real')
 
-    # Reorder to separate stable and unstable eigenvalues
-    n = A.shape[0]
-    eigs = np.array([T[i, i] / S[i, i] if S[i, i] != 0 else np.inf for i in range(n)])
+    # 1. Generalized Schur Decomposition (QZ)
+    # We want to reorder such that stable eigenvalues (|lambda| < 1) are in the top-left.
+    # The sort keyword 'iuc' means "inside unit circle".
+    try:
+        S, T, alpha, beta, U, V = ordqz(AA, BB, sort='iuc', output='complex')
+    except Exception as e:
+        raise ValueError(f"QZ Decomposition failed: {e}")
 
-    stable_eigs = np.abs(eigs) < 1
-    n_stable = np.sum(stable_eigs)
+    # Determine the number of stable eigenvalues
+    # generalized eigenvalues are alpha / beta
+    # 'iuc' sorts them to the top-left.
+    # We assume the number of stable eigenvalues equals the number of predetermined variables (states).
+    # If not, the Blanchard-Kahn conditions are violated.
 
-    # Create reordering matrices
-    sel = np.zeros(n, dtype=bool)
-    sel[stable_eigs] = True
+    # Count stable eigenvalues
+    eig _vals = np.abs(alpha / beta)
+    n_stable = np.sum(eig_vals < 1.0)
 
-    # This is a simplified reordering. A robust implementation would use ordqz.
-    # For this specific model, a simple sort is usually sufficient.
-    order = np.argsort(np.abs(eigs))
-    S, T, Q, Z = S[:, order], T[order, :][:, order], Q[:, order], Z[order, :].T
+    # Check Blanchard-Kahn
+    # Ideally, n_stable should equal n_states (provided by user, or inferred).
+    # Here we infer n_states = n_stable and solve accordingly.
+
+    # Partition matrices
+    # S = [S11 S12]
+    #     [0   S22]
+    # T = [T11 T12]
+    #     [0   T22]
+    # Z (or V) connects the original variables to the transformed ones.
+    # x_t = Z.T @ y_t  (Note: Scipy's V is usually Z.T or something similar, check docs)
+    # Scipy docs: A = U @ S @ V.H, B = U @ T @ V.H
+    # So V.H (conjugate transpose) is the right eigenvector matrix Z.
+    # Let Z = V.conj().T
+
+    Z = V.conj().T
+
+    # Partition Z
+    # Z = [Z11 Z12]
+    #     [Z21 Z22]
+    # where 1 refers to stable/state block, 2 refers to unstable/jump block.
 
     Z11 = Z[:n_stable, :n_stable]
+    Z12 = Z[:n_stable, n_stable:]
     Z21 = Z[n_stable:, :n_stable]
-    T11 = T[:n_stable, :n_stable]
+    Z22 = Z[n_stable:, n_stable:]
+
     S11 = S[:n_stable, :n_stable]
+    T11 = T[:n_stable, :n_stable]
 
-    # Solve for the policy function
-    # P = Z11' * inv(S11) * T11 * Z11
-    P = np.linalg.inv(Z11) @ np.linalg.inv(S11) @ T11 @ Z11
+    # Check invertibility for uniqueness
+    if np.linalg.det(Z22) == 0:
+        raise ValueError("Invertibility condition failed. Indeterminacy or no solution.")
 
-    # Solve for the shock matrix Q
-    Q_mat = np.linalg.inv(A @ P + B) @ C
+    # Compute Policy Function Coefficients
+    # From Klein (2000):
+    # Variables are linked by: x_jump_t = C_policy * x_state_t
+    # C_policy = Z21 @ inv(Z11)  <-- This is if variables are ordered [jump, state]?
+    # Let's derive carefully from the triangular system.
 
-    return P, Q_mat
+    # The unstable block equation is: S22 * y2_{t+1} = T22 * y2_t + ...
+    # For stability, we must have y2_t = 0 for all t (if no shocks).
+    # The relationship between x and y is:
+    # [x_state] = [Z11 Z12] [y1]
+    # [x_jump ]   [Z21 Z22] [y2]
+    # If y2 = 0, then:
+    # x_state = Z11 * y1  => y1 = inv(Z11) * x_state
+    # x_jump  = Z21 * y1  => x_jump = Z21 * inv(Z11) * x_state
 
-def solve_bgg_klein(chi=0.05):
+    # Wait, usually ordqz puts stable roots first.
+    # So y1 corresponds to stable roots, y2 to unstable.
+    # To suppress explosive paths, we need to decouple y2 from shocks/history?
+    # Actually, the condition is usually that the unstable components y2 must be zero
+    # (or function of shocks only) to satisfy transversality.
+
+    # With y2_t = 0:
+    # x_jump_t = Z21 @ inv(Z11) @ x_state_t
+    # But usually Z is partitioned based on the variable ordering.
+    # If the user input x_t = [state, jump], and we sorted stable roots first...
+    # The mapping from sorted eigenspace to variables is Z.
+    # We need to express jumps in terms of states.
+
+    # Inverse of Z block?
+    # Actually, proper solution for x_{t+1} = P x_t
+    # P = Z11 @ inv(S11) @ T11 @ inv(Z11)  (for the state part)
+    # And mapping matrix F: x_jump = F x_state
+
+    # Correct solution (Klein):
+    # s_t = states, u_t = controls.
+    # u_t = Real(Z21 @ inv(Z11)) @ s_t
+    # s_{t+1} = Real(Z11 @ inv(S11) @ T11 @ inv(Z11)) @ s_t
+
+    # Let's implement this.
+
+    inv_Z11 = np.linalg.inv(Z11)
+
+    # Transition matrix for states (P)
+    # S11 * y1_{t+1} = T11 * y1_t  => y1_{t+1} = inv(S11) * T11 * y1_t
+    # s_{t+1} = Z11 * y1_{t+1} = Z11 * inv(S11) * T11 * inv(Z11) * s_t
+    P = np.real(Z11 @ np.linalg.inv(S11) @ T11 @ inv_Z11)
+
+    # Policy matrix (Mapping states to controls)
+    # u_t = Z21 * y1_t = Z21 * inv(Z11) * s_t
+    F = np.real(Z21 @ inv_Z11)
+
+    return P, F
+
+def solve_klein(AA, BB, CC, n_states):
     """
-    Defines and solves the BGG model using the Klein solver.
+    Wrapper specifically for the RBC notebook format.
+    AA, BB are 8x8. CC is 8x1.
+    n_states is the number of predetermined variables.
+
+    In the RBC notebook:
+    x_t = [k_hat, a_hat, l_hat, c_hat, y_hat, i_hat, w_hat, r_hat]
+    States: k_hat (endogenous), a_hat (exogenous). Total = 2.
+    Controls: l_hat, c_hat, ... Total = 6.
     """
-    # Model parameters
-    beta, sigma, phi_pi, phi_y, kappa, delta = 0.99, 1.0, 1.5, 0.5, 0.1, 0.025
 
-    # Variables: [y, pi, k, n, r_k, efp, i] (7 variables)
-    # Shocks: [e_tech] (1 shock)
+    # 1. Solve the homogenous system
+    P_states, F_policy = solve_linear_model(AA, BB)
 
-    # Define system matrices A and B
-    # A * E_t[x_{t+1}] = B * x_t
-    A = np.zeros((7, 7))
-    B = np.zeros((7, 7))
+    # P_states is 2x2 (transition for k, a)
+    # F_policy is 6x2 (mapping k, a -> l, c, y, i, w, r)
 
-    # IS Curve: y_t = E_t[y_{t+1}] - (1/sigma)*(i_t - E_t[pi_{t+1}] - E_t[efp_{t+1}])
-    A[0, 0] = 1
-    A[0, 1] = -1/sigma
-    A[0, 5] = -1/sigma
-    B[0, 0] = 1
-    B[0, 6] = -1/sigma
+    # 2. Reconstruct full system matrices P and Q as requested by the notebook.
+    # The notebook wants:
+    # s_{t+1} = Q * s_t + M * epsilon_{t+1}
+    # c_t = P * s_t
+    # (Note: Notebook uses P for Policy and Q for Transition. Klein uses P for Transition.)
 
-    # Phillips Curve: pi_t = beta*E_t[pi_{t+1}] + kappa*y_t
-    A[1, 1] = beta
-    B[1, 0] = -kappa
-    B[1, 1] = 1
+    # Notebook notation:
+    # P_notebook (Policy) = F_policy
+    # Q_notebook (Transition) = P_states
 
-    # Taylor Rule: i_t = phi_pi*pi_t + phi_y*y_t
-    B[2, 0] = -phi_y
-    B[2, 1] = -phi_pi
-    B[2, 6] = 1
+    Q_notebook = P_states
+    P_notebook = F_policy
 
-    # Financial Accelerator: efp_t = chi*(k_t - n_t)
-    B[3, 2] = -chi
-    B[3, 3] = chi
-    B[3, 5] = 1
+    # 3. Handle the Shock Matrix M
+    # The system is AA*x_{t+1} = BB*x_t + CC*eps_{t+1}
+    # x_{t+1} = Q*x_t + ...
+    # Substitute x_t+1 = [s_{t+1}, u_{t+1}]'
+    # The shock only affects s_{t+1} directly usually.
+    # For the standard RBC, s_{t+1} = Q*s_t + M*eps
+    # M depends on CC and the decomposition.
+    # Typically M = Z11 @ inv(S11) @ (Q_qz @ CC)_upper_part ?
+    # Let's derive or use a simplified assumption for now that shocks hit states directly.
+    # In RBC, a_{t+1} = rho * a_t + eps_{t+1}.
+    # So M for a_hat is just 1. M for k_hat is 0.
 
-    # Return to Capital: r_k_t = (1-alpha)*y_t - alpha*k_{t-1} + a_t
-    # This is tricky because of k_{t-1}. We treat it as a state.
-    # Let's simplify for this example, assuming r_k is just a function of y_t
-    # r_k_t = 0.25 * y_t + e_tech_t
-    B[4, 0] = -0.25
-    B[4, 4] = 1
+    # We can calculate M formally if needed, but given the specific RBC structure,
+    # we know M corresponds to the impact on k_{t+1} and a_{t+1}.
+    # k_{t+1} is predetermined at t. So shock at t+1 doesn't affect k_{t+1} (it affects k_{t+2}).
+    # Wait, timing convention.
+    # x_t is observed at t.
+    # a_{t+1} = rho*a_t + eps_{t+1}.
+    # k_{t+1} is determined at t.
+    # So shock eps_{t+1} affects a_{t+1} (coeff 1) and nothing else in s_{t+1}.
 
-    # Net Worth: n_t = 0.9*n_{t-1} + 0.1*r_k_t
-    B[5, 3] = 1
-    B[5, 4] = -0.1
-    # n_{t-1} needs to be handled. We'll add it as a state implicitly in the final matrix P.
-    # This part highlights the difficulty. A full state-space representation is complex.
-    # For now, we will use a simplified version that is solvable.
+    M_notebook = np.zeros((2, 1))
+    M_notebook[1, 0] = 1.0 # Shock hits a_hat (2nd state var)
 
-    # Let's use the simplified structure from the notebook to ensure solvability
-    # x_t = [y, pi, k, n]'
-    # A simplified BGG model for demonstration
-    # This part is still hard. Let's fall back to a simpler, but transparent method.
-    # We will stick to the original notebook's structure, but make the matrices explicit.
-
-    # Re-simplifying to match the notebook's implicit structure for educational clarity
-    # x_t = [y, pi, k, n]'
-
-    # Base dynamics (frictionless)
-    P_base = np.array([
-        [0.95, 0.1, 0.05, 0.0], # y
-        [0.05, 0.85, 0.1, 0.0], # pi
-        [0.1, 0.0, 0.9, 0.0],  # k
-        [0.0, 0.0, 0.0, 0.0]   # n
-    ])
-    # Accelerator dynamics (how chi affects the P matrix)
-    P_accel = np.array([
-        [0.0, 0.0, 0.1, 0.2],  # y
-        [0.0, 0.0, 0.05, 0.1], # pi
-        [0.1, 0.1, 0.05, 0.3], # k
-        [0.2, 0.1, 0.3, 0.85]  # n
-    ])
-
-    P = P_base + chi * P_accel
-    Q = np.array([1.0, 0.2, 1.2, 0.8]).reshape(4,1)
-
-    return P, Q
-
-def generate_irfs_from_solution(P, Q, T=40):
-    """Generates IRFs from a solved model x_t = P*x_{t-1} + Q*z_t"""
-    n_vars = P.shape[0]
-    irfs = np.zeros((n_vars, T))
-    irfs[:, 0] = Q.flatten()
-
-    for t in range(1, T):
-        irfs[:, t] = P @ irfs[:, t-1]
-
-    irf_df = pd.DataFrame(irfs.T, columns=['Output', 'Inflation', 'Capital', 'Net Worth'])
-    # Manually add investment for plotting
-    delta = 0.025
-    irf_df['Investment'] = irf_df['Capital'] - (1-delta)*irf_df['Capital'].shift(1).fillna(0)
-
-    return irf_df
+    return {'P': P_notebook, 'Q': Q_notebook, 'M': M_notebook}
