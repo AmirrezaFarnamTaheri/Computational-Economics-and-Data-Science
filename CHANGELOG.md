@@ -36,3 +36,13 @@
   - Embedded the  class directly into the notebook.
   - Removed the external  file.
   - Replaced custom  and  calls with standard Markdown headers and notes for better readability and portability.
+
+- **Refactor:** Made  self-contained.
+  - Embedded the  class directly into the notebook.
+  - Removed the external  file.
+  - Replaced custom  and  calls with standard Markdown headers and notes for better readability and portability.
+
+- **Refactor:** Made `06-Econometrics/02_Maximum_Likelihood.ipynb` self-contained.
+  - Embedded the `MLEstimator` class directly into the notebook.
+  - Removed the external `econometrics_utils.py` file.
+  - Replaced custom `sec()` and `note()` calls with standard Markdown headers and notes for better readability and portability.
