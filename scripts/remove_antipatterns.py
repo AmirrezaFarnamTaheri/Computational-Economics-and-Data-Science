@@ -1,57 +1,81 @@
 import nbformat
 import re
 import sys
+import os
 
-def remove_antipatterns(notebook_path):
-    with open(notebook_path, 'r', encoding='utf-8') as f:
-        nb = nbformat.read(f, as_version=4)
+def process_notebook(notebook_path):
+    try:
+        with open(notebook_path, 'r', encoding='utf-8') as f:
+            nb = nbformat.read(f, as_version=4)
+    except Exception as e:
+        print(f"Error reading {notebook_path}: {e}")
+        return
 
     modified = False
 
     for cell in nb.cells:
         if cell.cell_type == 'code':
-            # Check for sec() and note() in code cells, which is where they usually live as custom functions
-            # But the memory says they are custom functions used for headers and notes.
-            # Often they are used like `sec("Title")` in a code cell which outputs a header.
             source = cell.source
 
-            # Regex for sec("Title") or sec('Title')
-            # We want to replace the whole cell if it only contains this, or replace the line.
-            # Ideally, these should be markdown cells.
-
             # Case 1: sec("Title") -> ## Title (Markdown)
-            # This is tricky because we are changing cell type from code to markdown if it's just a header.
-            # Let's look for exact matches of single line calls first.
-
-            if re.match(r'^\s*sec\s*\([\'"](.*)[\'"]\)\s*$', source.strip()):
-                match = re.match(r'^\s*sec\s*\([\'"](.*)[\'"]\)\s*$', source.strip())
-                title = match.group(1)
+            match_sec = re.match(r'^\s*sec\s*\([\'"](.*)[\'"]\)\s*$', source.strip())
+            if match_sec:
+                title = match_sec.group(1)
                 cell.cell_type = 'markdown'
                 cell.source = f"## {title}"
                 modified = True
                 continue
 
             # Case 2: note("Message") -> > **Note:** Message (Markdown)
-            if re.match(r'^\s*note\s*\([\'"](.*)[\'"]\)\s*$', source.strip()):
-                match = re.match(r'^\s*note\s*\([\'"](.*)[\'"]\)\s*$', source.strip())
-                msg = match.group(1)
+            match_note = re.match(r'^\s*note\s*\([\'"](.*)[\'"]\)\s*$', source.strip())
+            if match_note:
+                msg = match_note.group(1)
                 cell.cell_type = 'markdown'
                 cell.source = f"> **Note:** {msg}"
                 modified = True
                 continue
 
-            # If they are embedded in other code, we might need a more complex approach,
-            # but usually in these notebooks they are standalone "helper" calls.
+            # Case 3: Mixed content or definitions.
+            # If we find `def sec(title):` or `def note(msg):`, we should comment them out or remove them
+            # as they are no longer needed if we replace usages.
+            if "def sec(" in source or "def note(" in source:
+                # We comment them out to be safe, or we could delete.
+                # Let's comment out for now to avoid breaking if there are missed usages.
+                lines = source.split('\n')
+                new_lines = []
+                for line in lines:
+                    if "def sec(" in line or "def note(" in line:
+                         new_lines.append(f"# {line} # Deprecated")
+                    else:
+                        new_lines.append(line)
+                cell.source = "\n".join(new_lines)
+                modified = True
 
     if modified:
         with open(notebook_path, 'w', encoding='utf-8') as f:
             nbformat.write(nb, f)
-        print(f"Removed antipatterns in {notebook_path}")
+        print(f"Fixed antipatterns: {notebook_path}")
+
+def main():
+    if len(sys.argv) < 2:
+        print("Usage: python scripts/remove_antipatterns.py <directory_or_file>")
+        sys.exit(1)
+
+    target = sys.argv[1]
+
+    if os.path.isfile(target):
+         if target.endswith(".ipynb"):
+             process_notebook(target)
+    elif os.path.isdir(target):
+        print(f"Scanning {target} for antipatterns...")
+        for root, dirs, files in os.walk(target):
+            if ".ipynb_checkpoints" in root:
+                continue
+            for file in files:
+                if file.endswith(".ipynb"):
+                    process_notebook(os.path.join(root, file))
     else:
-        print(f"No antipatterns found in {notebook_path}")
+        print(f"Invalid path: {target}")
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        remove_antipatterns(sys.argv[1])
-    else:
-        print("Usage: python remove_antipatterns.py <notebook_path>")
+    main()
