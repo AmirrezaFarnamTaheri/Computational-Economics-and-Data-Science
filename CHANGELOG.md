@@ -1,5 +1,13 @@
 # Changelog
 
+## Session 8: Foundations Module Deep Polish (Module 01)
+*   **Refactor:** `01-Foundations/01_Introduction.ipynb`
+    *   **Structure:** Further refined the "Lens" introduction and "Summary" to meet the highest pedagogical standards.
+    *   **Code:** Refactored the procedural "Cobweb Model" simulation into a clean, object-oriented `CobwebModel` class to demonstrate best practices (encapsulation, docstrings) early in the course.
+    *   **Assets:** Organized all images used in the notebook into `images/01-Foundations/`.
+    *   **Metadata:** Updated `images/metadata.json` with precise descriptions, sources, and license information for all utilized assets.
+    *   **Style:** Applied the standard "Global Notebook Setup" cell for consistent plotting aesthetics.
+
 ## Session 7: Critical Module Refactoring and Feature Implementation
 *   **Refactor:** `04-Macro-Models/03_RBC_Models.ipynb`
     *   **Structure:** Implemented "The Lens" introduction ("Microfoundations of Aggregates") and "Summary".
