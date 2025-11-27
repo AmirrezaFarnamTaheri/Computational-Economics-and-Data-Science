@@ -1,5 +1,19 @@
 # Changelog
 
+## Session 5: Foundations Module Overhaul (Module 01)
+*   **Refactor:** `01-Foundations/01_Introduction.ipynb`
+    *   **Structure:** Strengthened the "Lens" introduction to strictly answer "What problem are we solving?" and "Why this method?". Added a robust "Summary" section.
+    *   **Visuals:** Audited images and ensured metadata compliance. Improved visual layout and rhythm.
+    *   **Writing:** Polished narrative tone for professional clarity.
+    *   **Code:** Refined the Lucas Critique simulation code for better robustness and clarity.
+*   **Refactor:** `01-Foundations/02_Professional_Development_Environment.ipynb`
+    *   **Structure:** Added "The Lens" introduction: "From Disposable Scripts to Durable Scientific Artifacts". Added "Summary" section.
+    *   **Standards:** Replaced custom helpers with standard Markdown. Cleaned up imports and visual configuration.
+*   **Global Standardization (Batch 1):**
+    *   Executed `scripts/remove_antipatterns.py` on `01-Foundations` to replace custom `sec()` and `note()` calls with standard Markdown.
+    *   Executed `scripts/standardize_notebooks.py` on `01-Foundations` to enforce license headers and Matplotlib styling.
+    *   Validated all notebooks in `01-Foundations` using `validate_notebooks.py`.
+
 ## Session 4: Deep Dive and Refactor - Macro Models (Module 04)
 *   **Refactor:** `04-Macro-Models/03_RBC_Models.ipynb`
     *   Replaced manual and potentially unstable QZ solver with a robust implementation using `scipy.linalg.ordqz`.
