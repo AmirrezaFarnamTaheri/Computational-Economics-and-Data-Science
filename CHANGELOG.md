@@ -1,5 +1,16 @@
 # Changelog
 
+## Session 18: Machine Learning Polish & Global Cleanup
+*   **Global Cleanup:**
+    *   **Anti-pattern Removal:** Enhanced `scripts/remove_antipatterns.py` to support cell splitting, enabling the automated removal of `sec()` and `note()` calls embedded within code cells. Executed this across `07-Machine-Learning` and `Appendix` modules.
+    *   **File Hygiene:** Removed duplicate `*_executed.ipynb` files in `07-Machine-Learning` to reduce clutter.
+    *   **Validation:** Installed `nbformat` and successfully ran `validate_notebooks.py` across the entire repository (113 notebooks passed).
+*   **Refactor:** `07-Machine-Learning/10_Transformers.ipynb`
+    *   **Structure:** Implemented a rigorous "Lens" introduction ("The Sequential Bottleneck") and a comprehensive "Summary" ("Structure Matters").
+    *   **Visuals:** Localized `transformer_architecture.png` to `images/07-Machine-Learning/` and updated metadata.
+    *   **Standards:** Replaced all custom `sec()`/`note()` helpers with standard Markdown headers and blockquotes.
+    *   **Content:** Verified the "Lorenz Attractor" forecasting example and ensured the narrative flow connects the architecture's features (Attention, Positional Encoding) to economic applications (long-range dependencies).
+
 ## Session 17: The "Massive Polish" (50+ Notebooks Enhanced)
 *   **Machine Learning Refactors (`07-Machine-Learning`):**
     *   **Gradient Boosting (`02_Gradient_Boosting_Machines.ipynb`):** Implemented a complete XGBoost classification example on synthetic credit scoring data, including feature importance visualization.
