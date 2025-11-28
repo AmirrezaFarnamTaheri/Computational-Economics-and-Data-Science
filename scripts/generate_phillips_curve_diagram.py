@@ -2,59 +2,106 @@ import pandas as pd
 import pandas_datareader.data as web
 import matplotlib.pyplot as plt
 import datetime
-
-# Set the start and end dates for the data
-start = datetime.datetime(1960, 1, 1)
-end = datetime.datetime(1985, 1, 1)
-
-# Download inflation and unemployment data from FRED
-inflation = web.DataReader('CPIAUCNS', 'fred', start, end)
-unemployment = web.DataReader('UNRATE', 'fred', start, end)
-
-# Resample to annual data, taking the last value of the year for inflation
-# and the average for unemployment
-inflation_annual = inflation.resample('YE').last().pct_change(12) * 100
-unemployment_annual = unemployment.resample('YE').mean()
-
-# Create a DataFrame with the two series
-df = pd.DataFrame({'inflation': inflation_annual['CPIAUCNS'],
-                   'unemployment': unemployment_annual['UNRATE']})
-df = df.dropna()
-
-# Create the plot
-plt.style.use('seaborn-v0_8-whitegrid')
-fig, ax = plt.subplots(figsize=(12, 8))
-
-# Plot the 1960s
-ax.plot(df.loc['1960':'1969', 'unemployment'], df.loc['1960':'1969', 'inflation'], 'o-', label='1960s')
-
-# Plot the 1970s
-ax.plot(df.loc['1970':'1979', 'unemployment'], df.loc['1970':'1979', 'inflation'], 'o-', label='1970s', color='orange')
-
-# Add labels and title
-ax.set_xlabel('Unemployment Rate (%)')
-ax.set_ylabel('Inflation Rate (%)')
-ax.set_title('The Phillips Curve Breakdown (1960-1979)', fontsize=16)
-ax.legend()
-ax.grid(True)
-
-# Annotate some points
-for year_end, row in df.loc['1960':'1979'].iterrows():
-    year = year_end.year
-    if year % 2 == 0:
-        ax.annotate(str(year)[-2:],
-                    (row['unemployment'], row['inflation']),
-                    textcoords="offset points",
-                    xytext=(0,5),
-                    ha='center')
-
-
 import os
+import json
 
-# Create the directory if it doesn't exist
-os.makedirs('../images/png', exist_ok=True)
+# --- Configuration ---
+METADATA_PATH = 'images/metadata.json'
+IMAGE_DIR = 'images/01-Foundations' # Specific module directory
+IMAGE_NAME = '1.1-phillips-curve-breakdown.png'
+FULL_PATH = os.path.join(IMAGE_DIR, IMAGE_NAME)
 
-# Save the figure
-plt.savefig('../images/png/phillips_curve_breakdown.png', dpi=300, bbox_inches='tight')
+def update_metadata(filename, description, source, license_type="CC BY 4.0"):
+    """Updates the central metadata.json file."""
+    if not os.path.exists(METADATA_PATH):
+        print("Warning: metadata.json not found.")
+        return
 
-print("Phillips Curve breakdown diagram created successfully.")
+    with open(METADATA_PATH, 'r') as f:
+        data = json.load(f)
+
+    # Check if entry exists
+    exists = False
+    for entry in data:
+        if entry['filename'] == filename:
+            exists = True
+            break
+
+    if not exists:
+        data.append({
+            "filename": filename,
+            "description": description,
+            "source": source,
+            "license": license_type
+        })
+        with open(METADATA_PATH, 'w') as f:
+            json.dump(data, f, indent=2)
+        print(f"Metadata updated for {filename}")
+
+def main():
+    # Ensure directory exists
+    os.makedirs(IMAGE_DIR, exist_ok=True)
+
+    # --- Data Acquisition ---
+    # Using hardcoded sample data to ensure reproducibility and avoid external dependency flakiness during generation
+    # Source: FRED (UNRATE, CPIAUCNS) derived approximate annual values for key years
+    data = {
+        1960: (5.5, 1.5), 1961: (6.7, 1.0), 1962: (5.5, 1.1), 1963: (5.7, 1.2),
+        1964: (5.2, 1.3), 1965: (4.5, 1.6), 1966: (3.8, 2.9), 1967: (3.8, 3.1),
+        1968: (3.6, 4.2), 1969: (3.5, 5.5),
+        1970: (4.9, 5.7), 1971: (5.9, 4.4), 1972: (5.6, 3.2), 1973: (4.9, 6.2),
+        1974: (5.6, 11.0), 1975: (8.5, 9.1), 1976: (7.7, 5.8), 1977: (7.1, 6.5),
+        1978: (6.1, 7.6), 1979: (5.8, 11.3)
+    }
+
+    years = sorted(data.keys())
+    unrate = [data[y][0] for y in years]
+    inflation = [data[y][1] for y in years]
+
+    df = pd.DataFrame({'year': years, 'unemployment': unrate, 'inflation': inflation})
+    df.set_index('year', inplace=True)
+
+    # --- Plotting ---
+    plt.style.use('seaborn-v0_8-whitegrid')
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    # 1960s: The Stable Trade-off
+    df_60s = df.loc[1960:1969]
+    ax.plot(df_60s['unemployment'], df_60s['inflation'], 'o-', color='#1f77b4', label='1960s (Stable Trade-off)', linewidth=2, markersize=8)
+
+    # 1970s: The Breakdown
+    df_70s = df.loc[1970:1979]
+    ax.plot(df_70s['unemployment'], df_70s['inflation'], 's--', color='#d62728', label='1970s (Breakdown)', linewidth=2, markersize=8)
+
+    # Annotations
+    for year, row in df.iterrows():
+        # Label select years to avoid clutter
+        if year in [1961, 1965, 1969, 1970, 1974, 1975, 1979]:
+            ax.annotate(str(year),
+                        (row['unemployment'], row['inflation']),
+                        textcoords="offset points",
+                        xytext=(0,10),
+                        ha='center', fontsize=9, fontweight='bold')
+
+    # Styling
+    ax.set_xlabel('Unemployment Rate (%)', fontsize=12)
+    ax.set_ylabel('Inflation Rate (%)', fontsize=12)
+    ax.set_title('The Breakdown of the Phillips Curve (1960-1979)', fontsize=14, pad=20)
+    ax.legend(fontsize=11)
+    ax.grid(True, linestyle='--', alpha=0.7)
+
+    # Save
+    plt.savefig(FULL_PATH, dpi=150, bbox_inches='tight')
+    print(f"Image saved to {FULL_PATH}")
+    plt.close()
+
+    # Update Metadata
+    update_metadata(
+        filename=IMAGE_NAME,
+        description="A stylized plot showing the breakdown of the stable Phillips Curve relationship in the 1970s, illustrating the Lucas Critique.",
+        source="Generated by scripts/generate_phillips_curve_diagram.py using stylized FRED data",
+        license_type="CC BY 4.0"
+    )
+
+if __name__ == "__main__":
+    main()

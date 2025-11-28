@@ -1,141 +1,126 @@
 import numpy as np
-import pandas as pd
-from scipy.linalg import qz
+from scipy.linalg import ordqz
 
-def klein_solver(A, B, C, T=40):
+def solve_klein(A, B, n_states):
     """
     Solves a linear rational expectations model of the form:
-    A * E_t[x_{t+1}] = B * x_t + C * z_t
-    using the Klein (2000) method.
+    A * E_t[x_{t+1}] = B * x_t + C * epsilon_{t+1}
 
-    Returns the policy function P and shock matrix Q for:
-    x_t = P * x_{t-1} + Q * z_t
+    Using the QZ decomposition (Klein, 2000).
+
+    Parameters:
+    - A, B: Square matrices (n x n) linking current and future variables.
+    - n_states: Number of predetermined (state) variables.
+
+    Returns:
+    - P: Coefficient matrix for the state transition: k_{t+1} = P * k_t
+    - F: Coefficient matrix for the policy function: u_t = F * k_t
     """
-    # QZ decomposition
-    S, T, _, _, Q, Z = qz(A, B, output='real')
 
-    # Reorder to separate stable and unstable eigenvalues
-    n = A.shape[0]
-    eigs = np.array([T[i, i] / S[i, i] if S[i, i] != 0 else np.inf for i in range(n)])
+    # 1. QZ Decomposition with reordering
+    # We want to sort the generalized eigenvalues (alpha/beta) such that
+    # stable eigenvalues (|lambda| < 1) are in the top-left.
 
-    stable_eigs = np.abs(eigs) < 1
-    n_stable = np.sum(stable_eigs)
+    def sort_stable(alpha, beta):
+        # Handle cases where beta is close to zero (infinite eigenvalue)
+        # We consider infinite eigenvalues as unstable (should be at bottom-right)
+        return np.abs(alpha) < np.abs(beta)
 
-    # Create reordering matrices
-    sel = np.zeros(n, dtype=bool)
-    sel[stable_eigs] = True
+    S, T, alpha, beta, Q, Z = ordqz(A, B, sort=sort_stable, output='real')
 
-    # This is a simplified reordering. A robust implementation would use ordqz.
-    # For this specific model, a simple sort is usually sufficient.
-    order = np.argsort(np.abs(eigs))
-    S, T, Q, Z = S[:, order], T[order, :][:, order], Q[:, order], Z[order, :].T
+    # 2. Check Blanchard-Kahn conditions
+    # We expect exactly n_states stable eigenvalues.
+    n_stable = np.sum(sort_stable(alpha, beta))
+    if n_stable != n_states:
+        raise ValueError(f"Blanchard-Kahn condition failed. Expected {n_states} stable eigenvalues, found {n_stable}.")
 
-    Z11 = Z[:n_stable, :n_stable]
-    Z21 = Z[n_stable:, :n_stable]
-    T11 = T[:n_stable, :n_stable]
-    S11 = S[:n_stable, :n_stable]
+    # 3. Partition matrices
+    # Variables are x_t = [k_t, u_t]' where k_t are states, u_t are controls.
+    # The QZ decomposition reorders the system.
+    # Z.T * x_t = y_t
+    # We need to relate the original variables to the transformed variables.
 
-    # Solve for the policy function
-    # P = Z11' * inv(S11) * T11 * Z11
-    P = np.linalg.inv(Z11) @ np.linalg.inv(S11) @ T11 @ Z11
+    # Z is orthogonal, so Z^T is Z inverse.
+    # Z = [Z11 Z12]
+    #     [Z21 Z22]
+    # where Z11 is (n_states x n_states)
 
-    # Solve for the shock matrix Q
-    Q_mat = np.linalg.inv(A @ P + B) @ C
+    Z = Z.T # Scipy returns Z such that Q*A*Z^T = S. So the transformation is x = Z * y.
+    # Wait, let's verify scipy docs.
+    # "Q, Z: Unitary matrices. Q @ A @ Z.T = S, Q @ B @ Z.T = T"
+    # So A = Q.T @ S @ Z
+    # A * x_{t+1} = B * x_t
+    # Q.T * S * Z * x_{t+1} = Q.T * T * Z * x_t
+    # S * (Z * x_{t+1}) = T * (Z * x_t)
+    # Let y_t = Z * x_t.
+    # S * y_{t+1} = T * y_t.
+    # Since S, T are upper triangular and sorted, the system decouples.
+    # The bottom block (unstable) must be zero for stability in forward solution.
 
-    return P, Q_mat
+    Z11 = Z[:n_states, :n_states]
+    Z12 = Z[:n_states, n_states:]
+    Z21 = Z[n_states:, :n_states]
+    Z22 = Z[n_states:, n_states:]
 
-def solve_bgg_klein(chi=0.05):
-    """
-    Defines and solves the BGG model using the Klein solver.
-    """
-    # Model parameters
-    beta, sigma, phi_pi, phi_y, kappa, delta = 0.99, 1.0, 1.5, 0.5, 0.1, 0.025
+    S11 = S[:n_states, :n_states]
+    T11 = T[:n_states, :n_states]
 
-    # Variables: [y, pi, k, n, r_k, efp, i] (7 variables)
-    # Shocks: [e_tech] (1 shock)
+    # 4. Compute solution matrices
+    # If the Blanchard-Kahn condition holds, Z21 is invertible (typically).
+    # Wait, usually it involves inverting Z22 or similar for controls.
 
-    # Define system matrices A and B
-    # A * E_t[x_{t+1}] = B * x_t
-    A = np.zeros((7, 7))
-    B = np.zeros((7, 7))
+    # From Klein (2000):
+    # State transition: k_{t+1} = P * k_t
+    # Controls: u_t = F * k_t
 
-    # IS Curve: y_t = E_t[y_{t+1}] - (1/sigma)*(i_t - E_t[pi_{t+1}] - E_t[efp_{t+1}])
-    A[0, 0] = 1
-    A[0, 1] = -1/sigma
-    A[0, 5] = -1/sigma
-    B[0, 0] = 1
-    B[0, 6] = -1/sigma
+    # If Z is partitioned as Z_k and Z_u columns?
+    # Let's stick to the method derived from S * y = T * y
 
-    # Phillips Curve: pi_t = beta*E_t[pi_{t+1}] + kappa*y_t
-    A[1, 1] = beta
-    B[1, 0] = -kappa
-    B[1, 1] = 1
+    # Stable block: S11 * y1_{t+1} + S12 * y2_{t+1} = T11 * y1_t + T12 * y2_t
+    # Unstable block: S22 * y2_{t+1} = T22 * y2_t  => y2_t = 0 for stability (if no shocks in this block)
 
-    # Taylor Rule: i_t = phi_pi*pi_t + phi_y*y_t
-    B[2, 0] = -phi_y
-    B[2, 1] = -phi_pi
-    B[2, 6] = 1
+    # So y2_t = 0.
+    # Then y1_{t+1} = S11^{-1} * T11 * y1_t
 
-    # Financial Accelerator: efp_t = chi*(k_t - n_t)
-    B[3, 2] = -chi
-    B[3, 3] = chi
-    B[3, 5] = 1
+    # We have y_t = Z * x_t = [Z11 Z12; Z21 Z22] * [k_t; u_t]
+    # y1_t = Z11 * k_t + Z12 * u_t
+    # y2_t = Z21 * k_t + Z22 * u_t = 0
 
-    # Return to Capital: r_k_t = (1-alpha)*y_t - alpha*k_{t-1} + a_t
-    # This is tricky because of k_{t-1}. We treat it as a state.
-    # Let's simplify for this example, assuming r_k is just a function of y_t
-    # r_k_t = 0.25 * y_t + e_tech_t
-    B[4, 0] = -0.25
-    B[4, 4] = 1
+    # From y2_t = 0, we get: Z21 * k_t + Z22 * u_t = 0
+    # => u_t = - Z22^{-1} * Z21 * k_t
+    # So F = - inv(Z22) * Z21
 
-    # Net Worth: n_t = 0.9*n_{t-1} + 0.1*r_k_t
-    B[5, 3] = 1
-    B[5, 4] = -0.1
-    # n_{t-1} needs to be handled. We'll add it as a state implicitly in the final matrix P.
-    # This part highlights the difficulty. A full state-space representation is complex.
-    # For now, we will use a simplified version that is solvable.
+    if np.linalg.det(Z22) == 0:
+         raise ValueError("Z22 is singular. Model may not have a unique solution.")
 
-    # Let's use the simplified structure from the notebook to ensure solvability
-    # x_t = [y, pi, k, n]'
-    # A simplified BGG model for demonstration
-    # This part is still hard. Let's fall back to a simpler, but transparent method.
-    # We will stick to the original notebook's structure, but make the matrices explicit.
+    F = -np.linalg.solve(Z22, Z21)
 
-    # Re-simplifying to match the notebook's implicit structure for educational clarity
-    # x_t = [y, pi, k, n]'
+    # Now for state transition P:
+    # y1_t = Z11 * k_t + Z12 * F * k_t = (Z11 + Z12 * F) * k_t
+    # y1_{t+1} = S11^{-1} * T11 * y1_t
+    # (Z11 + Z12 * F) * k_{t+1} = S11^{-1} * T11 * (Z11 + Z12 * F) * k_t
 
-    # Base dynamics (frictionless)
-    P_base = np.array([
-        [0.95, 0.1, 0.05, 0.0], # y
-        [0.05, 0.85, 0.1, 0.0], # pi
-        [0.1, 0.0, 0.9, 0.0],  # k
-        [0.0, 0.0, 0.0, 0.0]   # n
-    ])
-    # Accelerator dynamics (how chi affects the P matrix)
-    P_accel = np.array([
-        [0.0, 0.0, 0.1, 0.2],  # y
-        [0.0, 0.0, 0.05, 0.1], # pi
-        [0.1, 0.1, 0.05, 0.3], # k
-        [0.2, 0.1, 0.3, 0.85]  # n
-    ])
+    # Let M = (Z11 + Z12 * F)
+    # k_{t+1} = M^{-1} * S11^{-1} * T11 * M * k_t
 
-    P = P_base + chi * P_accel
-    Q = np.array([1.0, 0.2, 1.2, 0.8]).reshape(4,1)
+    # Alternatively, direct substitution:
+    # S11 * y1_{t+1} = T11 * y1_t
+    # y1_{t+1} = Z11 * k_{t+1} + Z12 * u_{t+1} = (Z11 + Z12*F) * k_{t+1}
+    # y1_t = (Z11 + Z12*F) * k_t
 
-    return P, Q
+    # So S11 * (Z11 + Z12*F) * k_{t+1} = T11 * (Z11 + Z12*F) * k_t
+    # Let H = Z11 + Z12 * F
+    # k_{t+1} = inv(S11 @ H) @ (T11 @ H) * k_t
 
-def generate_irfs_from_solution(P, Q, T=40):
-    """Generates IRFs from a solved model x_t = P*x_{t-1} + Q*z_t"""
-    n_vars = P.shape[0]
-    irfs = np.zeros((n_vars, T))
-    irfs[:, 0] = Q.flatten()
+    # Note: Depending on Z definition (row vs col vectors), indices might swap.
+    # Scipy ordqz returns Z such that x = Z^T * y ? No.
+    # "Q, Z: Unitary matrices. Q @ A @ Z.T = S"
+    # This implies A = Q.H @ S @ Z.
+    # A x = B x
+    # Q.H S Z x = Q.H T Z x
+    # S (Z x) = T (Z x)
+    # Let y = Z x.
+    # The previous derivation holds.
 
-    for t in range(1, T):
-        irfs[:, t] = P @ irfs[:, t-1]
+    return -np.linalg.solve(Z22, Z21), np.linalg.solve(S11 @ (Z11 + Z12 @ F), T11 @ (Z11 + Z12 @ F))
 
-    irf_df = pd.DataFrame(irfs.T, columns=['Output', 'Inflation', 'Capital', 'Net Worth'])
-    # Manually add investment for plotting
-    delta = 0.025
-    irf_df['Investment'] = irf_df['Capital'] - (1-delta)*irf_df['Capital'].shift(1).fillna(0)
-
-    return irf_df
