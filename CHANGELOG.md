@@ -1,5 +1,35 @@
 # Changelog
 
+## Session 12: Comprehensive Refactor of Numerical Methods (Module 02)
+*   **Structure Audit:** Created `scripts/audit_structure.py` to identify and fix header inconsistencies across the repository.
+*   **Refactor:** `02-Numerical-Methods/01_Linear_Algebra.ipynb`
+    *   **Structure:** Implemented "The Lens" introduction ("The Engine of Computational Economics") and "Summary".
+    *   **Content:** Clarified the geometric intuition of linear algebra.
+    *   **Visuals:** Replaced static exercise text with a live Python demonstration of SVD for Image Compression.
+    *   **Design:** Standardized visual configuration and imports.
+*   **Refactor:** `02-Numerical-Methods/02_Numerical_Preliminaries.ipynb`
+    *   **Structure:** Implemented "The Lens" introduction ("The Illusion of Continuity") and "Summary".
+    *   **Content:** Explained floating-point arithmetic errors and numerical stability.
+*   **Refactor:** `02-Numerical-Methods/03_Numerical_Differentiation.ipynb`
+    *   **Structure:** Implemented "The Lens" introduction ("The Calculus of the Discrete") and "Summary".
+    *   **Content:** Detailed Finite Difference methods and their trade-offs.
+*   **Refactor:** `02-Numerical-Methods/04_Root_Finding.ipynb`
+    *   **Structure:** Implemented "The Lens" introduction ("Equilibrium is a Zero") and "Summary".
+    *   **Content:** Covered Bisection, Newton-Raphson, and Brent's Method.
+*   **Refactor:** `02-Numerical-Methods/05_Optimization.ipynb`
+    *   **Structure:** Implemented "The Lens" introduction ("The Rational Agent's Toolkit") and "Summary".
+    *   **Visuals:** Replaced static "Optimizer Paths" image with a live, code-generated visualization comparing Gradient Descent (BFGS) vs. Nelder-Mead on the Rosenbrock function.
+    *   **Content:** Explored local vs. global optimization strategies.
+*   **Refactor:** `02-Numerical-Methods/06_Interpolation_and_Approximation.ipynb`
+    *   **Structure:** Implemented "The Lens" introduction ("Connecting the Dots") and "Summary".
+    *   **Content:** Discussed Linear Interpolation, Cubic Splines, and Chebyshev Polynomials.
+*   **Refactor:** `02-Numerical-Methods/07_Numerical_Integration.ipynb`
+    *   **Structure:** Implemented "The Lens" introduction ("Expectations as Integrals") and "Summary".
+    *   **Content:** Covered Newton-Cotes, Gaussian Quadrature, and Monte Carlo integration.
+*   **Refactor:** `02-Numerical-Methods/08_Differential_Equations.ipynb`
+    *   **Structure:** Implemented "The Lens" introduction ("The Law of Motion") and "Summary".
+    *   **Content:** Explained Euler and Runge-Kutta methods for simulating dynamic systems.
+
 ## Session 11: Final Polish of Core Modules and High-Performance Python
 *   **Refactor:** `03-Economic-Modeling/05_Optimal_Stopping_Problems.ipynb`
     *   **Structure:** Implemented "The Lens" introduction ("The Economics of Waiting") and "Summary".
