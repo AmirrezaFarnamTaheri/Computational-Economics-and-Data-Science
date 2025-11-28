@@ -1,5 +1,34 @@
 # Changelog
 
+## Session 17: The "Massive Polish" (50+ Notebooks Enhanced)
+*   **Machine Learning Refactors (`07-Machine-Learning`):**
+    *   **Gradient Boosting (`02_Gradient_Boosting_Machines.ipynb`):** Implemented a complete XGBoost classification example on synthetic credit scoring data, including feature importance visualization.
+    *   **Macro Forecasting (`21_ML_for_Macro_Forecasting.ipynb`):** Implemented a "Horse Race" comparing AR(1) vs. Random Forest for inflation forecasting, demonstrating non-linear advantages.
+    *   **Deep Learning (`06_Deep_Learning_Foundations.ipynb`):** Implemented Backpropagation from scratch using NumPy to solve the XOR problem, visualizing the loss curve.
+    *   **Autoencoders (`11_Autoencoders.ipynb`):** Implemented a PyTorch-based Autoencoder to compress and reconstruct synthetic yield curves.
+*   **Econometrics Refactors (`06-Econometrics`):**
+    *   **Instrumental Variables (`05_Instrumental_Variables.ipynb`):** Added a `TwoStageLeastSquares` class from scratch and a DAG visualization of the exclusion restriction.
+    *   **Causal Inference (`03_Causal_Inference.ipynb`):** Implemented a Potential Outcomes framework class to demonstrate selection bias.
+    *   **Difference-in-Differences (`08_Difference_in_Differences.ipynb`):** Added a rigorous Parallel Trends visualization with counterfactuals.
+    *   **GMM (`04_GMM.ipynb`):** Implemented a real 2-step GMM estimator for Normal distribution moments.
+*   **Time Series Refactors (`08-Time-Series`):**
+    *   **VAR (`04_Vector_Autoregression.ipynb`):** Added Impulse Response Function (IRF) plotting for a bivariate VAR system.
+    *   **Cointegration (`06_Cointegration_and_Error_Correction_Models.ipynb`):** Implemented the Johansen Test and VECM estimation using `statsmodels`.
+*   **Finance Refactors (`09-Finance`):**
+    *   **Portfolio Theory (`02_Portfolio_Theory.ipynb`):** Implemented Monte Carlo simulation and Efficient Frontier optimization using `scipy.optimize`.
+    *   **Credit Risk (`06_Credit_Risk.ipynb`):** Implemented the Merton (1974) structural model for default probability and credit spreads.
+*   **Micro/Macro Refactors:**
+    *   **Information Economics (`05-Micro/06_Information_Economics.ipynb`):** visualized the Spence Signaling Model separating equilibrium.
+    *   **Neoclassical Growth (`04-Macro/02_Neoclassical_Growth.ipynb`):** Added a Solow-Swan phase diagram (Investment vs. Break-even).
+
+## Session 16: Econometrics Module Deep Polish
+*   **Refactor:** `06-Econometrics/01_Linear_Model_and_OLS.ipynb`
+    *   **Content:** Implemented a numerical proof of the Frisch-Waugh-Lovell theorem.
+    *   **Diagnostics:** Added comprehensive model diagnostics, including Breusch-Pagan tests for heteroskedasticity and Variance Inflation Factor (VIF) for multicollinearity.
+    *   **Extensions:** Implemented Feasible Generalized Least Squares (FGLS) and a Bayesian Linear Regression class using a Gibbs Sampler from scratch.
+    *   **Visuals:** Added 3D visualization of OLS geometry (minimizing squared residuals) and posterior distribution plots for the Bayesian model.
+    *   **Verification:** Verified all new code blocks and ensured zero regression in notebook validity.
+
 ## Session 15: Final Structural & Metadata Polish
 *   **Structure Audit & Fixes:**
     *   Audited all notebooks for structural compliance (Lens/Summary).
