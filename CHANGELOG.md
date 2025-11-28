@@ -319,3 +319,49 @@
   - Embedded the `MLEstimator` class directly into the notebook.
   - Removed the external `econometrics_utils.py` file.
   - Replaced custom `sec()` and `note()` calls with standard Markdown headers and notes for better readability and portability.
+
+## [Unreleased] - 2025-10-XX
+
+### Refactored
+- **04-Macro-Models/03_RBC_Models.ipynb**:
+    - Replaced hardcoded solution matrices with dynamic QZ decomposition solver (Klein's method).
+    - Extracted solver logic to `scripts/macro_utils.py` for reuse.
+    - Implemented "News Shock" simulation with proper state expansion.
+    - Added "Lens" and "Summary" sections.
+- **05-Micro-Models/02_General_Equilibrium.ipynb**:
+    - Removed duplicate "Summary" section.
+    - Added visualization of World Excess Demand function.
+- **03-Economic-Modeling/04_Estimation_and_Calibration.ipynb**:
+    - Removed duplicate "Summary" section.
+    - Verified real SMM implementation using Numba.
+
+### Added
+- **scripts/macro_utils.py**: Utility module containing  function for solving linear rational expectations models.
+- **scripts/audit_structure.py**: Script to audit notebook structure (Lens/Summary headers).
+
+### Standardized
+- **Modules 01-05**: Applied "Gold Standard" structure (Lens/Summary) and removed placeholder templates programmatically.
+- **Headers**: Ensured all notebooks in Modules 01-05 have correct license headers.
+
+## [Unreleased] - 2025-10-XX
+
+### Refactored
+- **04-Macro-Models/03_RBC_Models.ipynb**:
+    - Replaced hardcoded solution matrices with dynamic QZ decomposition solver (Klein's method).
+    - Extracted solver logic to `scripts/macro_utils.py` for reuse.
+    - Implemented "News Shock" simulation with proper state expansion.
+    - Added "Lens" and "Summary" sections.
+- **05-Micro-Models/02_General_Equilibrium.ipynb**:
+    - Removed duplicate "Summary" section.
+    - Added visualization of World Excess Demand function.
+- **03-Economic-Modeling/04_Estimation_and_Calibration.ipynb**:
+    - Removed duplicate "Summary" section.
+    - Verified real SMM implementation using Numba.
+
+### Added
+- **scripts/macro_utils.py**: Utility module containing `solve_qz` function for solving linear rational expectations models.
+- **scripts/audit_structure.py**: Script to audit notebook structure (Lens/Summary headers).
+
+### Standardized
+- **Modules 01-05**: Applied "Gold Standard" structure (Lens/Summary) and removed placeholder templates programmatically.
+- **Headers**: Ensured all notebooks in Modules 01-05 have correct license headers.
