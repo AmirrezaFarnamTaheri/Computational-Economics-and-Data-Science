@@ -1,5 +1,79 @@
 # Changelog
 
+## Session 11: Final Polish of Core Modules and High-Performance Python
+*   **Refactor:** `03-Economic-Modeling/05_Optimal_Stopping_Problems.ipynb`
+    *   **Structure:** Implemented "The Lens" introduction ("The Economics of Waiting") and "Summary".
+    *   **Content:** Strengthened explanation of optimal stopping, McCall search, and Real Options.
+    *   **Design:** Standardized visual configuration and imports.
+*   **Refactor:** `03-Economic-Modeling/06_Robust_Control.ipynb`
+    *   **Structure:** Implemented "The Lens" introduction ("Decision Making Under Deep Uncertainty") and "Summary".
+    *   **Content:** Clarified the distinction between Risk and Ambiguity (Knightian Uncertainty) and the Hansen-Sargent framework.
+    *   **Design:** Standardized visual configuration and imports.
+*   **Refactor:** `04-Macro-Models/04_OLG_Models.ipynb`
+    *   **Structure:** Implemented "The Lens" introduction ("Generations and the Life Cycle") and "Summary".
+    *   **Content:** Emphasized Dynamic Inefficiency and the failure of Ricardian Equivalence in OLG settings.
+    *   **Design:** Standardized visual configuration and imports.
+*   **Refactor:** `04-Macro-Models/05_New_Keynesian_Models.ipynb`
+    *   **Structure:** Implemented "The Lens" introduction ("Prices, Frictions, and Monetary Policy") and "Summary".
+    *   **Content:** Detailed the 3-equation NK model, the Taylor Principle, and the Zero Lower Bound (ZLB).
+    *   **Design:** Standardized visual configuration and imports.
+*   **Refactor:** `04-Macro-Models/06_Heterogeneous_Agent_Models.ipynb`
+    *   **Structure:** Implemented "The Lens" introduction ("Inequality in Macroeconomics") and "Summary".
+    *   **Content:** Framed the Aiyagari model as the backbone of HANK models, highlighting the MPC distribution and indirect transmission channels.
+    *   **Design:** Standardized visual configuration and imports.
+*   **Refactor:** `04-Macro-Models/08_Endogenous_Growth.ipynb`
+    *   **Structure:** Implemented "The Lens" introduction ("The Engines of Prosperity") and "Summary".
+    *   **Content:** Focused on the non-rivalry of ideas (Romer) and human capital (Lucas) as drivers of sustained growth.
+    *   **Design:** Standardized visual configuration and imports.
+*   **Refactor:** `high_performance_python/02_High_Performance_Computing.ipynb`
+    *   **Structure:** Implemented "The Lens" introduction ("The Need for Speed in Economics") and "Summary".
+    *   **Content:** Provided a strategic overview of profiling, JIT, and parallelism.
+    *   **Design:** Standardized visual configuration and imports.
+*   **Refactor:** `high_performance_python/04_Accelerating_Code_with_Numba.ipynb`
+    *   **Structure:** Implemented "The Lens" introduction ("Compiling Python for Speed") and "Summary".
+    *   **Content:** Demonstrated Numba's capabilities with Monte Carlo and matrix examples.
+    *   **Design:** Standardized visual configuration and imports.
+*   **Refactor:** `high_performance_python/05_Parallel_Computing_with_Dask.ipynb`
+    *   **Structure:** Implemented "The Lens" introduction ("Scaling from One to Many") and "Summary".
+    *   **Content:** Explained Dask's lazy evaluation, DataFrames, and Arrays for handling large datasets.
+    *   **Design:** Standardized visual configuration and imports.
+*   **Refactor:** `high_performance_python/06_GPU_Acceleration_with_CuPy.ipynb`
+    *   **Structure:** Implemented "The Lens" introduction ("Massive Parallelism on GPUs") and "Summary".
+    *   **Content:** Contrasted CPU vs. GPU architectures and demonstrated CuPy's matrix performance.
+    *   **Design:** Standardized visual configuration and imports.
+
+## Session 10: Specialized Models and Appendices Refactor
+*   **Refactor:** `10-Specialized-Models/01_Agent_Based_Models.ipynb`
+    *   **Structure:** Implemented "The Lens" introduction ("The Economy as an Ecosystem") and "Summary".
+    *   **Content:** Strengthened explanations of Agent-Based Modeling (ABM) philosophy, including emergence and bounded rationality.
+    *   **Design:** Standardized visual configuration and imports.
+*   **Refactor:** `10-Specialized-Models/02_General_Equilibrium_with_Heterogeneous_Agents.ipynb`
+    *   **Structure:** Implemented "The Lens" introduction ("Inequality and Precautionary Savings") and "Summary".
+    *   **Content:** Detailed the Aiyagari model, emphasizing the role of idiosyncratic risk and borrowing constraints.
+    *   **Visuals:** Generated a new high-quality diagram `aiyagari_equilibrium_loop.png` using Graphviz to illustrate the nested solution algorithm. Added metadata for this new asset.
+    *   **Design:** Standardized visual configuration and imports.
+*   **Refactor:** `10-Specialized-Models/03_Network_Economics.ipynb`
+    *   **Structure:** Implemented "The Lens" introduction ("The Architecture of Interaction") and "Summary".
+    *   **Content:** Expanded on network concepts like centrality, contagion, and production networks (Acemoglu et al.).
+    *   **Visuals:** Regenerated `centrality_measures_diagram.png` using a Python script for better clarity and style consistency. Added metadata.
+    *   **Design:** Standardized visual configuration and imports.
+*   **Refactor:** `Appendix/A1-Real-Analysis.ipynb`
+    *   **Structure:** Implemented "The Lens" introduction ("Mathematical Foundations of Economic Theory") and "Summary".
+    *   **Content:** Refined explanations of key concepts: Completeness, Compactness, Continuity, and Convexity, linking them explicitly to economic applications (e.g., existence of equilibria).
+    *   **Design:** Standardized visual configuration and imports.
+*   **Refactor:** `Appendix/A2-Multivariate-Calculus.ipynb`
+    *   **Structure:** Implemented "The Lens" introduction ("The Language of Change") and "Summary".
+    *   **Content:** Clarified the roles of Gradients, Jacobians, and Hessians in economic optimization and comparative statics.
+    *   **Design:** Standardized visual configuration and imports.
+*   **Refactor:** `Appendix/A3-Probability-Theory.ipynb`
+    *   **Structure:** Implemented "The Lens" introduction ("Modeling Uncertainty") and "Summary".
+    *   **Content:** Strengthened the connection between probability concepts (Expectation, Jensen's Inequality, Martingales) and economic theory (Risk Aversion, Efficient Markets).
+    *   **Design:** Standardized visual configuration and imports.
+*   **Refactor:** `Appendix/A4-Linear-Algebra.ipynb`
+    *   **Structure:** Implemented "The Lens" introduction ("The Engine of Computation") and "Summary".
+    *   **Content:** Emphasized the importance of Matrix Decompositions and Eigenvalues for dynamic systems and numerical stability.
+    *   **Design:** Standardized visual configuration and imports.
+
 ## Session 9: Module 01 (Foundations) Comprehensive Refactor
 *   **Refactor:** `01-Foundations/03_Python_Fundamentals_Data_Types.ipynb`
     *   **Structure:** Added "The Lens" introduction and "Summary".
@@ -20,7 +94,7 @@
     *   **Visuals:** Redesigned `1.7-hash-map-new.png` using Graphviz.
 *   **Refactor:** `01-Foundations/08_Sets.ipynb`
     *   **Structure:** Added "The Lens" (Sets as Mathematical Foundations) and "Summary".
-*   **Refactor:** `01-Foundations/09_Control_Flow_and_Error_Handling.ipynb`
+    *   **Refactor:** `01-Foundations/09_Control_Flow_and_Error_Handling.ipynb`
     *   **Structure:** Added "The Lens" (Directing Logic and Managing Failure) and "Summary".
     *   **Visuals:** Redesigned `1.9-iterator-protocol.png` using Graphviz.
 *   **Refactor:** `01-Foundations/10_Advanced_Functions.ipynb`
