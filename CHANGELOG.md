@@ -1,5 +1,14 @@
 # Changelog
 
+## Session 13: Refactoring of Time Series and Machine Learning Modules
+*   **Refactor:** `08-Time-Series/04_Vector_Autoregression.ipynb`
+    *   **Structure:** Implemented "The Lens" introduction ("The Web of Macroeconomics") and "Summary".
+    *   **Standards:** Removed deprecated `sec()` and `note()` helper functions, replacing them with standard Markdown and print statements.
+    *   **Visuals:** Generated a new high-quality Graphviz diagram `var_identification_diagram.png` to illustrate the Cholesky identification strategy (GDP -> Inflation -> Rates).
+    *   **Metadata:** Updated `images/metadata.json` with the new asset.
+*   **Refactor:** `07-Machine-Learning/01_Introduction_to_ML_for_Economists.ipynb`
+    *   **Standards:** Standardized the "Environment Setup" cell to match the global repository style while preserving necessary imports.
+
 ## Session 12: Comprehensive Refactor of Numerical Methods (Module 02)
 *   **Structure Audit:** Created `scripts/audit_structure.py` to identify and fix header inconsistencies across the repository.
 *   **Refactor:** `02-Numerical-Methods/01_Linear_Algebra.ipynb`
