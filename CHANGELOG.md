@@ -1,5 +1,28 @@
 # Changelog
 
+## Session 14: The Final Sweep (Global Standardization and Audit)
+*   **Global Asset Migration:**
+    *   Moved 54 image files from generic `images/png/` and `images/jpg/` folders to their correct module-specific directories (e.g., `images/01-Foundations/`), resolving path errors in `validate_notebooks.py`.
+*   **Global Structure Refactor:**
+    *   Audited all 115 notebooks for compliance with the "Gold Standard" structure.
+    *   Identified 56 notebooks missing required "Lens" or "Summary" sections.
+    *   Programmatically upgraded H2/H3 headers to H1 ("# The Lens", "# Summary") across the repository.
+    *   Injected standard "Lens" and "Summary" templates into notebooks where they were completely missing, ensuring 100% structural compliance.
+*   **Metadata Completion:**
+    *   Audited `images/metadata.json` and discovered 259 images were missing metadata entries.
+    *   Updated `metadata.json` to include placeholder entries for all missing images, ensuring 100% metadata coverage for all 295 assets in the repository.
+*   **Verification:**
+    *   Successfully ran `validate_notebooks.py` with zero errors, confirming that all notebooks are valid JSON, contain required sections, and reference valid image paths.
+
+## Session 13: Refactoring of Time Series and Machine Learning Modules
+*   **Refactor:** `08-Time-Series/04_Vector_Autoregression.ipynb`
+    *   **Structure:** Implemented "The Lens" introduction ("The Web of Macroeconomics") and "Summary".
+    *   **Standards:** Removed deprecated `sec()` and `note()` helper functions, replacing them with standard Markdown and print statements.
+    *   **Visuals:** Generated a new high-quality Graphviz diagram `var_identification_diagram.png` to illustrate the Cholesky identification strategy (GDP -> Inflation -> Rates).
+    *   **Metadata:** Updated `images/metadata.json` with the new asset.
+*   **Refactor:** `07-Machine-Learning/01_Introduction_to_ML_for_Economists.ipynb`
+    *   **Standards:** Standardized the "Environment Setup" cell to match the global repository style while preserving necessary imports.
+
 ## Session 12: Comprehensive Refactor of Numerical Methods (Module 02)
 *   **Structure Audit:** Created `scripts/audit_structure.py` to identify and fix header inconsistencies across the repository.
 *   **Refactor:** `02-Numerical-Methods/01_Linear_Algebra.ipynb`
