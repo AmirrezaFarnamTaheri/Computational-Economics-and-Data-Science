@@ -1,5 +1,22 @@
 # Changelog
 
+## Session 18: Global Standardization & Verification (30+ Notebooks)
+*   **Audit & Standardization:**
+    *   Created `scripts/audit_notebooks.py` and `scripts/fix_standards.py` to automate compliance checks.
+    *   Audited the entire repository, identifying 44 notebooks with structural issues (missing headers, antipatterns).
+    *   **Programmatically Fixed 37 Notebooks:** Applied structural fixes (injecting "The Lens"/"Summary" placeholders, replacing `sec()`/`note()` antipatterns) to:
+        *   All `07-Machine-Learning` notebooks.
+        *   All `08-Time-Series` notebooks.
+        *   All `Appendix` notebooks.
+*   **Critical Refactors Verification:**
+    *   **RBC Model (`04-Macro-Models/03_RBC_Models.ipynb`):** Verified robust implementation using `macro_utils.solve_qz`. Deleted redundant `scripts/klein_solver.py`.
+    *   **General Equilibrium (`05-Micro-Models/02_General_Equilibrium.ipynb`):** Verified implementation of `HeckscherOhlinSystem` and global equilibrium solver.
+    *   **SMM Estimation (`03-Economic-Modeling/04_Estimation_and_Calibration.ipynb`):** Verified JIT-compiled Aiyagari solver and identification visualization.
+*   **Data Robustness:**
+    *   Verified `08-Time-Series/04_Vector_Autoregression.ipynb` has a robust fallback to local CSVs.
+    *   Ran `scripts/download_data.py` to populate `data/` with US Macro, Fama-French, and S&P 500 data, ensuring offline functionality.
+    *   Installed missing dependencies (`pandas_datareader`, `yfinance`, `setuptools`) to enable data fetching.
+
 ## Session 17: The "Massive Polish" (50+ Notebooks Enhanced)
 *   **Machine Learning Refactors (`07-Machine-Learning`):**
     *   **Gradient Boosting (`02_Gradient_Boosting_Machines.ipynb`):** Implemented a complete XGBoost classification example on synthetic credit scoring data, including feature importance visualization.
