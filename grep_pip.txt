@@ -1,7 +1,0 @@
-./10-Specialized-Models/02_General_Equilibrium_with_Heterogeneous_Agents.ipynb:    "!pip install numba -q\n",
-./10-Specialized-Models/01_Agent_Based_Models.ipynb:    "!pip install networkx -q\n",
-./06-Econometrics/07_Synthetic_Control_Methods.ipynb:    "!pip install pysinc"
-./08-Time-Series/05_Volatility_Modeling_ARCH_GARCH.ipynb:    "!pip install yfinance arch\n",
-./08-Time-Series/03_ARIMA_and_Forecasting.ipynb:    "!pip install prophet\n",
-./09-Finance/02_Portfolio_Theory.ipynb:    "!pip install PyPortfolioOpt -q\n",
-./IMPROVEMENT_ROADMAP.md:    *   [ ] **Cleanup:** Remove `!pip install networkx`.
