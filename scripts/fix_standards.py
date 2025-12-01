@@ -14,7 +14,7 @@ def fix_notebook(filepath):
 
     modified = False
 
-    note_pattern = re.compile(r"^(.*?)note\((?:[fr])?(['\"])(.*?)\2\)(.*)$")
+    note_pattern = re.compile(r"^(.*?)note\(([fr])?(['\"])(.*?)\3\)(.*)$")
     sec_pattern = re.compile(r"^(\s*)sec\((?:[fr])?(['\"])(.*?)\2\)\s*$")
     pip_pattern = re.compile(r"^\s*!pip install")
 
@@ -63,14 +63,17 @@ def fix_notebook(filepath):
 
                     if note_match:
                         prefix = note_match.group(1)
-                        content = note_match.group(3)
-                        suffix = note_match.group(4)
+                        f_prefix = note_match.group(2)
+                        content = note_match.group(4)
+                        suffix = note_match.group(5)
+
+                        is_dynamic = (f_prefix == 'f') or ('{' in content)
 
                         if not prefix.strip():
                             indent = prefix
                             if not suffix.strip() or suffix.strip().startswith('#'):
                                 # Top level note
-                                if len(indent) == 0:
+                                if len(indent) == 0 and not is_dynamic:
                                     flush_code(current_block)
                                     current_block = []
                                     new_cells.append(nbformat.v4.new_markdown_cell(f"> **Note:** {content}"))
