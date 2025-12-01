@@ -168,7 +168,6 @@ saved_models/
 
 # Logs
 *.log
-logs/
 *.out
 *.err
 
