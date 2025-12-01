@@ -147,12 +147,28 @@ This section provides a comprehensive tour of modern machine learning, from foun
 - **`21_ML_for_Macro_Forecasting.ipynb`**: Applies ML techniques to macroeconomic forecasting.
 - **`22_Style_Transfer_and_Advanced_Vision.ipynb`**: Explores advanced computer vision topics.
 
+### Part 8: Time Series Analysis (`08-Time-Series/`)
+A comprehensive guide to analyzing time-series data, from classical methods to modern volatility modeling.
+- **`01_Introduction_to_Time_Series.ipynb`**: Stationarity, autocorrelation, and white noise.
+- **`02_ARMA_Models.ipynb`**: Autoregressive Moving Average models.
+- **`03_ARIMA_and_Forecasting.ipynb`**: Integrated models and forecasting techniques.
+- **`04_Vector_Autoregression.ipynb`**: VAR estimation, identification strategies, and impulse response analysis.
+- **`05_Volatility_Modeling_ARCH_GARCH.ipynb`**: Modeling time-varying volatility with ARCH/GARCH.
+- **`06_Cointegration_and_Error_Correction_Models.ipynb`**: Handling non-stationary trends and long-run relationships.
+
 ### Part 9: Finance (`09-Finance/`)
 - **`01-06_*`**: Covers financial frictions, portfolio theory (CAPM, Black-Litterman), asset pricing with the SDF, option pricing, and credit risk.
 
 ### Part 10: Specialized Models (`10-Specialized-Models/`)
 - **`01_Agent_Based_Models.ipynb`**: Generative, "bottom-up" modeling with examples like Schelling's segregation model.
 - **`03_Network_Economics.ipynb`**: Analyzing the role of network structure in economic outcomes.
+
+### High Performance Python (`high_performance_python/`)
+Techniques for scaling and accelerating economic research code.
+- **`02_High_Performance_Computing.ipynb`**: Strategies for optimizing Python code.
+- **`04_Accelerating_Code_with_Numba.ipynb`**: JIT compilation for C-like speed.
+- **`05_Parallel_Computing_with_Dask.ipynb`**: Scaling to large datasets and clusters.
+- **`06_GPU_Acceleration_with_CuPy.ipynb`**: Leveraging GPUs for massive parallel computation.
 
 
 ## License

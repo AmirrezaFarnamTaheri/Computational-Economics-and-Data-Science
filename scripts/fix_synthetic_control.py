@@ -117,7 +117,10 @@ def fix_notebook(filepath):
     nb.cells = new_cells
 
     # 2. Add Guard for Pysinc
+    # Specific check for 07_Synthetic_Control_Methods.ipynb
     if "pysinc" in filepath.lower():
+        # Inject the guard import block at the start
+        # Check if it already exists
         has_guard = False
         for cell in nb.cells:
              if "PYSINC_AVAILABLE" in cell.source:
@@ -133,6 +136,7 @@ except ImportError:
     from IPython.display import display, Markdown
     display(Markdown("> **Note:** `pysinc` not found. Please install via `pip install pysinc` or check environment."))""")
 
+            # Find where to insert (after imports usually)
             insert_idx = 0
             for i, cell in enumerate(nb.cells):
                 if cell.cell_type == 'code' and "import" in cell.source:
@@ -143,91 +147,16 @@ except ImportError:
             modified = True
             print("  Inserted Pysinc guard.")
 
-    # 3. Check/Inject Headers (Intro/Summary)
-    has_intro = False
-    for cell in nb.cells[:5]:
-        if cell.cell_type == 'markdown':
-            if cell.source.strip().startswith('# Introduction') or cell.source.strip().startswith('# The Lens'):
-                has_intro = True
-                break
-
-    if not has_intro:
-        insert_idx = 0
-        if len(nb.cells) > 0 and '# ' in nb.cells[0].source:
-             insert_idx = 1
-        if len(nb.cells) > 1 and 'import' in nb.cells[1].source:
-             insert_idx = 2
-
-        intro_text = "# Introduction\n\nThis notebook explores the topic using computational methods. (Content to be added)"
-        nb.cells.insert(min(insert_idx, len(nb.cells)), nbformat.v4.new_markdown_cell(intro_text))
-        modified = True
-        print("  Inserted Introduction.")
-
-    has_summary = False
-    for cell in nb.cells[-5:]:
-        if cell.cell_type == 'markdown':
-            if cell.source.strip().startswith('# Summary') or cell.source.strip().startswith('# Conclusion'):
-                has_summary = True
-                break
-
-    if not has_summary:
-        nb.cells.append(nbformat.v4.new_markdown_cell("# Summary\n\nKey takeaways from this notebook."))
-        modified = True
-        print("  Appended Summary.")
-
-    # 4. Inject Plot Style
-    if nb.cells:
-        for cell in nb.cells:
-            if cell.cell_type == 'code':
-                if 'matplotlib' in cell.source or 'plt.' in cell.source:
-                    if "plt.style.use('seaborn-v0_8-whitegrid')" not in cell.source:
-                        lines = cell.source.split('\n')
-                        import_idx = -1
-                        for i, line in enumerate(lines):
-                            if 'import' in line and 'matplotlib' in line:
-                                import_idx = i
-
-                        if import_idx != -1:
-                            lines.insert(import_idx + 1, "plt.style.use('seaborn-v0_8-whitegrid')")
-                            cell.source = '\n'.join(lines)
-                            modified = True
-                            print("  Injected plot style.")
-                break # Only check first code cell
-
     if modified:
         with open(filepath, 'w', encoding='utf-8') as f:
             nbformat.write(nb, f)
         print("  Saved changes.")
-    else:
-        print("  No changes needed.")
 
 def main():
-    # Target ALL potential notebook directories
-    target_dirs = [
-        '01-Foundations',
-        '02-Numerical-Methods',
-        '03-Economic-Modeling',
-        '04-Macro-Models',
-        '05-Micro-Models',
-        '06-Econometrics',
-        '07-Machine-Learning',
-        '08-Time-Series',
-        '09-Finance',
-        '10-Specialized-Models',
-        'high_performance_python',
-        'Appendix'
-    ]
-
-    notebooks = []
-    for d in target_dirs:
-        notebooks.extend(glob.glob(f'{d}/*.ipynb'))
-
-    # Filter checkpoints and executed
-    notebooks = [nb for nb in notebooks if '.ipynb_checkpoints' not in nb and '_executed' not in nb]
-
-    print(f"Fixing {len(notebooks)} notebooks...")
-    for nb_path in notebooks:
-        fix_notebook(nb_path)
+    # Fix the specific file we just restored
+    target = '06-Econometrics/07_Synthetic_Control_Methods.ipynb'
+    if os.path.exists(target):
+        fix_notebook(target)
 
 if __name__ == '__main__':
     main()
