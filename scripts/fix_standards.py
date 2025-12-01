@@ -102,7 +102,7 @@ def fix_notebook(filepath):
                              new_cells.append(nbformat.v4.new_markdown_cell(f"### {content}"))
                              modified = True
                          else:
-                             new_line = f"{indent}print(f'\\n### {content}')"
+                             new_line = f"{indent}display(Markdown(f'### {content}'))"
                              current_block.append(new_line)
                              modified = True
                     else:
