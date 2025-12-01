@@ -20,7 +20,7 @@ def refix_notebook(filepath):
             source = cell.source.strip()
             # Detect Markdown cells that look like notes with f-string variables
             # Pattern: > **Note:** ... {var} ...
-            if source.startswith('> **Note:**') and '{' in source and '}' in source:
+            if source.startswith('> **Note:**') and re.search(r'\{[a-zA-Z0-9_]+\}', source):
                 # Check if it looks like a variable interpolation
                 # Simple check: Are the braces balanced and containing something?
                 # This heuristic is reasonable for this codebase.
@@ -33,11 +33,11 @@ def refix_notebook(filepath):
                 # content = source[len("> **Note:**"):].strip()
                 # But we want the whole thing wrapped.
 
-                # We need to escape any existing double quotes to put it inside f"..."
-                safe_source = source.replace('"', '\\"')
+                # Using triple quotes for the inner f-string avoids issues with quotes.
+                safe_source = source
 
                 # Construct code
-                code_source = f"display(Markdown(f\"{safe_source}\"))"
+                code_source = f"display(Markdown(f'''{safe_source}'''))"
 
                 new_cells.append(nbformat.v4.new_code_cell(code_source))
                 modified = True
