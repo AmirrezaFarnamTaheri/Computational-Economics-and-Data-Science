@@ -10,10 +10,19 @@ def solve_qz(AA, BB, n_states):
 
     Using the QZ decomposition (Klein, 2000).
 
+    The system is transformed to:
+    S * E_t[y_{t+1}] = T * y_t
+
+    Dynamic eigenvalues are lambda = T_ii / S_ii.
+    We sort so that stable eigenvalues (|lambda| < 1) are in the top-left.
+    Note: generalized eigenvalues from ordqz are (alpha, beta) such that beta*A - alpha*B.
+    This implies lambda_dyn = beta/alpha.
+    Stable means |beta| < |alpha|.
+
     Parameters:
     -----------
     AA, BB : np.ndarray
-        Square matrices (n x n) describing the system.
+        Square matrices (n x n) describing the system AA*x' = BB*x.
     n_states : int
         Number of predetermined (state) variables.
         The state vector x_t must be ordered as [states; controls].
@@ -27,9 +36,22 @@ def solve_qz(AA, BB, n_states):
     """
 
     # 1. QZ Decomposition
-    # Sort such that stable eigenvalues (|lambda| < 1) are in the top-left (indices 0 to n_states-1)
+    # Sort such that stable eigenvalues (|beta/alpha| < 1) are in the top-left (indices 0 to n_states-1)
     def sort_stable(alpha, beta):
-        return np.abs(alpha) < np.abs(beta)
+        # We want |beta/alpha| < 1 => |beta| < |alpha|
+        # Check for division by zero (infinite root is unstable)
+        # We must return a boolean array
+        alpha_abs = np.abs(alpha)
+        beta_abs = np.abs(beta)
+
+        # Avoid division by zero issues by checking alpha close to zero
+        # If alpha is near 0, root is infinite (unstable) -> False
+        is_finite = alpha_abs > 1e-10
+
+        # For finite roots, check stability
+        is_stable = beta_abs < alpha_abs
+
+        return np.logical_and(is_finite, is_stable)
 
     S, T, alpha, beta, Q, Z = ordqz(AA, BB, sort=sort_stable, output='real')
 
