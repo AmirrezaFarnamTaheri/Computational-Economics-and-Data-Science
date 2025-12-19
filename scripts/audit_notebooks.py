@@ -1,17 +1,89 @@
 import os
 import nbformat
 import json
+import re
+import ast
+from collections import Counter
 
-def get_notebook_outline(filepath):
+def analyze_markdown_cell(source):
+    words = len(source.split())
+    # Regex for equations might need to be robust but simple is fine for audit
+    equations = len(re.findall(r'(?<!\\)\$.*?(?<!\\)\$', source, re.DOTALL)) # Simple inline
+    # Block equations
+    equations += len(re.findall(r'(?<!\\)\$\$.*?(?<!\\)\$\$', source, re.DOTALL))
+
+    links = len(re.findall(r'\[.*?\]\(.*?\)', source))
+    images = len(re.findall(r'!\[.*?\]\(.*?\)', source))
+    images += len(re.findall(r'<img.*?>', source))
+
+    todos = len(re.findall(r'(?i)\b(todo|fixme)\b', source))
+
+    headers = []
+    for line in source.split('\n'):
+        if line.lstrip().startswith('#'):
+            headers.append(line.strip())
+
+    return {
+        "words": words,
+        "equations": equations,
+        "links": links,
+        "images": images,
+        "todos": todos,
+        "headers": headers
+    }
+
+def analyze_code_cell(source):
+    lines = len(source.split('\n'))
+    imports = set()
+    # Remove magic commands for AST parsing
+    clean_source = '\n'.join([line if not line.strip().startswith(('%', '!')) else f'# {line}' for line in source.split('\n')])
+
+    try:
+        tree = ast.parse(clean_source)
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                for alias in node.names:
+                    imports.add(alias.name.split('.')[0])
+            elif isinstance(node, ast.ImportFrom):
+                if node.module:
+                    imports.add(node.module.split('.')[0])
+    except:
+        pass
+    return {
+        "lines": lines,
+        "imports": list(imports)
+    }
+
+def audit_notebook(filepath):
     try:
         with open(filepath, 'r', encoding='utf-8') as f:
             nb = nbformat.read(f, as_version=4)
     except Exception as e:
-        return f"Error reading {filepath}: {e}"
+        print(f"Error reading {filepath}: {e}")
+        return None
 
-    outline = []
+    # Metadata
+    kernelspec = nb.metadata.get('kernelspec', {}).get('display_name', 'Unknown')
+    language = nb.metadata.get('kernelspec', {}).get('language', 'Unknown')
 
-    # Check sections
+    # Counters
+    stats = {
+        "cells": {"markdown": 0, "code": 0, "raw": 0},
+        "content": {"words": 0, "code_lines": 0, "equations": 0, "images": 0, "links": 0, "todos": 0},
+        "features": {
+            "widgets": False,
+            "theorems": False,
+            "proofs": False,
+            "examples": False,
+            "exercises": False,
+            "history": False,
+            "concepts": False
+        }
+    }
+
+    all_headers = []
+    all_imports = set()
+
     sections = {
         "Introduction": False,
         "Theorems": [],
@@ -20,94 +92,146 @@ def get_notebook_outline(filepath):
         "Exercises": []
     }
 
-    file_features = {
-        "widgets": False,
-        "theorems": False,
-        "examples": False,
-        "codes": 0,
-        "history": False,
-        "concepts": False
-    }
-
     for cell in nb.cells:
         if cell.cell_type == 'markdown':
-            source = cell.source
-            # Simple header extraction
-            for line in source.split('\n'):
-                if line.strip().startswith('#'):
-                    outline.append(line.strip())
+            stats["cells"]["markdown"] += 1
+            md_analysis = analyze_markdown_cell(cell.source)
 
-                    # Check for sections
-                    lower_line = line.lower()
-                    if "introduction" in lower_line:
-                        sections["Introduction"] = True
-                    if "theorem" in lower_line:
-                        sections["Theorems"].append(line.strip())
-                        file_features["theorems"] = True
-                    if "proof" in lower_line:
-                        sections["Proofs"].append(line.strip())
-                    if "example" in lower_line:
-                        sections["Examples"].append(line.strip())
-                        file_features["examples"] = True
-                    if "exercise" in lower_line:
-                        sections["Exercises"].append(line.strip())
-                    if "history" in lower_line or "historical" in lower_line:
-                        file_features["history"] = True
-                    if "concept" in lower_line:
-                        file_features["concepts"] = True
+            stats["content"]["words"] += md_analysis["words"]
+            stats["content"]["equations"] += md_analysis["equations"]
+            stats["content"]["links"] += md_analysis["links"]
+            stats["content"]["images"] += md_analysis["images"]
+            stats["content"]["todos"] += md_analysis["todos"]
 
-            if "ipywidgets" in source or "interactive" in source: # Very basic check
-                 file_features["widgets"] = True
+            all_headers.extend(md_analysis["headers"])
+
+            # Feature detection in markdown
+            lower_source = cell.source.lower()
+            if "ipywidgets" in lower_source or "interactive" in lower_source:
+                stats["features"]["widgets"] = True
+
+            # Section detection logic from original script
+            for header in md_analysis["headers"]:
+                lower_header = header.lower()
+                if "introduction" in lower_header:
+                    sections["Introduction"] = True
+                if "theorem" in lower_header:
+                    sections["Theorems"].append(header)
+                    stats["features"]["theorems"] = True
+                if "proof" in lower_header:
+                    sections["Proofs"].append(header)
+                    stats["features"]["proofs"] = True
+                if "example" in lower_header:
+                    sections["Examples"].append(header)
+                    stats["features"]["examples"] = True
+                if "exercise" in lower_header:
+                    sections["Exercises"].append(header)
+                    stats["features"]["exercises"] = True
+
+            if "history" in lower_source or "historical" in lower_source:
+                stats["features"]["history"] = True
+            if "concept" in lower_source:
+                stats["features"]["concepts"] = True
 
         elif cell.cell_type == 'code':
-            file_features["codes"] += 1
+            stats["cells"]["code"] += 1
+            code_analysis = analyze_code_cell(cell.source)
+            stats["content"]["code_lines"] += code_analysis["lines"]
+            all_imports.update(code_analysis["imports"])
+
             if "ipywidgets" in cell.source or "interactive" in cell.source:
-                file_features["widgets"] = True
+                stats["features"]["widgets"] = True
+
+        elif cell.cell_type == 'raw':
+            stats["cells"]["raw"] += 1
 
     return {
         "filepath": filepath,
-        "outline": outline,
+        "metadata": {
+            "kernel": kernelspec,
+            "language": language
+        },
+        "stats": stats,
+        "outline": all_headers,
         "sections": sections,
-        "features": file_features
+        "imports": sorted(list(all_imports))
     }
 
 def main():
     root_dir = "."
     report = []
 
-    # Walk through directories
+    # Collect all notebooks
+    notebook_files = []
     for root, dirs, files in os.walk(root_dir):
         # Skip hidden directories
         dirs[:] = [d for d in dirs if not d.startswith('.') and d != 'site']
 
         for file in files:
             if file.endswith(".ipynb"):
-                filepath = os.path.join(root, file)
-                print(f"Processing {filepath}...")
-                data = get_notebook_outline(filepath)
-                report.append(data)
+                notebook_files.append(os.path.join(root, file))
 
-    # Write report
+    # Sort files to ensure order
+    notebook_files.sort()
+
+    print(f"Found {len(notebook_files)} notebooks. Starting audit...")
+
+    for filepath in notebook_files:
+        print(f"Auditing {filepath}...")
+        audit_data = audit_notebook(filepath)
+        if audit_data:
+            report.append(audit_data)
+
+    # Write JSON report
     with open("notebook_structure_report.json", "w") as f:
         json.dump(report, f, indent=2)
 
-    # Also create a readable markdown version
+    # Write Markdown report
     with open("notebook_structure.md", "w") as f:
-        f.write("# Notebook Structure Report\n\n")
+        f.write("# Notebook Audit Report\n\n")
+        f.write(f"Total Notebooks: {len(report)}\n\n")
+
         for item in report:
             f.write(f"## {item['filepath']}\n")
 
-            f.write("### Features\n")
-            feat = item['features']
-            f.write(f"- **Code Cells**: {feat['codes']}\n")
-            f.write(f"- **Widgets**: {feat['widgets']}\n")
-            f.write(f"- **Theorems**: {feat['theorems']}\n")
-            f.write(f"- **Examples**: {feat['examples']}\n")
-            f.write(f"- **History**: {feat['history']}\n")
+            # Metadata & Stats Summary
+            f.write("### Overview\n")
+            f.write(f"- **Kernel**: {item['metadata']['kernel']}\n")
+            f.write(f"- **Cells**: {item['stats']['cells']['code']} Code, {item['stats']['cells']['markdown']} Markdown\n")
+            f.write(f"- **Content**: {item['stats']['content']['words']} words, {item['stats']['content']['code_lines']} lines of code\n")
+            f.write(f"- **Richness**: {item['stats']['content']['equations']} equations, {item['stats']['content']['images']} images, {item['stats']['content']['links']} links\n")
 
-            f.write("\n### Outline\n")
-            for line in item['outline']:
-                f.write(f"{line}\n")
+            # Features
+            f.write("\n### Features\n")
+            feat = item['stats']['features']
+            features_list = []
+            if feat['widgets']: features_list.append("Widgets")
+            if feat['theorems']: features_list.append("Theorems")
+            if feat['proofs']: features_list.append("Proofs")
+            if feat['examples']: features_list.append("Examples")
+            if feat['exercises']: features_list.append("Exercises")
+            if feat['history']: features_list.append("History")
+            if feat['concepts']: features_list.append("Concepts")
+
+            if features_list:
+                f.write(", ".join(features_list) + "\n")
+            else:
+                f.write("None detected\n")
+
+            # Imports
+            if item['imports']:
+                f.write(f"\n**Libraries**: {', '.join(item['imports'])}\n")
+
+            # TODOs
+            if item['stats']['content']['todos'] > 0:
+                f.write(f"\n**TODOs**: {item['stats']['content']['todos']}\n")
+
+            # Outline
+            if item['outline']:
+                f.write("\n### Outline\n")
+                for line in item['outline']:
+                    f.write(f"{line}\n")
+
             f.write("\n---\n")
 
 if __name__ == "__main__":
