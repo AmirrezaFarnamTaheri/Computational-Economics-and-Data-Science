@@ -1,212 +1,209 @@
 # Comprehensive Repository Roadmap
 
-This document provides a surgical, detailed plan for upgrading every single notebook in the repository to meet the "Zero to Hero" standard. It serves as the master checklist for the renovation.
+This document provides a surgical, detailed plan for upgrading every single notebook in the repository to meet the "Zero to Hero" standard defined in `PEDAGOGY.md`.
 
-## Global Standards (Apply to All)
-*   **Header:** Standard Title, Badges, "The Lens" (Economic Intuition), Learning Objectives, Prerequisites.
-*   **Footer:** Summary, Key Takeaways, References.
-*   **Navigation:** Clickable Table of Contents.
-*   **Exercises:** At least 3 graded exercises (Conceptual, Applied, Challenge).
-*   **Code:** Type hints, docstrings, vectorization where applicable.
+## Global Standards Summary
+*   **Structure:** Standard Header, "The Lens", Learning Objectives, Prerequisites, Footer.
+*   **Pedagogy:** Math-Code Parity, Active Learning (Exercises), Interactive Widgets.
+*   **Tech Stack:** Python 3.10+, Type Hints, Vectorization.
 
 ---
 
 ## Module 01: Foundations
-*Goal: Solidify the "Python for Economists" narrative.*
+*Theme: The Pythonic Economist*
 
-| Notebook | Status | Specific Action Items |
-| :--- | :--- | :--- |
-| `01_Introduction.ipynb` | **Completed** | (Reference implementation). |
-| `02_Professional_Development_Environment.ipynb` | Good content | Add "The Lens". Add Exercise on setting up a virtual env. |
-| `03_Python_Fundamentals_Data_Types.ipynb` | Needs Context | Add examples of `float` errors in financial calculations. |
-| `04_Python_Data_Model.ipynb` | Advanced | Frame as "Building Economic Objects" (e.g., a `Consumer` class). |
-| `05_Lists_and_Tuples.ipynb` | Standard | Add example: Storing time-series data in lists vs tuples. |
-| `06_Advanced_String_Processing.ipynb` | Standard | Add example: Parsing central bank announcements. |
-| `07_Dictionaries.ipynb` | Standard | Add example: Representing model parameters as dicts. |
-| `08_Sets.ipynb` | Light | Add example: Unique set of traded assets. |
-| `09_Control_Flow_and_Error_Handling.ipynb` | Standard | Add example: Robust simulation loops (catching non-convergence). |
-| `10_Advanced_Functions.ipynb` | Advanced | Add example: Closures for defining utility functions with parameters. |
-| `11_Object_Oriented_Programming.ipynb` | Vital | Refactor: Build a reusable `Market` class. |
-| `12_NumPy.ipynb` | Vital | Add example: Matrix algebra for Input-Output models. |
-| `13_Pandas.ipynb` | Vital | Use real GDP/Inflation data (via `pandas-datareader` or CSV). |
-| `14_Introduction_to_Data_Acquisition.ipynb` | Good | Ensure API examples are secure. |
-| `15_Accessing_Economic_Data_via_APIs.ipynb` | Good | Add FRED and World Bank API exercises. |
-| `16_Data_Visualization.ipynb` | Standard | Add "The Lens" on communicating data. Replicate a famous Econ chart. |
-| `17_Effective_Debugging.ipynb` | Vital | Create a "Bug Hunt" exercise with a broken model. |
-| `18_Data_Acquisition_Web_Scraping.ipynb` | Advanced | Add warning on `robots.txt` compliance. |
-| `19_Introduction_to_SQL.ipynb` | Light | Add a realistic schema (e.g., compustat-like). |
-| `20_Introduction_to_SciPy.ipynb` | Vital | Frame `optimize` as "Rational Choice". |
-| `21_Symbolic_Computation_with_SymPy.ipynb` | Niche | Use to derive FOCs for a utility function. |
-| `22_Computational_Complexity.ipynb` | Theoretical | Link O(n) to simulation runtime in later modules. |
-| `23_Profiling_and_Performance.ipynb` | Advanced | Profile a slow simulation from Module 10. |
-| `24_Production_Code_Standards.ipynb` | Meta | Add pre-commit hook setup guide. |
+| Notebook | Status | Pedagogical Goal | Technical Spec | Data Source | Interactive Element |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `01_Introduction.ipynb` | **Completed** | Define the field & tooling. | Markdown polish. | N/A | Cobweb Model Sliders. |
+| `02_Professional_Development_Environment.ipynb` | Good | Mastering the CLI/Git. | Shell commands. | N/A | Git graph visualizer. |
+| `03_Python_Fundamentals_Data_Types.ipynb` | Needs Context | Numerical precision. | `decimal` vs `float`. | N/A | Floating point error demo. |
+| `04_Python_Data_Model.ipynb` | Advanced | OOP for Economics. | `dataclasses`. | N/A | `Consumer` class builder. |
+| `05_Lists_and_Tuples.ipynb` | Standard | Sequence efficiency. | Timeit profiling. | N/A | Memory usage comparator. |
+| `06_Advanced_String_Processing.ipynb` | Standard | Regex for Econ text. | `re` module. | FOMC snippet. | Regex matcher widget. |
+| `07_Dictionaries.ipynb` | Standard | Key-Value mappings. | Dict comprehensions. | N/A | Parameter sweep dict. |
+| `08_Sets.ipynb` | Light | Set theory ops. | `frozenset`. | N/A | Venn diagram plotter. |
+| `09_Control_Flow_and_Error_Handling.ipynb` | Standard | Robust simulation loops. | `try-except` blocks. | N/A | Error handling sandbox. |
+| `10_Advanced_Functions.ipynb` | Advanced | Functional programming. | Closures, Decorators. | N/A | Utility function factory. |
+| `11_Object_Oriented_Programming.ipynb` | Vital | Agent representation. | Inheritance/Composition. | N/A | Market simulation. |
+| `12_NumPy.ipynb` | Vital | Linear Algebra foundation. | Vectorization. | N/A | Matrix mult visualizer. |
+| `13_Pandas.ipynb` | Vital | Tidy Data principles. | Method chaining. | WDI/FRED. | Data filtering slider. |
+| `14_Introduction_to_Data_Acquisition.ipynb` | Good | API vs Scraping. | `requests`. | JSON placeholder. | JSON viewer. |
+| `15_Accessing_Economic_Data_via_APIs.ipynb` | Good | Remote data access. | `pandas-datareader`. | FRED/WorldBank. | Series fetcher widget. |
+| `16_Data_Visualization.ipynb` | Standard | Communicating results. | `seaborn`, `altair`. | Gapminder. | Chart style picker. |
+| `17_Effective_Debugging.ipynb` | Vital | Diagnosing model failure. | `pdb`, logging. | Buggy model code. | Interactive debugger. |
+| `18_Data_Acquisition_Web_Scraping.ipynb` | Advanced | Unstructured data. | `beautifulsoup4`. | Mock website. | HTML parser. |
+| `19_Introduction_to_SQL.ipynb` | Light | Relational databases. | `sqlite3`. | Dummy Firm DB. | SQL Query runner. |
+| `20_Introduction_to_SciPy.ipynb` | Vital | Numerical toolbox. | `scipy.optimize`. | N/A | Root finding animator. |
+| `21_Symbolic_Computation_with_SymPy.ipynb` | Niche | Analytical derivation. | `sympy`. | Utility func. | Derivative solver. |
+| `22_Computational_Complexity.ipynb` | Theoretical | Algorithmic efficiency. | Big-O notation. | N/A | Complexity plotter. |
+| `23_Profiling_and_Performance.ipynb` | Advanced | Code optimization. | `cProfile`. | Slow sim code. | Flame graph viewer. |
+| `24_Production_Code_Standards.ipynb` | Meta | Reproducibility. | `black`, `flake8`. | N/A | Linter check demo. |
 
 ---
 
 ## Module 02: Numerical Methods
-*Goal: Connect abstract math to economic utility.*
+*Theme: The Engine of Computation*
 
-| Notebook | Status | Specific Action Items |
-| :--- | :--- | :--- |
-| `01_Linear_Algebra.ipynb` | Vital | Add "The Lens": Equilibrium as a system of equations. Add Markov Chain example. |
-| `02_Numerical_Preliminaries.ipynb` | Theoretical | Explain machine epsilon relevance in iterative solvers. |
-| `03_Numerical_Differentiation.ipynb` | Standard | Compare Finite Differences vs JAX auto-diff for marginal utility. |
-| `04_Root_Finding.ipynb` | Vital | Frame as "Market Clearing" ($S(p) - D(p) = 0$). |
-| `05_Optimization.ipynb` | Vital | Frame as "Utility Maximization". Add 3D hill-climbing plot. |
-| `06_Interpolation_and_Approximation.ipynb` | Advanced | Explain why we need this for Value Functions (continuous state). |
-| `07_Numerical_Integration.ipynb` | Standard | Frame as "Calculating Expectations" (Expected Utility). |
-| `08_Differential_Equations.ipynb` | Advanced | Solve Solow/Ramsey growth path numerically. |
+| Notebook | Status | Pedagogical Goal | Technical Spec | Data Source | Interactive Element |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `01_Linear_Algebra.ipynb` | Vital | Systems of equations. | `numpy.linalg`. | I-O Tables. | Eigenvalue animator. |
+| `02_Numerical_Preliminaries.ipynb` | Theoretical | Stability & Condition. | FP64 vs FP32. | N/A | Error propagation plot. |
+| `03_Numerical_Differentiation.ipynb` | Standard | Gradients & Hessians. | `jax` vs Finite Diff. | N/A | Derivative comparison. |
+| `04_Root_Finding.ipynb` | Vital | Equilibrium Finding. | Newton-Raphson. | Supply/Demand. | Convergence stepper. |
+| `05_Optimization.ipynb` | Vital | Rational Choice. | `scipy.optimize`. | Utility Surface. | 3D Hill climbing. |
+| `06_Interpolation_and_Approximation.ipynb` | Advanced | Function Approx. | Chebyshev, Splines. | N/A | Approx error plot. |
+| `07_Numerical_Integration.ipynb` | Standard | Expectations. | Gaussian Quad. | Normal Dist. | Area under curve. |
+| `08_Differential_Equations.ipynb` | Advanced | Dynamics. | `scipy.integrate`. | Solow Model. | Phase diagram plotter. |
 
 ---
 
 ## Module 03: Economic Modeling
-*Goal: Standardize Dynamic Programming (DP).*
+*Theme: Dynamic Programming & Structural Estimation*
 
-| Notebook | Status | Specific Action Items |
-| :--- | :--- | :--- |
-| `01_Dynamic_Programming.ipynb` | Core | Standardize notation ($V, \beta$). Visualize VFI convergence. |
-| `02_DP_with_Continuous_States.ipynb` | Advanced | Implement Collocation method clearly. |
-| `03_Discrete_Continuous_DP.ipynb` | Light | Expand. Implement a basic Rust Bus Engine model. |
-| `04_Estimation_and_Calibration.ipynb` | Light | Expand significantly. Calibration vs Estimation. |
-| `05_Optimal_Stopping_Problems.ipynb` | Standard | Frame as "Option Value of Waiting" (Job Search). |
-| `06_Robust_Control.ipynb` | Niche | Explain "Knightian Uncertainty" clearly in The Lens. |
-| `07_Structural_Estimation.ipynb` | Advanced | Explain the link to "Counterfactual Policy Analysis". |
+| Notebook | Status | Pedagogical Goal | Technical Spec | Data Source | Interactive Element |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `01_Dynamic_Programming.ipynb` | Core | Bellman Equation. | VFI (Numba). | N/A | VFI convergence GIF. |
+| `02_DP_with_Continuous_States.ipynb` | Advanced | Curse of Dimensionality. | Interpolation + VFI. | N/A | Value func surface. |
+| `03_Discrete_Continuous_DP.ipynb` | Light | Mixed choice models. | Rust (1987) replication. | N/A | Threshold policy plot. |
+| `04_Estimation_and_Calibration.ipynb` | Light | Model-Data matching. | MSM (Method of Moments). | Simulated panel. | Parameter fit slider. |
+| `05_Optimal_Stopping_Problems.ipynb` | Standard | Option Value. | McCall Search. | Wage offer dist. | Reservation wage plot. |
+| `06_Robust_Control.ipynb` | Niche | Ambiguity Aversion. | Min-Max Bellman. | N/A | Worst-case dist. |
+| `07_Structural_Estimation.ipynb` | Advanced | Identification. | Nested Fixed Point. | Rust Bus Data. | Likelihood surface. |
 
 ---
 
 ## Module 04: Macro Models
-*Goal: Create a clear historical progression.*
+*Theme: From Solow to HANK*
 
-| Notebook | Status | Specific Action Items |
-| :--- | :--- | :--- |
-| `01_Job_Search.ipynb` | Core | Link to `03-05` (Optimal Stopping). Add DMP model viz. |
-| `02_Neoclassical_Growth.ipynb` | Core | Compare Solow (exogenous) vs Ramsey (endogenous savings). |
-| `03_RBC_Models.ipynb` | Light | Expand. Explicitly compare Real vs Monetary shocks. |
-| `04_OLG_Models.ipynb` | Standard | Add visual of "intergenerational transfer". |
-| `05_New_Keynesian_Models.ipynb` | Core | Add Impulse Response Functions (IRFs) for interest rate shock. |
-| `06_Heterogeneous_Agent_Models.ipynb` | Capstone | Frame as HANK. Show wealth distribution histogram. |
-| `08_Endogenous_Growth.ipynb` | Standard | Renumber to `07`. Add Romer model simulation. |
+| Notebook | Status | Pedagogical Goal | Technical Spec | Data Source | Interactive Element |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `01_Job_Search.ipynb` | Core | Labor Frictions. | DMP Model. | Beveridge Curve data. | DMP equilibrium plot. |
+| `02_Neoclassical_Growth.ipynb` | Core | Convergence. | Ramsey-Cass-Koopmans. | PWT (Penn World Table). | Phase diagram slider. |
+| `03_RBC_Models.ipynb` | Light | Business Cycles. | Log-linearization. | FRED (GDP/Cons). | IRF plotter. |
+| `04_OLG_Models.ipynb` | Standard | Intergenerational equity. | Auerbach-Kotlikoff. | Demographics. | Transition path plot. |
+| `05_New_Keynesian_Models.ipynb` | Core | Nominal Rigidities. | 3-Eq NK Model. | Inflation/Output Gap. | Taylor Rule slider. |
+| `06_Heterogeneous_Agent_Models.ipynb` | Capstone | Inequality in Macro. | Aiyagari/HANK. | Wealth Dist. | Gini coeff dynamic. |
+| `08_Endogenous_Growth.ipynb` | Standard | R&D and Innovation. | Romer Model. | Patent data. | Growth path sim. |
 
 ---
 
 ## Module 05: Micro Models
-*Goal: Connect Game Theory and Information.*
+*Theme: Strategic Interaction*
 
-| Notebook | Status | Specific Action Items |
-| :--- | :--- | :--- |
-| `01_Consumer_and_Producer_Theory.ipynb` | Core | Add Slutsky Matrix visualization. |
-| `02_General_Equilibrium.ipynb` | Light | Expand significantly. Build an Edgeworth Box. |
-| `03_Game_Theory_and_Auctions.ipynb` | Core | Use `nashpy`. Visualize payoff matrices. |
-| `04_Discrete_Choice_Models.ipynb` | Standard | Link to Logit/Probit in Econometrics. |
-| `05_Principal_Agent_Models.ipynb` | Standard | Add "Moral Hazard" interactive parameter widget. |
-| `06_Information_Economics.ipynb` | Light | Add "Signaling Game" simulation (Spence). |
+| Notebook | Status | Pedagogical Goal | Technical Spec | Data Source | Interactive Element |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `01_Consumer_and_Producer_Theory.ipynb` | Core | Duality. | Slutsky decomp. | Expenditure data. | Indifference curves. |
+| `02_General_Equilibrium.ipynb` | Light | Market Clearing. | Edgeworth Box. | N/A | 2-Good Exchange box. |
+| `03_Game_Theory_and_Auctions.ipynb` | Core | Nash Equilibrium. | `nashpy`. | Auction logs. | Payoff matrix editor. |
+| `04_Discrete_Choice_Models.ipynb` | Standard | Random Utility. | Logit/Probit. | Transport choices. | Probability curve. |
+| `05_Principal_Agent_Models.ipynb` | Standard | Asymmetric Info. | Contract Theory. | N/A | Contract menu plot. |
+| `06_Information_Economics.ipynb` | Light | Signaling. | Spence Model. | Education/Wage. | Separating equilib. |
 
 ---
 
 ## Module 06: Econometrics
-*Goal: Focus on Causal Inference.*
+*Theme: The Causal Revolution*
 
-| Notebook | Status | Specific Action Items |
-| :--- | :--- | :--- |
-| `01_Linear_Model_and_OLS.ipynb` | Core | Derive OLS geometrically. |
-| `02_Maximum_Likelihood.ipynb` | Standard | Link to `02-05` (Optimization). |
-| `03_Causal_Inference.ipynb` | Vital | Fix Unknown Kernel. Explain DAGs vs Potential Outcomes. |
-| `04_GMM.ipynb` | Advanced | Frame as generalized method for structural estimation. |
-| `05_Instrumental_Variables.ipynb` | Vital | Fix Unknown Kernel. Add 2SLS manual implementation. |
-| `06_Regression_Discontinuity.ipynb` | Standard | Add sharp vs fuzzy RDD visual. |
-| `07_Synthetic_Control_Methods.ipynb` | Advanced | Add "Placebo Test" exercise. |
-| `08_Difference_in_Differences.ipynb` | Core | Discuss "Staggered Adoption" risks. |
-| `09_Classical_Time_Series_Analysis.ipynb` | Vital | Fix Unknown Kernel. Differentiate from Module 08. |
-| `10_Vector_Autoregression.ipynb` | Standard | Merge/Link with `08-04`. Focus on identification here. |
-| `11_Bayesian_Econometrics.ipynb` | Advanced | Use `PyMC` for a simple linear model. |
-| `12_Panel_Data_Methods.ipynb` | Standard | Fixed vs Random Effects intuition. |
+| Notebook | Status | Pedagogical Goal | Technical Spec | Data Source | Interactive Element |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `01_Linear_Model_and_OLS.ipynb` | Core | Gauss-Markov. | Matrix OLS. | wage/educ. | Regression line dragger. |
+| `02_Maximum_Likelihood.ipynb` | Standard | MLE Intuition. | Numerical LL max. | Binary outcome. | Likelihood func plot. |
+| `03_Causal_Inference.ipynb` | Vital | Identification Strat. | DAGs (`networkx`). | N/A | DAG builder/viewer. |
+| `04_GMM.ipynb` | Advanced | Moment Conditions. | 2-step GMM. | Asset returns. | J-stat visualizer. |
+| `05_Instrumental_Variables.ipynb` | Vital | Endogeneity fix. | 2SLS manual. | Card (1995) data. | First-stage fit plot. |
+| `06_Regression_Discontinuity.ipynb` | Standard | Local Randomization. | `rdrobust` equivalent. | Test scores. | Discontinuity plot. |
+| `07_Synthetic_Control_Methods.ipynb` | Advanced | Case Studies. | Convex Hull. | Prop 99 (Tobacco). | Counterfactual plot. |
+| `08_Difference_in_Differences.ipynb` | Core | Parallel Trends. | TWFE / CS (2021). | Minimum Wage. | Event study plot. |
+| `09_Classical_Time_Series_Analysis.ipynb` | Vital | Stationarity. | ADF / KPSS tests. | GDP/CPI. | ACF/PACF viewer. |
+| `10_Vector_Autoregression.ipynb` | Standard | Multivariate Dynamics. | VAR / SVAR. | Macro aggregates. | Impulse Response visual. |
+| `11_Bayesian_Econometrics.ipynb` | Advanced | Posterior updating. | `PyMC`. | N/A | Posterior dist plot. |
+| `12_Panel_Data_Methods.ipynb` | Standard | Unobserved Heterogeneity.| FE / RE. | Penn World Table. | Within/Between variation. |
 
 ---
 
 ## Module 07: Machine Learning
-*Goal: Deepen "ML for Economics".*
+*Theme: Prediction & High-Dimensional Inference*
 
-| Notebook | Status | Specific Action Items |
-| :--- | :--- | :--- |
-| `01_Introduction_to_ML_for_Economists.ipynb` | Good | Explain Bias-Variance in econ forecasting context. |
-| `02_Gradient_Boosting_Machines.ipynb` | Light | Use `xgboost` on credit default data. |
-| `03_Support_Vector_Machines.ipynb` | Light | Briefly cover, note lower relevance in modern econ. |
-| `04_Ensemble_Methods.ipynb` | Light | Explain "Wisdom of Crowds". |
-| `05_Dimensionality_Reduction_and_Clustering.ipynb` | Standard | PCA for "Factor Models" in finance. |
-| `06_Deep_Learning_Foundations.ipynb` | Standard | Neural Networks as "Universal Approximators". |
-| `07_Convolutional_Neural_Networks.ipynb` | Light | Expand. Application: Night lights -> GDP. |
-| `08_Recurrent_Neural_Networks.ipynb` | Standard | Time-series forecasting application. |
-| `09_LSTMs_and_GRUs.ipynb` | Standard | Compare with standard ARIMA. |
-| `10_Transformers.ipynb` | Duplicate | Merge with `10_Transformers_executed.ipynb`. |
-| `10_Transformers_executed.ipynb` | Duplicate | Merge into `10_Transformers.ipynb`. |
-| `11_Autoencoders.ipynb` | Light | Application: Denoising financial data. |
-| `12_Self_Supervised_Learning.ipynb` | Unknown Kernel | Fix Kernel. Explain usefulness for unlabeled econ data. |
-| `13_Generative_Models.ipynb` | Standard | Generating synthetic economic scenarios. |
-| `14_Multi_modal_Fusion.ipynb` | Light | Text + Time Series for forecasting. |
-| `15_Reinforcement_Learning.ipynb` | Advanced | Link to Dynamic Programming (Bellman Eq). |
-| `16_Advanced_Deep_RL.ipynb` | Advanced | AI Economist example (tax policy). |
-| `17_Causal_ML.ipynb` | Vital | `DoubleML` deep dive. Heterogeneous Treatment Effects. |
-| `18_Natural_Language_Processing.ipynb` | Standard | Sentiment Analysis of Fed Minutes. |
-| `19_Graph_Neural_Networks.ipynb` | Light | Supply chain contagion application. |
-| `20_Geospatial_Data.ipynb` | Standard | Housing price heatmaps. |
-| `21_ML_for_Macro_Forecasting.ipynb` | Light | Nowcasting GDP. |
-| `22_Style_Transfer_and_Advanced_Vision.ipynb` | Unknown Kernel | Fix Kernel. Low priority, keep as fun example. |
+| Notebook | Status | Pedagogical Goal | Technical Spec | Data Source | Interactive Element |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `01_Introduction_to_ML_for_Economists.ipynb` | Good | Bias-Variance Tradeoff. | `sklearn`. | Housing prices. | Complexity slider. |
+| `02_Gradient_Boosting_Machines.ipynb` | Light | Tree Ensembles. | `xgboost`. | Credit default. | Tree visualizer. |
+| `03_Support_Vector_Machines.ipynb` | Light | Margin Maximization. | `sklearn.svm`. | Classification. | Decision boundary. |
+| `04_Ensemble_Methods.ipynb` | Light | Model Averaging. | Bagging/Stacking. | N/A | Voting visualizer. |
+| `05_Dimensionality_Reduction_and_Clustering.ipynb` | Standard | Unsupervised Learning. | PCA / K-Means. | Fed speeches (TFIDF). | PCA scatter plot. |
+| `06_Deep_Learning_Foundations.ipynb` | Standard | Backpropagation. | `pytorch` / `tensorflow`. | MNIST. | Neural net graph. |
+| `07_Convolutional_Neural_Networks.ipynb` | Light | Spatial Structure. | CNN. | Satellite Night Lights. | Feature map viewer. |
+| `08_Recurrent_Neural_Networks.ipynb` | Standard | Sequence Memory. | RNN. | Time series. | Hidden state heat. |
+| `09_LSTMs_and_GRUs.ipynb` | Standard | Gating Mechanisms. | LSTM. | Text generation. | Gate activation plot. |
+| `10_Transformers.ipynb` | Duplicate | Attention Mechanism. | Transformer. | Translation. | Attention weights. |
+| `11_Autoencoders.ipynb` | Light | Representation Learning.| VAE. | Yield curves. | Latent space walk. |
+| `12_Self_Supervised_Learning.ipynb` | Unknown Kernel | Pre-training. | Contrastive Loss. | Unlabeled data. | Embedding plot. |
+| `13_Generative_Models.ipynb` | Standard | Distribution Learning. | GAN. | Synthetic data. | Generator output. |
+| `14_Multi_modal_Fusion.ipynb` | Light | Data Integration. | Fusion Arch. | Text + Tabular. | Fusion weights. |
+| `15_Reinforcement_Learning.ipynb` | Advanced | Optimal Control. | Q-Learning. | Grid world / Econ. | Policy map. |
+| `16_Advanced_Deep_RL.ipynb` | Advanced | Policy Gradients. | PPO / A2C. | AI Economist. | Reward curve. |
+| `17_Causal_ML.ipynb` | Vital | High-dim Confounding. | `DoubleML`. | 401(k) data. | CATE histogram. |
+| `18_Natural_Language_Processing.ipynb` | Standard | Text as Data. | Word2Vec / BERT. | FOMC Minutes. | Word cloud /TSNE. |
+| `19_Graph_Neural_Networks.ipynb` | Light | Network effects. | GCN. | Supply Chains. | Graph propagation. |
+| `20_Geospatial_Data.ipynb` | Standard | Spatial Econometrics. | `geopandas`. | Census tracts. | Choropleth map. |
+| `21_ML_for_Macro_Forecasting.ipynb` | Light | Nowcasting. | Factor Models / ML. | FRED-MD. | Forecast comparison. |
+| `22_Style_Transfer_and_Advanced_Vision.ipynb` | Unknown Kernel | Fun / Niche. | CNN optimization. | Images. | Style transfer. |
 
 ---
 
 ## Module 08: Time Series
-*Goal: Focus on Forecasting and Dynamics.*
+*Theme: Forecasting*
 
-| Notebook | Status | Specific Action Items |
-| :--- | :--- | :--- |
-| `01_Introduction_to_Time_Series.ipynb` | Core | Stationarity and Unit Roots visual explainer. |
-| `02_ARMA_Models.ipynb` | Standard | Build intuition for AR vs MA processes. |
-| `03_ARIMA_and_Forecasting.ipynb` | Standard | Add `Prophet` or modern library comparison. |
-| `04_Vector_Autoregression.ipynb` | Core | Focus on IRFs and Variance Decomposition. |
-| `05_Volatility_Modeling_ARCH_GARCH.ipynb` | Light | Expand. Use real financial returns data. |
-| `06_Cointegration_and_Error_Correction_Models.ipynb` | Advanced | Pairs trading strategy example. |
+| Notebook | Status | Pedagogical Goal | Technical Spec | Data Source | Interactive Element |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `01_Introduction_to_Time_Series.ipynb` | Core | Serial Correlation. | Autocorrelation plots. | Stock returns. | Lag plot viewer. |
+| `02_ARMA_Models.ipynb` | Standard | Linear Dynamics. | `statsmodels.tsa`. | Simulated ARMA. | Param stability check. |
+| `03_ARIMA_and_Forecasting.ipynb` | Standard | Integration/Trends. | Box-Jenkins. | GDP. | Forecast fan chart. |
+| `04_Vector_Autoregression.ipynb` | Core | Multi-equation dynamics.| VAR. | Macro vars. | FEVD plot. |
+| `05_Volatility_Modeling_ARCH_GARCH.ipynb` | Light | Heteroskedasticity. | `arch`. | S&P 500 Vol. | Volatility clustering. |
+| `06_Cointegration_and_Error_Correction_Models.ipynb` | Advanced | Long-run relationships.| VECM / Engle-Granger. | Pairs trading. | Spread plot. |
 
 ---
 
 ## Module 09: Finance
-*Goal: Unify notation and rigorous derivations.*
+*Theme: Pricing & Risk*
 
-| Notebook | Status | Specific Action Items |
-| :--- | :--- | :--- |
-| `01_Financial_Frictions_BGG.ipynb` | Advanced | Explain "Costly State Verification" simply. |
-| `02_Portfolio_Theory.ipynb` | Standard | Efficient Frontier visualization. |
-| `03_Asset_Pricing.ipynb` | Core | SDF (Stochastic Discount Factor) framework unification. |
-| `04_Option_Pricing.ipynb` | Core | Black-Scholes derivation from Heat Equation. |
-| `05_Continuous_Time_Finance.ipynb` | Advanced | Intuitive intro to Ito's Lemma. |
-| `06_Credit_Risk.ipynb` | Standard | Merton Model for default probability. |
-| `07_High_Frequency_Data.ipynb` | Standard | Limit Order Book visualization. |
+| Notebook | Status | Pedagogical Goal | Technical Spec | Data Source | Interactive Element |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `01_Financial_Frictions_BGG.ipynb` | Advanced | Credit Constraints. | Bernanke-Gertler-Gilchrist. | N/A | External finance premium. |
+| `02_Portfolio_Theory.ipynb` | Standard | Diversification. | Mean-Variance Opt. | Asset returns. | Efficient frontier. |
+| `03_Asset_Pricing.ipynb` | Core | Risk Premia. | CAPM / Fama-French. | F-F Factors. | Security Market Line. |
+| `04_Option_Pricing.ipynb` | Core | Arbitrage Pricing. | Black-Scholes / Binomial. | Option chain. | Greeks visualizer. |
+| `05_Continuous_Time_Finance.ipynb` | Advanced | Stochastic Calculus. | Ito's Lemma sim. | Brownian Motion. | Path simulation. |
+| `06_Credit_Risk.ipynb` | Standard | Default Probability. | Merton Structural Model. | Corporate bond data. | Distance-to-default. |
+| `07_High_Frequency_Data.ipynb` | Standard | Microstructure. | TAQ data format. | LOB snapshot. | Order book depth. |
 
 ---
 
 ## Module 10: Specialized Models
-*Goal: Frontier complexity methods.*
+*Theme: Complexity & Networks*
 
-| Notebook | Status | Specific Action Items |
-| :--- | :--- | :--- |
-| `01_Agent_Based_Models.ipynb` | Vital | Optimize Schelling code (vectorize). Add Tipping Point exercise. |
-| `02_General_Equilibrium_with_Heterogeneous_Agents.ipynb` | Advanced | Ensure distinction from Module 04 HANK. Focus on implementation. |
-| `03_Network_Economics.ipynb` | Standard | Network centrality measures in production networks. |
+| Notebook | Status | Pedagogical Goal | Technical Spec | Data Source | Interactive Element |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `01_Agent_Based_Models.ipynb` | Vital | Emergence. | Schelling / Vectorized. | N/A | Grid animation. |
+| `02_General_Equilibrium_with_Heterogeneous_Agents.ipynb`| Advanced | Distributional Macro. | Aiyagari / EGM. | N/A | Wealth dist evolution. |
+| `03_Network_Economics.ipynb` | Standard | Connectivity. | Network Centrality. | Trade flows. | Force-directed graph. |
 
 ---
 
 ## Appendix & High Performance
-*Goal: Supporting resources.*
+*Theme: Tooling & Math*
 
-| Notebook | Status | Specific Action Items |
-| :--- | :--- | :--- |
-| `01_Publishing_with_Quarto.ipynb` | Tooling | Update for latest Quarto version. |
-| `01_Replication_Exercise_Chetty_2014.ipynb` | Capstone | Ensure data access is clear/working. |
-| `02_Autograding_with_Otter.ipynb` | Tooling | Verify `otter-grader` config. |
-| `A1-Real-Analysis.ipynb` | Math | Self-contained refresher. |
-| `A2-Multivariate-Calculus.ipynb` | Math | Jacobian/Hessian intuition. |
-| `A3-Probability-Theory.ipynb` | Math | CLT and LLN visualizations. |
-| `A4-Linear-Algebra.ipynb` | Math | Eigenvalues in dynamic systems context. |
-| `high_performance_python/02_High_Performance_Computing.ipynb` | Advanced | Numba vs Cython speedup comparison. |
-| `high_performance_python/04_Accelerating_Code_with_Numba.ipynb` | Standard | Monte Carlo simulation optimization. |
-| `high_performance_python/05_Parallel_Computing_with_Dask.ipynb` | Standard | Large dataframe processing example. |
-| `high_performance_python/06_GPU_Acceleration_with_CuPy.ipynb` | Niche | Matrix multiplication on GPU. |
+| Notebook | Status | Pedagogical Goal | Technical Spec | Data Source | Interactive Element |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `01_Publishing_with_Quarto.ipynb` | Tooling | Scientific Comm. | Quarto CLI. | N/A | Rendered output. |
+| `01_Replication_Exercise_Chetty_2014.ipynb` | Capstone | Replication. | OLS / Visuals. | Chetty Data. | Mobility map. |
+| `02_Autograding_with_Otter.ipynb` | Tooling | Assessment. | `otter-grader`. | N/A | Autograder demo. |
+| `A1-Real-Analysis.ipynb` | Math | Rigor. | LaTeX Proofs. | N/A | Sequence convergence. |
+| `A2-Multivariate-Calculus.ipynb` | Math | Optimization Math. | Jacobians. | N/A | Gradient field. |
+| `A3-Probability-Theory.ipynb` | Math | Uncertainty Math. | Distributions. | N/A | PDF/CDF interactive. |
+| `A4-Linear-Algebra.ipynb` | Math | Matrix Math. | Eigen decomp. | N/A | Transformation visual. |
+| `high_performance_python/02_High_Performance_Computing.ipynb` | Advanced | Speed. | `numba`. | Pi Monte Carlo. | Speedup bar chart. |
+| `high_performance_python/04_Accelerating_Code_with_Numba.ipynb`| Standard | JIT Compilation. | `@jit`. | Loops. | Runtime comparison. |
+| `high_performance_python/05_Parallel_Computing_with_Dask.ipynb`| Standard | Out-of-core. | `dask`. | Big CSV. | Task graph. |
+| `high_performance_python/06_GPU_Acceleration_with_CuPy.ipynb` | Niche | Hardware Accel. | `cupy`. | Matrix ops. | GPU vs CPU time. |
