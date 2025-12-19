@@ -1,6 +1,6 @@
 # Pedagogical Framework: Zero to Hero
 
-This document defines the educational philosophy and structural standards for the Computational Economics repository.
+This document defines the educational philosophy, structural standards, and technical guidelines for the Computational Economics repository. It serves as the constitution for content creation.
 
 ## I. The "Zero to Hero" Philosophy
 
@@ -55,6 +55,13 @@ def util(x, g):
 $$ U(c) = \frac{c^{1-\gamma}}{1-\gamma} $$
 ```python
 def utility(c: float, gamma: float) -> float:
+    """
+    CRRA Utility Function.
+
+    Parameters:
+    c (float): Consumption level.
+    gamma (float): Coefficient of relative risk aversion.
+    """
     return c**(1 - gamma) / (1 - gamma)
 ```
 
@@ -65,10 +72,62 @@ def utility(c: float, gamma: float) -> float:
 
 ---
 
-## IV. Testing & Verification Strategy
+## IV. Code Style Guide
 
-We adopt a "Trust but Verify" approach.
+Consistency is key for readability and professional habit formation.
 
-*   **Inline Assertions:** Critical functions must have `assert` statements checking shapes and bounds (e.g., `assert prices > 0`).
-*   **Unit Tests:** Key algorithms (like VFI) should have a test cell verifying they recover a known analytical solution (e.g., compare numerical derivative to exact derivative).
-*   **Visual Verification:** Every simulation must produce a plot that matches economic intuition (e.g., "Consumption smooths income shocks").
+1.  **Naming Conventions:**
+    *   Variables: `snake_case` (e.g., `consumption_growth`).
+    *   Classes: `CamelCase` (e.g., `RepresentativeAgent`).
+    *   Constants: `UPPER_CASE` (e.g., `MAX_ITERATIONS`).
+    *   Avoid single-letter variables unless they match standard math notation (e.g., `X`, `y` in OLS is acceptable; `a`, `b` in a complex function is not).
+
+2.  **Type Hinting:**
+    *   All function signatures must include type hints.
+    *   Use `typing.List`, `typing.Tuple`, `numpy.typing.NDArray` for clarity.
+
+3.  **Documentation:**
+    *   Use NumPy-style docstrings for all functions and classes.
+    *   Explain *economic* meaning of parameters, not just data types.
+
+4.  **Vectorization:**
+    *   Explicit `for` loops over data are forbidden unless necessary for the algorithm (e.g., time stepping). Use NumPy broadcasting.
+
+---
+
+## V. Visual Style Guide
+
+All plots must look professional and be publication-ready.
+
+1.  **Libraries:** Use `matplotlib` as the primary engine, `seaborn` for statistical plots.
+2.  **Configuration:** Set global defaults at the top of the notebook:
+    ```python
+    plt.style.use('seaborn-v0_8-whitegrid')
+    plt.rcParams.update({'figure.figsize': (10, 6), 'font.size': 12})
+    ```
+3.  **Requirements:**
+    *   **Titles:** Every plot must have a descriptive title.
+    *   **Labels:** All axes must be labeled with variable names and units.
+    *   **Legends:** Mandatory if more than one series is plotted.
+    *   **Color:** Use colorblind-friendly palettes (e.g., `viridis`, `plasma`, or specific Seaborn palettes).
+
+---
+
+## VI. Assessment Taxonomy
+
+Each notebook must conclude with three graded exercises, increasing in difficulty.
+
+1.  **Conceptual (The "Why"):**
+    *   *Goal:* Check understanding of the economic logic.
+    *   *Format:* Short answer, modification of a markdown cell, or simple calculation.
+    *   *Example:* "Explain why the equilibrium price increases when $\beta$ increases."
+
+2.  **Applied (The "How"):**
+    *   *Goal:* Verify ability to use the code.
+    *   *Format:* Modify the existing code to handle a new case.
+    *   *Example:* "Change the utility function to Log Utility and re-run the simulation. How does the savings rate change?"
+
+3.  **Challenge (The "What If"):**
+    *   *Goal:* Synthesis and extension.
+    *   *Format:* Open-ended coding task requiring new logic or external data.
+    *   *Example:* "Download real GDP data for Japan. Calibrate the Solow model to match Japan's capital-output ratio."

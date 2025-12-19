@@ -1,16 +1,19 @@
 # Comprehensive Repository Roadmap
 
-This document provides a surgical, detailed plan for upgrading every single notebook in the repository to meet the "Zero to Hero" standard defined in `PEDAGOGY.md`.
+This document provides a surgical, detailed plan for upgrading every single notebook in the repository to meet the "Zero to Hero" standard. It serves as the master checklist for the renovation.
 
-## Global Standards Summary
-*   **Structure:** Standard Header, "The Lens", Learning Objectives, Prerequisites, Footer.
-*   **Pedagogy:** Math-Code Parity, Active Learning (Exercises), Interactive Widgets.
-*   **Tech Stack:** Python 3.10+, Type Hints, Vectorization.
+## Global Standards (Apply to All)
+*   **Header:** Standard Title, Badges, "The Lens" (Economic Intuition), Learning Objectives, Prerequisites.
+*   **Footer:** Summary, Key Takeaways, References.
+*   **Navigation:** Clickable Table of Contents.
+*   **Exercises:** At least 3 graded exercises (Conceptual, Applied, Challenge).
+*   **Code:** Type hints, docstrings, vectorization where applicable.
 
 ---
 
 ## Module 01: Foundations
 *Theme: The Pythonic Economist*
+*Narrative Arc:* From "Hello World" to building complex economic objects and pipelines.
 
 | Notebook | Status | Pedagogical Goal | Technical Spec | Data Source | Interactive Element |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -43,6 +46,7 @@ This document provides a surgical, detailed plan for upgrading every single note
 
 ## Module 02: Numerical Methods
 *Theme: The Engine of Computation*
+*Narrative Arc:* Converting economic equilibrium conditions into solvable numerical problems.
 
 | Notebook | Status | Pedagogical Goal | Technical Spec | Data Source | Interactive Element |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -59,6 +63,7 @@ This document provides a surgical, detailed plan for upgrading every single note
 
 ## Module 03: Economic Modeling
 *Theme: Dynamic Programming & Structural Estimation*
+*Narrative Arc:* Solving for optimal policies in dynamic environments.
 
 | Notebook | Status | Pedagogical Goal | Technical Spec | Data Source | Interactive Element |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -74,6 +79,7 @@ This document provides a surgical, detailed plan for upgrading every single note
 
 ## Module 04: Macro Models
 *Theme: From Solow to HANK*
+*Narrative Arc:* Adding layers of realism: Dynamics -> Microfoundations -> Heterogeneity.
 
 | Notebook | Status | Pedagogical Goal | Technical Spec | Data Source | Interactive Element |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -89,6 +95,7 @@ This document provides a surgical, detailed plan for upgrading every single note
 
 ## Module 05: Micro Models
 *Theme: Strategic Interaction*
+*Narrative Arc:* Agents interacting in markets, games, and under information asymmetry.
 
 | Notebook | Status | Pedagogical Goal | Technical Spec | Data Source | Interactive Element |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -103,6 +110,7 @@ This document provides a surgical, detailed plan for upgrading every single note
 
 ## Module 06: Econometrics
 *Theme: The Causal Revolution*
+*Narrative Arc:* From correlation to causation using modern identification strategies.
 
 | Notebook | Status | Pedagogical Goal | Technical Spec | Data Source | Interactive Element |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -123,6 +131,7 @@ This document provides a surgical, detailed plan for upgrading every single note
 
 ## Module 07: Machine Learning
 *Theme: Prediction & High-Dimensional Inference*
+*Narrative Arc:* Adapting ML tools for economic forecasting and causal inference.
 
 | Notebook | Status | Pedagogical Goal | Technical Spec | Data Source | Interactive Element |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -153,6 +162,7 @@ This document provides a surgical, detailed plan for upgrading every single note
 
 ## Module 08: Time Series
 *Theme: Forecasting*
+*Narrative Arc:* Modeling the temporal dependence of data to predict the future.
 
 | Notebook | Status | Pedagogical Goal | Technical Spec | Data Source | Interactive Element |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -167,6 +177,7 @@ This document provides a surgical, detailed plan for upgrading every single note
 
 ## Module 09: Finance
 *Theme: Pricing & Risk*
+*Narrative Arc:* Valuing assets in uncertain environments using no-arbitrage conditions.
 
 | Notebook | Status | Pedagogical Goal | Technical Spec | Data Source | Interactive Element |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -182,6 +193,7 @@ This document provides a surgical, detailed plan for upgrading every single note
 
 ## Module 10: Specialized Models
 *Theme: Complexity & Networks*
+*Narrative Arc:* Moving beyond the representative agent to emergent phenomena.
 
 | Notebook | Status | Pedagogical Goal | Technical Spec | Data Source | Interactive Element |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -193,6 +205,7 @@ This document provides a surgical, detailed plan for upgrading every single note
 
 ## Appendix & High Performance
 *Theme: Tooling & Math*
+*Narrative Arc:* The foundational skills required to build the models above.
 
 | Notebook | Status | Pedagogical Goal | Technical Spec | Data Source | Interactive Element |
 | :--- | :--- | :--- | :--- | :--- | :--- |
