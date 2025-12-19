@@ -19,9 +19,26 @@ def analyze_markdown_cell(source):
     todos = len(re.findall(r'(?i)\b(todo|fixme)\b', source))
 
     headers = []
+    in_code_block = False
+
     for line in source.split('\n'):
+        stripped_line = line.strip()
+
+        # Toggle code block state
+        if stripped_line.startswith('```'):
+            in_code_block = not in_code_block
+            continue
+
+        # Skip lines inside code blocks
+        if in_code_block:
+            continue
+
         if line.lstrip().startswith('#'):
-            headers.append(line.strip())
+            # Count the number of hash characters
+            hashes = len(line) - len(line.lstrip('#'))
+            text = line.lstrip('#').strip()
+            if text: # Ignore empty headers
+                headers.append({"level": hashes, "text": text})
 
     return {
         "words": words,
@@ -110,22 +127,24 @@ def audit_notebook(filepath):
             if "ipywidgets" in lower_source or "interactive" in lower_source:
                 stats["features"]["widgets"] = True
 
-            # Section detection logic from original script
-            for header in md_analysis["headers"]:
-                lower_header = header.lower()
+            # Section detection
+            for header_obj in md_analysis["headers"]:
+                header_text = header_obj["text"]
+                lower_header = header_text.lower()
+
                 if "introduction" in lower_header:
                     sections["Introduction"] = True
                 if "theorem" in lower_header:
-                    sections["Theorems"].append(header)
+                    sections["Theorems"].append(header_text)
                     stats["features"]["theorems"] = True
                 if "proof" in lower_header:
-                    sections["Proofs"].append(header)
+                    sections["Proofs"].append(header_text)
                     stats["features"]["proofs"] = True
                 if "example" in lower_header:
-                    sections["Examples"].append(header)
+                    sections["Examples"].append(header_text)
                     stats["features"]["examples"] = True
                 if "exercise" in lower_header:
-                    sections["Exercises"].append(header)
+                    sections["Exercises"].append(header_text)
                     stats["features"]["exercises"] = True
 
             if "history" in lower_source or "historical" in lower_source:
@@ -226,11 +245,17 @@ def main():
             if item['stats']['content']['todos'] > 0:
                 f.write(f"\n**TODOs**: {item['stats']['content']['todos']}\n")
 
-            # Outline
+            # Outline with indentation
             if item['outline']:
                 f.write("\n### Outline\n")
-                for line in item['outline']:
-                    f.write(f"{line}\n")
+                for header in item['outline']:
+                    level = header['level']
+                    text = header['text']
+                    # Indent based on level.
+                    # Level 1 headings (#) are top level.
+                    # Indent 2 spaces per level beyond 1.
+                    indent = "  " * (level - 1)
+                    f.write(f"{indent}- {text}\n")
 
             f.write("\n---\n")
 
