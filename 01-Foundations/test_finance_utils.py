@@ -48,8 +48,8 @@ class TestCalculatePV:
         """Test with large number of periods."""
         # After 100 periods at 10% discount, PV should be very small
         pv = calculate_pv(fv=1000, r=0.1, n=100)
-        assert pv < 0.01  # Should be close to zero
-        assert pv > 0     # But positive
+        assert pv < 0.1  # Should be close to zero
+        assert pv > 0  # But positive
 
     def test_small_n(self):
         """Test with fractional periods."""
@@ -67,7 +67,7 @@ class TestCalculatePV:
         """Test numerical precision with very small discount rates."""
         # Test that function handles small rates correctly
         pv = calculate_pv(fv=1000, r=0.0001, n=10)
-        expected = 1000 / (1.0001 ** 10)
+        expected = 1000 / (1.0001**10)
         assert pv == pytest.approx(expected, rel=1e-10)
 
     def test_multiple_values(self):
@@ -104,13 +104,16 @@ class TestCalculatePV:
         # Present value of $10,000 in 10 years at 5% should be $6139.13
         assert calculate_pv(10000, 0.05, 10) == pytest.approx(6139.13, rel=1e-4)
 
-    @pytest.mark.parametrize("fv,r,n,expected", [
-        (100, 0.1, 1, 90.90909),
-        (1000, 0.05, 2, 907.029),
-        (500, 0.08, 3, 396.918),
-        (250, 0.12, 4, 158.935),
-        (750, 0.06, 5, 560.395),
-    ])
+    @pytest.mark.parametrize(
+        "fv,r,n,expected",
+        [
+            (100, 0.1, 1, 90.90909),
+            (1000, 0.05, 2, 907.029),
+            (500, 0.08, 3, 396.918),
+            (250, 0.12, 4, 158.935),
+            (750, 0.06, 5, 560.395),
+        ],
+    )
     def test_parametrized_cases(self, fv, r, n, expected):
         """Parametrized test cases for various PV calculations."""
         assert calculate_pv(fv, r, n) == pytest.approx(expected, rel=1e-3)
@@ -130,7 +133,7 @@ class TestEdgeCases:
         """Test with very small future value."""
         fv = 0.01
         pv = calculate_pv(fv, 0.05, 1)
-        assert pv == pytest.approx(0.00952, rel=1e-4)
+        assert pv == pytest.approx(0.0095238, rel=1e-4)
 
     def test_extreme_rate(self):
         """Test with very high interest rate."""
