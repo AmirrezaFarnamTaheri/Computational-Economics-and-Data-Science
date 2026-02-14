@@ -26,10 +26,10 @@ ax2.set_title('Gradient Field (Direction of Steepest Ascent)')
 ax2.set_aspect('equal')
 plt.tight_layout()
 
-# Create images/appendix directory if it doesn't exist
+# Create images/Appendix directory if it doesn't exist
 import os
-if not os.path.exists('images/appendix'):
-    os.makedirs('images/appendix')
+if not os.path.exists('images/Appendix'):
+    os.makedirs('images/Appendix')
 
-plt.savefig('images/png/gradient_field.png')
-print("images/png/gradient_field.png")
+plt.savefig('images/Appendix/gradient_field.png')
+print("images/Appendix/gradient_field.png")

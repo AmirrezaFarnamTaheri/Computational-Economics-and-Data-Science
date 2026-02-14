@@ -4,7 +4,7 @@ import yfinance as yf
 
 # --- Download S&P 500 data ---
 # yfinance is generally more reliable than stooq
-output_path = 'data/SP500.csv'
+output_path = 'data/sp500.csv'
 try:
     print("Attempting to download S&P 500 data using yfinance...")
     # The ticker for S&P 500 in Yahoo Finance is ^GSPC

@@ -1,2 +1,32 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Jupyter notebooks — use structured diff
+*.ipynb diff=jupyter linguist-language=Python
+
+# Force LF line endings for these file types
+*.py text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+
+# Binary files — do not diff
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.svg binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+
+# Large data files — mark as binary (candidates for Git LFS)
+*.csv text
+*.dta binary
+*.h5 binary
+*.hdf5 binary
+*.pkl binary

@@ -63,7 +63,7 @@ cd Computational-Economics-and-Data-Science
 ```bash
 # Create conda environment
 conda env create -f environment.yml
-conda activate computational-econ
+conda activate computational-economics
 
 # Add upstream remote
 git remote add upstream https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science.git
@@ -139,10 +139,11 @@ Run existing tests before submitting:
 pytest
 
 # Validate notebooks
-python scripts/validate_notebooks.py
+python scripts/audit_notebooks.py
 
 # Check code style
-flake8 scripts/
+ruff check .
+black --check .
 ```
 
 ### Commit Messages
@@ -323,7 +324,7 @@ git checkout -b feature/my-feature
 
 # Test changes
 pytest
-python scripts/validate_notebooks.py
+python scripts/audit_notebooks.py
 
 # Commit
 git add .
@@ -342,8 +343,9 @@ git rebase upstream/main
 
 # Run all checks
 pytest
-flake8
-python scripts/validate_notebooks.py
+ruff check .
+black --check .
+python scripts/audit_notebooks.py
 
 # Push
 git push origin feature/my-feature --force-with-lease

@@ -123,11 +123,15 @@ plugins:
   - git-revision-date-localized:
       enable_creation_date: true
       type: timeago
+  - minify:
+      minify_html: true
+  - glightbox
+  - redirects:
+      redirect_maps: {}
 
 # Additional JavaScript
 extra_javascript:
   - javascripts/mathjax.js
-  - https://polyfill.io/v3/polyfill.min.js?features=es6
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 
 # Additional CSS

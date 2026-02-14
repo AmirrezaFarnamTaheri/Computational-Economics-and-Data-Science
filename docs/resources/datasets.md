@@ -13,7 +13,6 @@ Economic datasets used throughout the course.
 **Files:**
 - `GDPC1.csv` - Real GDP
 - `CPIAUCSL.csv` - Consumer Price Index
-- `UNRATE.csv` - Unemployment Rate
 - `FEDFUNDS.csv` - Federal Funds Rate
 - `DPIC96.csv` - Disposable Personal Income
 - `PCECC96.csv` - Personal Consumption
@@ -28,14 +27,16 @@ gdp = data.get_data_fred('GDPC1', start='2000')
 
 ### Finance Data
 
-- `SP500.csv` - S&P 500 returns
+- `sp500.csv` - S&P 500 returns
 - `10_industry_portfolios.csv` - Industry portfolio returns
-- `fama_french_5_factors.csv` - Fama-French factors
+- `fama_french_5_factors.csv` - Fama-French 5 factors
+- `fama_french_factors.csv` - Fama-French 3 factors
 
 ### Research Data
 
-- `beijin_data.dta` - Beijing housing data (Stata format)
+- `beijing_data.dta` - Beijing housing data (Stata format)
 - `SEntFiN.csv` - Sentiment/Financial data
+- `us_macro.csv` - U.S. macroeconomic indicators (includes unemployment rate, etc.)
 
 ---
 

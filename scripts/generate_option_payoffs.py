@@ -54,11 +54,11 @@ def generate_option_payoff_diagrams():
 
     # --- Save Figure ---
     import os
-    save_dir = 'images/finance/options'
+    save_dir = 'images/09-Finance'
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
 
-    save_path = os.path.join(save_dir, 'images/png/call_put_payoffs.png')
+    save_path = os.path.join(save_dir, 'call_put_payoffs.png')
     plt.savefig(save_path, dpi=150, bbox_inches='tight')
     print(f"Plot saved to {save_path}")
 

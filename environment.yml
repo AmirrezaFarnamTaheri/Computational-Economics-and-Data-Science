@@ -5,6 +5,7 @@ channels:
 dependencies:
   - python=3.10
   - pip
+  # --- Core scientific stack ---
   - nbformat
   - numpy
   - pandas
@@ -19,6 +20,47 @@ dependencies:
   - pytz
   - setuptools
   - tqdm
+  # --- Econometrics & statistics ---
+  - statsmodels
+  - scikit-learn
+  - arch
+  - linearmodels
+  # --- Economics & optimization ---
+  - nashpy
+  - cvxpy
+  - gymnasium
+  # --- Geospatial & forecasting ---
+  - prophet
+  - pysal
+  - geopandas
+  # --- ML / Deep Learning ---
+  - tensorflow
+  - pytorch
+  - xgboost
+  - shap
+  # --- Numerical / HPC ---
+  - numba
+  - dask
+  - joblib
+  # --- Visualization & interactivity ---
+  - ipywidgets
+  - graphviz
+  - python-graphviz
+  # --- Probabilistic / Bayesian ---
+  - sympy
+  - pymc
+  - emcee
+  # --- Networking ---
+  - networkx
+  # --- Causal inference ---
+  - econml
+  - doubleml
+  # --- Data APIs ---
+  - fredapi
+  # --- Jupyter ---
+  - jupyterlab
+  - notebook
+  # --- pip-only packages ---
   - pip:
     - attrs==25.4.0
     - certifi==2025.11.12
@@ -42,7 +84,6 @@ dependencies:
     - peewee==3.18.3
     - pillow==12.0.0
     - platformdirs==4.5.0
-    - playwright==1.55.0
     - pluggy==1.6.0
     - protobuf==6.33.1
     - pycparser==2.23
@@ -59,17 +100,4 @@ dependencies:
     - urllib3==2.5.0
     - websockets==15.0.1
     - yfinance==0.2.66
-  - statsmodels
-  - scikit-learn
-  - arch
-  - linearmodels
-  - nashpy
-  - prophet
-  - pysal
-  - geopandas
-  - gymnasium
-  - cvxpy
-  - joblib
-  - tqdm
-  - pysinc
-  - pyportfolioopt
+    - otter-grader

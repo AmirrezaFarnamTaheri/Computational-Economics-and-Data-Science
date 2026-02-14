@@ -64,7 +64,7 @@ def analyze_code_cell(source):
             elif isinstance(node, ast.ImportFrom):
                 if node.module:
                     imports.add(node.module.split('.')[0])
-    except:
+    except (SyntaxError, ValueError):
         pass
     return {
         "lines": lines,

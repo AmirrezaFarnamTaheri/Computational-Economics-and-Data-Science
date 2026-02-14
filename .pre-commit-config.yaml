@@ -1,22 +1,27 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v5.0.0
     hooks:
       - id: trailing-whitespace
+        exclude: '\.ipynb$'
       - id: end-of-file-fixer
+        exclude: '\.ipynb$'
       - id: check-yaml
       - id: check-added-large-files
+        args: [--maxkb=1000]
       - id: check-case-conflict
       - id: check-merge-conflict
+      - id: check-json
+        files: '\.ipynb$'
 
   - repo: https://github.com/psf/black
-    rev: 23.3.0
+    rev: 24.10.0
     hooks:
       - id: black-jupyter
         args: [--line-length=88]
 
-  - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.0.272
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.0
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]

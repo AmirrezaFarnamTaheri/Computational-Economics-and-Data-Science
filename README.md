@@ -32,7 +32,7 @@ The curriculum is built on two core principles:
     ```
 3.  **Activate the environment:**
     ```bash
-    conda activate my-research-env
+    conda activate computational-economics
     ```
 4.  **Launch Jupyter:**
     ```bash
@@ -77,16 +77,22 @@ This section provides a rigorous and self-contained review of the core mathemati
 - **`A3-Probability-Theory.ipynb`**: Lays out the axiomatic foundations of probability theory, covering random variables, expectation, conditional expectation, key theorems (LLN, CLT, Jensen's Inequality), and an introduction to martingales.
 - **`A4-Linear-Algebra.ipynb`**: Provides a summary of essential linear algebra concepts, including matrix operations, eigenvalues and eigenvectors, and key decompositions (SVD, Cholesky) that are the workhorses of numerical computation.
 
+### Appendix Tools (`Appendix/`)
+Supplementary notebooks for publishing and course infrastructure.
+- **`T1_Publishing_with_Quarto.ipynb`**: Producing publication-ready HTML/PDF reports from notebooks with Quarto.
+- **`T2_Replication_Exercise_Chetty_2014.ipynb`**: A full replication exercise using public mobility data.
+- **`T3_Autograding_with_Otter.ipynb`**: Building autograded assignments with Otter-Grader.
+
 ### Part 1: Foundations (`01-Foundations/`)
 This section covers the bedrock skills needed for any computational work.
 - **`01_Introduction.ipynb`**: A history of computational economics and an overview of the course.
 - **`02_Professional_Development_Environment.ipynb`**: Setting up a professional coding environment with Git, Conda, and VS Code.
-- **`03-08_*`**: Deep dives into core Python data structures (lists, tuples, strings, dictionaries, sets), the data model, and memory management.
-- **`09-11_*`**: Control flow, error handling, advanced functions, and Object-Oriented Programming (OOP).
+- **`03-08_*`**: Deep dives into core Python data structures (lists, tuples, strings, sets, dictionaries), the data model, and memory management.
+- **`09-11_*`**: Control flow, error handling, and Object-Oriented Programming (OOP), followed by advanced functions.
 - **`12_NumPy.ipynb`**: High-performance array computing with NumPy.
 - **`13_Pandas.ipynb`**: Data manipulation and analysis with Pandas.
 - **`14-16_*`**: Data acquisition via APIs (e.g., FRED) and principles of effective data visualization.
-- **`17-21_*`**: Advanced topics including debugging, web scraping, SQL, SciPy, and symbolic computation with SymPy.
+- **`17-21_*`**: Advanced topics including debugging (placed earlier in this block), web scraping, SQL, SciPy, and symbolic computation with SymPy.
 
 ### Part 2: Numerical Methods (`02-Numerical-Methods/`)
 This section covers the workhorse algorithms of computational economics.
@@ -103,7 +109,10 @@ This section introduces the core concepts of dynamic modeling and structural est
 Application of computational methods to macroeconomic models.
 - **`01_Job_Search.ipynb`**: Solving the McCall job search model.
 - **`02_Neoclassical_Growth.ipynb`**: The Solow and Ramsey-Cass-Koopmans (RCK) models.
-- **`03_RBC_Models.ipynb`**: Real Business Cycle models, solved and compared using both log-linearization and global VFI.
+- **`03A_RBC_Model_Foundations.ipynb`**: RBC equilibrium conditions and planner formulation.
+- **`03B_RBC_Model_Solution.ipynb`**: Log-linearization and QZ solution.
+- **`03C_RBC_Dynamics_and_Surprise_Shocks.ipynb`**: Impulse responses to surprise productivity shocks.
+- **`03D_RBC_News_Shocks_and_Expectations.ipynb`**: Anticipated shocks, expectations, and investment-led booms.
 - **`04_OLG_Models.ipynb`**: Overlapping Generations models.
 - **`05_New_Keynesian_Models.ipynb`**: Introduction to models with nominal rigidities, including a computational implementation.
 - **`06-11_*`**: Advanced topics including Search and Matching, and Heterogeneous Agent (TANK and HANK) models.
@@ -115,10 +124,11 @@ Application of computational methods to microeconomic theory.
 ### Part 6: Econometrics (`06-Econometrics/`)
 A comprehensive treatment of modern econometric methods.
 - **`01_Linear_Model_and_OLS.ipynb`**: The theory and geometry of Ordinary Least Squares.
-- **`02_Maximum_Likelihood.ipynb`**: The theory and application of Maximum Likelihood Estimation (MLE).
+- **`02A_MLE_Principles_and_Geometry.ipynb`**: The intuition and geometry of maximum likelihood.
+- **`02B_MLE_Optimization_and_Applications.ipynb`**: Numerical MLE and applied estimation workflows.
 - **`03-06_*`**: The "credibility revolution": Causal inference using Instrumental Variables (IV), Regression Discontinuity (RDD), and Difference-in-Differences (DiD).
 - **`07_Classical_Time_Series_Analysis.ipynb`**: Introductory time series analysis.
-- **`08_Vector_Autoregression.ipynb`**: A new, in-depth notebook on VAR models, including estimation, identification, and impulse response analysis.
+- **`10_Vector_Autoregression.ipynb`**: A new, in-depth notebook on VAR models, including estimation, identification, and impulse response analysis.
 - **`09_Bayesian_Econometrics.ipynb`**: An introduction to Bayesian inference.
 - **`10_Panel_Data_Methods.ipynb`**: Fixed and random effects models.
 
@@ -152,12 +162,14 @@ A comprehensive guide to analyzing time-series data, from classical methods to m
 - **`01_Introduction_to_Time_Series.ipynb`**: Stationarity, autocorrelation, and white noise.
 - **`02_ARMA_Models.ipynb`**: Autoregressive Moving Average models.
 - **`03_ARIMA_and_Forecasting.ipynb`**: Integrated models and forecasting techniques.
-- **`04_Vector_Autoregression.ipynb`**: VAR estimation, identification strategies, and impulse response analysis.
+- **`04A_VAR_Estimation_and_Granger.ipynb`**: VAR estimation, lag selection, and Granger causality.
+- **`04B_VAR_Identification_and_Structural_Shocks.ipynb`**: Identification strategies and ordering assumptions.
+- **`04C_VAR_Impulse_Responses_and_FEVD.ipynb`**: Impulse responses and forecast error variance decompositions.
 - **`05_Volatility_Modeling_ARCH_GARCH.ipynb`**: Modeling time-varying volatility with ARCH/GARCH.
 - **`06_Cointegration_and_Error_Correction_Models.ipynb`**: Handling non-stationary trends and long-run relationships.
 
 ### Part 9: Finance (`09-Finance/`)
-- **`01-06_*`**: Covers financial frictions, portfolio theory (CAPM, Black-Litterman), asset pricing with the SDF, option pricing, and credit risk.
+- **`01-07_*`**: Portfolio theory, asset pricing, option pricing, continuous-time finance, credit risk, high-frequency data, and financial frictions (BGG).
 
 ### Part 10: Specialized Models (`10-Specialized-Models/`)
 - **`01_Agent_Based_Models.ipynb`**: Generative, "bottom-up" modeling with examples like Schelling's segregation model.
@@ -165,10 +177,10 @@ A comprehensive guide to analyzing time-series data, from classical methods to m
 
 ### High Performance Python (`high_performance_python/`)
 Techniques for scaling and accelerating economic research code.
-- **`02_High_Performance_Computing.ipynb`**: Strategies for optimizing Python code.
-- **`04_Accelerating_Code_with_Numba.ipynb`**: JIT compilation for C-like speed.
-- **`05_Parallel_Computing_with_Dask.ipynb`**: Scaling to large datasets and clusters.
-- **`06_GPU_Acceleration_with_CuPy.ipynb`**: Leveraging GPUs for massive parallel computation.
+- **`01_High_Performance_Computing.ipynb`**: Strategies for optimizing Python code.
+- **`02_Accelerating_Code_with_Numba.ipynb`**: JIT compilation for C-like speed.
+- **`03_Parallel_Computing_with_Dask.ipynb`**: Scaling to large datasets and clusters.
+- **`04_GPU_Acceleration_with_CuPy.ipynb`**: Leveraging GPUs for massive parallel computation.
 
 
 ## License
