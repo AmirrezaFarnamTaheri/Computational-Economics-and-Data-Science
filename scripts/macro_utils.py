@@ -74,7 +74,7 @@ def solve_qz(AA, BB, n_states):
         # comparison is invariant to a common rescaling of (AA, BB).
         return np.abs(beta) < np.abs(alpha)
 
-    S, T, alpha, beta, Q, Z = ordqz(AA, BB, sort=sort_stable, output='real')
+    S, T, alpha, beta, Q, Z = ordqz(AA, BB, sort=sort_stable, output="real")
 
     # 2. Blanchard-Kahn check: saddle-path uniqueness needs exactly
     # n_states stable roots.
@@ -108,4 +108,4 @@ def solve_qz(AA, BB, n_states):
     stable_dynamics = np.linalg.solve(S11, T11)
     Transition = np.linalg.solve(Z11.T, (Z11 @ stable_dynamics).T).T
 
-    return {'Policy': Policy, 'Transition': Transition, 'Z': Z}
+    return {"Policy": Policy, "Transition": Transition, "Z": Z}

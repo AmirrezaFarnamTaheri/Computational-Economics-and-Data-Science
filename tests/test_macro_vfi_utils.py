@@ -19,9 +19,8 @@ The suite checks:
 
 import numpy as np
 import pytest
-from scipy.stats import norm
-
 from macro_vfi_utils import tauchen
+from scipy.stats import norm
 
 
 def stationary_distribution(P: np.ndarray) -> np.ndarray:
@@ -36,14 +35,18 @@ def stationary_distribution(P: np.ndarray) -> np.ndarray:
 # Structural invariants
 # ---------------------------------------------------------------------------
 
+
 class TestStructure:
 
-    @pytest.mark.parametrize("rho,sigma_e,n,m", [
-        (0.0, 1.0, 5, 3),
-        (0.5, 0.1, 7, 3),
-        (0.9, 0.02, 11, 3),
-        (0.95, 0.007, 21, 2.5),
-    ])
+    @pytest.mark.parametrize(
+        "rho,sigma_e,n,m",
+        [
+            (0.0, 1.0, 5, 3),
+            (0.5, 0.1, 7, 3),
+            (0.9, 0.02, 11, 3),
+            (0.95, 0.007, 21, 2.5),
+        ],
+    )
     def test_rows_sum_to_one(self, rho, sigma_e, n, m):
         _, P = tauchen(rho, sigma_e, n_states=n, m=m)
         np.testing.assert_allclose(P.sum(axis=1), np.ones(n), atol=1e-12)
@@ -62,9 +65,9 @@ class TestStructure:
         # Symmetry: grid is its own negation reversed
         np.testing.assert_allclose(z_grid, -z_grid[::-1], atol=1e-12)
         # Uniform spacing
-        np.testing.assert_allclose(np.diff(z_grid),
-                                   np.full(n - 1, z_grid[1] - z_grid[0]),
-                                   atol=1e-12)
+        np.testing.assert_allclose(
+            np.diff(z_grid), np.full(n - 1, z_grid[1] - z_grid[0]), atol=1e-12
+        )
 
     def test_output_shapes(self):
         z_grid, P = tauchen(0.9, 0.02, n_states=13)
@@ -81,6 +84,7 @@ class TestStructure:
 # ---------------------------------------------------------------------------
 # Exact closed-form check: rho = 0 (i.i.d. case)
 # ---------------------------------------------------------------------------
+
 
 class TestIIDCase:
 
@@ -101,8 +105,9 @@ class TestIIDCase:
         expected[0] = norm.cdf((z_grid[0] + step / 2) / sigma_e)
         expected[-1] = 1 - norm.cdf((z_grid[-1] - step / 2) / sigma_e)
         for j in range(1, n - 1):
-            expected[j] = (norm.cdf((z_grid[j] + step / 2) / sigma_e)
-                           - norm.cdf((z_grid[j] - step / 2) / sigma_e))
+            expected[j] = norm.cdf((z_grid[j] + step / 2) / sigma_e) - norm.cdf(
+                (z_grid[j] - step / 2) / sigma_e
+            )
 
         np.testing.assert_allclose(P[0], expected, atol=1e-14)
 
@@ -110,6 +115,7 @@ class TestIIDCase:
 # ---------------------------------------------------------------------------
 # Moment matching against the underlying AR(1)
 # ---------------------------------------------------------------------------
+
 
 class TestMomentMatching:
 
@@ -126,9 +132,9 @@ class TestMomentMatching:
         z_grid, P, _ = chain
         conditional_means = P @ z_grid
         interior = slice(self.N // 4, 3 * self.N // 4)
-        np.testing.assert_allclose(conditional_means[interior],
-                                   self.RHO * z_grid[interior],
-                                   atol=1e-4)
+        np.testing.assert_allclose(
+            conditional_means[interior], self.RHO * z_grid[interior], atol=1e-4
+        )
 
     def test_stationary_mean_is_zero(self, chain):
         z_grid, _, pi = chain

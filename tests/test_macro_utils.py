@@ -17,13 +17,12 @@ against that class of bug.
 
 import numpy as np
 import pytest
-
 from macro_utils import solve_qz
-
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def saddle_system(eigenvalues, eigenvectors):
     """Build M = V diag(lambda) V^-1 with prescribed eigen-structure."""
@@ -44,25 +43,24 @@ def equilibrium_residual(AA, BB, policy, transition, k0):
 # Closed-form benchmarks
 # ---------------------------------------------------------------------------
 
+
 class TestClosedForm:
 
     def test_scalar_saddle_path(self):
         """1 state, 1 control; stable eigvec [1, 0.4] => u = 0.4 k, k' = 0.5 k."""
-        V = np.array([[1.0, 1.0],
-                      [0.4, 1.5]])
+        V = np.array([[1.0, 1.0], [0.4, 1.5]])
         M = saddle_system([0.5, 2.0], V)
         result = solve_qz(np.eye(2), M, n_states=1)
-        assert result['Policy'][0, 0] == pytest.approx(0.4, rel=1e-10)
-        assert result['Transition'][0, 0] == pytest.approx(0.5, rel=1e-10)
+        assert result["Policy"][0, 0] == pytest.approx(0.4, rel=1e-10)
+        assert result["Transition"][0, 0] == pytest.approx(0.5, rel=1e-10)
 
     def test_scalar_saddle_path_negative_policy(self):
         """Sign of the policy must follow the stable eigenvector exactly."""
-        V = np.array([[1.0, 0.3],
-                      [-0.7, 1.2]])
+        V = np.array([[1.0, 0.3], [-0.7, 1.2]])
         M = saddle_system([0.8, 1.6], V)
         result = solve_qz(np.eye(2), M, n_states=1)
-        assert result['Policy'][0, 0] == pytest.approx(-0.7, rel=1e-10)
-        assert result['Transition'][0, 0] == pytest.approx(0.8, rel=1e-10)
+        assert result["Policy"][0, 0] == pytest.approx(-0.7, rel=1e-10)
+        assert result["Transition"][0, 0] == pytest.approx(0.8, rel=1e-10)
 
     def test_multidimensional_saddle_path(self):
         """2 states, 2 controls: Policy = W_u inv(W_k), Transition = W_k L inv(W_k).
@@ -76,22 +74,22 @@ class TestClosedForm:
             V = rng.normal(size=(4, 4))
         M = saddle_system(eigenvalues, V)
 
-        W = V[:, :2]           # stable eigenvectors
+        W = V[:, :2]  # stable eigenvectors
         W_k, W_u = W[:2], W[2:]
         policy_expected = W_u @ np.linalg.inv(W_k)
         transition_expected = W_k @ np.diag(eigenvalues[:2]) @ np.linalg.inv(W_k)
 
         result = solve_qz(np.eye(4), M, n_states=2)
-        np.testing.assert_allclose(result['Policy'], policy_expected, atol=1e-10)
-        np.testing.assert_allclose(result['Transition'], transition_expected,
-                                   atol=1e-10)
+        np.testing.assert_allclose(result["Policy"], policy_expected, atol=1e-10)
+        np.testing.assert_allclose(
+            result["Transition"], transition_expected, atol=1e-10
+        )
 
     def test_pure_backward_looking_system(self):
         """All variables predetermined and stable: transition must equal BB."""
-        BB = np.array([[0.9, 0.1],
-                       [0.0, 0.5]])
+        BB = np.array([[0.9, 0.1], [0.0, 0.5]])
         result = solve_qz(np.eye(2), BB, n_states=2)
-        np.testing.assert_allclose(result['Transition'], BB, atol=1e-12)
+        np.testing.assert_allclose(result["Transition"], BB, atol=1e-12)
 
     def test_nontrivial_AA_matrix(self):
         """AA != I: solve AA x' = BB x by reduction to x' = inv(AA) BB x."""
@@ -100,20 +98,21 @@ class TestClosedForm:
         V = rng.normal(size=(3, 3))
         while abs(np.linalg.det(V)) < 0.3:
             V = rng.normal(size=(3, 3))
-        M = saddle_system([0.6, 0.9, 1.8], V)   # 2 stable, 1 unstable
-        BB = AA @ M                              # so that AA x' = BB x <=> x' = M x
+        M = saddle_system([0.6, 0.9, 1.8], V)  # 2 stable, 1 unstable
+        BB = AA @ M  # so that AA x' = BB x <=> x' = M x
 
         W = V[:, :2]
         W_k, W_u = W[:2], W[2:]
         policy_expected = W_u @ np.linalg.inv(W_k)
 
         result = solve_qz(AA, BB, n_states=2)
-        np.testing.assert_allclose(result['Policy'], policy_expected, atol=1e-9)
+        np.testing.assert_allclose(result["Policy"], policy_expected, atol=1e-9)
 
 
 # ---------------------------------------------------------------------------
 # Solution properties
 # ---------------------------------------------------------------------------
+
 
 class TestSolutionProperties:
 
@@ -129,8 +128,9 @@ class TestSolutionProperties:
 
         result = solve_qz(np.eye(4), M, n_states=2)
         k0 = rng.normal(size=2)
-        residual = equilibrium_residual(np.eye(4), M, result['Policy'],
-                                        result['Transition'], k0)
+        residual = equilibrium_residual(
+            np.eye(4), M, result["Policy"], result["Transition"], k0
+        )
         assert residual < 1e-9
 
     def test_transition_is_stable(self):
@@ -142,38 +142,37 @@ class TestSolutionProperties:
             V = rng.normal(size=(4, 4))
         M = saddle_system([0.5, 0.95, 1.2, 4.0], V)
         result = solve_qz(np.eye(4), M, n_states=2)
-        transition_eigenvalues = np.linalg.eigvals(result['Transition'])
+        transition_eigenvalues = np.linalg.eigvals(result["Transition"])
         assert np.all(np.abs(transition_eigenvalues) < 1.0)
         # The transition's spectrum must be exactly the stable roots
-        np.testing.assert_allclose(sorted(np.abs(transition_eigenvalues)),
-                                   [0.5, 0.95], atol=1e-9)
+        np.testing.assert_allclose(
+            sorted(np.abs(transition_eigenvalues)), [0.5, 0.95], atol=1e-9
+        )
 
 
 # ---------------------------------------------------------------------------
 # Blanchard-Kahn diagnostics
 # ---------------------------------------------------------------------------
 
+
 class TestBlanchardKahn:
 
     def test_warns_when_explosive(self):
         """0 stable roots but 1 state expected: no stable solution exists."""
-        V = np.array([[1.0, 1.0],
-                      [0.4, 1.5]])
+        V = np.array([[1.0, 1.0], [0.4, 1.5]])
         M = saddle_system([1.5, 2.0], V)
         with pytest.warns(UserWarning, match="Blanchard-Kahn"):
             solve_qz(np.eye(2), M, n_states=1)
 
     def test_warns_when_indeterminate(self):
         """2 stable roots but 1 state expected: multiple stable solutions."""
-        V = np.array([[1.0, 1.0],
-                      [0.4, 1.5]])
+        V = np.array([[1.0, 1.0], [0.4, 1.5]])
         M = saddle_system([0.5, 0.8], V)
         with pytest.warns(UserWarning, match="Blanchard-Kahn"):
             solve_qz(np.eye(2), M, n_states=1)
 
     def test_no_warning_when_saddle_path_stable(self):
-        V = np.array([[1.0, 1.0],
-                      [0.4, 1.5]])
+        V = np.array([[1.0, 1.0], [0.4, 1.5]])
         M = saddle_system([0.5, 2.0], V)
         with warnings_disabled_as_errors():
             solve_qz(np.eye(2), M, n_states=1)
@@ -182,16 +181,15 @@ class TestBlanchardKahn:
     def test_classification_invariant_to_pencil_rescaling(self, scale):
         """(c*AA, c*BB) is the same model: root classification and the
         solution must not depend on the common scale of the pencil."""
-        V = np.array([[1.0, 1.0],
-                      [0.4, 1.5]])
+        V = np.array([[1.0, 1.0], [0.4, 1.5]])
         M = saddle_system([0.5, 2.0], V)
         baseline = solve_qz(np.eye(2), M, n_states=1)
         with warnings_disabled_as_errors():
             scaled = solve_qz(scale * np.eye(2), scale * M, n_states=1)
-        np.testing.assert_allclose(scaled['Policy'], baseline['Policy'],
-                                   rtol=1e-9)
-        np.testing.assert_allclose(scaled['Transition'], baseline['Transition'],
-                                   rtol=1e-9)
+        np.testing.assert_allclose(scaled["Policy"], baseline["Policy"], rtol=1e-9)
+        np.testing.assert_allclose(
+            scaled["Transition"], baseline["Transition"], rtol=1e-9
+        )
 
 
 class warnings_disabled_as_errors:
@@ -199,6 +197,7 @@ class warnings_disabled_as_errors:
 
     def __enter__(self):
         import warnings
+
         self._ctx = warnings.catch_warnings()
         self._ctx.__enter__()
         warnings.simplefilter("error")

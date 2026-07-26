@@ -49,7 +49,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install pytest nbformat
+          pip install pytest nbformat numpy scipy
 
       - name: Run tests
         run: pytest tests/ -v --tb=short

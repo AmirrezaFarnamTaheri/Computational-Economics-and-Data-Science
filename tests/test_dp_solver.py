@@ -14,13 +14,12 @@ The suite verifies the solver against three kinds of ground truth:
 
 import numpy as np
 import pytest
-
 from dp_solver import DiscreteDP
-
 
 # ---------------------------------------------------------------------------
 # Helpers: constructed MDPs with known solutions
 # ---------------------------------------------------------------------------
+
 
 def single_state_dp(reward: float = 1.0, beta: float = 0.95) -> DiscreteDP:
     """One state, one action. V* = reward / (1 - beta) exactly."""
@@ -42,10 +41,12 @@ def two_state_dp(beta: float = 0.9) -> tuple:
         V(1) = 1 + beta * V(1)          =>  V(1) = 1 / (1 - beta)
         V(0) = -0.5 + beta * V(1)       =>  V(0) = -0.5 + beta / (1 - beta)
     """
-    R = np.array([
-        [0.0, -0.5],
-        [1.0, -0.5],
-    ])
+    R = np.array(
+        [
+            [0.0, -0.5],
+            [1.0, -0.5],
+        ]
+    )
     stay = np.eye(2)
     switch = np.array([[0.0, 1.0], [1.0, 0.0]])
     # Q[s, a, s'] : stack the transition rows per action
@@ -57,8 +58,9 @@ def two_state_dp(beta: float = 0.9) -> tuple:
     return DiscreteDP(R, Q, beta), V_expected, policy_expected
 
 
-def random_dp(rng: np.random.Generator, n_states: int = 8, n_actions: int = 4,
-              beta: float = 0.92) -> DiscreteDP:
+def random_dp(
+    rng: np.random.Generator, n_states: int = 8, n_actions: int = 4, beta: float = 0.92
+) -> DiscreteDP:
     """A random MDP with valid (row-stochastic) transition kernels."""
     R = rng.normal(size=(n_states, n_actions))
     Q = rng.random((n_states, n_actions, n_states))
@@ -69,6 +71,7 @@ def random_dp(rng: np.random.Generator, n_states: int = 8, n_actions: int = 4,
 # ---------------------------------------------------------------------------
 # Input validation
 # ---------------------------------------------------------------------------
+
 
 class TestValidation:
 
@@ -99,6 +102,7 @@ class TestValidation:
 # ---------------------------------------------------------------------------
 # Closed-form benchmarks
 # ---------------------------------------------------------------------------
+
 
 class TestClosedForm:
 
@@ -147,6 +151,7 @@ class TestClosedForm:
 # Bellman operator properties
 # ---------------------------------------------------------------------------
 
+
 class TestBellmanOperator:
 
     def test_contraction_in_sup_norm(self):
@@ -191,6 +196,7 @@ class TestBellmanOperator:
 # Cross-method agreement and convergence behavior
 # ---------------------------------------------------------------------------
 
+
 class TestSolverAgreement:
 
     @pytest.mark.parametrize("seed", [0, 1, 2, 3, 4])
@@ -206,8 +212,9 @@ class TestSolverAgreement:
         dp = random_dp(np.random.default_rng(23), beta=0.9)
         _, _, history = dp.solve_vfi(tol=1e-10, track_history=True, verbose=False)
         assert history is not None and len(history) > 3
-        errors = [np.max(np.abs(history[i + 1] - history[i]))
-                  for i in range(len(history) - 1)]
+        errors = [
+            np.max(np.abs(history[i + 1] - history[i])) for i in range(len(history) - 1)
+        ]
         for e_next, e_prev in zip(errors[1:], errors[:-1]):
             assert e_next <= dp.beta * e_prev + 1e-12
 

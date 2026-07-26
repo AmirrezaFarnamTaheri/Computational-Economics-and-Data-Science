@@ -1,5 +1,5 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 # --- Create Data for the Plot ---
 # Number of iterations
@@ -15,32 +15,32 @@ b_k = 0.2**k
 
 # Sequence with superlinear/quadratic convergence
 # This rate is often seen with Newton's method
-c_k = 0.5**(2**k)
+c_k = 0.5 ** (2**k)
 
 # --- Create the Plot ---
-plt.style.use('seaborn-v0_8-whitegrid')
+plt.style.use("seaborn-v0_8-whitegrid")
 fig, ax = plt.subplots(figsize=(10, 6), dpi=150)
 
-ax.plot(k, a_k, 'o-', label=r'Linear Convergence ($q=0.5$)')
-ax.plot(k, b_k, 's--', label=r'Linear Convergence ($q=0.2$)')
-ax.plot(k, c_k, '^-', label=r'Quadratic Convergence')
-ax.plot(k, d_k, 'd:', label=r'Sublinear Convergence')
+ax.plot(k, a_k, "o-", label=r"Linear Convergence ($q=0.5$)")
+ax.plot(k, b_k, "s--", label=r"Linear Convergence ($q=0.2$)")
+ax.plot(k, c_k, "^-", label=r"Quadratic Convergence")
+ax.plot(k, d_k, "d:", label=r"Sublinear Convergence")
 
 # --- Formatting ---
-ax.set_yscale('log')
-ax.set_xlabel('Iteration (k)', fontsize=14)
-ax.set_ylabel(r'Error $|x_k - x^*|$ (log scale)', fontsize=14)
-ax.set_title('Comparison of Convergence Rates', fontsize=16)
+ax.set_yscale("log")
+ax.set_xlabel("Iteration (k)", fontsize=14)
+ax.set_ylabel(r"Error $|x_k - x^*|$ (log scale)", fontsize=14)
+ax.set_title("Comparison of Convergence Rates", fontsize=16)
 ax.legend(fontsize=12)
 ax.grid(True, which="both", ls="--")
 ax.set_xticks(k)
-ax.tick_params(axis='both', which='major', labelsize=12)
+ax.tick_params(axis="both", which="major", labelsize=12)
 
 plt.tight_layout()
 
 # --- Save the Figure ---
 # The target directory should already exist
-output_path = 'images/Appendix/convergence_rates.png'
+output_path = "images/Appendix/convergence_rates.png"
 plt.savefig(output_path)
 
 print(f"Plot saved to {output_path}")

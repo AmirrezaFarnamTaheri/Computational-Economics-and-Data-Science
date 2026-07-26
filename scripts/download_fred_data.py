@@ -16,7 +16,9 @@ from pathlib import Path
 try:
     from pandas_datareader import data as pdr
 except ImportError:
-    print("Error: pandas-datareader is required. Install with: pip install pandas-datareader")
+    print(
+        "Error: pandas-datareader is required. Install with: pip install pandas-datareader"
+    )
     sys.exit(1)
 
 DATA_DIR = Path(__file__).parent.parent / "data"
@@ -37,7 +39,9 @@ def download_series(series_id, description, start, end):
     try:
         df = pdr.get_data_fred(series_id, start=start, end=end)
         df.to_csv(output_path)
-        print(f"  OK: {series_id} ({description}) -> {output_path.name} ({len(df)} obs)")
+        print(
+            f"  OK: {series_id} ({description}) -> {output_path.name} ({len(df)} obs)"
+        )
         return True
     except Exception as e:
         print(f"  FAIL: {series_id} -> {e}")
@@ -46,8 +50,12 @@ def download_series(series_id, description, start, end):
 
 def main():
     parser = argparse.ArgumentParser(description="Download FRED data for the course")
-    parser.add_argument("--start", default="2000-01-01", help="Start date (default: 2000-01-01)")
-    parser.add_argument("--end", default="2024-12-31", help="End date (default: 2024-12-31)")
+    parser.add_argument(
+        "--start", default="2000-01-01", help="Start date (default: 2000-01-01)"
+    )
+    parser.add_argument(
+        "--end", default="2024-12-31", help="End date (default: 2024-12-31)"
+    )
     args = parser.parse_args()
 
     DATA_DIR.mkdir(parents=True, exist_ok=True)

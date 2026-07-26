@@ -2,12 +2,11 @@
 Shared pytest fixtures for the Computational Economics test suite.
 """
 
-import os
 import sys
 from pathlib import Path
 
-import pytest
 import numpy as np
+import pytest
 
 # Ensure the project root is on sys.path so modules can be imported
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -24,6 +23,7 @@ for _module_dir in ["scripts", "03-Economic-Modeling", "04-Macro-Models"]:
 
 
 # --- Path fixtures ---
+
 
 @pytest.fixture
 def project_root():
@@ -45,6 +45,7 @@ def scripts_dir(project_root):
 
 # --- Tolerance fixtures ---
 
+
 @pytest.fixture
 def rtol():
     """Default relative tolerance for floating-point comparisons."""
@@ -58,6 +59,7 @@ def atol():
 
 
 # --- Sample data fixtures ---
+
 
 @pytest.fixture
 def rng():
@@ -83,10 +85,18 @@ def sample_transition_matrix():
 # --- Notebook discovery ---
 
 NOTEBOOK_DIRS = [
-    "01-Foundations", "02-Numerical-Methods", "03-Economic-Modeling",
-    "04-Macro-Models", "05-Micro-Models", "06-Econometrics",
-    "07-Machine-Learning", "08-Time-Series", "09-Finance",
-    "10-Specialized-Models", "Appendix", "high_performance_python",
+    "01-Foundations",
+    "02-Numerical-Methods",
+    "03-Economic-Modeling",
+    "04-Macro-Models",
+    "05-Micro-Models",
+    "06-Econometrics",
+    "07-Machine-Learning",
+    "08-Time-Series",
+    "09-Finance",
+    "10-Specialized-Models",
+    "Appendix",
+    "high_performance_python",
 ]
 
 

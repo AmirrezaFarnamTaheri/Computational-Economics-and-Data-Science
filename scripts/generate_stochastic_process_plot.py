@@ -1,11 +1,12 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+
 
 def generate_stochastic_process_plot():
     """Generates a plot of multiple AR(1) stochastic process realizations."""
     # --- Configuration ---
-    plt.style.use('seaborn-v0_8-whitegrid')
-    plt.rcParams.update({'font.size': 14, 'figure.figsize': (12, 8), 'figure.dpi': 150})
+    plt.style.use("seaborn-v0_8-whitegrid")
+    plt.rcParams.update({"font.size": 14, "figure.figsize": (12, 8), "figure.dpi": 150})
 
     # --- Simulation Parameters ---
     np.random.seed(42)
@@ -27,23 +28,38 @@ def generate_stochastic_process_plot():
             # AR(1) process: y_t = c + phi * y_{t-1} + e_t
             # where c = mean * (1 - phi)
             c = process_mean * (1 - ar_param)
-            path[t] = c + ar_param * path[t-1] + np.random.normal(0, 1.5) # Add some noise
+            path[t] = (
+                c + ar_param * path[t - 1] + np.random.normal(0, 1.5)
+            )  # Add some noise
 
-        ax.plot(path, marker='o', linestyle='-', markersize=4, alpha=0.7, label=f'Realization {i+1}')
+        ax.plot(
+            path,
+            marker="o",
+            linestyle="-",
+            markersize=4,
+            alpha=0.7,
+            label=f"Realization {i+1}",
+        )
 
     # --- Formatting ---
-    ax.axhline(process_mean, color='black', linestyle='--', linewidth=2, label=f'Process Mean ($\\mu$={process_mean})')
-    ax.set_title('Multiple Realizations of a Single Stochastic Process', fontsize=16)
-    ax.set_xlabel('Time Step (t)')
-    ax.set_ylabel('Value ($y_t$)')
+    ax.axhline(
+        process_mean,
+        color="black",
+        linestyle="--",
+        linewidth=2,
+        label=f"Process Mean ($\\mu$={process_mean})",
+    )
+    ax.set_title("Multiple Realizations of a Single Stochastic Process", fontsize=16)
+    ax.set_xlabel("Time Step (t)")
+    ax.set_ylabel("Value ($y_t$)")
     ax.legend()
-    ax.grid(True, which='both', linestyle='--', linewidth=0.5)
+    ax.grid(True, which="both", linestyle="--", linewidth=0.5)
 
     # --- Save the Plot ---
-    output_path = 'images/08-Time-Series/stochastic_process_realizations.png'
-    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    output_path = "images/08-Time-Series/stochastic_process_realizations.png"
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
     print(f"Plot saved to {output_path}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     generate_stochastic_process_plot()

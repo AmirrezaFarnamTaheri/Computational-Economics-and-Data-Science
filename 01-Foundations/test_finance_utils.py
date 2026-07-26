@@ -5,8 +5,8 @@ Tests present value calculations with various inputs including
 edge cases, boundary conditions, and error handling.
 """
 
-import pytest
 import numpy as np
+import pytest
 from finance_utils import calculate_pv
 
 

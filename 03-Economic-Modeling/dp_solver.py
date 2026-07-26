@@ -1,5 +1,6 @@
+from typing import List, Tuple
+
 import numpy as np
-from typing import Tuple, List
 
 
 class DiscreteDP:
@@ -79,8 +80,11 @@ class DiscreteDP:
         return np.argmax(self.R + self.beta * expected_V, axis=1)
 
     def solve_vfi(
-        self, tol: float = 1e-7, max_iter: int = 2000, track_history: bool = False,
-        verbose: bool = True
+        self,
+        tol: float = 1e-7,
+        max_iter: int = 2000,
+        track_history: bool = False,
+        verbose: bool = True,
     ) -> Tuple[np.ndarray, np.ndarray, List[np.ndarray]]:
         """
         Solves the model using Value Function Iteration (VFI).
@@ -149,8 +153,9 @@ class DiscreteDP:
         V_pi = np.linalg.solve(identity_matrix - self.beta * Q_pi, R_pi)
         return V_pi
 
-    def solve_pfi(self, max_iter: int = 500,
-                  verbose: bool = True) -> Tuple[np.ndarray, np.ndarray]:
+    def solve_pfi(
+        self, max_iter: int = 500, verbose: bool = True
+    ) -> Tuple[np.ndarray, np.ndarray]:
         """
         Solves the model using Policy Function Iteration (PFI).
 
