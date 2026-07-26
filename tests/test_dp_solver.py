@@ -106,19 +106,19 @@ class TestClosedForm:
         """With one state and reward r, V* = r / (1 - beta) exactly."""
         beta, r = 0.95, 2.0
         dp = single_state_dp(reward=r, beta=beta)
-        V, policy, _ = dp.solve_vfi(tol=1e-12)
+        V, policy, _ = dp.solve_vfi(tol=1e-12, verbose=False)
         assert V[0] == pytest.approx(r / (1 - beta), rel=1e-8)
         assert policy[0] == 0
 
     def test_two_state_analytic_value_function_vfi(self):
         dp, V_expected, policy_expected = two_state_dp(beta=0.9)
-        V, policy, _ = dp.solve_vfi(tol=1e-12)
+        V, policy, _ = dp.solve_vfi(tol=1e-12, verbose=False)
         np.testing.assert_allclose(V, V_expected, rtol=1e-8)
         np.testing.assert_array_equal(policy, policy_expected)
 
     def test_two_state_analytic_value_function_pfi(self):
         dp, V_expected, policy_expected = two_state_dp(beta=0.9)
-        V, policy = dp.solve_pfi()
+        V, policy = dp.solve_pfi(verbose=False)
         # PFI evaluates policies exactly (matrix inversion), so the value
         # of the optimal policy should be exact to machine precision.
         np.testing.assert_allclose(V, V_expected, rtol=1e-12)
@@ -173,7 +173,7 @@ class TestBellmanOperator:
         """At the solution, T(V*) = V*."""
         rng = np.random.default_rng(17)
         dp = random_dp(rng)
-        V, _, _ = dp.solve_vfi(tol=1e-12)
+        V, _, _ = dp.solve_vfi(tol=1e-12, verbose=False)
         np.testing.assert_allclose(dp.bellman_operator(V), V, atol=1e-9)
 
     def test_greedy_policy_attains_bellman_max(self):
@@ -196,15 +196,15 @@ class TestSolverAgreement:
     @pytest.mark.parametrize("seed", [0, 1, 2, 3, 4])
     def test_vfi_and_pfi_agree(self, seed):
         dp = random_dp(np.random.default_rng(seed))
-        V_vfi, policy_vfi, _ = dp.solve_vfi(tol=1e-11)
-        V_pfi, policy_pfi = dp.solve_pfi()
+        V_vfi, policy_vfi, _ = dp.solve_vfi(tol=1e-11, verbose=False)
+        V_pfi, policy_pfi = dp.solve_pfi(verbose=False)
         np.testing.assert_allclose(V_vfi, V_pfi, rtol=1e-6, atol=1e-6)
         np.testing.assert_array_equal(policy_vfi, policy_pfi)
 
     def test_vfi_history_tracks_monotone_error_decay(self):
         """Successive VFI errors must shrink at least geometrically (rate beta)."""
         dp = random_dp(np.random.default_rng(23), beta=0.9)
-        _, _, history = dp.solve_vfi(tol=1e-10, track_history=True)
+        _, _, history = dp.solve_vfi(tol=1e-10, track_history=True, verbose=False)
         assert history is not None and len(history) > 3
         errors = [np.max(np.abs(history[i + 1] - history[i]))
                   for i in range(len(history) - 1)]
@@ -213,5 +213,5 @@ class TestSolverAgreement:
 
     def test_vfi_history_disabled_by_default(self):
         dp = random_dp(np.random.default_rng(29))
-        _, _, history = dp.solve_vfi()
+        _, _, history = dp.solve_vfi(verbose=False)
         assert history is None

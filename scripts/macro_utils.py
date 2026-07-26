@@ -66,14 +66,13 @@ def solve_qz(AA, BB, n_states):
     Dynamics and Control, 24(10), 1405-1423.
     """
 
-    # 1. QZ decomposition, sorted so stable roots (|beta| < |alpha|) come first
+    # 1. QZ decomposition, sorted so stable roots (|beta| < |alpha|) come first.
     def sort_stable(alpha, beta):
-        alpha_abs = np.abs(alpha)
-        beta_abs = np.abs(beta)
-        # alpha ~ 0 means an infinite root, which is unstable
-        is_finite = alpha_abs > 1e-10
-        is_stable = beta_abs < alpha_abs
-        return np.logical_and(is_finite, is_stable)
+        # Stable roots satisfy |lambda| = |beta/alpha| < 1, i.e. |beta| < |alpha|.
+        # An infinite root (alpha = 0) can never satisfy this, so no separate
+        # finiteness cutoff is needed — and unlike an absolute threshold, the
+        # comparison is invariant to a common rescaling of (AA, BB).
+        return np.abs(beta) < np.abs(alpha)
 
     S, T, alpha, beta, Q, Z = ordqz(AA, BB, sort=sort_stable, output='real')
 
@@ -99,12 +98,14 @@ def solve_qz(AA, BB, n_states):
             "The states do not span the stable subspace."
         )
 
-    Z11_inv = np.linalg.inv(Z11) if n_states > 0 else Z11
+    # Compute X @ inv(Z11) as solve(Z11.T, X.T).T — solving the linear
+    # system is better conditioned than forming the inverse explicitly.
 
     # 4. Policy: u_t = Z21 @ inv(Z11) @ k_t
-    Policy = Z21 @ Z11_inv
+    Policy = np.linalg.solve(Z11.T, Z21.T).T
 
     # 5. Transition: k_{t+1} = Z11 @ inv(S11) @ T11 @ inv(Z11) @ k_t
-    Transition = Z11 @ np.linalg.solve(S11, T11) @ Z11_inv
+    stable_dynamics = np.linalg.solve(S11, T11)
+    Transition = np.linalg.solve(Z11.T, (Z11 @ stable_dynamics).T).T
 
     return {'Policy': Policy, 'Transition': Transition, 'Z': Z}

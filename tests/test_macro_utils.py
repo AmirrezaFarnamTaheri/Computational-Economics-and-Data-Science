@@ -178,6 +178,21 @@ class TestBlanchardKahn:
         with warnings_disabled_as_errors():
             solve_qz(np.eye(2), M, n_states=1)
 
+    @pytest.mark.parametrize("scale", [1e-12, 1e-6, 1e6])
+    def test_classification_invariant_to_pencil_rescaling(self, scale):
+        """(c*AA, c*BB) is the same model: root classification and the
+        solution must not depend on the common scale of the pencil."""
+        V = np.array([[1.0, 1.0],
+                      [0.4, 1.5]])
+        M = saddle_system([0.5, 2.0], V)
+        baseline = solve_qz(np.eye(2), M, n_states=1)
+        with warnings_disabled_as_errors():
+            scaled = solve_qz(scale * np.eye(2), scale * M, n_states=1)
+        np.testing.assert_allclose(scaled['Policy'], baseline['Policy'],
+                                   rtol=1e-9)
+        np.testing.assert_allclose(scaled['Transition'], baseline['Transition'],
+                                   rtol=1e-9)
+
 
 class warnings_disabled_as_errors:
     """Context manager: escalate any warning to a test failure."""
