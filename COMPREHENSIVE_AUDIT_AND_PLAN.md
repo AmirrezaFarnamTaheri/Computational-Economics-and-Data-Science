@@ -836,7 +836,7 @@ Remaining: 1.6 (badge dedup), 1.7 (header standardization), 1.9 (plt.savefig rem
 | 1.3 | **Remove all unfilled "The Lens" template cells** (`"Provide a brief overview of the economic context..."`) | **19 notebooks** in 07-ML, 08-TS | **Critical** |
 | 1.4 | **Remove all unfilled "Summary" template cells** (`"Key takeaway 1 / Key takeaway 2"`) | **25 notebooks** in 07-ML, 08-TS, 09-Finance | **Critical** |
 | 1.5 | **Fill all `"(Introduction text to be added)"` placeholders** with real introductory content | **12 notebooks** in 06-Econometrics, 07-ML, Appendix | **Critical** |
-| 1.6 | **De-duplicate license badges** — ensure exactly 1 badge block per notebook | ~20+ notebooks in modules 05-10 | High |
+| 1.6 | ~~**De-duplicate license badges**~~ ✅ **DONE** — final 3 notebooks (04-Macro `03B`/`03C`/`03D`) merged to the single-line badge convention; `test_no_duplicate_badges` now passes project-wide | ~20+ notebooks in modules 05-10 | High |
 | 1.7 | **Standardize header format** — remove redundant module name prefix from cell 0 | All notebooks | Medium |
 | 1.8 | Complete incomplete ToC in `06-Econometrics/03_Causal_Inference.ipynb` | 1 notebook | High |
 | 1.9 | **Remove `plt.savefig()` calls** from all 16 notebooks that write to disk. Keep inline `plt.show()` only | 16 notebooks across 7 modules | High |
@@ -885,14 +885,25 @@ Completed: CI actions updated to v4, 3 mkdocs plugins configured, `.pre-commit-c
 
 ### Phase 4: Testing Infrastructure (Estimated: 4-6 hours) — ✅ PARTIALLY COMPLETED
 
-Completed: `tests/conftest.py` with shared fixtures, `tests/test_notebooks.py` with 4 regression tests (all passing).
+Completed: `tests/conftest.py` with shared fixtures, `tests/test_notebooks.py` with 4 regression tests, plus analytic test suites for the three core numerical modules (52 tests, all passing).
+
+> **🔴 Bug found and fixed by 4.3:** `solve_qz` in `scripts/macro_utils.py` derived the
+> policy as `-inv(Z22) @ Z21`, based on the premise `y = Z x`. scipy's `ordqz`
+> convention (`AA = Q S Zᵀ`) implies `y = Zᵀ x`, so the correct Klein (2000)
+> formulas are `Policy = Z21 @ inv(Z11)` and `Transition = Z11 @ inv(S11) @ T11 @ inv(Z11)`.
+> The error is invisible for scalar state/control blocks but wrong — including
+> sign flips — for multi-dimensional systems: on the course's own RBC model the
+> old policy was `[-0.58, -0.34]` vs the correct `[0.55, 0.39]`, with an
+> equilibrium-condition residual of 0.18 (vs machine epsilon after the fix).
+> The four affected notebooks (04-Macro `03B`/`03C`/`03D`, 09-Finance `07_BGG`)
+> were re-executed with the corrected solver.
 
 | # | Task | Priority |
 |---|---|---|
 | 4.1 | ~~**Create `conftest.py`**~~ ✅ **DONE** — shared fixtures for paths, tolerances, sample data, notebook discovery | High |
-| 4.2 | **Write tests for `dp_solver.py`** — VFI convergence, PFI convergence, known solutions | High |
-| 4.3 | **Write tests for `macro_utils.py`** — QZ decomposition, Blanchard-Kahn check | High |
-| 4.4 | **Write tests for `macro_vfi_utils.py`** — Tauchen grid properties, transition matrix row sums | High |
+| 4.2 | ~~**Write tests for `dp_solver.py`**~~ ✅ **DONE** — closed-form benchmarks (geometric series, hand-solved 2-state MDP), contraction/monotonicity/fixed-point properties, VFI-PFI agreement, input validation (`tests/test_dp_solver.py`, 20 tests) | High |
+| 4.3 | ~~**Write tests for `macro_utils.py`**~~ ✅ **DONE** — analytic saddle-path benchmarks incl. multi-dimensional eigenvector ground truth, equilibrium residuals, transition spectrum, Blanchard-Kahn warnings (`tests/test_macro_utils.py`, 13 tests). **Found and fixed a real solver bug — see note above** | High |
+| 4.4 | ~~**Write tests for `macro_vfi_utils.py`**~~ ✅ **DONE** — row-stochasticity, grid bounds/symmetry, exact i.i.d. bin masses, stationary mean/variance and implied autocorrelation vs the underlying AR(1) (`tests/test_macro_vfi_utils.py`, 15 tests) | High |
 | 4.5 | **Add smoke tests** for key models: BGG model, Schelling convergence, CES equilibrium | Medium |
 | 4.6 | **Add `nbval` config** for lightweight notebook execution testing | Medium |
 
@@ -1056,7 +1067,7 @@ Addresses audit findings §N, §O, §P.
 
 | # | Task | Priority |
 |---|---|---|
-| 14.1 | **Create `docs/resources/notation.md`** — project-wide notation glossary ($\beta$ = discount factor, $r$ = interest rate, etc.) | High |
+| 14.1 | ~~**Create `docs/resources/notation.md`**~~ ✅ **DONE** — project-wide glossary covering core conventions, per-domain symbol tables with math↔code mapping, interest-rate convention ($r$/$R$/$i$), and a symbol-collision table; wired into `mkdocs.yml` nav and `resources/index.md` | High |
 | 14.2 | **Standardize "The Lens" heading** to `## The Lens: <Subtitle>` in all 113 notebooks | High |
 | 14.3 | **Standardize heading levels** — `##` major sections, `###` subsections, `####` sub-sub | High |
 | 14.4 | **Standardize exercise format** — `### Exercises` with `**N. Title (Difficulty):**` | High |

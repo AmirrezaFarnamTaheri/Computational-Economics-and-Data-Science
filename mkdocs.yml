@@ -242,6 +242,7 @@ nav:
   - Resources:
     - resources/index.md
     - Code Style Guide: resources/code-style.md
+    - Notation Glossary: resources/notation.md
     - References: resources/references.md
     - Software Tools: resources/tools.md
     - Datasets: resources/datasets.md
