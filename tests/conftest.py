@@ -14,6 +14,14 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
+# Course modules live in numbered directories that are not importable as
+# packages, so expose them on sys.path directly (mirrors how the notebooks
+# import them).
+for _module_dir in ["scripts", "03-Economic-Modeling", "04-Macro-Models"]:
+    _path = str(PROJECT_ROOT / _module_dir)
+    if _path not in sys.path:
+        sys.path.insert(0, _path)
+
 
 # --- Path fixtures ---
 
