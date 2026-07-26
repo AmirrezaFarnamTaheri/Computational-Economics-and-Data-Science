@@ -1035,9 +1035,9 @@ Addresses audit findings §L. Expand shallow content into graduate-level depth.
 | # | Task | Priority |
 |---|---|---|
 | 12.1 | **Add formal Big-O definition** + $\Omega$/$\Theta$ + P vs NP discussion to `22_Computational_Complexity` | Medium |
-| 12.2 | **Deduplicate Halley's method** in `04_Root_Finding`; add Bisection convergence rate proof; expand Brent's hybrid explanation | High |
-| 12.3 | **Add Principle of Optimality proof** to `03-EM/01_DP` | High |
-| 12.4 | **Add full Lagrangian/Hamiltonian Euler equation derivation** to `04-Macro/02_Neoclassical_Growth` | High |
+| 12.2 | ~~**Deduplicate Halley's method**~~ ✅ **DONE** — removed the duplicated Halley block; added a complete convergence-rate derivation for Bisection ($n \ge \log_2((b-a)/\varepsilon)-1$), a full proof of Newton's local quadratic convergence (Taylor + Lagrange remainder, stated as a theorem), and a from-scratch derivation of Halley's update from the 2nd-order Taylor expansion; expanded Brent's method with the IQI formula, the accept/reject safeguards, and the convergence-order rationale for the hybrid | High |
+| 12.3 | ~~**Add Principle of Optimality proof**~~ ✅ **DONE** — full proof (two-inequality sandwich argument) that the sequence-problem value function satisfies the Bellman equation, a converse verification theorem establishing uniqueness among bounded functions, and the one-line stochastic extension via the law of iterated expectations; cross-referenced to the Contraction Mapping Theorem in `Appendix/A1-Real-Analysis` | High |
+| 12.4 | ~~**Add full Lagrangian/Hamiltonian Euler equation derivation**~~ ✅ **DONE** — complete continuous-time derivation (current-value Hamiltonian → Keynes-Ramsey rule, with the CRRA algebra spelled out) matching the `RCKModel.system_dynamics` code line-for-line, plus the discrete-time sequential-Lagrangian derivation of the Euler equation used by Section 3's stochastic VFI code | High |
 | 12.5 | **Add Edgeworth Box, Welfare Theorems, Brouwer existence proof** to `05-Micro/02_GE` | High |
 | 12.6 | **Enable graphviz DAGs** + add d-separation + do-calculus intro to `06-Econometrics/03_Causal_Inference` | High |
 | 12.7 | **Add within-estimator derivation** to `06-Econometrics/12_Panel_Data` | Medium |
