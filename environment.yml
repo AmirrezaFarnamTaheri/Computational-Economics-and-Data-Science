@@ -3,7 +3,7 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=3.10
+  - python=3.11
   - pip
   # --- Core scientific stack ---
   - nbformat
@@ -60,6 +60,20 @@ dependencies:
   # --- Jupyter ---
   - jupyterlab
   - notebook
+  # --- Additional curriculum imports ---
+  - ipython
+  - jax
+  - nltk
+  - plotly
+  - gensim
+  - hypothesis
+  - arviz
+  - altair
+  - plotnine
+  - shapely
+  - mapclassify
+  - esda
+  - splot
   # --- pip-only packages ---
   - pip:
     - attrs==25.4.0
@@ -101,3 +115,8 @@ dependencies:
     - websockets==15.0.1
     - yfinance==0.2.66
     - otter-grader
+    - sentence-transformers
+    - vega-datasets
+    - wbdata
+    - PyPortfolioOpt
+    - geodatasets

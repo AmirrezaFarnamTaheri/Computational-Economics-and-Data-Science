@@ -1,0 +1,166 @@
+[
+  {
+    "script": "scripts/generate_aiyagari_animation.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_aiyagari_diagram.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_animation.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_appendix_images.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_binomial_tree_viz.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_box_jenkins_diagram.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_causal_collider_dag.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_causal_confounding_dag.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_causal_ml_images.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_causal_tree_split_image.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_centrality_diagram.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_clt_plots.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_cml_sml_plot.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_cointegration_viz.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_comparative_statics_plot.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_contagion_animation.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_convergence_plot.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_convex_plots.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_eigenvector_plot.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_emergence_diagram.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_fama_macbeth_diagram.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_gradient_field_plot.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_gradient_plot.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_images.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_ito_lemma_viz.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_jensen_plot.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_lob_plot.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_martingale_plot.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_merton_payoffs_diagram.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_ml_intro_images.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_multivariate_normal_plot.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_normal_dist_plots.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_option_payoffs.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_ordered_dict_diagram.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_phillips_curve_diagram.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_rl_loop_diagram.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_stochastic_process_plot.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_taylor_plot.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_timeseries_split_plot.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_var_diagram.py",
+    "status": "DRY_RUN"
+  },
+  {
+    "script": "scripts/generate_var_identification_diagram.py",
+    "status": "DRY_RUN"
+  }
+]

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
+<title id="title">From economic concept to Python data representation</title>
+<desc id="desc">A four-stage diagram linking an economic concept to mathematical representation, Python type, and validation checks.</desc>
+<rect width="1200" height="520" fill="#f8fafc"/>
+<g font-family="Arial, sans-serif" text-anchor="middle">
+  <text x="600" y="55" font-size="30" font-weight="700" fill="#0f172a">Economic object → representation → Python type → validation</text>
+  <g font-size="20">
+    <rect x="55" y="150" rx="18" width="230" height="180" fill="#e0f2fe" stroke="#0369a1" stroke-width="3"/>
+    <text x="170" y="210" font-weight="700" fill="#075985">Economic object</text><text x="170" y="250" fill="#0f172a">price, income, state,</text><text x="170" y="282" fill="#0f172a">choice, parameter</text>
+    <rect x="335" y="150" rx="18" width="230" height="180" fill="#ecfccb" stroke="#4d7c0f" stroke-width="3"/>
+    <text x="450" y="210" font-weight="700" fill="#3f6212">Mathematical form</text><text x="450" y="250" fill="#0f172a">scalar, vector, matrix,</text><text x="450" y="282" fill="#0f172a">mapping, probability</text>
+    <rect x="615" y="150" rx="18" width="230" height="180" fill="#fef3c7" stroke="#b45309" stroke-width="3"/>
+    <text x="730" y="210" font-weight="700" fill="#92400e">Python form</text><text x="730" y="250" fill="#0f172a">float, ndarray, dict,</text><text x="730" y="282" fill="#0f172a">Series, dataclass</text>
+    <rect x="895" y="150" rx="18" width="250" height="180" fill="#f3e8ff" stroke="#7e22ce" stroke-width="3"/>
+    <text x="1020" y="210" font-weight="700" fill="#6b21a8">Validation</text><text x="1020" y="250" fill="#0f172a">units · shape · domain</text><text x="1020" y="282" fill="#0f172a">missingness · invariants</text>
+  </g>
+  <g stroke="#475569" stroke-width="4" fill="none"><path d="M285 240 H330"/><path d="M565 240 H610"/><path d="M845 240 H890"/></g>
+  <g fill="#475569"><path d="M330 240 l-14 -9 v18z"/><path d="M610 240 l-14 -9 v18z"/><path d="M890 240 l-14 -9 v18z"/></g>
+  <text x="600" y="410" font-size="21" fill="#334155">Choose a representation that preserves the economic invariant you need to test.</text>
+</g></svg>

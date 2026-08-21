@@ -53,6 +53,27 @@ fredapi
 pandas-datareader==0.10.0
 yfinance==0.2.66
 
+
+# === Additional curriculum imports ===
+ipython
+jax
+nltk
+plotly
+gensim
+hypothesis
+arviz
+sentence-transformers
+altair
+plotnine
+vega-datasets
+wbdata
+PyPortfolioOpt
+geodatasets
+mapclassify
+esda
+splot
+shapely
+
 # === Jupyter ===
 jupyterlab
 notebook

@@ -56,7 +56,7 @@ Choose the method that works best for you:
 
     #### 4. Activate the Environment
     ```bash
-    conda activate computational-econ
+    conda activate computational-economics
     ```
 
     #### 5. Verify Installation
@@ -71,7 +71,7 @@ Choose the method that works best for you:
 
     If you prefer using pip, follow these steps:
 
-    #### 1. Ensure Python 3.10+ is Installed
+    #### 1. Ensure Python 3.11+ is Installed
     ```bash
     python --version  # Should output 3.10.0 or higher
     ```
@@ -260,19 +260,19 @@ For deep learning with GPU acceleration:
     conda clean --all
 
     # Try creating environment again
-    conda env remove -n computational-econ
+    conda env remove -n computational-economics
     conda env create -f environment.yml
     ```
 
 !!! question "Jupyter kernel not found?"
     ```bash
     # Install IPython kernel
-    python -m ipykernel install --user --name computational-econ
+    python -m ipykernel install --user --name computational-economics
     ```
 
 !!! question "Import errors in Jupyter notebooks?"
     Make sure you've selected the correct kernel:
-    - Click "Kernel" → "Change Kernel" → "computational-econ"
+    - Click "Kernel" → "Change Kernel" → "computational-economics"
 
 !!! question "Out of memory errors?"
     - Close other applications

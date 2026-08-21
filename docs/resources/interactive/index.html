@@ -44,6 +44,7 @@
 
   <!-- Mermaid.js -->
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js"></script>
 
   <style>
     body {
@@ -103,6 +104,9 @@
         </a>
         <a href="#cobe-section" class="px-5 py-2.5 rounded-lg bg-white/10 hover:bg-white/20 backdrop-blur border border-white/20 transition">
           Global Macro Globe
+        </a>
+        <a href="#matter-section" class="px-5 py-2.5 rounded-lg bg-white/10 hover:bg-white/20 backdrop-blur border border-white/20 transition">
+          Market-Clearing Lab
         </a>
         <a href="#mermaid-section" class="px-5 py-2.5 rounded-lg bg-white/10 hover:bg-white/20 backdrop-blur border border-white/20 transition">
           Mermaid Architecture
@@ -221,11 +225,35 @@
       </div>
     </section>
 
-    <!-- Section 3: Mermaid Educational Architecture Diagrams with KaTeX Math -->
+
+    <!-- Section 3: Matter.js decentralized market-clearing laboratory -->
+    <section id="matter-section" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 lg:p-12">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+        <div class="lg:col-span-5 space-y-5">
+          <div class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-sky-600">
+            <span>Section 03</span> &bull; <span>Matter.js Market Lab</span>
+          </div>
+          <h2 class="text-3xl font-bold tracking-tight text-slate-900">Decentralized Bids, Asks &amp; Price Discovery</h2>
+          <p class="text-slate-600 text-sm leading-relaxed">
+            Buyer and seller particles collide in a bounded market. Each collision updates a stylized transaction price toward the midpoint of a buyer bid and seller ask, making convergence an observable process rather than a static supply-demand diagram. The simulation is pedagogical: it illustrates decentralized price discovery, not a calibrated microstructure model.
+          </p>
+          <div class="grid grid-cols-2 gap-3 text-xs">
+            <div class="rounded-lg border border-slate-200 bg-slate-50 p-3"><span class="font-semibold">Transactions</span><div id="market-trades" class="font-mono text-sky-700 text-lg">0</div></div>
+            <div class="rounded-lg border border-slate-200 bg-slate-50 p-3"><span class="font-semibold">Clearing price</span><div id="market-price" class="font-mono text-sky-700 text-lg">100.00</div></div>
+          </div>
+          <button id="market-reset" type="button" class="px-4 py-2 rounded-lg bg-slate-900 text-white hover:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500">Reset market</button>
+        </div>
+        <div class="lg:col-span-7">
+          <div id="matter-market" class="w-full min-h-[360px] rounded-xl overflow-hidden border border-slate-200 bg-slate-950" aria-label="Interactive buyer and seller market-clearing simulation"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: Mermaid Educational Architecture Diagrams with KaTeX Math -->
     <section id="mermaid-section" class="space-y-8">
       <div class="text-center max-w-3xl mx-auto">
         <div class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-sky-600 mb-2">
-          <span>Section 03</span> &bull; <span>Structural Workflows</span>
+          <span>Section 04</span> &bull; <span>Structural Workflows</span>
         </div>
         <h2 class="text-3xl font-bold tracking-tight text-slate-900">
           Academic Flowcharts &amp; Econometric Model Graphs
@@ -328,7 +356,7 @@ flowchart TD
         <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between">
           <div>
             <h3 class="text-lg font-bold text-slate-900 mb-2">4. Fama-MacBeth Two-Pass Pricing</h3>
-            <p class="text-xs text-slate-500 mb-4">Time-series estimation of asset factor exposures $eta_i$ followed by cross-sectional estimation of risk premia $\lambda_t$.</p>
+            <p class="text-xs text-slate-500 mb-4">Time-series estimation of asset factor exposures $\beta_i$ followed by cross-sectional estimation of risk premia $\lambda_t$.</p>
             <div class="mermaid-card bg-slate-50 p-4 rounded-lg border border-slate-200 overflow-x-auto text-xs">
               <pre class="mermaid">
 flowchart TD
@@ -564,7 +592,76 @@ flowchart TD
       console.warn("Cobe.js could not be loaded:", err);
     });
 
-    // 4. Initialize Mermaid
+
+    // 4. Initialize Matter.js decentralized market-clearing lab
+    function initMatterMarket() {
+      const host = document.getElementById("matter-market");
+      if (!host || !window.Matter) return;
+      const { Engine, Render, Runner, Bodies, Composite, Events, Body } = window.Matter;
+      const width = Math.max(host.clientWidth, 520);
+      const height = 360;
+      const engine = Engine.create({ gravity: { x: 0, y: 0 } });
+      const render = Render.create({ element: host, engine, options: { width, height, wireframes: false, background: "#020617", pixelRatio: Math.min(window.devicePixelRatio || 1, 2) } });
+      const walls = [
+        Bodies.rectangle(width / 2, -10, width, 20, { isStatic: true }),
+        Bodies.rectangle(width / 2, height + 10, width, 20, { isStatic: true }),
+        Bodies.rectangle(-10, height / 2, 20, height, { isStatic: true }),
+        Bodies.rectangle(width + 10, height / 2, 20, height, { isStatic: true })
+      ];
+      Composite.add(engine.world, walls);
+      let trades = 0;
+      let price = 100;
+      const tradeEl = document.getElementById("market-trades");
+      const priceEl = document.getElementById("market-price");
+      function seededValue(i, side) { return 100 + (side === "buyer" ? 7 : -7) + Math.sin(i * 1.71) * 6; }
+      function addAgents() {
+        const agents = [];
+        for (let i = 0; i < 16; i++) {
+          const side = i < 8 ? "buyer" : "seller";
+          const x = side === "buyer" ? 90 + (i % 4) * 45 : width - 90 - (i % 4) * 45;
+          const y = 65 + (i % 8) * 34;
+          const body = Bodies.circle(x, y, 11, {
+            restitution: 1.0, frictionAir: 0.002,
+            render: { fillStyle: side === "buyer" ? "#38bdf8" : "#f59e0b" },
+            plugin: { market: { side, quote: seededValue(i, side) } }
+          });
+          Body.setVelocity(body, { x: side === "buyer" ? 2.1 : -2.1, y: Math.sin(i * 2.3) * 1.8 });
+          agents.push(body);
+        }
+        Composite.add(engine.world, agents);
+      }
+      addAgents();
+      Events.on(engine, "collisionStart", event => {
+        for (const pair of event.pairs) {
+          const a = pair.bodyA.plugin.market;
+          const b = pair.bodyB.plugin.market;
+          if (!a || !b || a.side === b.side) continue;
+          const buyer = a.side === "buyer" ? a : b;
+          const seller = a.side === "seller" ? a : b;
+          if (buyer.quote >= seller.quote) {
+            price = 0.85 * price + 0.15 * ((buyer.quote + seller.quote) / 2);
+            trades += 1;
+            buyer.quote = Math.max(90, buyer.quote - 0.25);
+            seller.quote = Math.min(110, seller.quote + 0.25);
+            if (tradeEl) tradeEl.textContent = String(trades);
+            if (priceEl) priceEl.textContent = price.toFixed(2);
+          }
+        }
+      });
+      Render.run(render);
+      const runner = Runner.create();
+      Runner.run(runner, engine);
+      document.getElementById("market-reset")?.addEventListener("click", () => {
+        for (const body of Composite.allBodies(engine.world)) if (!body.isStatic) Composite.remove(engine.world, body);
+        trades = 0; price = 100;
+        if (tradeEl) tradeEl.textContent = "0";
+        if (priceEl) priceEl.textContent = "100.00";
+        addAgents();
+      });
+    }
+    initMatterMarket();
+
+    // 5. Initialize Mermaid
     if (window.mermaid) {
       mermaid.initialize({
         startOnLoad: true,

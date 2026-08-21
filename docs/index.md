@@ -141,7 +141,7 @@ cd Computational-Economics-and-Data-Science
 
 # Create conda environment
 conda env create -f environment.yml
-conda activate computational-econ
+conda activate computational-economics
 
 # Start Jupyter Lab
 jupyter lab
@@ -155,7 +155,7 @@ jupyter lab
 ## :material-star-four-points: Key Features
 
 !!! tip "World-Class Content"
-    - 116 comprehensive Jupyter notebooks
+    - 129 comprehensive Jupyter notebooks (116 core-module + 13 supplementary-track notebooks)
     - 50+ hours of instructional material
     - Real-world applications and datasets
     - Rigorous mathematical foundations

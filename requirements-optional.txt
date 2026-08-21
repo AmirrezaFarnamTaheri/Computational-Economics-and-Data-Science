@@ -1,0 +1,11 @@
+# Optional, platform- or lesson-specific dependencies.
+# Install only when working through the corresponding notebooks.
+
+# GPU acceleration (choose the build matching the installed CUDA toolkit)
+# cupy-cuda12x
+
+# Browser-backed scraping; after installation run: playwright install chromium
+playwright
+
+# Legacy discrete-choice comparison used only in an optional section.
+pylogit

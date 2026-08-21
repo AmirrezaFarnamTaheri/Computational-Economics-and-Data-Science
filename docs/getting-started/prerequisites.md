@@ -71,7 +71,7 @@ Modules 1–2 (Foundations, Numerical Methods) and Module 7 (Machine Learning) a
 
 See the [Installation Guide](installation.md) for detailed setup instructions. In brief, you need:
 
-- **Python 3.10+** (via Anaconda or pip)
+- **Python 3.11+** (via Anaconda or pip)
 - **Jupyter Notebook/Lab**
 - Core packages: NumPy, Pandas, Matplotlib, SciPy, scikit-learn
 
