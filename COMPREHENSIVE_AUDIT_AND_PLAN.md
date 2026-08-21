@@ -836,7 +836,7 @@ Remaining: 1.6 (badge dedup), 1.7 (header standardization), 1.9 (plt.savefig rem
 | 1.3 | **Remove all unfilled "The Lens" template cells** (`"Provide a brief overview of the economic context..."`) | **19 notebooks** in 07-ML, 08-TS | **Critical** |
 | 1.4 | **Remove all unfilled "Summary" template cells** (`"Key takeaway 1 / Key takeaway 2"`) | **25 notebooks** in 07-ML, 08-TS, 09-Finance | **Critical** |
 | 1.5 | **Fill all `"(Introduction text to be added)"` placeholders** with real introductory content | **12 notebooks** in 06-Econometrics, 07-ML, Appendix | **Critical** |
-| 1.6 | **De-duplicate license badges** — ensure exactly 1 badge block per notebook | ~20+ notebooks in modules 05-10 | High |
+| 1.6 | ~~**De-duplicate license badges**~~ ✅ **DONE** — final 3 notebooks (04-Macro `03B`/`03C`/`03D`) merged to the single-line badge convention; `test_no_duplicate_badges` now passes project-wide | ~20+ notebooks in modules 05-10 | High |
 | 1.7 | **Standardize header format** — remove redundant module name prefix from cell 0 | All notebooks | Medium |
 | 1.8 | Complete incomplete ToC in `06-Econometrics/03_Causal_Inference.ipynb` | 1 notebook | High |
 | 1.9 | **Remove `plt.savefig()` calls** from all 16 notebooks that write to disk. Keep inline `plt.show()` only | 16 notebooks across 7 modules | High |
@@ -885,14 +885,25 @@ Completed: CI actions updated to v4, 3 mkdocs plugins configured, `.pre-commit-c
 
 ### Phase 4: Testing Infrastructure (Estimated: 4-6 hours) — ✅ PARTIALLY COMPLETED
 
-Completed: `tests/conftest.py` with shared fixtures, `tests/test_notebooks.py` with 4 regression tests (all passing).
+Completed: `tests/conftest.py` with shared fixtures, `tests/test_notebooks.py` with 4 regression tests, plus analytic test suites for the three core numerical modules (52 tests, all passing).
+
+> **🔴 Bug found and fixed by 4.3:** `solve_qz` in `scripts/macro_utils.py` derived the
+> policy as `-inv(Z22) @ Z21`, based on the premise `y = Z x`. scipy's `ordqz`
+> convention (`AA = Q S Zᵀ`) implies `y = Zᵀ x`, so the correct Klein (2000)
+> formulas are `Policy = Z21 @ inv(Z11)` and `Transition = Z11 @ inv(S11) @ T11 @ inv(Z11)`.
+> The error is invisible for scalar state/control blocks but wrong — including
+> sign flips — for multi-dimensional systems: on the course's own RBC model the
+> old policy was `[-0.58, -0.34]` vs the correct `[0.55, 0.39]`, with an
+> equilibrium-condition residual of 0.18 (vs machine epsilon after the fix).
+> The four affected notebooks (04-Macro `03B`/`03C`/`03D`, 09-Finance `07_BGG`)
+> were re-executed with the corrected solver.
 
 | # | Task | Priority |
 |---|---|---|
 | 4.1 | ~~**Create `conftest.py`**~~ ✅ **DONE** — shared fixtures for paths, tolerances, sample data, notebook discovery | High |
-| 4.2 | **Write tests for `dp_solver.py`** — VFI convergence, PFI convergence, known solutions | High |
-| 4.3 | **Write tests for `macro_utils.py`** — QZ decomposition, Blanchard-Kahn check | High |
-| 4.4 | **Write tests for `macro_vfi_utils.py`** — Tauchen grid properties, transition matrix row sums | High |
+| 4.2 | ~~**Write tests for `dp_solver.py`**~~ ✅ **DONE** — closed-form benchmarks (geometric series, hand-solved 2-state MDP), contraction/monotonicity/fixed-point properties, VFI-PFI agreement, input validation (`tests/test_dp_solver.py`, 20 tests) | High |
+| 4.3 | ~~**Write tests for `macro_utils.py`**~~ ✅ **DONE** — analytic saddle-path benchmarks incl. multi-dimensional eigenvector ground truth, equilibrium residuals, transition spectrum, Blanchard-Kahn warnings (`tests/test_macro_utils.py`, 13 tests). **Found and fixed a real solver bug — see note above** | High |
+| 4.4 | ~~**Write tests for `macro_vfi_utils.py`**~~ ✅ **DONE** — row-stochasticity, grid bounds/symmetry, exact i.i.d. bin masses, stationary mean/variance and implied autocorrelation vs the underlying AR(1) (`tests/test_macro_vfi_utils.py`, 15 tests) | High |
 | 4.5 | **Add smoke tests** for key models: BGG model, Schelling convergence, CES equilibrium | Medium |
 | 4.6 | **Add `nbval` config** for lightweight notebook execution testing | Medium |
 
@@ -965,7 +976,7 @@ Completed: 7.3 (deprecated boston_housing replaced), 7.4 (sys.path.append fixed)
 | # | Task | Module | Priority |
 |---|---|---|---|
 | 8.1 | **Split oversized notebooks** (>150 KB): RBC (split into 03A/03B/03C), Discrete-Continuous DP (split into 03A/03B), VAR (160 KB), MLE (145 KB) | 03, 04, 06, 08 | High |
-| 8.2 | **Expand `02_General_Equilibrium.ipynb`** — add Edgeworth Box, welfare theorems, interactive contract curve | 05 | High |
+| 8.2 | ~~**Expand `02_General_Equilibrium.ipynb`**~~ ✅ **DONE** — see 12.5; adds the Edgeworth box, both welfare theorems, and a computed contract curve with the equilibrium, budget line, and tangent indifference curves plotted | 05 | High |
 | 8.3 | **Add `ipywidgets` interactivity** to at least 1 notebook per module (currently only 9/113 have it) | All modules | Medium |
 | 8.4 | **Add staggered adoption / Callaway-Sant'Anna** to DiD notebook | 06 | Medium |
 | 8.5 | **Integrate `nashpy`** in Game Theory notebook | 05 | Medium |
@@ -993,7 +1004,7 @@ Addresses audit findings §I. For each overlap, designate one **canonical notebo
 | # | Task | Priority |
 |---|---|---|
 | 10.1 | **OLS overlap** — canonical: `06-Econometrics/01`. In 01-Foundations/12_NumPy and 02-NM/01_Linear_Algebra, replace full derivations with 2-line recap + link. In 07-ML/01, reference back | High |
-| 10.2 | **Contraction Mapping** — canonical: `Appendix/A1-Real-Analysis` (full proof). In 01-Intro and 02-NM/04, use statement-only + link. In 03-EM/01, recall + apply | High |
+| 10.2 | **Contraction Mapping** — canonical: `Appendix/A1-Real-Analysis` — 🔶 **PARTIALLY DONE**: the canonical full proof now actually exists in A1 §1.2.4 (it previously did not, despite being cross-referenced), and `03-EM/01_Dynamic_Programming` links to it. Remaining: convert the restatements in 01-Intro and 02-NM/04 to statement-only + link | High |
 | 10.3 | **Newton-Raphson** — canonical: `02-NM/04_Root_Finding`. Remove redundant re-derivations from 01-Foundations/20_SciPy and 02-NM/03_Differentiation | High |
 | 10.4 | **Tauchen discretization** — canonical: `04-Macro-Models/macro_vfi_utils.py`. All notebooks import from utility; remove inline re-implementations | High |
 | 10.5 | **Bellman equation** — canonical: `03-EM/01_Dynamic_Programming`. All subsequent uses reference back; only re-state the specific variant needed | High |
@@ -1023,17 +1034,17 @@ Addresses audit findings §L. Expand shallow content into graduate-level depth.
 
 | # | Task | Priority |
 |---|---|---|
-| 12.1 | **Add formal Big-O definition** + $\Omega$/$\Theta$ + P vs NP discussion to `22_Computational_Complexity` | Medium |
-| 12.2 | **Deduplicate Halley's method** in `04_Root_Finding`; add Bisection convergence rate proof; expand Brent's hybrid explanation | High |
-| 12.3 | **Add Principle of Optimality proof** to `03-EM/01_DP` | High |
-| 12.4 | **Add full Lagrangian/Hamiltonian Euler equation derivation** to `04-Macro/02_Neoclassical_Growth` | High |
-| 12.5 | **Add Edgeworth Box, Welfare Theorems, Brouwer existence proof** to `05-Micro/02_GE` | High |
-| 12.6 | **Enable graphviz DAGs** + add d-separation + do-calculus intro to `06-Econometrics/03_Causal_Inference` | High |
-| 12.7 | **Add within-estimator derivation** to `06-Econometrics/12_Panel_Data` | Medium |
-| 12.8 | **Add Universal Approximation Theorem** statement + proof sketch to `07-ML/06_Deep_Learning` | Medium |
-| 12.9 | **Add unit root testing** (ADF, PP, KPSS) to `08-Time-Series/01_Introduction` or new notebook | Medium |
-| 12.10 | **Add Black-Scholes derivation** from Itô's Lemma to `09-Finance/04_Option_Pricing` | High |
-| 12.11 | **Expand Appendix A1-A4 proofs** — add intermediate steps to every theorem | Medium |
+| 12.1 | ~~**Add formal Big-O definition** + $\Omega$/$\Theta$ + P vs NP discussion~~ ✅ **DONE** (in `22A_Computational_Complexity_Foundations`) — formal $O$/$\Omega$/$\Theta$ definitions with a worked proof from the definition, the tightness trap ($3n^2 = O(n^3)$ is true), worst/average/best-case as an orthogonal axis, the P/NP/NP-hard/NP-complete definitions and class chain, and a table of NP-hard problems in economics (combinatorial auctions, PPAD-complete Nash, matching) closing with complexity as the formal backbone of bounded rationality | Medium |
+| 12.2 | ~~**Deduplicate Halley's method**~~ ✅ **DONE** — removed the duplicated Halley block; added a complete convergence-rate derivation for Bisection ($n \ge \log_2((b-a)/\varepsilon)-1$), a full proof of Newton's local quadratic convergence (Taylor + Lagrange remainder, stated as a theorem), and a from-scratch derivation of Halley's update from the 2nd-order Taylor expansion; expanded Brent's method with the IQI formula, the accept/reject safeguards, and the convergence-order rationale for the hybrid | High |
+| 12.3 | ~~**Add Principle of Optimality proof**~~ ✅ **DONE** — full proof (two-inequality sandwich argument) that the sequence-problem value function satisfies the Bellman equation, a converse verification theorem establishing uniqueness among bounded functions, and the one-line stochastic extension via the law of iterated expectations; cross-referenced to the Contraction Mapping Theorem in `Appendix/A1-Real-Analysis` | High |
+| 12.4 | ~~**Add full Lagrangian/Hamiltonian Euler equation derivation**~~ ✅ **DONE** — complete continuous-time derivation (current-value Hamiltonian → Keynes-Ramsey rule, with the CRRA algebra spelled out) matching the `RCKModel.system_dynamics` code line-for-line, plus the discrete-time sequential-Lagrangian derivation of the Euler equation used by Section 3's stochastic VFI code | High |
+| 12.5 | ~~**Add Edgeworth Box, Welfare Theorems, Brouwer existence proof**~~ ✅ **DONE** — new §1 with the Edgeworth box and a closed-form contract curve derived from the tangency condition, Walras' Law with proof (and why solvers search $N-1$ prices), the First Welfare Theorem proved by contradiction, the Second via separating hyperplanes with the role of convexity made explicit, and existence via Brouwer applied to the Gale-Nikaido price map — including the sum-of-squares argument showing a fixed point clears every market. Paired with an executed Edgeworth-box figure whose assertions verify the First Welfare Theorem numerically (the equilibrium lands on the contract curve) | High |
+| 12.6 | ~~**Enable graphviz DAGs** + add d-separation + do-calculus intro~~ ✅ **DONE** — added §2.3 with the formal d-separation definition, the chain/fork/collider blocking table, the precisely-restated backdoor criterion, the do-operator's observational-vs-interventional distinction, and the Backdoor Adjustment Formula derived via truncated factorization — closing the loop to why Propensity Score Matching (§3) is justified. (Graphviz was already dynamically `try/except`-guarded, not hardcoded `False`) | High |
+| 12.7 | ~~**Add within-estimator derivation**~~ ✅ **DONE** — added §2.1 deriving the within estimator from the annihilator matrix $Q$ (with its symmetry/idempotency/constant-killing properties proved), the closed-form estimator and its consistency under strict exogeneity, why time-invariant regressors are *not identified* rather than merely imprecise, the FWL equivalence to LSDV, the degrees-of-freedom trap that makes manual demeaning + generic OLS understate variance, and random effects as quasi-demeaning with FE as the $\theta \to 1$ limit | Medium |
+| 12.8 | ~~**Add Universal Approximation Theorem** statement + proof sketch~~ ✅ **DONE** — added the missing §1.1 "Theoretical Foundations" section (which the ToC already linked to but did not exist): formal Cybenko/Hornik statement, constructive 4-step proof sketch (sigmoid→step→bump→staircase, closed by uniform continuity), a caveats table separating what the theorem does and does not guarantee, the depth-vs-width separation results, and the economist's reading as a non-parametric estimator | Medium |
+| 12.9 | ~~**Add unit root testing** (ADF, PP, KPSS)~~ ✅ **DONE** (in `08-Time-Series/01_Introduction`) — added §3 deriving the Dickey-Fuller reparameterization, explaining why the critical values are non-standard (super-consistency and the Brownian-functional limit) and why a $t$-table over-rejects, the three deterministic specifications, the ADF augmentation and lag-selection trade-off, Phillips-Perron contrasted in a table, KPSS's reversed null, and the four-outcome ADF×KPSS decision table that exposes inconclusive and contradictory cases a single test would hide | Medium |
+| 12.10 | ~~**Add Black-Scholes derivation** from Itô's Lemma~~ ✅ **DONE** (in `09-Finance/03_Option_Pricing`) — added an Itô's Lemma section (statement, the $(dW)^2 = dt$ multiplication table, and the Taylor-expansion derivation explaining why the second-order term survives), then completed the previously-missing step from PDE to closed form: Feynman-Kac, the risk-neutral lognormal expectation, and the explicit integral evaluation (splitting at the exercise boundary, completing the square) that *derives* $d_1$ and $d_2$ rather than asserting them | High |
+| 12.11 | **Expand Appendix A1-A4 proofs** — add intermediate steps to every theorem — 🔶 **IN PROGRESS**: A1 now contains a full proof of the **Contraction Mapping Theorem** (§1.2.4, previously referenced six times across the course but never actually stated there) with the four-step Cauchy argument, both error bounds, a hypothesis-necessity table, and Blackwell's sufficient conditions; and a full proof of the **Separating Hyperplane Theorem** via the closest-point argument, including why convexity is the load-bearing assumption. Remaining: A2-A4 theorem proofs | Medium |
 | 12.12 | **Add "Key Equations" summary boxes** at end of every theory-heavy notebook | Medium |
 
 ### Phase 13: Flow, Ordering & Sequencing (Estimated: 8-10 hours)
@@ -1056,7 +1067,7 @@ Addresses audit findings §N, §O, §P.
 
 | # | Task | Priority |
 |---|---|---|
-| 14.1 | **Create `docs/resources/notation.md`** — project-wide notation glossary ($\beta$ = discount factor, $r$ = interest rate, etc.) | High |
+| 14.1 | ~~**Create `docs/resources/notation.md`**~~ ✅ **DONE** — project-wide glossary covering core conventions, per-domain symbol tables with math↔code mapping, interest-rate convention ($r$/$R$/$i$), and a symbol-collision table; wired into `mkdocs.yml` nav and `resources/index.md` | High |
 | 14.2 | **Standardize "The Lens" heading** to `## The Lens: <Subtitle>` in all 113 notebooks | High |
 | 14.3 | **Standardize heading levels** — `##` major sections, `###` subsections, `####` sub-sub | High |
 | 14.4 | **Standardize exercise format** — `### Exercises` with `**N. Title (Difficulty):**` | High |

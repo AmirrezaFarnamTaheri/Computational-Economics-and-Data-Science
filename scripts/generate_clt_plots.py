@@ -1,11 +1,13 @@
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
 from collections import Counter
+
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
 
 # --- Setup Plot Style ---
 sns.set_style("whitegrid")
-plt.rcParams.update({'font.size': 12, 'figure.dpi': 150})
+plt.rcParams.update({"font.size": 12, "figure.dpi": 150})
+
 
 def plot_dice_sum_distribution(num_dice, ax):
     """
@@ -28,30 +30,37 @@ def plot_dice_sum_distribution(num_dice, ax):
     probabilities = [counts[s] / num_rolls for s in possible_sums]
 
     # --- Create the Bar Plot ---
-    ax.bar(possible_sums, probabilities, color=sns.color_palette("viridis")[num_dice-1], alpha=0.8, edgecolor='black')
+    ax.bar(
+        possible_sums,
+        probabilities,
+        color=sns.color_palette("viridis")[num_dice - 1],
+        alpha=0.8,
+        edgecolor="black",
+    )
 
-    ax.set_title(f'Distribution of the Sum of {num_dice} Dice', fontsize=14)
-    ax.set_xlabel('Sum of Dice')
-    ax.set_ylabel('Probability')
+    ax.set_title(f"Distribution of the Sum of {num_dice} Dice", fontsize=14)
+    ax.set_xlabel("Sum of Dice")
+    ax.set_ylabel("Probability")
     ax.set_xticks(possible_sums)
-    ax.tick_params(axis='x', rotation=45)
-    ax.grid(axis='y')
+    ax.tick_params(axis="x", rotation=45)
+    ax.grid(axis="y")
+
 
 # --- Create and Save the Plots ---
 fig1, ax1 = plt.subplots(figsize=(6, 4))
 plot_dice_sum_distribution(1, ax1)
 plt.tight_layout()
-fig1.savefig('images/Appendix/clt_1.png')
+fig1.savefig("images/Appendix/clt_1.png")
 print("Saved clt_1.png")
 
 fig2, ax2 = plt.subplots(figsize=(6, 4))
 plot_dice_sum_distribution(2, ax2)
 plt.tight_layout()
-fig2.savefig('images/Appendix/clt_2.png')
+fig2.savefig("images/Appendix/clt_2.png")
 print("Saved clt_2.png")
 
 fig3, ax3 = plt.subplots(figsize=(6, 4))
 plot_dice_sum_distribution(3, ax3)
 plt.tight_layout()
-fig3.savefig('images/Appendix/clt_3.png')
+fig3.savefig("images/Appendix/clt_3.png")
 print("Saved clt_3.png")

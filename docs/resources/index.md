@@ -16,6 +16,14 @@ Additional materials to support your learning journey.
 
     [:octicons-arrow-right-24: View guide](code-style.md)
 
+-   :material-alphabetical-variant:{ .lg .middle } **Notation Glossary**
+
+    ---
+
+    Project-wide mathematical notation and its mapping to code variables
+
+    [:octicons-arrow-right-24: View glossary](notation.md)
+
 -   :material-book-open-variant:{ .lg .middle } **References**
 
     ---

@@ -1,5 +1,6 @@
+from typing import List, Tuple
+
 import numpy as np
-from typing import Tuple, List
 
 
 class DiscreteDP:
@@ -79,7 +80,11 @@ class DiscreteDP:
         return np.argmax(self.R + self.beta * expected_V, axis=1)
 
     def solve_vfi(
-        self, tol: float = 1e-7, max_iter: int = 2000, track_history: bool = False
+        self,
+        tol: float = 1e-7,
+        max_iter: int = 2000,
+        track_history: bool = False,
+        verbose: bool = True,
     ) -> Tuple[np.ndarray, np.ndarray, List[np.ndarray]]:
         """
         Solves the model using Value Function Iteration (VFI).
@@ -92,6 +97,8 @@ class DiscreteDP:
             The maximum number of iterations.
         track_history : bool, optional
             If True, stores the value function at each iteration.
+        verbose : bool, optional
+            If True, prints a convergence message.
 
         Returns
         -------
@@ -108,14 +115,16 @@ class DiscreteDP:
         for i in range(max_iter):
             V_new = self.bellman_operator(V)
             if np.max(np.abs(V - V_new)) < tol:
-                print(f"VFI converged in {i} iterations.")
+                if verbose:
+                    print(f"VFI converged in {i} iterations.")
                 policy = self.compute_greedy(V_new)
                 return V_new, policy, history
             V = V_new
             if track_history:
                 history.append(V)
 
-        print("VFI failed to converge.")
+        if verbose:
+            print("VFI failed to converge.")
         policy = self.compute_greedy(V)
         return V, policy, history
 
@@ -144,7 +153,9 @@ class DiscreteDP:
         V_pi = np.linalg.solve(identity_matrix - self.beta * Q_pi, R_pi)
         return V_pi
 
-    def solve_pfi(self, max_iter: int = 500) -> Tuple[np.ndarray, np.ndarray]:
+    def solve_pfi(
+        self, max_iter: int = 500, verbose: bool = True
+    ) -> Tuple[np.ndarray, np.ndarray]:
         """
         Solves the model using Policy Function Iteration (PFI).
 
@@ -152,6 +163,8 @@ class DiscreteDP:
         ----------
         max_iter : int, optional
             The maximum number of iterations.
+        verbose : bool, optional
+            If True, prints a convergence message.
 
         Returns
         -------
@@ -170,11 +183,13 @@ class DiscreteDP:
             new_policy = self.compute_greedy(V_pi)
 
             if np.array_equal(new_policy, policy):
-                print(f"PFI converged in {i} iterations.")
+                if verbose:
+                    print(f"PFI converged in {i} iterations.")
                 return V_pi, new_policy
 
             policy = new_policy
 
-        print("PFI failed to converge.")
+        if verbose:
+            print("PFI failed to converge.")
         V = self.policy_evaluation(policy)
         return V, policy

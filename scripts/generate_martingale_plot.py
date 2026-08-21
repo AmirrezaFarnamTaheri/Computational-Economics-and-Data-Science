@@ -1,10 +1,10 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 import seaborn as sns
 
 # --- Setup Plot Style ---
 sns.set_style("whitegrid")
-plt.rcParams.update({'font.size': 12, 'figure.dpi': 150})
+plt.rcParams.update({"font.size": 12, "figure.dpi": 150})
 
 # --- Simulation Parameters ---
 n_paths = 5
@@ -26,16 +26,16 @@ for i in range(n_paths):
     ax.plot(paths[i, :], lw=1.5, alpha=0.8)
 
 # --- Formatting ---
-ax.set_title('Simulation of Martingale Paths (Random Walks)', fontsize=16)
-ax.set_xlabel('Time Step (t)')
-ax.set_ylabel('Value ($M_t$)')
+ax.set_title("Simulation of Martingale Paths (Random Walks)", fontsize=16)
+ax.set_xlabel("Time Step (t)")
+ax.set_ylabel("Value ($M_t$)")
 ax.grid(True, which="both", ls="--")
-ax.axhline(0, color='black', lw=0.75, linestyle='--')
+ax.axhline(0, color="black", lw=0.75, linestyle="--")
 
 plt.tight_layout()
 
 # --- Save the Figure ---
 # Note: The original file was an SVG, but PNG is fine for consistency.
-output_path = 'images/Appendix/martingale_paths.png'
+output_path = "images/Appendix/martingale_paths.png"
 plt.savefig(output_path)
 print(f"Plot saved to {output_path}")

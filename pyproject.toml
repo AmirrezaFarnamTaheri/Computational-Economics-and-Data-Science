@@ -12,6 +12,9 @@ include = '\.pyi?$'
 [tool.ruff]
 line-length = 88
 target-version = "py310"
+# Notebook linting is tracked separately (audit Phase 7: code quality pass
+# over all 113 notebooks); lint only .py sources for now, matching Black.
+extend-exclude = ["*.ipynb"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I"]

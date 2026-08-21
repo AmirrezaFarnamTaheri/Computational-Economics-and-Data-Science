@@ -1,106 +1,111 @@
+import warnings
+
 import numpy as np
 from scipy.linalg import ordqz
-import pandas as pd
-import warnings
+
 
 def solve_qz(AA, BB, n_states):
     """
     Solves a linear rational expectations model of the form:
-    AA * E_t[x_{t+1}] = BB * x_t + Exogenous_Shocks
 
-    Using the QZ decomposition (Klein, 2000).
+        AA @ E_t[x_{t+1}] = BB @ x_t
 
-    The system is transformed to:
-    S * E_t[y_{t+1}] = T * y_t
+    using the QZ (generalized Schur) decomposition, following Klein (2000).
 
-    Dynamic eigenvalues are lambda = T_ii / S_ii.
-    We sort so that stable eigenvalues (|lambda| < 1) are in the top-left.
-    Note: generalized eigenvalues from ordqz are (alpha, beta) such that beta*A - alpha*B.
-    This implies lambda_dyn = beta/alpha.
-    Stable means |beta| < |alpha|.
+    The state vector must be ordered as x_t = [k_t; u_t], where k_t are the
+    n_states predetermined (state) variables and u_t are the jump (control)
+    variables.
 
-    Parameters:
-    -----------
+    Method
+    ------
+    scipy's ``ordqz(AA, BB)`` returns orthogonal Q, Z and quasi-triangular
+    S, T such that
+
+        AA = Q @ S @ Z.T   and   BB = Q @ T @ Z.T.
+
+    Substituting into the system and premultiplying by Q.T gives
+
+        S @ (Z.T @ x_{t+1}) = T @ (Z.T @ x_t),
+
+    so the auxiliary variable is y_t = Z.T @ x_t, equivalently x_t = Z @ y_t.
+    Generalized eigenvalues are lambda_i = T_ii / S_ii; with scipy's
+    (alpha, beta) output, lambda_i = beta_i / alpha_i, so a root is stable
+    (|lambda| < 1) when |beta| < |alpha|. We sort stable roots into the
+    top-left block.
+
+    Partitioning y_t = [y1_t; y2_t] (stable/unstable) and Z conformably,
+    saddle-path stability requires y2_t = 0, so
+
+        x_t = Z[:, :n_states] @ y1_t
+        =>  k_t = Z11 @ y1_t,   u_t = Z21 @ y1_t
+        =>  u_t = Z21 @ inv(Z11) @ k_t                    (Policy)
+
+    and from the stable block S11 @ y1_{t+1} = T11 @ y1_t:
+
+        k_{t+1} = Z11 @ inv(S11) @ T11 @ inv(Z11) @ k_t   (Transition)
+
+    Parameters
+    ----------
     AA, BB : np.ndarray
-        Square matrices (n x n) describing the system AA*x' = BB*x.
+        Square matrices (n x n) describing the system AA @ x' = BB @ x.
     n_states : int
-        Number of predetermined (state) variables.
-        The state vector x_t must be ordered as [states; controls].
+        Number of predetermined (state) variables. The state vector x_t
+        must be ordered as [states; controls].
 
-    Returns:
-    --------
+    Returns
+    -------
     dict with keys:
-        'Policy': Matrix P such that u_t = P * k_t
-        'Transition': Matrix Q such that k_{t+1} = Q * k_t
-        'Z': The QZ unitary matrix Z (useful for debugging)
+        'Policy': Matrix P such that u_t = P @ k_t
+        'Transition': Matrix M such that k_{t+1} = M @ k_t
+        'Z': The QZ orthogonal matrix Z (useful for debugging)
+
+    References
+    ----------
+    Klein, P. (2000). "Using the generalized Schur form to solve a
+    multivariate linear rational expectations model." Journal of Economic
+    Dynamics and Control, 24(10), 1405-1423.
     """
 
-    # 1. QZ Decomposition
-    # Sort such that stable eigenvalues (|beta/alpha| < 1) are in the top-left (indices 0 to n_states-1)
+    # 1. QZ decomposition, sorted so stable roots (|beta| < |alpha|) come first.
     def sort_stable(alpha, beta):
-        # We want |beta/alpha| < 1 => |beta| < |alpha|
-        # Check for division by zero (infinite root is unstable)
-        # We must return a boolean array
-        alpha_abs = np.abs(alpha)
-        beta_abs = np.abs(beta)
+        # Stable roots satisfy |lambda| = |beta/alpha| < 1, i.e. |beta| < |alpha|.
+        # An infinite root (alpha = 0) can never satisfy this, so no separate
+        # finiteness cutoff is needed — and unlike an absolute threshold, the
+        # comparison is invariant to a common rescaling of (AA, BB).
+        return np.abs(beta) < np.abs(alpha)
 
-        # Avoid division by zero issues by checking alpha close to zero
-        # If alpha is near 0, root is infinite (unstable) -> False
-        is_finite = alpha_abs > 1e-10
+    S, T, alpha, beta, Q, Z = ordqz(AA, BB, sort=sort_stable, output="real")
 
-        # For finite roots, check stability
-        is_stable = beta_abs < alpha_abs
-
-        return np.logical_and(is_finite, is_stable)
-
-    S, T, alpha, beta, Q, Z = ordqz(AA, BB, sort=sort_stable, output='real')
-
-    # Z from scipy satisfies: Q @ AA @ Z.T = S
-    # Meaning AA = Q.T @ S @ Z
-    # AA * x = Q.T @ S @ Z @ x
-    # System: Q.T @ S @ Z @ x_{t+1} = Q.T @ T @ Z @ x_t
-    # Multiply by Q: S @ (Z @ x_{t+1}) = T @ (Z @ x_t)
-    # Let y_t = Z @ x_t.
-    # S @ y_{t+1} = T @ y_t
-
-    # Partition Z
-    # Z has shape (n, n).
-    # x_t has first n_states as k_t, rest as u_t.
-    # y_t = [y1_t; y2_t] where y1 has size n_states (stable).
-    # Z = [[Z11, Z12], [Z21, Z22]]
-
-    Z11 = Z[:n_states, :n_states]
-    Z12 = Z[:n_states, n_states:]
-    Z21 = Z[n_states:, :n_states]
-    Z22 = Z[n_states:, n_states:]
-
-    # 2. Check Blanchard-Kahn
-    # We need exactly n_states stable eigenvalues.
+    # 2. Blanchard-Kahn check: saddle-path uniqueness needs exactly
+    # n_states stable roots.
     n_stable = np.sum(sort_stable(alpha, beta))
     if n_stable != n_states:
-        warnings.warn(f"Blanchard-Kahn condition warning: Expected {n_states} stable roots, found {n_stable}. System may be indeterminate or explosive.")
+        warnings.warn(
+            f"Blanchard-Kahn condition warning: Expected {n_states} stable "
+            f"roots, found {n_stable}. System may be indeterminate or explosive."
+        )
 
-    # 3. Solve for Controls: u_t = Policy * k_t
-    # Stability requires y2_t = 0 (assuming no shocks in the unstable block yet)
-    # y2_t = Z21 * k_t + Z22 * u_t = 0
-    # => u_t = - inv(Z22) * Z21 * k_t
-
-    if np.linalg.det(Z22) == 0:
-        raise ValueError("Indeterminacy: Z22 is singular. Rank condition failed.")
-
-    Policy = -np.linalg.solve(Z22, Z21)
-
-    # 4. Solve for Transitions: k_{t+1} = Transition * k_t
-    # y1_t = Z11 * k_t + Z12 * u_t = (Z11 + Z12 * Policy) * k_t
-    # S11 * y1_{t+1} = T11 * y1_t
-    # S11 * (Z11 + Z12 * P) * k_{t+1} = T11 * (Z11 + Z12 * P) * k_t
-    # Let H = Z11 + Z12 * P
-    # k_{t+1} = inv(S11 @ H) @ (T11 @ H) * k_t
-
+    # 3. Partition Z conformably with y = [stable; unstable] and x = [k; u]
+    Z11 = Z[:n_states, :n_states]
+    Z21 = Z[n_states:, :n_states]
     S11 = S[:n_states, :n_states]
     T11 = T[:n_states, :n_states]
-    H = Z11 + Z12 @ Policy
 
-    Transition = np.linalg.solve(S11 @ H, T11 @ H)
+    # Klein's rank condition: Z11 must be invertible for k_t to pin down y1_t.
+    if n_states > 0 and 1.0 / np.linalg.cond(Z11) < 1e-12:
+        raise ValueError(
+            "Rank condition failed: Z11 is (numerically) singular. "
+            "The states do not span the stable subspace."
+        )
 
-    return {'Policy': Policy, 'Transition': Transition, 'Z': Z}
+    # Compute X @ inv(Z11) as solve(Z11.T, X.T).T — solving the linear
+    # system is better conditioned than forming the inverse explicitly.
+
+    # 4. Policy: u_t = Z21 @ inv(Z11) @ k_t
+    Policy = np.linalg.solve(Z11.T, Z21.T).T
+
+    # 5. Transition: k_{t+1} = Z11 @ inv(S11) @ T11 @ inv(Z11) @ k_t
+    stable_dynamics = np.linalg.solve(S11, T11)
+    Transition = np.linalg.solve(Z11.T, (Z11 @ stable_dynamics).T).T
+
+    return {"Policy": Policy, "Transition": Transition, "Z": Z}
