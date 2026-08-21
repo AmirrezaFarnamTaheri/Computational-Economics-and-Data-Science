@@ -398,7 +398,80 @@ Reject the generic SaaS "Hero -> 3 Cards -> CTA -> Footer" template. The curricu
      - Productivity shock: $z_t$ where $\ln z_t = \rho \ln z_{t-1} + \epsilon_t$
      - Stochastic Discount Factor: $m_{t+1}$ or $M_{t+1}$
 
-## 10. Master Implementation & Actionable Task Breakdown
+
+---
+
+## 10. Multi-Scale Curriculum Enrichment: From Micro-Nuances to Macro-Level Lecture & Module Additions
+
+*An exhaustive taxonomy addressing gaps at every scale: from tiny algebraic/computational corner cases to underrepresented paradigms, up to candidate new lectures spanning modern computational economic frontiers.*
+
+```
+                       MULTI-SCALE GAP-FILLING TAXONOMY
+   ┌─────────────────────────────────────────────────────────────────────────────┐
+   │ 🔬 SCALE 1: MICRO-LEVEL GAPS & NUMERICAL NUANCES                            │
+   │ · Corner solutions & KKT complementary slackness in practice                │
+   │ · Floating-point underflow in log-likelihood and logit choice probabilities │
+   │ · Matrix non-invertibility safeguards and condition number bounds          │
+   │ · Regularity boundary conditions & parameter admissibility sets             │
+   ├─────────────────────────────────────────────────────────────────────────────┤
+   │ 📚 SCALE 2: UNDERREPRESENTED & PARTIALLY EXPLAINED PARADIGMS                │
+   │ · Continuous-Time HJB Solvers (Achdou et al. upwind finite difference)      │
+   │ · Structural Demand Inversion (Berry-Levinsohn-Pakes / BLP 1995)            │
+   │ · Synthetic Difference-in-Differences (SDID, Arkhangelsky et al. 2021)      │
+   │ · Deep Reinforcement Learning (PPO/Actor-Critic) in dynamic economic games  │
+   │ · Self-Exciting Hawkes Point Processes in high-frequency flash crashes      │
+   │ · Climate-Economy Integrated Assessment Models (Nordhaus DICE Dynamic Model)│
+   ├─────────────────────────────────────────────────────────────────────────────┤
+   │ 🏛️ SCALE 3: NEW LECTURE & SPECIALIZED MODULE EXPANSIONS                    │
+   │ · Module 04: `07_Continuous_Time_Macro_HJB.ipynb` & `08_HANK_Models.ipynb` │
+   │ · Module 05: `06_BLP_Demand_Estimation.ipynb`                               │
+   │ · Module 06: `09_Modern_Causal_Frontiers_SDID.ipynb`                        │
+   │ · Module 07: `07_Deep_Reinforcement_Learning_in_Economics.ipynb`           │
+   │ · Module 08: `07_Nonlinear_Time_Series_and_Particle_Filters.ipynb`          │
+   │ · Module 09: `07_Hawkes_Processes_and_Market_Impact.ipynb`                  │
+   │ · Module 10: `05_Climate_Macro_Integrated_Assessment_DICE.ipynb`            │
+   └─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### A. Scale 1: Micro-Level Gaps, Edge Cases & Mathematical Nuances
+1. **Numerical Corner Solutions**:
+   - Explicitly handle zero-consumption and borrowing-limit binds ($c \to 0, a' = \underline{a}$) with Inada condition enforcement $u'(c) \to \infty$ avoiding negative logs.
+2. **Log-Sum-Exp Stabilization**:
+   - Replace naive $\sum \exp(V_i)$ with $\max(V) + \ln \sum \exp(V_i - \max(V))$ across all discrete choice and Rust engine replacement likelihood evaluations.
+3. **Condition Number Diagnostics**:
+   - Calculate $\kappa(A) = \|A\|_2 \|A^{-1}\|_2$ before every matrix inversion in OLS, 2SLS, and VAR estimators, triggering automatic SVD or ridge regularization if $\kappa(A) > 10^8$.
+4. **Boundary Regularity Conditions**:
+   - State explicit parameter domains for all models (e.g. discount factor $\beta \in (0, 1)$, Frisch elasticity $\phi > 0$, Taylor rule inflation coefficient $\phi_\pi > 1$ for determinacy).
+
+### B. Scale 2: Underrepresented & Modern Frontier Topics
+1. **Continuous-Time Dynamic Macroeconomics**:
+   - Hamilton-Jacobi-Bellman (HJB) equations with Poisson jumps; Achdou, Han, Lasry, Lions, and Moll (2022) monotone upwind finite-difference schemes for heterogeneous agents.
+2. **Structural Industrial Organization (BLP 1995)**:
+   - Random coefficients logit demand system; Berry's contraction mapping market-share inversion $\delta_{jt+1} = \delta_{jt} + \ln(s_{jt}) - \ln(s_{jt}(\delta_{jt}))$; nested GMM objective.
+3. **Advanced Causal Inference Frontiers (SDID & Matrix Completion)**:
+   - Synthetic Difference-in-Differences (Arkhangelsky et al. 2021) combining unit weights $\omega_i$ and time weights $\lambda_t$ with $L_2$ regularization; Matrix Completion with Nuclear Norm regularization (Athey et al. 2021).
+4. **Deep Reinforcement Learning in Macroeconomics**:
+   - Policy gradient and Proximal Policy Optimization (PPO) agents learning continuous equilibrium decision rules in non-linear environments with aggregate shocks.
+5. **High-Frequency Hawkes Processes**:
+   - Mutually exciting point processes $\lambda(t) = \mu + \sum_{t_i < t} \alpha e^{-\beta(t - t_i)}$ modeling high-frequency order book clustering, volatility cascades, and flash crashes.
+6. **Climate-Economy Integrated Assessment Models (DICE)**:
+   - Nordhaus DICE model: Endogenous economic growth coupled with carbon cycle climate dynamics, temperature anomalies, damages function $D(T)$, and optimal carbon pricing trajectories.
+
+### C. Scale 3: New Lecture Additions to the Curriculum Catalog
+To make the curriculum completely comprehensive, the plan incorporates **8 new advanced frontier lectures**:
+
+| Module | New Lecture File | Theoretical & Practical Deliverable |
+| :--- | :--- | :--- |
+| **Module 04** | `07_Continuous_Time_Macro_HJB.ipynb` | HJB equation derivation, upwind finite difference solver, stationary distribution Fokker-Planck equation. |
+| **Module 04** | `08_HANK_Models.ipynb` | Heterogeneous Agent New Keynesian (HANK) model with uninsurable idiosyncratic risk and nominal rigidities. |
+| **Module 05** | `06_BLP_Demand_Estimation.ipynb` | Berry-Levinsohn-Pakes (1995) demand inversion, simulated market shares, nested fixed-point contraction. |
+| **Module 06** | `09_Modern_Causal_Frontiers_SDID.ipynb` | Synthetic DiD (Arkhangelsky et al. 2021) and Matrix Completion with nuclear norm penalization. |
+| **Module 07** | `07_Deep_Reinforcement_Learning_in_Economics.ipynb` | Deep Q-Learning (DQN) and PPO solving multi-agent dynamic market games. |
+| **Module 08** | `07_Nonlinear_Time_Series_and_Particle_Filters.ipynb` | Sequential Monte Carlo (SMC), Particle Filtering for non-linear DSGE models, Markov-Switching VAR. |
+| **Module 09** | `07_Hawkes_Processes_and_Market_Impact.ipynb` | Self-exciting point processes, Kyle-Back continuous-time market microstructure, square-root market impact law. |
+| **Module 10** | `05_Climate_Macro_Integrated_Assessment_DICE.ipynb` | Dynamic Integrated Climate-Economy (DICE) model, optimal carbon taxation, social cost of carbon (SCC). |
+
+## 11. Master Implementation & Actionable Task Breakdown
 
 ### Phase 1: Automated Audit Infrastructure & Static Verification Engine
 - [ ] **Task 1.1: Build Master Notebook AST Linter (`scripts/audit_curriculum_ast.py`)**
@@ -431,7 +504,7 @@ Reject the generic SaaS "Hero -> 3 Cards -> CTA -> Footer" template. The curricu
 
 ---
 
-## 11. Verification Checkpoints & Definition of Done
+## 12. Verification Checkpoints & Definition of Done
 
 ```
 [ ] Checkpoint 1 (Static Quality): Zero AST linter errors, zero unrendered LaTeX formulas, zero broken badges across 83 notebooks.
