@@ -191,6 +191,14 @@ class TestBlanchardKahn:
             scaled["Transition"], baseline["Transition"], rtol=1e-9
         )
 
+    def test_raises_when_states_do_not_span_stable_subspace(self):
+        """Stable eigenvector has zero component in the state block,
+        so k_t cannot pin down y1_t: Z11 must be singular."""
+        V = np.array([[0.0, 1.0], [1.0, 1.5]])
+        M = saddle_system([0.5, 2.0], V)
+        with pytest.raises(ValueError, match="Rank condition"):
+            solve_qz(np.eye(2), M, n_states=1)
+
 
 class warnings_disabled_as_errors:
     """Context manager: escalate any warning to a test failure."""
