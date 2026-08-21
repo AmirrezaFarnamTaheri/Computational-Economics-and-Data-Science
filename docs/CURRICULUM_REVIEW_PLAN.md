@@ -10,6 +10,46 @@
 
 ---
 
+
+---
+
+## 0. The Execution Quality Standard: The 7 Pillars of Perfectionist Academic Rigor
+
+> **CORE OPERATIONAL MANDATE:** Every review, mathematical derivation, code modification, visual asset, and pedagogical explanation across the entire curriculum must strictly adhere to the **7 Pillars of Perfectionist Academic Rigor**:
+
+```
+                       THE 7 PILLARS OF PERFECTIONIST RIGOR
+   ┌─────────────────────────────────────────────────────────────────────────────┐
+   │ 1. 📐 RIGOROUS       │ Formal mathematical theorem-proof chains with zero   │
+   │                      │ missing algebraic intermediate steps. No hand-waving.│
+   ├──────────────────────┼──────────────────────────────────────────────────────┤
+   │ 2. 💎 PERFECTIONIST  │ Absolute zero tolerance for placeholders, stubs,     │
+   │                      │ `TODO` markers, ellipses (`...`), or incomplete code.│
+   ├──────────────────────┼──────────────────────────────────────────────────────┤
+   │ 3. 🧱 CONCRETE       │ Exact executable Python functions, explicit variable │
+   │                      │ typing, verified numerical tolerances (tol <= 1e-8). │
+   ├──────────────────────┼──────────────────────────────────────────────────────┤
+   │ 4. 🛡️ SOLID          │ Defensively guarded against ill-conditioning (kappa  │
+   │                      │ <= 1e8), singular matrices, underflow, and divergence.│
+   ├──────────────────────┼──────────────────────────────────────────────────────┤
+   │ 5. 🌊 DEEP           │ Unpacks multi-step structural mechanisms, asymptotic │
+   │                      │ proofs, and cross-paradigm theoretical tensions.      │
+   ├──────────────────────┼──────────────────────────────────────────────────────┤
+   │ 6. 🔍 DETAILED       │ Granular step-by-step algorithms, memory strides,    │
+   │                      │ CPU cache awareness, and full parameter boundaries.  │
+   ├──────────────────────┼──────────────────────────────────────────────────────┤
+   │ 7. ⚓ GROUNDED        │ Anchored in foundational landmark papers and real    │
+   │                      │ empirical data pipelines (FRED, WB, IMF, SEC, CRSP). │
+   └─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Operational Mandate for Implementation:
+- **No Hand-Waving or Omitted Algebra**: Every step from the Lagrangian / Bellman operator to the first-order condition, envelope condition, and Euler equation must be fully derived.
+- **Zero Placeholders (`TODO` / `pass` / `...`)**: Any code cell or mathematical section must be 100% complete, tested, and self-contained.
+- **Defensive Numerical Architecture**: Never perform a matrix inversion, root-finding loop, or log-likelihood evaluation without condition number diagnostics, log-sum-exp stabilization, and graceful divergence fallbacks.
+- **Exhaustive Empirical & Theoretical Grounding**: Every theoretical concept must connect to both its foundational literature roots (with exact author-year citations) and a concrete computational/empirical replication.
+
+
 ## 1. The 16 Analytical Dimensions (The Complete Review Matrix)
 
 Every lecture notebook, code block, mathematical proof, exercise, and visual asset is evaluated across **16 orthogonal analytical lenses**:
