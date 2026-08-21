@@ -471,7 +471,78 @@ To make the curriculum completely comprehensive, the plan incorporates **8 new a
 | **Module 09** | `07_Hawkes_Processes_and_Market_Impact.ipynb` | Self-exciting point processes, Kyle-Back continuous-time market microstructure, square-root market impact law. |
 | **Module 10** | `05_Climate_Macro_Integrated_Assessment_DICE.ipynb` | Dynamic Integrated Climate-Economy (DICE) model, optimal carbon taxation, social cost of carbon (SCC). |
 
-## 11. Master Implementation & Actionable Task Breakdown
+
+---
+
+## 11. Deep-Dive Gap Inventory & Underrepresented Methodology Blueprint
+
+*An exhaustive catalog identifying 24 previously underrepresented, briefly explained, or overlooked theoretical, computational, and empirical topics across modern quantitative economics.*
+
+```
+                 THE DEEP-DIVE GAP INVENTORY (24 ADVANCED TOPICS)
+   ┌─────────────────────────────────────────────────────────────────────────────┐
+   │ 🏛️ SECTION 1: STRUCTURAL ECONOMETRICS & DYNAMIC GAMES                       │
+   │ 1. Hotz-Miller (1993) Conditional Choice Probability (CCP) Two-Step Solver │
+   │ 2. Arcidiacono-Miller (2011) EM Algorithm for Unobserved Heterogeneity      │
+   │ 3. Ericson-Pakes (1995) / Pakes-McGuire Markov-Perfect Industry Dynamics    │
+   │ 4. Carroll (2006) Endogenous Grid Point Method (EGM) for Consumption-Savings│
+   │ 5. Manski Partial Identification & Sharp Bounds for Interval Data           │
+   │ 6. Goldsmith-Pinkham, Sorkin, Swift / Borusyak-Hull-Jaravel Bartik Shift-   │
+   │    Share Instrument Exogeneity & Shock Orthogonality Decompositions         │
+   ├─────────────────────────────────────────────────────────────────────────────┤
+   │ ⚡ SECTION 2: MACROECONOMIC COMPUTATION & SEQUENCE SPACE                     │
+   │ 7. Auclert-Bardóczy-Rognlie-Straub (2021) Sequence-Space Jacobians (SSJ)   │
+   │ 8. Non-Linear DSGE Pruning (Kim et al. 2008) for 2nd & 3rd Order Dynamics │
+   │ 9. Maliar-Maliar-Winant (2021) Deep Neural Network Global DSGE Solvers      │
+   │ 10. Lucas-Stokey (1983) Primal Approach to Ramsey Optimal Taxation          │
+   │ 11. Clarida-Galí-Gertler (1999) Monetary Policy: Commitment vs Discretion   │
+   │ 12. Spatial Autoregressive (SAR) & Spatial Durbin Models (Anselin/LeSage)   │
+   ├─────────────────────────────────────────────────────────────────────────────┤
+   │ 🎯 SECTION 3: CAUSAL INFERENCE & APPLIED ECONOMETRIC ADVANCES               │
+   │ 13. Sun & Abraham (2021) Interaction-Weighted Heterogeneous DiD Estimator   │
+   │ 14. de Chaisemartin & D'Haultfœuille (2020) Two-Way Fixed Effects Diagnostic│
+   │ 15. Rambachan & Roth (2023) Honest Parallel Trends Sensitivity Bounds       │
+   │ 16. Chernozhukov-Wüthrich-Zhu (2021) Conformal Prediction in Econometrics   │
+   │ 17. Imai-Keele-Tingley (2010) Causal Mediation Analysis (ACME)              │
+   │ 18. Abadie-Imbens (2006) Non-Parametric Covariate Matching Asymptotics      │
+   ├─────────────────────────────────────────────────────────────────────────────┤
+   │ 📈 SECTION 4: HIGH-DIMENSIONAL ASSET PRICING & MICROSTRUCTURE               │
+   │ 19. Carr-Madan (1999) FFT Option Pricing for Heston Stochastic Volatility   │
+   │ 20. Bates (1996) Stochastic Volatility Jump-Diffusion Model Calibration    │
+   │ 21. Ledoit-Wolf (2004) Optimal Constant Correlation Covariance Shrinkage    │
+   │ 22. Marcos López de Prado (2016) Hierarchical Risk Parity (HRP) Tree Models│
+   │ 23. Diebold-Li (2006) Dynamic Nelson-Siegel Yield Curve Forecasting         │
+   │ 24. Glosten-Milgrom (1985) Sequential Bid-Ask Spread Information Dynamics   │
+   └─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Granular Topic Breakdown & Implementation Directives
+
+#### 1. Hotz-Miller (1993) CCP Estimator
+- **Theory**: Inverting choice probabilities $\mathbf{P} \to \mathbf{V}$ bypassing full backward induction.
+- **Deliverable**: Complete derivation of the inversion theorem $V(s) - V_0(s) = \psi_j(P(s))$ with empirical application to vehicle replacement.
+
+#### 2. Carroll (2006) Endogenous Grid Point Method (EGM)
+- **Theory**: Operating on future post-decision state $a_{t+1}$ rather than current asset grid $a_t$, turning non-linear Euler equation root-finding into a direct closed-form inversion $c_t = (u')^{-1}(\beta (1+r) \mathbb{E}[u'(c_{t+1})])$.
+- **Deliverable**: $100\times$ speedup comparison against standard VFI grid search in consumption-savings problems.
+
+#### 3. Auclert et al. (2021) Sequence-Space Jacobians (SSJ)
+- **Theory**: Linearizing heterogeneous-agent models around stationary equilibrium directly in the sequence space $\mathbf{J} = \frac{\partial \mathbf{Y}}{\partial \mathbf{X}}$.
+- **Deliverable**: Solving a full Heterogeneous Agent New Keynesian (HANK) general equilibrium transition path in under 0.5 seconds.
+
+#### 4. Rambachan & Roth (2023) Honest Sensitivity Analysis for DiD
+- **Theory**: Imposing smoothness/monotonicity restrictions on post-treatment violations of parallel trends $\Delta \in \mathcal{S}$.
+- **Deliverable**: Plotting breakdown frontiers and robust confidence sets for event-study coefficients.
+
+#### 5. Carr-Madan (1999) Fast Fourier Transform (FFT) Option Pricing
+- **Theory**: Evaluating Black-Scholes and Heston option prices via numerical quadrature of the characteristic function $\psi(u)$ on a logarithmic strike grid using `scipy.fft`.
+- **Deliverable**: Real-time calibration of Heston parameters $(\kappa, \theta, \sigma_v, \rho, v_0)$ to market option chains.
+
+#### 6. Ledoit-Wolf (2004) Analytical Covariance Shrinkage
+- **Theory**: Optimal convex combination $S^* = \hat{\alpha} F + (1-\hat{\alpha}) S$ where $F$ is a single-index target matrix, minimizing Frobenius loss in high dimensions $P > N$.
+- **Deliverable**: Markowitz mean-variance portfolio out-of-sample Sharpe ratio improvement over sample covariance matrices.
+
+## 12. Master Implementation & Actionable Task Breakdown
 
 ### Phase 1: Automated Audit Infrastructure & Static Verification Engine
 - [ ] **Task 1.1: Build Master Notebook AST Linter (`scripts/audit_curriculum_ast.py`)**
@@ -504,7 +575,7 @@ To make the curriculum completely comprehensive, the plan incorporates **8 new a
 
 ---
 
-## 12. Verification Checkpoints & Definition of Done
+## 13. Verification Checkpoints & Definition of Done
 
 ```
 [ ] Checkpoint 1 (Static Quality): Zero AST linter errors, zero unrendered LaTeX formulas, zero broken badges across 83 notebooks.
