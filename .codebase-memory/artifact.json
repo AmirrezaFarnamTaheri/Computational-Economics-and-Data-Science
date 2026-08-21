@@ -1,0 +1,11 @@
+{
+    "schema_version": 2,
+    "commit": "2fbacf64ab5c86559dc4bdf3b7533e88897efc13",
+    "indexed_at": "2026-08-21T10:58:48Z",
+    "project": "D-GitHub-Computational-Economics-and-Data-Science",
+    "nodes": 1729,
+    "edges": 3398,
+    "original_size": 5373952,
+    "compressed_size": 736190,
+    "compression_level": 9
+}
