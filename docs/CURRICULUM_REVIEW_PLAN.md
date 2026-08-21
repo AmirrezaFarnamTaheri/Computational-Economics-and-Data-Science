@@ -307,7 +307,33 @@ Every core numerical algorithm is benchmarked and validated across **5 execution
 
 ---
 
-## 8. Master Implementation & Actionable Task Breakdown
+
+---
+
+## 8. Frontend Design System & Hallmark Anti-Slop Discipline (`DESIGN.md`)
+
+*Ensuring the visual interfaces, documentation hub, and interactive laboratories look made, intentional, and authoritative rather than generic AI slop.*
+
+### A. The 6 Hallmark Core Disciplines
+1. **Pre-Emit Self-Critique**: Every visual layout, notebook HTML scaffold, and interactive widget is scored on 6 axes: **Philosophy, Hierarchy, Execution, Specificity, Restraint, Variety** (Target: >= 4/5).
+2. **Honest Copy & Empirical Precision**: Zero fabricated benchmark claims (no fake "+47% faster" or "trusted by 10,000 economists"). Real `cProfile` execution numbers and genuine dataset rows only.
+3. **Locked Token Architecture**: All colors and fonts reference named OKLCH tokens (`var(--color-accent)`, `var(--color-bg)`). Zero inline hex improvisations.
+4. **No Re-Drawn Fake Chrome**: Zero fake browser pills, fake traffic-light window headers, or faux terminal title bars. Real, clean `<figure>` frames and true screenshots only.
+5. **Mobile Responsiveness at 320px / 375px / 414px / 768px**:
+   - Mandatory `overflow-x: clip` preventing side-scrolling.
+   - Grid tracks use `minmax(0, 1fr)` preventing text blowout.
+   - Display headers wrap safely with `overflow-wrap: anywhere`.
+   - KaTeX equations wrapped in responsive scroll viewports.
+6. **Typography Purity**: Roman display headers (`font-style: normal`). Zero italic emphasis in headings (`Built to <em>think</em>` tell strictly prohibited).
+
+### B. The 8-State Interactive Matrix for All Visualizers
+Every interactive slider, button, input box, and tab strip across the WebGL and Matter.js laboratories must define explicit styling for all 8 states:
+`default` · `hover` · `focus-visible` · `active` · `disabled` · `loading` · `error` · `success`.
+
+### C. Structural Layout Variety
+Reject the generic SaaS "Hero -> 3 Cards -> CTA -> Footer" template. The curriculum web portal utilizes asymmetric 12-column bento grids, split-screen live mathematical derivation viewports, and floating HUD parameter drawers.
+
+## 9. Master Implementation & Actionable Task Breakdown
 
 ### Phase 1: Automated Audit Infrastructure & Static Verification Engine
 - [ ] **Task 1.1: Build Master Notebook AST Linter (`scripts/audit_curriculum_ast.py`)**
@@ -340,7 +366,7 @@ Every core numerical algorithm is benchmarked and validated across **5 execution
 
 ---
 
-## 9. Verification Checkpoints & Definition of Done
+## 10. Verification Checkpoints & Definition of Done
 
 ```
 [ ] Checkpoint 1 (Static Quality): Zero AST linter errors, zero unrendered LaTeX formulas, zero broken badges across 83 notebooks.
