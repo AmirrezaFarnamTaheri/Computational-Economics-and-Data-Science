@@ -119,6 +119,7 @@ credentials.json
 
 # Testing
 .pytest_cache/
+.ruff_cache/
 .coverage
 .coverage.*
 htmlcov/
@@ -130,6 +131,14 @@ coverage.xml
 .pytype/
 nosetests.xml
 test-results/
+
+# Graphify & Agentic Tools
+graphify-out/
+.codemap/
+
+# Audit reports
+notebook_structure.md
+notebook_structure_report.json
 
 # MyPy
 .mypy_cache/
