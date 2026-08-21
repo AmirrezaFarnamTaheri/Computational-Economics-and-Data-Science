@@ -3,161 +3,161 @@
     "script": "scripts\\generate_aiyagari_animation.py",
     "status": "PASS",
     "returncode": 0,
-    "seconds": 5.995,
+    "seconds": 13.136,
     "stderr_tail": ""
   },
   {
     "script": "scripts\\generate_aiyagari_diagram.py",
     "status": "PASS",
     "returncode": 0,
-    "seconds": 1.836,
+    "seconds": 1.801,
     "stderr_tail": ""
   },
   {
     "script": "scripts\\generate_animation.py",
     "status": "PASS",
     "returncode": 0,
-    "seconds": 1.468,
+    "seconds": 1.27,
     "stderr_tail": ""
   },
   {
     "script": "scripts\\generate_appendix_images.py",
     "status": "PASS",
     "returncode": 0,
-    "seconds": 9.761,
+    "seconds": 9.502,
     "stderr_tail": ""
   },
   {
     "script": "scripts\\generate_binomial_tree_viz.py",
     "status": "PASS",
     "returncode": 0,
-    "seconds": 1.331,
+    "seconds": 0.991,
     "stderr_tail": ""
   },
   {
     "script": "scripts\\generate_box_jenkins_diagram.py",
     "status": "PASS",
     "returncode": 0,
-    "seconds": 3.203,
+    "seconds": 1.085,
     "stderr_tail": ""
   },
   {
     "script": "scripts\\generate_causal_collider_dag.py",
     "status": "PASS",
     "returncode": 0,
-    "seconds": 3.128,
+    "seconds": 1.231,
     "stderr_tail": ""
   },
   {
     "script": "scripts\\generate_causal_confounding_dag.py",
     "status": "PASS",
     "returncode": 0,
-    "seconds": 2.149,
+    "seconds": 1.301,
     "stderr_tail": ""
   },
   {
     "script": "scripts\\generate_causal_ml_images.py",
     "status": "PASS",
     "returncode": 0,
-    "seconds": 1.789,
+    "seconds": 1.61,
     "stderr_tail": ""
   },
   {
     "script": "scripts\\generate_causal_tree_split_image.py",
     "status": "PASS",
     "returncode": 0,
-    "seconds": 3.322,
+    "seconds": 1.508,
     "stderr_tail": ""
   },
   {
     "script": "scripts\\generate_centrality_diagram.py",
     "status": "PASS",
     "returncode": 0,
-    "seconds": 1.979,
+    "seconds": 1.59,
     "stderr_tail": ""
   },
   {
     "script": "scripts\\generate_clt_plots.py",
     "status": "PASS",
     "returncode": 0,
-    "seconds": 3.51,
+    "seconds": 2.993,
     "stderr_tail": ""
   },
   {
     "script": "scripts\\generate_cml_sml_plot.py",
     "status": "PASS",
     "returncode": 0,
-    "seconds": 1.742,
+    "seconds": 1.815,
     "stderr_tail": ""
   },
   {
     "script": "scripts\\generate_cointegration_viz.py",
     "status": "PASS",
     "returncode": 0,
-    "seconds": 1.642,
+    "seconds": 1.776,
     "stderr_tail": ""
   },
   {
     "script": "scripts\\generate_comparative_statics_plot.py",
     "status": "PASS",
     "returncode": 0,
-    "seconds": 2.841,
+    "seconds": 3.015,
     "stderr_tail": ""
   },
   {
     "script": "scripts\\generate_contagion_animation.py",
     "status": "PASS",
     "returncode": 0,
-    "seconds": 1.061,
+    "seconds": 1.074,
     "stderr_tail": ""
   },
   {
     "script": "scripts\\generate_convergence_plot.py",
     "status": "PASS",
     "returncode": 0,
-    "seconds": 1.496,
+    "seconds": 1.376,
     "stderr_tail": ""
   },
   {
     "script": "scripts\\generate_convex_plots.py",
     "status": "PASS",
     "returncode": 0,
-    "seconds": 6.136,
+    "seconds": 2.827,
     "stderr_tail": ""
   },
   {
     "script": "scripts\\generate_eigenvector_plot.py",
     "status": "PASS",
     "returncode": 0,
-    "seconds": 3.59,
+    "seconds": 2.578,
     "stderr_tail": ""
   },
   {
     "script": "scripts\\generate_emergence_diagram.py",
     "status": "PASS",
     "returncode": 0,
-    "seconds": 1.762,
+    "seconds": 1.073,
     "stderr_tail": ""
   },
   {
     "script": "scripts\\generate_fama_macbeth_diagram.py",
     "status": "PASS",
     "returncode": 0,
-    "seconds": 1.606,
+    "seconds": 1.11,
     "stderr_tail": ""
   },
   {
     "script": "scripts\\generate_gradient_field_plot.py",
     "status": "PASS",
     "returncode": 0,
-    "seconds": 4.693,
+    "seconds": 4.299,
     "stderr_tail": ""
   },
   {
     "script": "scripts\\generate_gradient_plot.py",
     "status": "PASS",
     "returncode": 0,
-    "seconds": 1.527,
+    "seconds": 1.594,
     "stderr_tail": ""
   },
   {
