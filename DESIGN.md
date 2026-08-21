@@ -1,135 +1,178 @@
-# DESIGN.md — Computational Economics & Data Science Visual Design System
+# Computational Economics & Data Science — Multi-Stack Design System & Frontend Architecture
 
-> **Aesthetic Essence:** *Austere Academic Precision* (Editorial Quantitative Journal)  
-> **Brand Adjectives:** Rigorous · Authoritative · Architectural · Tactile · Uncluttered  
-> **Stack Adapter:** Plain CSS Custom Properties (OKLCH) + MkDocs Material Theme Extensions  
-> **Hallmark Version:** 2026 Anti-Slop Compliant
+> **A rigorous, anti-slop design system uniting Academic Presentation Engineering, Modern Web UI Standards, Three.js 3D Geometric Manifolds, Cobe.js Optimization Networks, and Vanta.js Atmospheric WebGL Shaders.**
 
 ---
 
-## 1. Aesthetic Direction & Positioning
+## 1. Multi-Stack Architectural Matrix
 
-- **Artifact Type:** Interactive Academic Textbook, Quantitative Research Portal & WebGL Simulation Laboratory.
-- **Audience:** Graduate students, quantitative researchers, macroeconomists, and computational data scientists.
-- **Single Core Outcome:** Seamless understanding of complex economic theory through mathematically rigorous derivations, reproducible code, and tactile, high-performance interactive simulations.
-- **Signature Move:** Asymmetric split-screen laboratory view — formal LaTeX theorem derivations on the left with a live, interactive WebGL/Matter.js parameter manifold on the right, sharing real-time synchronized numerical state.
-
----
-
-## 2. Typography System
-
-| Role | Font Family | Weights | Usage & Rules |
-| :--- | :--- | :--- | :--- |
-| **Display / Headings** | `Newsreader`, Georgia, serif | 600, 700 | Primary chapter titles, module headers, theorem labels. **Always roman (`font-style: normal`) — zero italic headings.** |
-| **Section Heads / UI** | `Cabinet Grotesk`, `Satoshi`, sans-serif | 500, 600, 700 | Interactive lab controls, badges, table headers, navigation links. |
-| **Body Text** | `Satoshi`, -apple-system, sans-serif | 400, 500 | Explanatory narrative, economic intuition, problem sets. |
-| **Code & Tabular Numbers** | `JetBrains Mono`, monospace | 400, 500 | Python code, matrix outputs, `font-variant-numeric: tabular-nums`. |
-
-### Modular Scale (Ratio: 1.250 — Major Third)
-- `--font-size-xs`: `0.75rem` (12px)
-- `--font-size-sm`: `0.875rem` (14px)
-- `--font-size-base`: `1.000rem` (16px)
-- `--font-size-md`: `1.250rem` (20px)
-- `--font-size-lg`: `1.563rem` (25px)
-- `--font-size-xl`: `1.953rem` (31px)
-- `--font-size-xxl`: `2.441rem` (39px)
+| Stack Layer | Skill Integration | Core Purpose & Technical Mandate |
+|:---|:---|:---|
+| **Academic Slides & Deck Engine** | `/academic-slides`<br>`/frontend-slides` | Zero-dependency, browser-native presentation engine. Strict **100dvh viewport fitting** (no internal scrolling), Beamer-inspired theorem environments (`.theorem-box`, `.proof-box` with Q.E.D. `\25A1`), KaTeX mathematical typography, progressive disclosure (`data-overlay`, `.reveal`), and `@media print` PDF handout compilation. |
+| **Anti-Slop UI & Design System** | `/frontend-design`<br>`/frontend-design-deslop`<br>`/ui-ux-pro-max`<br>`/frontend-ui-engineering` | Strategy-driven design. Strict OKLCH mathematical color system (60-30-10 distribution), 8-state component interaction matrix, elimination of generic AI slop (no default purple gradients, no blob radii, no missing hover/focus states), WCAG 2.2 AA accessibility, and tabular numeric alignment. |
+| **Interactive 3D Manifolds** | `/skills-threejs` | WebGL 3D parametric visualization of convex epigraphs, Lorentz second-order cones, PSD cones, and supporting hyperplanes. PBR lighting (Key + Rim + Ambient), strict WebGL memory lifecycle (`.dispose()`), and clamped DPR ($\le 2.0$). |
+| **Network & Global Viz** | `/skills-cobejs` | Lightweight WebGL interactive globe for distributed optimization, ADMM consensus networks, and decentralized node topologies with custom coordinate markers and dynamic rotation. |
+| **Atmospheric Shaders** | `/skills-vantajs` | Subtle, performant WebGL background shaders (geometric waves, net topologies) for hero sections and lecture openers, with container bounding, resize observers, and unmount destruction. |
 
 ---
 
-## 3. OKLCH Color Palette & Semantic Roles (60-30-10 Distribution)
+## 2. Academic Presentation & Slide Engineering (`/academic-slides`, `/frontend-slides`)
 
+### Viewport Fitting Mandate (Zero-Scroll Policy)
+Every presentation slide and lecture frame MUST fit within exactly one viewport (`100vh` / `100dvh`).
 ```css
-:root {
-  /* 60% Dominant Backgrounds & Surfaces (Warm Academic Slate / Alabaster) */
-  --color-bg: oklch(0.985 0.005 85);            /* #fcfbf9 Warm Ivory White */
-  --color-surface: oklch(0.965 0.008 85);       /* #f5f4ef Surface Card */
-  --color-surface-hover: oklch(0.945 0.012 85); /* #eee9e0 Card Hover */
-  --color-border: oklch(0.880 0.015 85);        /* #dfdcce Hairline Border */
-  --color-border-focus: oklch(0.450 0.180 250); /* #2a6fdb Focus Ring */
-
-  /* 30% Typographic Content & Neutrals */
-  --color-text-primary: oklch(0.180 0.020 260);   /* #1a1e24 Deep Charcoal */
-  --color-text-secondary: oklch(0.420 0.025 260); /* #525a66 Muted Text */
-  --color-text-tertiary: oklch(0.600 0.020 260);  /* #8892a0 Meta / Footnotes */
-
-  /* 10% Sharp Accents & Semantic Signals */
-  --color-accent: oklch(0.580 0.220 38);          /* #d9480f Oxford Crimson / Terracotta */
-  --color-accent-hover: oklch(0.520 0.230 38);    /* #b83808 Pressed Accent */
-  --color-accent-subtle: oklch(0.940 0.050 38);   /* #fdece5 Accent Tint Fill */
-
-  --color-success: oklch(0.620 0.160 145);        /* #2b8a3e Academic Green */
-  --color-warning: oklch(0.720 0.160 75);         /* #e67700 Warning Amber */
-  --color-error: oklch(0.580 0.220 25);           /* #c92a2a Diagnostic Red */
-  --color-info: oklch(0.550 0.180 240);           /* #1971c2 Theory Callout Blue */
-
-  /* Spacing Scale (4-pt base) */
-  --space-1: 0.25rem;  /* 4px */
-  --space-2: 0.50rem;  /* 8px */
-  --space-3: 0.75rem;  /* 12px */
-  --space-4: 1.00rem;  /* 16px */
-  --space-6: 1.50rem;  /* 24px */
-  --space-8: 2.00rem;  /* 32px */
-  --space-12: 3.00rem; /* 48px */
-  --space-16: 4.00rem; /* 64px */
-
-  /* Radii (Strict discipline: max 2 values) */
-  --radius-sm: 4px;   /* Buttons, chips, inputs */
-  --radius-md: 8px;   /* Panels, cards, interactive visualizer frames */
-
-  /* Elevation (Defined hairline edge over diffuse blur) */
-  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.05), 0 0 0 1px var(--color-border);
-  --shadow-dropdown: 0 4px 12px rgba(0, 0, 0, 0.08), 0 0 0 1px var(--color-border);
+/* Mandatory Viewport Lock */
+html, body {
+  height: 100%;
+  overflow-x: hidden;
 }
-
-/* Dark Mode (Designed elevation via lightness, not inverted black) */
-[data-theme="dark"] {
-  --color-bg: oklch(0.140 0.015 260);            /* #0f1318 Slate Charcoal */
-  --color-surface: oklch(0.180 0.018 260);       /* #171c24 Elevated Surface */
-  --color-surface-hover: oklch(0.220 0.022 260); /* #202732 Card Hover */
-  --color-border: oklch(0.260 0.020 260);        /* #293240 Hairline Border */
-
-  --color-text-primary: oklch(0.920 0.010 85);   /* #e6e8eb Off-White */
-  --color-text-secondary: oklch(0.700 0.015 85); /* #9da5b1 Muted Text */
-  --color-text-tertiary: oklch(0.500 0.015 260); /* #636e7d Metadata */
-
-  --color-accent: oklch(0.680 0.200 42);          /* #f76707 Vibrant Amber-Orange */
-  --color-accent-hover: oklch(0.740 0.180 42);
-  --color-accent-subtle: oklch(0.220 0.050 42);
-
-  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3), 0 0 0 1px var(--color-border);
+html {
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+}
+.frame, .slide {
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-sizing: border-box;
+}
+.frame-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-height: 100%;
+  overflow: hidden;
+  padding: var(--frame-padding, clamp(1rem, 4vw, 4rem));
 }
 ```
 
+### Academic Typography & Beamer Environments
+- **Typeface Pairing**: Computer Modern / Latin Modern Roman display serif paired with Charter / Inter for body, and Fira Code for algorithms.
+- **Theorem & Proof Styling**:
+```css
+.theorem-box, .lemma-box, .definition-box {
+  border-left: 4px solid var(--convex-primary);
+  background: var(--surface-secondary);
+  padding: clamp(0.5rem, 1.5vw, 1rem) clamp(0.75rem, 2vw, 1.5rem);
+  margin: clamp(0.25rem, 0.5vw, 0.5rem) 0;
+  max-height: min(40vh, 350px);
+}
+.proof-box {
+  border-left: 2px solid var(--text-muted);
+  background: var(--surface-elevated);
+  padding: clamp(0.4rem, 1vw, 0.75rem) clamp(0.75rem, 2vw, 1.5rem);
+  font-style: italic;
+}
+.proof-box::after {
+  content: '\25A1'; /* Q.E.D. Halmos square */
+  float: right;
+  font-style: normal;
+  color: var(--text-secondary);
+}
+```
+
+### Progressive Disclosure & Overlay Engine
+- **Linear Reveals**: Elements with class `.reveal` sequentially gain `.visible` on user advance.
+- **Non-Linear Overlays**: `data-overlay="spec"` syntax (e.g. `"2-"` visible from step 2 onward, `"-3"` visible steps 1 to 3).
+- **Print / Handout Mode (`@media print`)**: Unrolls all overlays, strips navigation UI, forces `break-after: page`, and converts into clean black-and-white PDF handouts.
+
 ---
 
-## 4. The 8-State Interactive Component Discipline
+## 3. Anti-Slop Design Tokens & UI/UX Standards (`/frontend-design-deslop`, `/ui-ux-pro-max`)
 
-Every interactive UI component in the web lab and documentation (buttons, sliders, tabs, parameter inputs) must implement all **8 interactive states**:
+### OKLCH Palette (60-30-10 Distribution)
+```css
+:root {
+  /* 60% Base / Surface Neutrals */
+  --bg-canvas: oklch(0.985 0.005 240);
+  --bg-surface: oklch(0.96 0.01 240);
+  --bg-elevated: oklch(1.0 0 0);
+  --text-primary: oklch(0.18 0.02 240);
+  --text-secondary: oklch(0.42 0.03 240);
+  --text-muted: oklch(0.60 0.02 240);
+  --border-subtle: oklch(0.88 0.015 240);
+  --border-strong: oklch(0.70 0.03 240);
 
-1. **Default (`:default`)**: Clean resting elevation with `--shadow-card` and subtle border.
-2. **Hover (`:hover`, `.is-hover`)**: Subtle surface lightening + accent border shift.
-3. **Focus-Visible (`:focus-visible`, `.is-focus`)**: Visible 2px outline `var(--color-border-focus)` with 2px offset.
-4. **Active (`:active`, `.is-active`)**: Subtle 1px translation `translateY(1px)` simulating physical compression.
-5. **Disabled (`[disabled]`, `.is-disabled`)**: Opacity 0.45, `cursor: not-allowed`, muted neutral background.
-6. **Loading (`[data-state="loading"]`)**: Animated subtle spinner or pulse, retaining fixed width to prevent layout shift.
-7. **Error (`[data-state="error"]`)**: Border color `var(--color-error)`, contextual tooltip, high contrast warning text.
-8. **Success (`[data-state="success"]`)**: Border color `var(--color-success)`, checkmark icon, transient positive feedback.
+  /* 30% Mathematical Domain Colors */
+  --convex-primary: oklch(0.45 0.16 245);       /* Primal Blue */
+  --convex-dual: oklch(0.52 0.20 335);          /* Dual Magenta */
+  --convex-cone: oklch(0.50 0.18 285);          /* Conic Violet */
+
+  /* 10% Optimization & State Accents */
+  --convex-optima: oklch(0.60 0.19 145);        /* Optimal Emerald */
+  --convex-infeasible: oklch(0.58 0.22 25);     /* Infeasible Coral */
+  --convex-warning: oklch(0.72 0.16 75);        /* Warning Amber */
+}
+```
+
+### 8-State Interactive Component Matrix
+Every interactive control (buttons, sliders, toggles, formula inspectors) MUST define all 8 states:
+1. `default`: Clean border, high-contrast text, subtle shadow.
+2. `hover`: Subtle tint shift, crisp border highlight, zero layout shift.
+3. `focus-visible`: 2px offset solid outline in `--convex-primary`.
+4. `active`: 1px inward transform, darkened background.
+5. `disabled`: Opacity $0.45$, `cursor: not-allowed`, no hover response.
+6. `loading`: Animated SVG spinner or skeleton pulse.
+7. `error`: Red outline with aria-invalid="true" and inline message.
+8. `success`: Green check confirmation badge.
 
 ---
 
-## 5. Anti-Patterns & De-Slop Prohibitions (NEVER LIST)
+## 4. Interactive 3D WebGL Manifolds (`/skills-threejs`)
 
-- ❌ **No Generic SaaS Blue/Purple Gradients on White**: Replaced by dedicated OKLCH warm slate + terracotta accent.
-- ❌ **No Italic Headings or Theorem Titles**: Headings are always upright roman (`font-style: normal`).
-- ❌ **No Centered Numeric Table Columns**: Numbers are always right-aligned with `font-variant-numeric: tabular-nums`.
-- ❌ **No Fake Numbers or Fabricated Metrics**: Real benchmarks from `cProfile` and empirical tests only.
-- ❌ **No Hand-Drawn Fake Browser Chrome**: No simulated window pills or fake traffic lights. Clean `<figure>` frames only.
-- ❌ **No Layout-Shifting Animations**: Motion strictly limited to `transform` and `opacity` with durations <= 250ms.
-- ❌ **No Horizontal Mobile Overflow**: Non-negotiable `overflow-x: clip` with test coverage at 320px, 375px, 414px, and 768px.
+### Three.js Engineering Standards
+1. **PBR Lighting Pipeline**:
+   - `MeshPhysicalMaterial` / `MeshStandardMaterial` for convex sets and epigraphs (roughness $0.35$, metalness $0.10$).
+   - Three-point lighting setup: Key directional light ($I=2.0$), cool rim light ($I=0.85$), and warm ambient fill ($I=0.45$).
+2. **GPU Lifecycle & Memory Management**:
+   ```javascript
+   function cleanupScene(scene, renderer) {
+     scene.traverse((object) => {
+       if (object.geometry) object.geometry.dispose();
+       if (object.material) {
+         if (Array.isArray(object.material)) {
+           object.material.forEach(m => m.dispose());
+         } else {
+           object.material.dispose();
+         }
+       }
+     });
+     renderer.dispose();
+   }
+   ```
+3. **Clamped DPR**: Always enforce `renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))` to prevent mobile GPU thermal throttling.
+4. **Reduced Motion**: If `window.matchMedia('(prefers-reduced-motion: reduce)').matches`, halt auto-rotation and render static view with orbit controls.
 
 ---
 
-## 6. Hallmark Pre-Emit Quality Gate Stamp
+## 5. Distributed Network Optimization Globe (`/skills-cobejs`)
 
-Before delivering any visual or interactive update, verify against the 6 Hallmark Axes:
-`/* Hallmark · pre-emit critique: Philosophy:5 Hierarchy:5 Execution:5 Specificity:5 Restraint:5 Variety:5 */`
+### Cobe.js Integration Architecture
+- Used in Lecture 15 & 21 for distributed ADMM, federated optimization, and multi-agent consensus networks.
+- Clamped DPR, responsive canvas resizing, dynamic location markers representing consensus nodes, and smooth inertial drag.
+
+---
+
+## 6. Atmospheric WebGL Shaders (`/skills-vantajs`)
+
+### Vanta.js Presentation Standards
+- Used for hero slide headers and module transition cards.
+- Background shader effects (e.g. `VANTA.WAVES`, `VANTA.NET`) running at low vertex density to preserve 60 FPS UI interaction.
+- Container bounding, explicit resize event listeners, and unmount destruction (`effect.destroy()`).
+
+---
+
+## 7. Anti-Slop Quality Gate Checklist
+
+- [x] **Zero Viewport Overflow**: All slides fit 100dvh across desktop, tablet, and mobile.
+- [x] **Mathematical Integrity**: KaTeX rendered everywhere; no raw unicode equations.
+- [x] **No AI Clichés**: Zero default purple gradients, zero unstyled buttons, zero blob radiuses.
+- [x] **Tabular Numeric Precision**: `font-variant-numeric: tabular-nums` for all matrices and coordinates.
+- [x] **Resource Safety**: All WebGL shaders and Three.js scenes implement strict teardown listeners.
+- [x] **Print Ready**: Full `@media print` support for instant PDF slide deck generation.
