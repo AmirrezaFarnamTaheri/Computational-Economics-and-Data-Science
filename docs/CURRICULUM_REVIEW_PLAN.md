@@ -333,7 +333,72 @@ Every interactive slider, button, input box, and tab strip across the WebGL and 
 ### C. Structural Layout Variety
 Reject the generic SaaS "Hero -> 3 Cards -> CTA -> Footer" template. The curriculum web portal utilizes asymmetric 12-column bento grids, split-screen live mathematical derivation viewports, and floating HUD parameter drawers.
 
-## 9. Master Implementation & Actionable Task Breakdown
+
+---
+
+## 9. Comprehensive Module Enrichment, Gap-Filling & Redundancy Consolidation Protocol
+
+*A systematic, dual-action operational protocol to maximize academic depth while eliminating structural and code bloat across all 83+ lectures.*
+
+```
+               THE DUAL-ACTION ENRICHMENT & CONSOLIDATION CYCLE
+   ┌─────────────────────────────────────────────────────────────────────────────┐
+   │ 🚀 ACTION 1: DEEP ENRICHMENT & GAP-FILLING                                  │
+   │ · Exhaustive mathematical derivations and step-by-step lemma chains         │
+   │ · Unpack all implicit algebraic jumps and boundary regularity conditions    │
+   │ · Integrate missing modern frontiers: Continuous-Time HANK, Deep RL,        │
+   │   Double ML with Neyman Orthogonality, Staggered DiD, High-DPR WebGL Lab    │
+   │ · Embed dedicated "Diagnostic Misconceptions & Intuition Traps" callouts    │
+   ├─────────────────────────────────────────────────────────────────────────────┤
+   │ ✂️ ACTION 2: REDUNDANCY CONSOLIDATION & CODE DEDUPLICATION                  │
+   │ · DRY Code Consolidation: Centralize duplicate numerical solvers, matrix     │
+   │   helpers, and plotting routines into shared `src/` core library modules    │
+   │ · Cross-Notebook Prerequisite Linking: Replace repetitive boilerplate text  │
+   │   with precise anchor links to prerequisite theory chapters                 │
+   │ · Streamline Overlapping Lectures: Harmonize Module 01 data structures,     │
+   │   Module 02 linear algebra, and Appendix mathematical reference sheets      │
+   └─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### A. Granular Gap-Filling Architecture by Module
+1. **Module 01 (Foundations)**:
+   - *Fill Gaps*: Add explicit memory-stride diagnostics (C-contiguous vs Fortran-contiguous) in NumPy arrays; benchmark cache-line efficiency; add formal AST parsing demonstrations.
+2. **Module 02 (Numerical Methods)**:
+   - *Fill Gaps*: Add boundary regularity proofs for Chebyshev approximation; implement complex-step numerical differentiation alongside finite differences; formalize condition number $\kappa(A)$ scaling under ill-conditioned matrices.
+3. **Module 03 (Dynamic Programming)**:
+   - *Fill Gaps*: Add full step-by-step proof of Blackwell's Sufficient Conditions; implement Howard Policy Iteration acceleration; derive the extreme-value log-sum formula in Rust's engine replacement problem without algebraic shortcuts.
+4. **Module 04 (Macroeconomic Models)**:
+   - *Fill Gaps*: Provide the complete algebraic log-linearization of the 3-equation New Keynesian model; prove the Blanchard-Kahn QZ stability conditions; include continuous-time Bewley-Huggett-Aiyagari equilibrium derivations.
+5. **Module 05 (Micro & Game Theory)**:
+   - *Fill Gaps*: Formally prove Roy's Identity and Shephard's Lemma using the Envelope Theorem; implement Lemke-Howson bimatrix solver with full pivot step tracking; prove Revenue Equivalence across all standard auction formats.
+6. **Module 06 (Econometrics & Causal Inference)**:
+   - *Fill Gaps*: Complete algebraic proof of the Frisch-Waugh-Lovell projection matrices; formalize Goodman-Bacon 2x2 DiD decomposition; prove 2SLS asymptotic normality under weak instrument sequences.
+7. **Module 07 (Machine Learning in Economics)**:
+   - *Fill Gaps*: Formal mathematical proof of Chernozhukov Double ML Neyman Orthogonality; implement Athey-Imbens Causal Trees with honest sample-splitting variance estimators.
+8. **Module 08 (Time Series Analysis)**:
+   - *Fill Gaps*: Prove the Granger Representation Theorem for VECM systems; implement exact Kalman filter log-likelihood recursions with diffuse initialization.
+9. **Module 09 (Computational Finance)**:
+   - *Fill Gaps*: Derive the Itô's Lemma 2nd-order Taylor expansion from quadratic variation $(dW_t)^2 = dt$; derive Hansen-Jagannathan volatility bounds geometrically; prove the Black-Scholes PDE via delta-neutral replication.
+10. **Module 10 & Appendix (Complex Systems & Math Foundations)**:
+    - *Fill Gaps*: Provide full metric space completeness proofs, Riesz Representation Theorem, Carathéodory extension theorem summaries, and Eisenberg-Noe financial clearing vector uniqueness proofs.
+
+### B. Redundancy Consolidation & Deduplication Standards
+1. **Unified Helper Extraction**:
+   - Eliminate duplicated plotting functions across notebooks by importing from `scripts.diagram_style` and `src.viz`.
+   - Centralize duplicate data downloading logic into `src.data.fetchers` with local Parquet cache fallbacks.
+2. **Elimination of Textual Echoes**:
+   - Remove repetitive introductory boilerplate across adjacent notebooks.
+   - Replace redundant linear algebra recaps in advanced macro/finance notebooks with crisp, clickable cross-references to `02_Numerical_Methods` and `Appendix/02_Linear_Algebra_Review.ipynb`.
+3. **Harmonized Variable Notation**:
+   - Standardize economic variable naming across all 11 modules:
+     - Discount factor: $\beta \in (0, 1)$
+     - Capital stock: $K_t$ / $k_t$
+     - Labor / Hours: $L_t$ / $h_t$
+     - Risk aversion / Intertemporal elasticity: $\sigma$ or $\gamma$
+     - Productivity shock: $z_t$ where $\ln z_t = \rho \ln z_{t-1} + \epsilon_t$
+     - Stochastic Discount Factor: $m_{t+1}$ or $M_{t+1}$
+
+## 10. Master Implementation & Actionable Task Breakdown
 
 ### Phase 1: Automated Audit Infrastructure & Static Verification Engine
 - [ ] **Task 1.1: Build Master Notebook AST Linter (`scripts/audit_curriculum_ast.py`)**
@@ -366,7 +431,7 @@ Reject the generic SaaS "Hero -> 3 Cards -> CTA -> Footer" template. The curricu
 
 ---
 
-## 10. Verification Checkpoints & Definition of Done
+## 11. Verification Checkpoints & Definition of Done
 
 ```
 [ ] Checkpoint 1 (Static Quality): Zero AST linter errors, zero unrendered LaTeX formulas, zero broken badges across 83 notebooks.
