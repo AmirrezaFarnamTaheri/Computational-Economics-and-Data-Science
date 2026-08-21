@@ -1,0 +1,15 @@
+flowchart TD
+    subgraph Pass1["Pass 1: Time-Series Regressions ($N$ Assets)"]
+        p1["For each asset $i=1..N$, regress across $t=1..T$:<br/>$R_{i,t} - R_{f,t} = \alpha_i + \beta_i f_t + \epsilon_{i,t}$<br/>$\rightarrow$ Estimated Factor Betas $\hat{\beta}_i$"]
+    end
+
+    subgraph Pass2["Pass 2: Cross-Sectional Regressions ($T$ Periods)"]
+        p2["At each period $t=1..T$, regress across assets $i=1..N$:<br/>$R_{i,t} - R_{f,t} = \lambda_{0,t} + \lambda_{1,t} \hat{\beta}_i + \eta_{i,t}$<br/>$\rightarrow$ Time-series of Risk Premia $\hat{\lambda}_t$"]
+    end
+
+    subgraph Inference["Final Inference: Average Risk Premia"]
+        inf["$\bar{\lambda} = \frac{1}{T} \sum_{t=1}^T \hat{\lambda}_t$<br/>$t$-statistic with Shanken (1992) Errors-in-Variables Correction"]
+    end
+
+    Pass1 --> Pass2
+    Pass2 --> Inference
