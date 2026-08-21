@@ -1,16 +1,16 @@
-# Master Curriculum Review & Architectural Compendium: The Complete Multi-Dimensional Blueprint
+# Master Curriculum Review & Architectural Compendium: The Ultimate 16-Dimensional Blueprint
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use `superpowers:subagent-driven-development` (recommended) or `superpowers:executing-plans` to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Execute an exhaustive, grounded, multi-dimensional, deep audit and systematic refinement of all 83+ lecture notebooks, 11 modules, mathematical proofs, algorithm implementations, pedagogical narratives, empirical datasets, and visual/interactive assets across the entire Computational Economics & Data Science curriculum.
 
-**Architecture:** An ultra-rigorous 16-Dimensional Matrix Review Framework combining automated AST notebook static analysis, formal mathematical proof audits, numerical precision profiling, pedagogical cognitive scaffolding, 300 DPI vector graphic generation, and WebGL/Three.js/Cobe.js/Matter.js interactive laboratories.
+**Architecture:** An all-encompassing 16-Dimensional Matrix Review Framework synthesizing automated AST notebook static analysis, formal mathematical proof compendiums, numerical precision profiling, HPC multi-engine benchmarks (NumPy/Numba/JAX/PyTorch/Rust), landmark Nobel empirical replications, Socratic misconception traps with 3-tier autograding, 300 DPI vector graphic generation, and WebGL/Three.js/Cobe.js/Matter.js interactive simulation laboratories.
 
-**Tech Stack:** Python 3.11+, Jupyter Notebooks (`nbformat`), NumPy 2.x, SciPy, Pandas, Numba, SymPy, NetworkX, Matplotlib/Seaborn, Three.js, Cobe.js, Vanta.js, Matter.js, KaTeX, pytest, ruff, MkDocs Material.
+**Tech Stack:** Python 3.11+, Jupyter Notebooks (`nbformat`), NumPy 2.x, SciPy, Pandas, Numba, JAX, PyTorch, SymPy, NetworkX, Matplotlib/Seaborn, Three.js, Cobe.js, Vanta.js, Matter.js, KaTeX, pytest, ruff, MkDocs Material.
 
 ---
 
-## 1. The 16 Analytical Dimensions (The Evaluation Matrix)
+## 1. The 16 Analytical Dimensions (The Complete Review Matrix)
 
 Every lecture notebook, code block, mathematical proof, exercise, and visual asset is evaluated across **16 orthogonal analytical lenses**:
 
@@ -70,187 +70,134 @@ Every lecture notebook, code block, mathematical proof, exercise, and visual ass
 
 ---
 
-## 2. Granular Lecture-by-Lecture Audit Specifications
+## 2. Granular Lecture-by-Lecture Inventory (All 83+ Lectures Across 11 Modules)
 
 ### Module 01: Foundations of Computational Economics (24 Lectures)
-
-| # | Lecture Notebook | Primary Theoretical & Practical Focus | Mandatory Code & Proof Deliverables |
-| :-: | :--- | :--- | :--- |
-| **01** | `01_Introduction.ipynb` | Toolchains, environment setup, computational economics methodology | Scientific computing workflow; reproducibility criteria; benchmark environment checks. |
-| **02** | `02_Professional_Development_Environment.ipynb` | Git, virtualenvs, packaging, linters, pre-commit hooks | UV/pip/conda environment specs; VS Code/Jupyter integration; automated testing setup. |
-| **03** | `03_Python_Fundamentals_Data_Types.ipynb` | Primitive types, numeric precision, mutability vs immutability | Memory layout differences between integers, floats (IEEE 754), and strings; identity vs equality (`is` vs `==`). |
-| **04** | `04_Python_Data_Model.ipynb` | Special methods (dunder), sequence protocols, callable objects | Custom `EconomicTimeSeries` class with `__getitem__`, `__len__`, `__repr__`, `__add__` operator overloading. |
-| **05** | `05_Lists_and_Tuples.ipynb` | Dynamic arrays vs fixed tuples, memory allocation strategies | List amortized $O(1)$ growth mechanics; tuple unpacking in economic returns; list comprehensions vs generators. |
-| **06** | `06_Advanced_String_Processing.ipynb` | Regular expressions, string formatting, text parsing | Parsing SEC 10-K filings, Federal Reserve FOMC statements; regex extraction of macroeconomic indicators. |
-| **07** | `07_Dictionaries.ipynb` | Hash tables, hash functions, collision resolution, hash maps | Hash table time complexity $O(1)$; dictionary performance in economic state-space indexing; nested data trees. |
-| **08** | `08_Sets.ipynb` | Hash sets, set algebra, Venn operations, uniqueness checks | Identifying common economic survey respondents across panel waves; set intersections vs relational joins. |
-| **09** | `09_Control_Flow_and_Error_Handling.ipynb` | Exceptions, branching, context managers, defensive coding | Custom economic exceptions (`ConvergenceError`, `ArbitrageViolationError`); `try/except/finally` transaction rollbacks. |
-| **10** | `10_Advanced_Functions.ipynb` | Closures, decorators, higher-order functions, partial evaluation | `@timer`, `@memoize`, `@validate_bounds` decorators for dynamic programming value functions. |
-| **11** | `11_Object_Oriented_Programming.ipynb` | Classes, inheritance, polymorphism, encapsulation, dataclasses | Abstract base class `MacroeconomicModel` subclassed into `RBCModel`, `NKModel`, and `AiyagariModel`. |
-| **12** | `12_NumPy.ipynb` | N-dimensional arrays, broadcasting, vectorization, linear algebra | C-contiguous vs Fortran-contiguous array memory strides; vectorizing economic utility evaluations. |
-| **13** | `13_Pandas.ipynb` | Series, DataFrames, multi-indexing, groupby, rolling windows | Panel data manipulation (Compustat/CRSP); multi-indexed asset returns; group aggregations and transforms. |
-| **14** | `14_Introduction_to_Data_Acquisition.ipynb` | Storage formats (CSV, Parquet, HDF5, Feather, SQLite) | I/O performance benchmarks across 1M rows; memory-mapped file access; columnar compression benefits. |
-| **15** | `15_Accessing_Economic_Data_via_APIs.ipynb` | REST APIs, authentication, rate limiting, JSON serialization | FRED API client, World Bank Data API, Eurostat API with automated caching and fallback strategies. |
-| **16** | `16_Data_Visualization.ipynb` | Matplotlib, Seaborn, design tokens, multi-panel layouts | Publication-quality figure generation (300 DPI, academic palettes, KaTeX labels, vector PDF/PNG export). |
-| **17** | `17_Effective_Debugging.ipynb` | PDB, traceback analysis, profiling, memory leak tracking | Interactive debugging of non-converging numerical solvers; `tracemalloc` memory profile inspection. |
-| **18** | `18_Data_Acquisition_Web_Scraping.ipynb` | BeautifulSoup, requests, rate limiting, robots.txt | Scraper for central bank interest rate announcements; respectful crawl delays; DOM traversal idioms. |
-| **19** | `19_Introduction_to_SQL.ipynb` | Relational algebra, SQL queries, joins, window functions | DuckDB/SQLite integration with Pandas; computing moving average inflation and rolling volatilities in SQL. |
-| **20** | `20_Introduction_to_SciPy.ipynb` | Optimization, root finding, numerical integration, splines | Comparison of `scipy.optimize.minimize`, `scipy.integrate.quad`, and `scipy.interpolate.CubicSpline`. |
-| **21** | `21_Symbolic_Computation_with_SymPy.ipynb` | Computer algebra, symbolic derivatives, Jacobians, steady states | Deriving analytical steady states and Jacobian matrices of neoclassical growth models symbolically. |
-| **22A** | `22A_Computational_Complexity_Foundations.ipynb` | Big-O, Big-Omega, asymptotic complexity, sorting/searching | Mathematical formalization of $O(N)$, $O(N \log N)$, $O(N^2)$, $O(2^N)$; empirical runtime curve fitting. |
-| **22B** | `22B_Complexity_in_Economic_Applications.ipynb` | Curse of dimensionality, state-space explosion in DP | Scaling properties of grid-based DP as dimension $D$ increases; tensor product vs sparse grid complexities. |
-| **23** | `23_Profiling_and_Performance.ipynb` | `cProfile`, `line_profiler`, Numba JIT, Cython, vectorization | Profiling bottleneck loops in Value Function Iteration; accelerating Bellman updates with Numba `@njit`. |
-| **24** | `24_Production_Code_Standards.ipynb` | Type hints (`typing`), docstring standards, pytest, CI/CD | Building a complete, tested, typed Python package for economic simulations; automated test runner setup. |
-
----
+- **01_Introduction.ipynb**: Scientific workflow, reproducibility standards, virtual environments.
+- **02_Professional_Development_Environment.ipynb**: Git, packaging, linters, pre-commit hooks, automated test runners.
+- **03_Python_Fundamentals_Data_Types.ipynb**: Memory layout of numeric primitives, float precision (IEEE 754), mutability vs immutability.
+- **04_Python_Data_Model.ipynb**: Special dunder methods (`__getitem__`, `__len__`, `__add__`), custom `EconomicTimeSeries` class.
+- **05_Lists_and_Tuples.ipynb**: Amortized $O(1)$ dynamic array growth, tuple immutability, generator expressions.
+- **06_Advanced_String_Processing.ipynb**: Regex extraction of economic figures from SEC 10-K and Fed statements.
+- **07_Dictionaries.ipynb**: Hash tables, collision resolution, hash maps in state-space indexing.
+- **08_Sets.ipynb**: Set algebra, Venn logic, tracking survey respondent attrition across panel waves.
+- **09_Control_Flow_and_Error_Handling.ipynb**: Custom economic exceptions (`ConvergenceError`, `ArbitrageViolationError`), context managers.
+- **10_Advanced_Functions.ipynb**: Closures, decorators (`@timer`, `@memoize`), higher-order functional pipelines.
+- **11_Object_Oriented_Programming.ipynb**: Abstract base class `MacroeconomicModel` subclassed into `RBCModel`, `NKModel`, `AiyagariModel`.
+- **12_NumPy.ipynb**: C-contiguous vs Fortran-contiguous memory layouts, broadcasting, vectorized utility evaluation.
+- **13_Pandas.ipynb**: Multi-indexing, Compustat/CRSP panel data manipulation, rolling window statistics.
+- **14_Introduction_to_Data_Acquisition.ipynb**: Storage benchmarks across CSV, Parquet, HDF5, Feather, SQLite across 1M rows.
+- **15_Accessing_Economic_Data_via_APIs.ipynb**: REST APIs (FRED, World Bank, OECD, Eurostat, IMF) with automated caching.
+- **16_Data_Visualization.ipynb**: 300 DPI vector output, academic color tokens, KaTeX labels, multi-panel layouts.
+- **17_Effective_Debugging.ipynb**: PDB interactive debugging, traceback analysis, `tracemalloc` memory profiling.
+- **18_Data_Acquisition_Web_Scraping.ipynb**: BeautifulSoup, rate limiting, robots.txt compliance, central bank web crawlers.
+- **19_Introduction_to_SQL.ipynb**: Relational schemas, joins, window functions in DuckDB/SQLite for macro time series.
+- **20_Introduction_to_SciPy.ipynb**: Scientific routines (`scipy.optimize`, `scipy.integrate`, `scipy.interpolate`).
+- **21_Symbolic_Computation_with_SymPy.ipynb**: Deriving analytical steady states and Jacobian matrices symbolically.
+- **22A_Computational_Complexity_Foundations.ipynb**: Big-O asymptotic bounds, sorting/searching scaling, empirical curve fitting.
+- **22B_Complexity_in_Economic_Applications.ipynb**: Curse of dimensionality, state-space explosion in grid-based dynamic programming.
+- **23_Profiling_and_Performance.ipynb**: Profiling bottlenecks with `cProfile`, accelerating loops with Numba `@njit`.
+- **24_Production_Code_Standards.ipynb**: Strict typing (`typing`), docstring completeness, automated CI test suite.
 
 ### Module 02: Numerical Methods for Economics (8 Lectures)
-
-| # | Lecture Notebook | Primary Theoretical & Practical Focus | Mandatory Code & Proof Deliverables |
-| :-: | :--- | :--- | :--- |
-| **01** | `01_Linear_Algebra.ipynb` | Matrix decompositions (LU, QR, SVD, Cholesky), ill-conditioning | Proof of Cholesky existence for positive definite matrices; condition number $\kappa(A) = \sigma_{\max}/\sigma_{\min}$ bounds. |
-| **02** | `02_Numerical_Preliminaries.ipynb` | IEEE 754 floating-point standard, machine epsilon, roundoff | Demonstration of catastrophic cancellation ($1 - \cos x$ for small $x$); stable log-sum-exp trick for logit choice. |
-| **03** | `03_Numerical_Differentiation.ipynb` | Finite differences, central differences, complex-step method | Proof of $O(h^2)$ truncation error for central differences; step size selection $h \approx \sqrt{\epsilon_{\text{mach}}}$; automatic differentiation. |
-| **04** | `04_Root_Finding.ipynb` | Bisection, Newton-Raphson, Secant, Brent's method, Broyden | Proof of quadratic convergence for Newton-Raphson; Broyden rank-1 quasi-Newton update for multi-dimensional market clearing. |
-| **05** | `05_Optimization.ipynb` | Unconstrained (Nelder-Mead, BFGS) & Constrained (KKT, SLSQP) | First-order and second-order necessary/sufficient conditions; penalty and barrier methods; Lagrangian dual formulations. |
-| **06** | `06_Interpolation_and_Approximation.ipynb` | Linear, cubic splines, Chebyshev polynomials, tensor grids | Chebyshev Equioscillation Theorem; Chebyshev node placement avoiding Runge phenomenon; Smolyak sparse grids. |
-| **07** | `07_Numerical_Integration.ipynb` | Newton-Cotes, Gauss-Legendre, Gauss-Hermite, Monte Carlo | Proof of exactness for $2n-1$ degree polynomials in Gaussian quadrature; Gauss-Hermite expectation of log-normal income shocks. |
-| **08** | `08_Differential_Equations.ipynb` | ODEs: Forward Euler, RK4, stiff systems, shooting methods | Stability region analysis for explicit vs implicit Euler; shooting method solving two-point boundary value optimal growth ODEs. |
-
----
+- **01_Linear_Algebra.ipynb**: Matrix decompositions (LU, QR, SVD, Cholesky), condition numbers $\kappa(A) = \sigma_{\max}/\sigma_{\min}$.
+- **02_Numerical_Preliminaries.ipynb**: Catastrophic cancellation avoidance ($1 - \cos x$), log-sum-exp stabilization.
+- **03_Numerical_Differentiation.ipynb**: $O(h^2)$ central differences, optimal step size $h \approx \sqrt{\epsilon_{\text{mach}}}$, automatic differentiation.
+- **04_Root_Finding.ipynb**: Quadratic convergence of Newton-Raphson, Broyden quasi-Newton for multi-dimensional clearing.
+- **05_Optimization.ipynb**: Nelder-Mead, BFGS, KKT constrained optimization, SLSQP, Lagrangian duality.
+- **06_Interpolation_and_Approximation.ipynb**: Chebyshev polynomials, node placement avoiding Runge phenomenon, Smolyak sparse grids.
+- **07_Numerical_Integration.ipynb**: Gauss-Legendre and Gauss-Hermite quadrature for log-normal expectation integrals.
+- **08_Differential_Equations.ipynb**: ODEs (Euler, RK4), stability regions, two-point boundary value shooting methods.
 
 ### Module 03: Economic Modeling & Dynamic Programming (7 Lectures)
-
-| # | Lecture Notebook | Primary Theoretical & Practical Focus | Mandatory Code & Proof Deliverables |
-| :-: | :--- | :--- | :--- |
-| **01** | `01_Dynamic_Programming.ipynb` | Bellman principle of optimality, contraction mappings, VFI | Formal proof of Banach Fixed-Point Theorem in metric space $(\mathcal{C}_b(S), \|\cdot\|_\infty)$; Blackwell's sufficient conditions. |
-| **02** | `02_DP_with_Continuous_States.ipynb` | Fitted Value Function Iteration, continuous state approximation | Cubic spline vs Chebyshev polynomial value function fitting; envelope theorem policy extraction $u'(c) = \beta V'(k')$. |
-| **03A** | `03A_Discrete_Choice_DP_Rust.ipynb` | Rust (1987) bus engine replacement, extreme value errors | Derivation of closed-form log-sum formula $EV(x) = \ln\left(\sum \exp(u(x, a) + \beta EV(x'))\right)$; NFXP nested fixed point algorithm. |
-| **03B** | `03B_Continuous_State_DP_Interpolation.ipynb` | Cake-eating problem, optimal growth with stochastic productivity | Euler equation error residual diagnostics $\log_{10}|EE(k)|$; Howard policy iteration acceleration steps. |
-| **04** | `04_Estimation_and_Calibration.ipynb` | Generalized Method of Moments (GMM), SMM, calibration | Derivation of optimal GMM weighting matrix $W^* = S^{-1}$; Hansen's $J$-test of overidentifying restrictions. |
-| **05** | `05_Optimal_Stopping_Problems.ipynb` | McCall job search model, American option early exercise | Smooth pasting condition proof $\left.\frac{\partial V}{\partial S}\right|_{S^*} = \left.\frac{\partial \Phi}{\partial S}\right|_{S^*}$; reservation wage boundary tracking. |
-| **06** | `06_Robust_Control.ipynb` | Hansen-Sargent multiplier robust control, entropy penalties | Min-max game against malevolent nature; worst-case probability distortion $m_t = \frac{\exp(-V_{t+1}/\theta)}{\mathbb{E}[\exp(-V_{t+1}/\theta)]}$. |
-| **07** | `07_Structural_Estimation.ipynb` | Mathematical Programming with Equilibrium Constraints (MPEC) | MPEC formulation bypassing inner fixed point loops; Su & Judd (2012) constrained optimization comparisons. |
-
----
+- **01_Dynamic_Programming.ipynb**: Banach Fixed-Point Theorem in $(\mathcal{C}_b(S), \|\cdot\|_\infty)$, Blackwell's sufficient conditions.
+- **02_DP_with_Continuous_States.ipynb**: Fitted Value Function Iteration, cubic spline interpolation, envelope theorem policy extraction.
+- **03A_Discrete_Choice_DP_Rust.ipynb**: Rust (1987) bus engine model, closed-form extreme value log-sum, NFXP nested fixed point.
+- **03B_Continuous_State_DP_Interpolation.ipynb**: Stochastic growth, Euler equation error grids $\log_{10}|EE(k)|$, Howard policy acceleration.
+- **04_Estimation_and_Calibration.ipynb**: Generalized Method of Moments (GMM), optimal weighting matrix $W^* = S^{-1}$, Hansen's $J$-test.
+- **05_Optimal_Stopping_Problems.ipynb**: McCall job search model, smooth pasting conditions $\left.\frac{\partial V}{\partial S}\right|_{S^*} = \left.\frac{\partial \Phi}{\partial S}\right|_{S^*}$.
+- **06_Robust_Control.ipynb**: Hansen-Sargent multiplier model, entropy penalty, worst-case probability distortions.
+- **07_Structural_Estimation.ipynb**: Mathematical Programming with Equilibrium Constraints (MPEC) bypassing inner loops.
 
 ### Module 04: Macroeconomic Models (10 Lectures)
-
-| # | Lecture Notebook | Primary Theoretical & Practical Focus | Mandatory Code & Proof Deliverables |
-| :-: | :--- | :--- | :--- |
-| **01** | `01_Job_Search.ipynb` | McCall search model, wage offer distribution, hazard rates | Analytical derivation of reservation wage equation; comparative statics $\frac{\partial w^*}{\partial b} > 0$, $\frac{\partial w^*}{\partial c} < 0$. |
-| **02** | `02_Neoclassical_Growth.ipynb` | Ramsey-Cass-Koopmans continuous-time growth model | Phase diagram generation $(\dot{c}=0, \dot{k}=0)$; saddle-path trajectory shooting; modified golden rule capital stock $f'(k^*) = \rho + \delta$. |
-| **03A** | `03A_RBC_Model_Foundations.ipynb` | Stochastic neoclassical growth, household & firm FOCs | Complete log-linearization around deterministic steady state; derivation of Euler equation and resource constraints. |
-| **03B** | `03B_RBC_Model_Solution.ipynb` | Blanchard-Kahn conditions, Klein (2000) QZ decomposition | Generalized Schur (QZ) decomposition decoupling stable predetermined states from explosive forward-looking jump variables. |
-| **03C** | `03C_RBC_Dynamics_and_Surprise_Shocks.ipynb` | Impulse response functions (IRFs), shock decomposition | Simulating technology shock propagation $\ln z_t = \rho \ln z_{t-1} + \epsilon_t$; variance decomposition across forecast horizons. |
-| **03D** | `03D_RBC_News_Shocks_and_Expectations.ipynb` | Anticipated technology news shocks, expectations-driven cycles | Modeling news shock $\epsilon_{t, t+q}$; forward-looking response of consumption and investment prior to technology realization. |
-| **04** | `04_OLG_Models.ipynb` | Diamond (1965) two-period overlapping generations | Proof of dynamic inefficiency when $r < g$; fully funded vs pay-as-you-go social security welfare comparisons. |
-| **05** | `05_New_Keynesian_Models.ipynb` | 3-equation NK model: IS curve, NK Phillips curve, Taylor rule | Calvo staggered price setting derivation; Taylor principle condition $\phi_\pi > 1$ for uniqueness; zero lower bound (ZLB) dynamics. |
-| **06** | `06_Heterogeneous_Agent_Models.ipynb` | Bewley-Huggett-Aiyagari incomplete markets general equilibrium | Household VFI with borrowing constraint $a' \ge 0$; Young (2010) distribution iteration; outer bisection market clearing $K_s(r^*) = K_d(r^*)$. |
-
----
+- **01_Job_Search.ipynb**: Reservation wage equation $w^* = b + \frac{\beta}{1-\beta}\int_{w^*}^\infty (w - w^*) dF(w)$, comparative statics.
+- **02_Neoclassical_Growth.ipynb**: Ramsey-Cass-Koopmans phase diagrams $(\dot{c}=0, \dot{k}=0)$, saddle-path shooting, modified golden rule.
+- **03A_RBC_Model_Foundations.ipynb**: Stochastic neoclassical growth, log-linearization around deterministic steady state.
+- **03B_RBC_Model_Solution.ipynb**: Blanchard-Kahn conditions, Klein (2000) QZ decomposition decoupling predetermined and jump variables.
+- **03C_RBC_Dynamics_and_Surprise_Shocks.ipynb**: Technology shock impulse response functions (IRFs), forecast variance decomposition.
+- **03D_RBC_News_Shocks_and_Expectations.ipynb**: Anticipated technology news shocks $\epsilon_{t, t+q}$, forward-looking consumption response.
+- **04_OLG_Models.ipynb**: Diamond (1965) overlapping generations, dynamic inefficiency proof ($r < g$), social security welfare.
+- **05_New_Keynesian_Models.ipynb**: Calvo staggered pricing derivation, New Keynesian Phillips Curve, Taylor principle $\phi_\pi > 1$, ZLB.
+- **06_Heterogeneous_Agent_Models.ipynb**: Bewley-Huggett-Aiyagari incomplete markets, borrowing constraints, stationary distribution bisection.
 
 ### Module 05: Microeconomic Models & Game Theory (5 Lectures)
-
-| # | Lecture Notebook | Primary Theoretical & Practical Focus | Mandatory Code & Proof Deliverables |
-| :-: | :--- | :--- | :--- |
-| **01** | `01_Consumer_Producer_Theory.ipynb` | Utility maximization, expenditure minimization, duality | Proof of Roy's Identity and Shephard's Lemma; Slutsky matrix negative semi-definiteness verification in Python. |
-| **02** | `02_General_Equilibrium.ipynb` | Pure exchange economy, Edgeworth box, Arrow-Debreu | Scarf's algorithm computing competitive equilibrium price vector $p^*$ on unit simplex $\Delta^{N-1}$; Walras' law verification. |
-| **03** | `03_Game_Theory_Foundations.ipynb` | Normal & extensive form games, Nash equilibrium | Lemke-Howson algorithm solving bimatrix non-zero sum games; finding all pure and mixed strategy Nash equilibria. |
-| **04** | `04_Dynamic_and_Repeated_Games.ipynb` | Subgame perfection, backward induction, repeated games | Folk Theorem bounds; Grim trigger strategy discount factor threshold $\delta \ge \frac{G - C}{G - D}$; dynamic bargaining. |
-| **05** | `05_Auction_Theory.ipynb` | First-price, Second-price (Vickrey), Revenue Equivalence | Formal proof of Revenue Equivalence Theorem for i.i.d. private values; optimal reserve price derivation $r^* = c + \frac{1 - F(r^*)}{f(r^*)}$. |
-
----
+- **01_Consumer_Producer_Theory.ipynb**: Slutsky substitution negative semi-definiteness, Roy's Identity, Shephard's Lemma.
+- **02_General_Equilibrium.ipynb**: Edgeworth box, Arrow-Debreu economy, Scarf's fixed-point algorithm on unit simplex $\Delta^{N-1}$.
+- **03_Game_Theory_Foundations.ipynb**: Lemke-Howson algorithm solving bimatrix non-zero sum games for pure and mixed Nash equilibria.
+- **04_Dynamic_and_Repeated_Games.ipynb**: Subgame perfection, backward induction, Folk Theorem, Grim trigger discount factor bounds.
+- **05_Auction_Theory.ipynb**: Revenue Equivalence Theorem proof across First-Price and Second-Price sealed-bid auctions, optimal reserve price $r^*$.
 
 ### Module 06: Econometrics & Causal Inference (8 Lectures)
-
-| # | Lecture Notebook | Primary Theoretical & Practical Focus | Mandatory Code & Proof Deliverables |
-| :-: | :--- | :--- | :--- |
-| **01** | `01_OLS_Regression.ipynb` | OLS geometry, Frisch-Waugh-Lovell theorem, robust errors | Algebraic proof of FWL projection matrices $M_{X_1} = I - X_1(X_1'X_1)^{-1}X_1'$; White/Huber-White heteroskedasticity-robust covariance matrix. |
-| **02** | `02_GLS_and_Panel_Data.ipynb` | Generalized Least Squares, Fixed Effects vs Random Effects | Within-transformation algebra; Hausman specification test; Mundlak (1978) correlated random effects estimator. |
-| **03** | `03_Instrumental_Variables.ipynb` | Endogeneity, 2SLS algebra, weak instruments, LATE | Proof of 2SLS consistency; Anderson-Rubin confidence sets for weak instruments; local average treatment effect (LATE) derivation. |
-| **04** | `04_Causal_Inference_DAGs.ipynb` | Pearl's do-calculus, d-separation, backdoor/frontdoor criteria | Collider bias (Berkson's paradox) interactive simulations; algorithm verifying d-separation in directed acyclic graphs. |
-| **05** | `05_Difference_in_Differences.ipynb` | 2x2 DiD, parallel trends, event studies, staggered adoption | Goodman-Bacon (2021) decomposition theorem; Callaway & Sant'Anna (2021) group-time average treatment effects $ATT(g, t)$. |
-| **06** | `06_Synthetic_Control_Methods.ipynb` | Abadie-Diamond-Hainmueller synth estimator, convex weights | Constrained quadratic programming for optimal donor weights $W^*$; placebo in-space and in-time permutation inference. |
-| **07** | `07_Regression_Discontinuity_Design.ipynb` | Sharp & Fuzzy RDD, local polynomial regression, bandwidths | Imbens-Kalyanaraman optimal bandwidth selector; McCrary (2008) manipulation testing on running variable density. |
-| **08** | `08_Quantile_Regression.ipynb` | Koenker-Bassett pinball loss, conditional quantiles | Interior-point linear programming solver for quantile regression; asymptotic covariance matrix of quantile estimators. |
-
----
+- **01_OLS_Regression.ipynb**: Frisch-Waugh-Lovell (FWL) projection algebra $M_{X_1} = I - X_1(X_1'X_1)^{-1}X_1'$, White robust covariance.
+- **02_GLS_and_Panel_Data.ipynb**: Within-transformation algebra, Hausman test, Mundlak (1978) correlated random effects.
+- **03_Instrumental_Variables.ipynb**: 2SLS consistency, weak instrument effective F-statistics, Anderson-Rubin confidence sets.
+- **04_Causal_Inference_DAGs.ipynb**: Pearl's do-calculus, d-separation, backdoor/frontdoor criteria, collider bias (Berkson's paradox).
+- **05_Difference_in_Differences.ipynb**: Goodman-Bacon (2021) decomposition theorem, Callaway & Sant'Anna (2021) group-time ATTs.
+- **06_Synthetic_Control_Methods.ipynb**: Abadie-Diamond-Hainmueller synth estimator, convex weights quadratic program, placebo permutation inference.
+- **07_Regression_Discontinuity_Design.ipynb**: Sharp & Fuzzy RDD, Imbens-Kalyanaraman bandwidth selector, McCrary (2008) density test.
+- **08_Quantile_Regression.ipynb**: Koenker-Bassett pinball loss, interior-point linear programming solver, asymptotic covariance.
 
 ### Module 07: Machine Learning in Economics (6 Lectures)
-
-| # | Lecture Notebook | Primary Theoretical & Practical Focus | Mandatory Code & Proof Deliverables |
-| :-: | :--- | :--- | :--- |
-| **01** | `01_Regularization.ipynb` | Ridge, Lasso, ElasticNet, bias-variance tradeoff | Coordinate descent update derivation for Lasso $w_j = \text{soft}(\rho_j, \lambda)/z_j$; K-fold cross-validation pipelines. |
-| **02** | `02_Tree_Based_Methods.ipynb` | Decision trees, Random Forests, Gradient Boosted Trees | CART split criterion minimizing Gini impurity / MSE; out-of-bag error tracking; feature importance metrics. |
-| **03** | `03_Unsupervised_Learning.ipynb` | PCA, factor models, t-SNE, clustering | SVD derivation of Principal Components; extracting macroeconomic latent factors from large-scale FRED-MD panel. |
-| **04** | `04_Neural_Networks.ipynb` | Multilayer perceptrons, backpropagation, PyTorch | Analytical derivation of backprop gradients; solving high-dimensional Bellman equations via Deep Q-Networks (DQN). |
-| **05** | `05_Causal_Machine_Learning.ipynb` | Athey-Imbens Causal Trees, Generalized Random Forests (GRF) | Honest estimation splitting criterion maximizing treatment effect heterogeneity $\mathrm{Var}(\hat{\tau})$; estimating conditional ATE $CATE(x)$. |
-| **06** | `06_Double_Machine_Learning.ipynb` | Chernozhukov et al. DML, Neyman orthogonality, cross-fitting | Mathematical proof of Neyman orthogonality condition $\left.\frac{\partial}{\partial \eta}\mathbb{E}[\psi(W; \theta_0, \eta)]\right\|_{\eta_0} = 0$; K-fold cross-fitting implementation. |
-
----
+- **01_Regularization.ipynb**: Ridge, Lasso coordinate descent update $w_j = \text{soft}(\rho_j, \lambda)/z_j$, ElasticNet, bias-variance tradeoff.
+- **02_Tree_Based_Methods.ipynb**: Decision trees, Random Forests, Gradient Boosted Trees (XGBoost/LightGBM), out-of-bag error.
+- **03_Unsupervised_Learning.ipynb**: PCA SVD derivation, factor models on FRED-MD panel, t-SNE, clustering.
+- **04_Neural_Networks.ipynb**: Analytical backpropagation gradients, deep reinforcement learning (Deep Q-Networks) for high-dimensional Bellman equations.
+- **05_Causal_Machine_Learning.ipynb**: Athey-Imbens Causal Trees, Generalized Random Forests (GRF), honest estimation sample splitting.
+- **06_Double_Machine_Learning.ipynb**: Chernozhukov et al. DML, Neyman orthogonality $\left.\frac{\partial}{\partial \eta}\mathbb{E}[\psi(W; \theta_0, \eta)]\right\|_{\eta_0} = 0$, K-fold cross-fitting.
 
 ### Module 08: Time Series Analysis (6 Lectures)
-
-| # | Lecture Notebook | Primary Theoretical & Practical Focus | Mandatory Code & Proof Deliverables |
-| :-: | :--- | :--- | :--- |
-| **01** | `01_ARMA_Models.ipynb` | ARMA processes, Wold decomposition, Box-Jenkins pipeline | Stationarity & invertibility polynomial root checks; Ljung-Box diagnostic test $Q = T(T+2)\sum \frac{\hat{\rho}_k^2}{T-k}$; AIC/BIC selection. |
-| **02** | `02_Volatility_Modeling.ipynb` | ARCH, GARCH(1,1), EGARCH, volatility clustering | Maximum likelihood estimation of GARCH parameters with Gaussian and Student-$t$ innovations; unconditional variance $\sigma^2 = \frac{\omega}{1-\alpha-\beta}$. |
-| **03** | `03_VAR_Models.ipynb` | Vector Autoregressions, SVAR, Cholesky ordering, IRFs | Cholesky identification vs Blanchard-Quah long-run neutrality restrictions; sign-restricted structural shock rotations (Rubio-Ramirez et al.). |
-| **04** | `04_Non_Stationarity_and_Cointegration.ipynb` | Unit roots (ADF, KPSS), Engle-Granger, Johansen VECM | Granger Representation Theorem; Engle-Granger 2-step test vs Johansen maximum eigenvalue/trace cointegration rank test. |
-| **05** | `05_State_Space_Models_Kalman_Filter.ipynb` | State-space representation, Kalman filter, Kalman smoother | Derivation of Kalman filter recursion: State prediction $x_{t|t-1}$, update $x_{t|t}$, and Kalman gain $K_t$; log-likelihood evaluation. |
-| **06** | `06_High_Frequency_Analysis.ipynb` | Realized volatility, microstructure noise, Fourier analysis | Two-scale realized volatility (TSRV) estimator; spectral density estimation via periodogram smoothing. |
-
----
+- **01_ARMA_Models.ipynb**: Wold decomposition, polynomial invertibility root checks, Ljung-Box test $Q \sim \chi^2(m - p - q)$, AIC/BIC.
+- **02_Volatility_Modeling.ipynb**: ARCH, GARCH(1,1), EGARCH, maximum likelihood with Gaussian and Student-$t$ innovations.
+- **03_VAR_Models.ipynb**: Structural VAR, Cholesky ordering vs Blanchard-Quah long-run restrictions, sign restrictions (Rubio-Ramirez).
+- **04_Non_Stationarity_and_Cointegration.ipynb**: Unit roots (ADF, KPSS), Granger Representation Theorem, Engle-Granger vs Johansen VECM.
+- **05_State_Space_Models_Kalman_Filter.ipynb**: State prediction $x_{t|t-1}$, update $x_{t|t}$, Kalman gain $K_t$, Kalman smoother, log-likelihood.
+- **06_High_Frequency_Analysis.ipynb**: Two-scale realized volatility (TSRV) estimator, spectral density estimation via periodogram smoothing.
 
 ### Module 09: Computational Finance & Asset Pricing (6 Lectures)
-
-| # | Lecture Notebook | Primary Theoretical & Practical Focus | Mandatory Code & Proof Deliverables |
-| :-: | :--- | :--- | :--- |
-| **01** | `01_Asset_Pricing_Foundations.ipynb` | Stochastic Discount Factor (SDF), CAPM, APT, HJ bounds | Fundamental equation $p = \mathbb{E}[m x]$; Hansen-Jagannathan bound derivation $\frac{\sigma(m)}{\mathbb{E}[m]} \ge \frac{\mathbb{E}[R^e]}{\sigma(R^e)}$; Fama-MacBeth two-pass regressions. |
-| **02** | `02_Stochastic_Calculus.ipynb` | Brownian motion, Itô integral, Itô's Lemma, Girsanov | Formal $L^2$ proof of quadratic variation $(dW_t)^2 = dt$; Itô's Lemma expansion for $df(t, S_t)$; change of measure via Radon-Nikodym derivative. |
-| **03** | `03_Black_Scholes.ipynb` | Black-Scholes PDE, risk-neutral valuation, option Greeks | Delta-hedging portfolio no-arbitrage proof; closed-form formulas for Delta ($\Delta$), Gamma ($\Gamma$), Vega ($\mathcal{V}$), Theta ($\Theta$), Rho ($\rho$). |
-| **04** | `04_Numerical_Option_Pricing.ipynb` | Binomial trees, Monte Carlo option pricing, Crank-Nicolson | Recombining Cox-Ross-Rubinstein lattice; Monte Carlo pricing with antithetic variates; Crank-Nicolson implicit-explicit PDE finite differences. |
-| **05** | `05_Structural_Credit_Risk.ipynb` | Merton (1974) corporate debt model, distance to default | Firm equity as call option on assets $E = \text{BS}(V, D, T)$; solving non-linear system for asset value $V$ and asset volatility $\sigma_V$. |
-| **06** | `06_Market_Microstructure.ipynb` | Limit Order Book (LOB), bid-ask spread, Kyle (1985) | Kyle's lambda derivation $\lambda = \frac{\text{Cov}(v, p)}{\text{Var}(p)}$; Glosten-Milgrom information asymmetry model; Roll (1984) spread estimator. |
-
----
+- **01_Asset_Pricing_Foundations.ipynb**: Fundamental equation $p = \mathbb{E}[m x]$, Hansen-Jagannathan bound $\frac{\sigma(m)}{\mathbb{E}[m]} \ge \frac{\mathbb{E}[R^e]}{\sigma(R^e)}$, Fama-MacBeth.
+- **02_Stochastic_Calculus.ipynb**: $L^2$ quadratic variation $(dW_t)^2 = dt$, Itô's Lemma expansion, Girsanov change of measure.
+- **03_Black_Scholes.ipynb**: Delta-neutral hedging no-arbitrage PDE derivation, closed-form option Greeks ($\Delta, \Gamma, \mathcal{V}, \Theta, \rho$).
+- **04_Numerical_Option_Pricing.ipynb**: Cox-Ross-Rubinstein binomial lattice, Monte Carlo with antithetic variates, Crank-Nicolson PDE solver.
+- **05_Structural_Credit_Risk.ipynb**: Merton (1974) firm equity as call option on assets $E = \text{BS}(V, D, T)$, distance to default.
+- **06_Market_Microstructure.ipynb**: Kyle (1985) lambda pricing function $P(Q) = P_0 + \lambda Q$, Glosten-Milgrom model, Roll spread estimator.
 
 ### Module 10: Specialized & Complex Systems (4 Lectures)
-
-| # | Lecture Notebook | Primary Theoretical & Practical Focus | Mandatory Code & Proof Deliverables |
-| :-: | :--- | :--- | :--- |
-| **01** | `01_Agent_Based_Modeling.ipynb` | Schelling segregation model, Sugarscape, bounded rationality | Cellular automaton implementation; phase transition from integrated to segregated equilibrium based on tolerance parameter $\tau$. |
-| **02** | `02_Spatial_Economics.ipynb` | Krugman New Economic Geography, gravity models of trade | Core-periphery bifurcation simulations; transport costs $T$ vs economies of scale; spatial trade flow estimation. |
-| **03** | `03_Network_Economics.ipynb` | Production networks (Acemoglu), financial contagion | Eisenberg-Noe (2001) systemic risk clearing vector algorithm; Bonacich centrality and input-output shock propagation. |
-| **04** | `04_Complexity_and_Emergence.ipynb` | Self-organized criticality, power law distributions | Sandpile model of economic crises; estimating Pareto exponents $\alpha$ for wealth distributions via Hill estimator. |
-
----
+- **01_Agent_Based_Modeling.ipynb**: Schelling segregation cellular automaton, threshold phase transitions, bounded rationality.
+- **02_Spatial_Economics.ipynb**: Krugman New Economic Geography, core-periphery bifurcations, gravity models of trade.
+- **03_Network_Economics.ipynb**: Acemoglu production network input-output shock propagation, Eisenberg-Noe financial contagion clearing vectors.
+- **04_Complexity_and_Emergence.ipynb**: Self-organized criticality, power law distributions, Hill estimator of Pareto exponents.
 
 ### Appendix Track: Mathematical Foundations & Reference Compendiums (14 Lectures)
-
-| # | Lecture Notebook | Primary Theoretical & Practical Focus | Mandatory Code & Proof Deliverables |
-| :-: | :--- | :--- | :--- |
-| **01** | `01_Real_Analysis_Review.ipynb` | Metric spaces, compactness, Bolzano-Weierstrass, continuity | Formal proofs of Intermediate Value Theorem and Extreme Value Theorem; Heine-Borel theorem in $\mathbb{R}^n$. |
-| **02** | `02_Linear_Algebra_Review.ipynb` | Vector spaces, spectral theorem, positive definiteness | Spectral decomposition $A = Q \Lambda Q^T$; Rayleigh quotient bounds; quadratic forms in econometric estimators. |
-| **03** | `03_Probability_Measure_Theory.ipynb` | Probability spaces $(\Omega, \mathcal{F}, \mathbb{P})$, Lebesgue integral | Carathéodory extension theorem summary; Radon-Nikodym theorem; conditional expectation as projection in $L^2$. |
-| **04** | `04_Mathematical_Statistics.ipynb` | Sufficiency, Rao-Blackwell, Maximum Likelihood asymptotics | Proof of Cramér-Rao lower bound; Fisher information matrix; asymptotic normality $\sqrt{n}(\hat{\theta}_{\text{MLE}} - \theta_0) \xrightarrow{d} \mathcal{N}(0, I(\theta_0)^{-1})$. |
-| **05** | `05_Convex_Analysis.ipynb` | Convex sets, convex functions, separating hyperplanes | Separating Hyperplane Theorem proof; Fenchel-Legendre conjugate; subgradient calculus for non-smooth optimization. |
-| **06** | `06_Optimization_Theory.ipynb` | Karush-Kuhn-Tucker (KKT) conditions, Lagrangian duality | Proof of KKT sufficiency under Slater's condition; primal-dual gap; envelope theorem in constrained optimization. |
-| **07** | `07_Dynamic_Systems_Stability.ipynb` | Linear/non-linear dynamical systems, Lyapunov stability | Hartman-Grobman linearization theorem; Lyapunov direct method; Poincaré-Bendixson theorem for limit cycles in 2D. |
-| **08** | `08_Functional_Analysis.ipynb` | Banach spaces, Hilbert spaces, Riesz Representation Theorem | $L^p$ spaces completeness; inner products and projection theorem in $L^2$; contraction mappings in function spaces. |
-| **09** | `09_Measure_Theoretic_Probability.ipynb` | Martingales, stopping times, Doob's Optional Stopping | Martingale convergence theorems; Doob's maximal inequality; filtration and adapted stochastic processes. |
-| **10** | `10_Stochastic_Processes.ipynb` | Markov chains, Chapman-Kolmogorov equations, ergodicity | Perron-Frobenius theorem for transition matrices; invariant stationary distribution $\pi = \pi P$; mixing times. |
-| **11** | `11_Numerical_Linear_Algebra_Advanced.ipynb` | Krylov subspace methods, GMRES, Conjugate Gradient | Conjugate gradient convergence bounds; Arnoldi iterations; preconditioning strategies for large sparse systems. |
-| **12** | `12_High_Performance_Computing.ipynb` | Parallel architectures, SIMD, OpenMP, CUDA/GPU in economics | Multi-core parallelization of grid search; GPU acceleration of large-scale agent-based simulations using PyTorch/JAX. |
-| **13** | `13_Empirical_Methods_Compendium.ipynb` | Econometric identification cheat sheet & diagnostic tests | Summary of identification strategies (IV, DiD, RDD, Synth, DML); standard error clustering formulas. |
-| **14** | `14_Comprehensive_Cheat_Sheet.ipynb` | Master mathematical, computational & financial formulas | Formula tables: Bellman operators, Itô lemma, Black-Scholes Greeks, Kalman filter equations, OLS matrix algebra. |
+- **01_Real_Analysis_Review.ipynb**: Metric spaces, compactness, Bolzano-Weierstrass, Intermediate & Extreme Value Theorems.
+- **02_Linear_Algebra_Review.ipynb**: Vector spaces, spectral theorem $A = Q \Lambda Q^T$, positive definiteness, Rayleigh quotients.
+- **03_Probability_Measure_Theory.ipynb**: Probability spaces $(\Omega, \mathcal{F}, \mathbb{P})$, Lebesgue integration, Radon-Nikodym derivative.
+- **04_Mathematical_Statistics.ipynb**: Sufficiency, Rao-Blackwell, Cramér-Rao lower bound, asymptotic normality of MLE.
+- **05_Convex_Analysis.ipynb**: Convex sets, Separating Hyperplane Theorem, Fenchel conjugate, subgradients.
+- **06_Optimization_Theory.ipynb**: Karush-Kuhn-Tucker (KKT) conditions, Slater's condition, Lagrangian duality.
+- **07_Dynamic_Systems_Stability.ipynb**: Hartman-Grobman theorem, Lyapunov direct method, Poincaré-Bendixson limit cycles.
+- **08_Functional_Analysis.ipynb**: Banach & Hilbert spaces, $L^p$ completeness, Riesz Representation Theorem.
+- **09_Measure_Theoretic_Probability.ipynb**: Martingales, stopping times, Doob's Optional Stopping Theorem.
+- **10_Stochastic_Processes.ipynb**: Markov chains, Chapman-Kolmogorov equations, Perron-Frobenius theorem, stationary distribution $\pi = \pi P$.
+- **11_Numerical_Linear_Algebra_Advanced.ipynb**: Krylov subspace methods, GMRES, Conjugate Gradient, preconditioning.
+- **12_High_Performance_Computing.ipynb**: SIMD, OpenMP, GPU acceleration of economic simulations with PyTorch/JAX.
+- **13_Empirical_Methods_Compendium.ipynb**: Econometric identification cheat sheet, cluster-robust standard error formulas.
+- **14_Comprehensive_Cheat_Sheet.ipynb**: Master mathematical, computational & financial formula compendium.
 
 ---
 
 ## 3. The 35 Core Mathematical Proofs to Audit & Formalize
 
-Every proof must follow strict **Assumption $\to$ Lemma Chain $\to$ Main Theorem $\to$ Step-by-Step Derivation $\to$ Economic Interpretation** formatting:
+Every proof follows a strict **Assumption $\to$ Lemma Chain $\to$ Main Theorem $\to$ Step-by-Step Derivation $\to$ Economic Interpretation** structure:
 
 1. **Banach Fixed-Point Theorem** in $(\mathcal{C}_b(S), \|\cdot\|_\infty)$.
 2. **Blackwell's Sufficient Conditions for a Contraction** (Monotonicity & Discounting).
@@ -290,7 +237,55 @@ Every proof must follow strict **Assumption $\to$ Lemma Chain $\to$ Main Theorem
 
 ---
 
-## 4. Interactive WebGL, Three.js, Cobe.js & Matter.js Specifications
+## 4. Multi-Engine Computational Tournament & Performance Standards
+
+Every core numerical algorithm is benchmarked and validated across **5 execution backends**:
+
+```
+                       MULTI-ENGINE COMPUTATIONAL TOURNAMENT
+   ┌───────────────────────┬───────────────────────────────────────────────────────────┐
+   │ Backend               │ Application Scope & Performance Targets                   │
+   ├───────────────────────┼───────────────────────────────────────────────────────────┤
+   │ 1. Vectorized NumPy   │ Baseline scientific computing, broadcasted array tensors  │
+   │ 2. Numba JIT          │ `@njit(parallel=True, fastmath=True)` for nested DP loops │
+   │ 3. JAX                │ Automatic differentiation (`grad`, `vmap`, `jit`) for ML  │
+   │ 4. PyTorch GPU        │ High-dimensional neural Bellman equations & deep RL       │
+   │ 5. Native Rust/C++    │ High-performance inner-loop discrete choice engines       │
+   └───────────────────────┴───────────────────────────────────────────────────────────┘
+```
+
+- **Floating-Point Safeguards**: Condition number bounds $\kappa(A) \le 10^8$; machine epsilon scaling $\mathcal{O}(\sqrt{\epsilon_{\text{mach}}})$; log-sum-exp stabilization.
+- **Sparse vs Dense Scaling**: Benchmark state-space expansion across dimensions $D \in \{1, 2, 4, 8, 16\}$ comparing tensor products vs Smolyak sparse polynomial grids.
+
+---
+
+## 5. Landmark Nobel Empirical Replications & Live Data Pipelines
+
+- **Replication Suite**:
+  1. *Card & Krueger (1994)*: Minimum wages and employment (Difference-in-Differences).
+  2. *Acemoglu, Johnson & Robinson (2001)*: Colonial settler mortality (Instrumental Variables).
+  3. *Smets & Wouters (2007)*: Bayesian DSGE estimation with friction shocks.
+  4. *Fama & French (2015)*: Five-factor asset pricing model and cross-sectional anomaly pricing.
+- **Data Ingestion Engine**:
+  - Live API loaders with automated local Parquet caching for FRED, World Bank, OECD, Eurostat, IMF, and Yahoo Finance.
+  - Automated synthetic Data Generating Process (DGP) engines with known ground-truth parameters for Monte Carlo estimator evaluation.
+
+---
+
+## 6. Pedagogical Scaffolding, Socratic Traps & 3-Tier Autograding
+
+- **Common Misconceptions & Diagnostic Traps**:
+  - Dedicated callouts in every notebook addressing common errors (e.g. spurious regressions under $I(1)$ series, confusing correlation with causation in DAGs, risk-neutral measure $\mathbb{Q}$ vs physical measure $\mathbb{P}$).
+- **3-Tier Exercise Ladder**:
+  - **Tier 1 (Warmup)**: Analytical step derivation or basic function completion.
+  - **Tier 2 (Application)**: Calibrating model parameters to empirical data.
+  - **Tier 3 (Challenge / Research Extension)**: Solving an open-ended policy counterfactual.
+- **Embedded Self-Testing Autograders**: Python assertion blocks in every exercise giving instant diagnostic feedback (`"✅ Exercise passed in 3.8ms"`).
+- **Prerequisite Concept Dependency DAGs**: Interactive Mermaid diagrams mapping foundational requirements before each lecture.
+
+---
+
+## 7. Interactive WebGL, Three.js, Cobe.js & Matter.js Specifications
 
 ### A. WebGL 3D Parameter Manifold (`docs/resources/interactive/index.html`)
 - **Engine**: Three.js (r134+) PBR pipeline.
@@ -312,7 +307,7 @@ Every proof must follow strict **Assumption $\to$ Lemma Chain $\to$ Main Theorem
 
 ---
 
-## 5. Master Implementation & Actionable Task Breakdown
+## 8. Master Implementation & Actionable Task Breakdown
 
 ### Phase 1: Automated Audit Infrastructure & Static Verification Engine
 - [ ] **Task 1.1: Build Master Notebook AST Linter (`scripts/audit_curriculum_ast.py`)**
@@ -345,7 +340,7 @@ Every proof must follow strict **Assumption $\to$ Lemma Chain $\to$ Main Theorem
 
 ---
 
-## 6. Execution Checkpoints & Definition of Done
+## 9. Verification Checkpoints & Definition of Done
 
 ```
 [ ] Checkpoint 1 (Static Quality): Zero AST linter errors, zero unrendered LaTeX formulas, zero broken badges across 83 notebooks.
