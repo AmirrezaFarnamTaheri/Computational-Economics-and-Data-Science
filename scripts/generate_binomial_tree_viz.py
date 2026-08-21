@@ -1,72 +1,114 @@
-import graphviz
+"""
+Generates a publication-grade Cox-Ross-Rubinstein (CRR) Binomial Tree option pricing visualization.
+"""
+
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
+
+import matplotlib.pyplot as plt
 import numpy as np
+from diagram_style import COLORS, apply_academic_style, save_figure, update_metadata
 
 
-def generate_binomial_tree_viz(
-    n_steps=3, S0=100, K=100, T=1.0, r=0.05, sigma=0.2, option_type="call"
-):
-    """
-    Generates a visualization of a binomial tree for option pricing.
-    """
-    dot = graphviz.Digraph("Binomial_Tree", comment="Binomial Option Pricing Tree")
-    dot.attr(
-        "node", shape="record", style="rounded", fontname="Helvetica", fontsize="10"
+def generate_binomial_tree_viz():
+    fig, ax = plt.subplots(figsize=(10, 6), dpi=300)
+    apply_academic_style(ax, grid=False)
+    ax.set_xlim(-0.5, 4.5)
+    ax.set_ylim(-3.5, 3.5)
+    ax.axis("off")
+
+    ax.text(
+        2.0,
+        3.2,
+        "Cox-Ross-Rubinstein (CRR) Binomial Tree Lattice (T=3)",
+        ha="center",
+        va="center",
+        fontsize=14,
+        fontweight="bold",
+        color=COLORS["primary"],
     )
-    dot.attr(rankdir="LR")
 
-    dt = T / n_steps
-    u = np.exp(sigma * np.sqrt(dt))
-    d = 1 / u
-    p = (np.exp(r * dt) - d) / (u - d)
+    S0 = 100.0
+    u = 1.15
+    d = 0.90
+    r = 0.05
+    dt = 1.0 / 3.0
+    q = (np.exp(r * dt) - d) / (u - d)
 
-    # 1. Generate asset prices at each node
-    prices = {}
-    for i in range(n_steps + 1):
-        for j in range(i + 1):
-            price = S0 * (u**j) * (d ** (i - j))
-            prices[(i, j)] = price
-            node_name = f"node_{i}_{j}"
-            dot.node(node_name, f"{{S={price:.2f} | C=?}}")
+    levels = 3
+    nodes = {}
+    for step in range(levels + 1):
+        for j in range(step + 1):
+            price = S0 * (u ** (step - j)) * (d**j)
+            y_pos = (step - 2 * j) * 0.9
+            nodes[(step, j)] = (step, y_pos, price)
 
-    # 2. Calculate option values at expiration
-    option_values = {}
-    for j in range(n_steps + 1):
-        price = prices[(n_steps, j)]
-        if option_type == "call":
-            value = max(0, price - K)
-        else:
-            value = max(0, K - price)
-        option_values[(n_steps, j)] = value
-        node_name = f"node_{n_steps}_{j}"
-        dot.node(node_name, f"{{S={price:.2f} | C={value:.2f}}}")
+    # Draw branches
+    for (step, j), (x, y, p) in nodes.items():
+        if step < levels:
+            # Up move
+            x_u, y_u, _ = nodes[(step + 1, j)]
+            ax.plot([x, x_u], [y, y_u], color=COLORS["border"], lw=1.5, zorder=1)
+            ax.text(
+                (x + x_u) / 2 - 0.05,
+                (y + y_u) / 2 + 0.1,
+                f"q={q:.2f}",
+                fontsize=7.5,
+                color=COLORS["accent_green"],
+            )
 
-    # 3. Work backwards to price the option
-    for i in range(n_steps - 1, -1, -1):
-        for j in range(i + 1):
-            val_up = option_values[(i + 1, j + 1)]
-            val_down = option_values[(i + 1, j)]
-            value = np.exp(-r * dt) * (p * val_up + (1 - p) * val_down)
-            option_values[(i, j)] = value
-            node_name = f"node_{i}_{j}"
-            price = prices[(i, j)]
-            dot.node(node_name, f"{{S={price:.2f} | C={value:.2f}}}")
+            # Down move
+            x_d, y_d, _ = nodes[(step + 1, j + 1)]
+            ax.plot([x, x_d], [y, y_d], color=COLORS["border"], lw=1.5, zorder=1)
+            ax.text(
+                (x + x_d) / 2 - 0.05,
+                (y + y_d) / 2 - 0.15,
+                f"1-q={1 - q:.2f}",
+                fontsize=7.5,
+                color=COLORS["accent_amber"],
+            )
 
-    # 4. Create edges
-    for i in range(n_steps):
-        for j in range(i + 1):
-            dot.edge(f"node_{i}_{j}", f"node_{i+1}_{j+1}", label=f"p={p:.2f}")
-            dot.edge(f"node_{i}_{j}", f"node_{i+1}_{j}", label=f"1-p={(1-p):.2f}")
+    # Draw nodes
+    for (step, j), (x, y, price) in nodes.items():
+        circle = plt.Circle(
+            (x, y),
+            0.28,
+            facecolor="#EFF6FF",
+            edgecolor=COLORS["primary"],
+            lw=1.5,
+            zorder=3,
+        )
+        ax.add_patch(circle)
+        ax.text(
+            x,
+            y + 0.04,
+            f"S={price:.1f}",
+            ha="center",
+            va="center",
+            fontsize=8.5,
+            fontweight="bold",
+            color=COLORS["text_dark"],
+            zorder=4,
+        )
+        ax.text(
+            x,
+            y - 0.10,
+            f"t={step}",
+            ha="center",
+            va="center",
+            fontsize=7,
+            color=COLORS["text_muted"],
+            zorder=4,
+        )
 
-    # Render and save
-    import os
-
-    save_dir = "images/finance/options"
-    if not os.path.exists(save_dir):
-        os.makedirs(save_dir)
-
-    save_path = os.path.join(save_dir, "binomial_tree_viz")
-    dot.render(save_path, format="png", view=False, cleanup=True)
-    print(f"Plot saved to {save_path}.png")
+    output_path = "images/07-Financial-Economics/binomial_tree_visualization.png"
+    save_figure(fig, output_path)
+    update_metadata(
+        output_path,
+        "Cox-Ross-Rubinstein (CRR) 3-step recombining binomial tree lattice with risk-neutral transition probabilities.",
+    )
 
 
 if __name__ == "__main__":

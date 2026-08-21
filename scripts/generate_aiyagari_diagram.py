@@ -1,119 +1,224 @@
-import os
+"""
+Generates a publication-grade flowchart of the Aiyagari (1994) General Equilibrium Algorithm.
+"""
 
-from graphviz import Digraph
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
+
+import matplotlib.patches as patches
+import matplotlib.pyplot as plt
+from diagram_style import COLORS, apply_academic_style, save_figure, update_metadata
 
 
-def create_aiyagari_loop_diagram():
-    """
-    Generates a diagram illustrating the Aiyagari model's general equilibrium solution loop.
-    """
-    dot = Digraph(comment="Aiyagari Equilibrium Loop")
-    dot.attr(
-        "graph",
-        rankdir="TB",
-        bgcolor="transparent",
-        label="Solving the Aiyagari Model",
-        fontname="Helvetica",
-        fontsize="20",
-        labelloc="t",
+def generate_aiyagari_flowchart():
+    fig, ax = plt.subplots(figsize=(9.5, 11), dpi=300)
+    apply_academic_style(ax, grid=False)
+    ax.set_xlim(0, 10)
+    ax.set_ylim(0, 12)
+    ax.axis("off")
+
+    ax.text(
+        5,
+        11.4,
+        "Aiyagari (1994) Stationary General Equilibrium Algorithm",
+        ha="center",
+        va="center",
+        fontsize=14,
+        fontweight="bold",
+        color=COLORS["primary"],
     )
 
-    # Node attributes
-    dot.attr("node", shape="box", style="rounded,filled", fontname="Helvetica")
+    def draw_box(
+        x,
+        y,
+        w,
+        h,
+        title,
+        details,
+        color="#F8FAFC",
+        border=COLORS["border"],
+        is_decision=False,
+    ):
+        if is_decision:
+            diamond = patches.Polygon(
+                [
+                    [x + w / 2, y],
+                    [x + w, y + h / 2],
+                    [x + w / 2, y + h],
+                    [x, y + h / 2],
+                ],
+                closed=True,
+                facecolor=color,
+                edgecolor=COLORS["primary"],
+                linewidth=1.5,
+                zorder=3,
+            )
+            ax.add_patch(diamond)
+            ax.text(
+                x + w / 2,
+                y + h / 2 + 0.12,
+                title,
+                ha="center",
+                va="center",
+                fontsize=10,
+                fontweight="bold",
+                color=COLORS["primary"],
+                zorder=4,
+            )
+            ax.text(
+                x + w / 2,
+                y + h / 2 - 0.25,
+                details,
+                ha="center",
+                va="center",
+                fontsize=9,
+                color=COLORS["text_dark"],
+                zorder=4,
+            )
+        else:
+            box = patches.FancyBboxPatch(
+                (x, y),
+                w,
+                h,
+                boxstyle="round,pad=0.1,rounding_size=0.08",
+                facecolor=color,
+                edgecolor=border,
+                linewidth=1.2,
+                zorder=3,
+            )
+            ax.add_patch(box)
+            ax.text(
+                x + w / 2,
+                y + h * 0.65,
+                title,
+                ha="center",
+                va="center",
+                fontsize=10.5,
+                fontweight="bold",
+                color=COLORS["text_dark"],
+                zorder=4,
+            )
+            ax.text(
+                x + w / 2,
+                y + h * 0.30,
+                details,
+                ha="center",
+                va="center",
+                fontsize=8.5,
+                color=COLORS["text_muted"],
+                zorder=4,
+            )
 
-    # Outer Loop
-    with dot.subgraph(name="cluster_outer") as c:
-        c.attr(
-            label="Outer Loop: Find Equilibrium Interest Rate (r*)",
-            style="rounded,dashed",
-            color="firebrick",
-        )
-        c.node("Guess_r", "1. Guess an Interest Rate, r", fillcolor="coral")
-        c.node(
-            "Demand_K",
-            "2. Firms: Calculate Capital Demand\\nKd = f(r)",
-            fillcolor="skyblue",
-        )
-        c.node(
-            "Supply_K",
-            "3. Households: Calculate Capital Supply\\nKs(r) [Inner Loop]",
-            shape="box3d",
-            fillcolor="gold",
-        )
-        c.node(
-            "Check",
-            "4. Check Market Clearing\\nIs Kd ≈ Ks?",
-            shape="diamond",
-            fillcolor="lightgreen",
-        )
-        c.node("Update_r", "5. Update r using Bisection", fillcolor="coral")
-
-        c.edge("Guess_r", "Demand_K")
-        c.edge("Guess_r", "Supply_K")
-        c.edge("Demand_K", "Check")
-        c.edge("Supply_K", "Check")
-        c.edge("Check", "Update_r", label="No (Kd != Ks)")
-        c.edge("Update_r", "Guess_r", label="Loop")
-
-    # Inner Loop
-    with dot.subgraph(name="cluster_inner") as c:
-        c.attr(
-            label="Inner Loop: Household Behavior for a given r",
-            style="rounded,dashed",
-            color="darkblue",
-        )
-        c.node(
-            "VFI",
-            "3a. Solve Bellman Equation via\\nValue Function Iteration (VFI)",
-            fillcolor="goldenrod1",
-        )
-        c.node(
-            "Policy",
-            "3b. Find Optimal Savings Policy\\na' = g(a, y)",
-            fillcolor="goldenrod1",
-        )
-        c.node(
-            "Simulate",
-            "3c. Simulate Many Households to find\\nStationary Distribution Φ(a, y)",
-            fillcolor="goldenrod1",
-        )
-        c.node(
-            "Aggregate",
-            "3d. Aggregate to get Total Supply\\nKs = E[a] under Φ",
-            fillcolor="goldenrod1",
-        )
-
-        c.edge("VFI", "Policy")
-        c.edge("Policy", "Simulate")
-        c.edge("Simulate", "Aggregate")
-
-    # Connect Inner loop to Outer loop
-    dot.edge("Aggregate", "Supply_K", style="invis")  # For layout
-    dot.edge(
-        "Check",
-        "Equilibrium",
-        label="Yes (Kd = Ks)",
-        color="darkgreen",
-        fontcolor="darkgreen",
+    draw_box(
+        1.5,
+        9.6,
+        7.0,
+        1.1,
+        r"1. Outer Loop: Guess Aggregate Interest Rate $r^{(0)}$",
+        r"Initialize bounds $[r_{\min}, r_{\max}]$, set initial guess $r^{(0)} \in (0, 1/\beta - 1)$",
+        "#EFF6FF",
     )
-    dot.node(
-        "Equilibrium",
-        "Equilibrium Found!\\nr* and Stationary Distribution Φ*(a,y)",
-        shape="star",
-        fillcolor="limegreen",
+    draw_box(
+        1.5,
+        7.9,
+        7.0,
+        1.1,
+        r"2. Solve Household Dynamic Program $V(a, z; r)$",
+        r"Compute policy $a'(a, z; r)$ via Value Function Iteration (VFI) or Euler Equation",
+        "#F8FAFC",
+    )
+    draw_box(
+        1.5,
+        6.2,
+        7.0,
+        1.1,
+        r"3. Compute Stationary Distribution $\mu(a, z)$",
+        r"Solve fixed point of Markov transition operator $T_r(\mu) = \mu$",
+        "#F8FAFC",
+    )
+    draw_box(
+        1.5,
+        4.5,
+        7.0,
+        1.1,
+        r"4. Aggregate Capital Supply $K_s(r)$ vs. Demand $K_d(r)$",
+        r"$K_s(r) = \int a \, d\mu(a, z; r), \quad K_d(r) = [(r+\delta)/\alpha]^{1/(\alpha-1)}$",
+        "#EFF6FF",
+    )
+    draw_box(
+        2.0,
+        2.4,
+        6.0,
+        1.4,
+        "5. Capital Market Clearing?",
+        r"$|K_s(r) - K_d(r)| < \epsilon$",
+        "#FEF3C7",
+        is_decision=True,
+    )
+    draw_box(
+        1.5,
+        0.4,
+        7.0,
+        1.1,
+        r"6. Stationary Equilibrium $(r^*, w^*, \mu^*)$",
+        r"Output equilibrium prices $(r^*, w^*)$, wealth distribution $\mu^*(a, z)$, and aggregates",
+        "#ECFDF5",
+        border=COLORS["accent_green"],
     )
 
-    # Save the file
-    output_dir = "images/10-Specialized-Models"
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-    output_path = os.path.join(output_dir, "aiyagari_equilibrium_loop")
+    # Arrows
+    arrow_props = dict(
+        arrowstyle="-|>", mutation_scale=16, lw=1.8, color=COLORS["secondary"]
+    )
+    ax.annotate("", xy=(5, 9.0), xytext=(5, 9.6), arrowprops=arrow_props, zorder=2)
+    ax.annotate("", xy=(5, 7.3), xytext=(5, 7.9), arrowprops=arrow_props, zorder=2)
+    ax.annotate("", xy=(5, 5.6), xytext=(5, 6.2), arrowprops=arrow_props, zorder=2)
+    ax.annotate("", xy=(5, 3.8), xytext=(5, 4.5), arrowprops=arrow_props, zorder=2)
 
-    dot.render(output_path, format="png", view=False, cleanup=True)
+    # Decision arrows
+    ax.annotate("", xy=(5, 1.5), xytext=(5, 2.4), arrowprops=arrow_props, zorder=2)
+    ax.text(
+        5.2,
+        1.9,
+        "Yes (Converged)",
+        fontsize=9,
+        fontweight="bold",
+        color=COLORS["accent_green"],
+    )
 
-    return f"{output_path}.png"
+    # Loop back arrow (No)
+    ax.annotate(
+        "",
+        xy=(8.5, 10.15),
+        xytext=(8.0, 3.1),
+        arrowprops=dict(
+            arrowstyle="-|>",
+            mutation_scale=16,
+            lw=1.8,
+            color=COLORS["accent_amber"],
+            connectionstyle="arc3,rad=-0.3",
+        ),
+        zorder=2,
+    )
+    ax.text(
+        8.8,
+        6.0,
+        r"No: Update $r^{(k+1)}$" + "\n" + r"via Bisection",
+        fontsize=9,
+        fontweight="bold",
+        color=COLORS["accent_amber"],
+        ha="left",
+    )
+
+    output_path = "images/04-Macro-Models/aiyagari_algorithm_flowchart.png"
+    save_figure(fig, output_path)
+    update_metadata(
+        output_path,
+        "Aiyagari (1994) incomplete markets general equilibrium computational algorithm flowchart.",
+    )
 
 
 if __name__ == "__main__":
-    generated_file = create_aiyagari_loop_diagram()
-    print(f"Diagram saved to: {generated_file}")
+    generate_aiyagari_flowchart()

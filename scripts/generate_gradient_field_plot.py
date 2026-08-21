@@ -1,3 +1,7 @@
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
@@ -32,7 +36,7 @@ U_norm, V_norm = U / N, V / N
 
 # --- Create the combined plot ---
 sns.set_style("whitegrid")
-fig = plt.figure(figsize=(16, 7), dpi=150)
+fig = plt.figure(figsize=(16, 7), dpi=300)
 
 # --- 1. The 3D Surface Plot ---
 ax1 = fig.add_subplot(1, 2, 1, projection="3d")

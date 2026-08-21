@@ -1,0 +1,12 @@
+# Reinforcement Learning Agent-Environment Loop
+
+Continuous feedback loop between agent actions and environmental states and rewards.
+
+```mermaid
+flowchart LR
+    Agent["AGENT<br/>Policy $\pi(a|s)$<br/>Value Function $V(s) / Q(s, a)$"]
+    Env["ENVIRONMENT<br/>Transition $P(s'|s, a)$<br/>Reward Function $R(s, a)$"]
+
+    Agent -->|Action $A_t \in \mathcal{A}(S_t)$| Env
+    Env -->|State $S_{t+1}$, Reward $R_{t+1}$| Agent
+```

@@ -1,101 +1,115 @@
+"""
+Generates publication-grade Call and Put option payoff diagrams with LaTeX math.
+"""
+
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
+
 import matplotlib.pyplot as plt
 import numpy as np
+from diagram_style import COLORS, apply_academic_style, save_figure, update_metadata
 
 
-def generate_option_payoff_diagrams():
-    """
-    Generates and saves a high-quality plot of call and put option payoffs.
-    """
-    # --- Parameters ---
-    K = 100  # Strike price
-    premium_call = 5
-    premium_put = 5
-    S = np.linspace(70, 130, 400)  # Range of stock prices at expiration
+def generate_plot():
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5.5), dpi=300)
 
-    # --- Payoffs ---
-    payoff_call = np.maximum(S - K, 0)
-    payoff_put = np.maximum(K - S, 0)
+    K = 100.0  # Strike price
+    premium = 8.0
+    S = np.linspace(60, 140, 200)
 
-    # --- Profits ---
-    profit_call = payoff_call - premium_call
-    profit_put = payoff_put - premium_put
+    # Call
+    apply_academic_style(ax1, grid=True)
+    payoff_call_long = np.maximum(S - K, 0) - premium
+    payoff_call_short = -payoff_call_long
 
-    # --- Plotting ---
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 7))
-    plt.style.use("seaborn-v0_8-whitegrid")
-
-    # Panel 1: Call Option
-    ax1.plot(S, payoff_call, "b--", label="Payoff at Expiration (max(S-K, 0))")
-    ax1.plot(S, profit_call, "b-", lw=2.5, label="Profit/Loss (Payoff - Premium)")
-    ax1.axhline(0, color="k", linestyle="-", lw=1)
-    ax1.axvline(K, color="k", linestyle="--", lw=1, label=f"Strike Price (K=${K})")
-    ax1.fill_between(
+    ax1.plot(
         S,
-        profit_call,
-        0,
-        where=profit_call > 0,
-        color="green",
-        alpha=0.1,
-        label="Profit Zone",
+        payoff_call_long,
+        color=COLORS["primary"],
+        lw=2.5,
+        label=r"Long Call: $\max(S_T - K, 0) - C_0$",
     )
-    ax1.fill_between(
+    ax1.plot(
         S,
-        profit_call,
-        0,
-        where=profit_call < 0,
-        color="red",
-        alpha=0.1,
-        label="Loss Zone",
+        payoff_call_short,
+        color=COLORS["accent_red"],
+        linestyle="--",
+        lw=2.0,
+        label=r"Short Call: $-\max(S_T - K, 0) + C_0$",
     )
-    ax1.set_title("Long Call Option", fontsize=16)
-    ax1.set_xlabel("Stock Price at Expiration ($S_T$)")
-    ax1.set_ylabel("Profit / Loss")
-    ax1.legend()
-    ax1.grid(True)
+    ax1.axhline(0, color=COLORS["secondary"], lw=0.8, linestyle=":")
+    ax1.axvline(
+        K, color=COLORS["text_muted"], lw=1.0, linestyle="--", label=r"Strike $K = 100$"
+    )
+    ax1.set_title(
+        r"European Call Option Payoff \& Profit at Expiry $T$",
+        fontsize=11.5,
+        fontweight="bold",
+        color=COLORS["primary"],
+    )
+    ax1.set_xlabel(
+        r"Underlying Asset Price at Expiry $S_T$", fontsize=10, fontweight="bold"
+    )
+    ax1.set_ylabel(r"Net Profit / Loss ($\$$)", fontsize=10, fontweight="bold")
+    ax1.legend(
+        loc="upper left",
+        frameon=True,
+        facecolor="white",
+        edgecolor=COLORS["border"],
+        fontsize=8.5,
+    )
 
-    # Panel 2: Put Option
-    ax2.plot(S, payoff_put, "r--", label="Payoff at Expiration (max(K-S, 0))")
-    ax2.plot(S, profit_put, "r-", lw=2.5, label="Profit/Loss (Payoff - Premium)")
-    ax2.axhline(0, color="k", linestyle="-", lw=1)
-    ax2.axvline(K, color="k", linestyle="--", lw=1, label=f"Strike Price (K=${K})")
-    ax2.fill_between(
+    # Put
+    apply_academic_style(ax2, grid=True)
+    payoff_put_long = np.maximum(K - S, 0) - premium
+    payoff_put_short = -payoff_put_long
+
+    ax2.plot(
         S,
-        profit_put,
-        0,
-        where=profit_put > 0,
-        color="green",
-        alpha=0.1,
-        label="Profit Zone",
+        payoff_put_long,
+        color=COLORS["accent_green"],
+        lw=2.5,
+        label=r"Long Put: $\max(K - S_T, 0) - P_0$",
     )
-    ax2.fill_between(
+    ax2.plot(
         S,
-        profit_put,
-        0,
-        where=profit_put < 0,
-        color="red",
-        alpha=0.1,
-        label="Loss Zone",
+        payoff_put_short,
+        color=COLORS["accent_amber"],
+        linestyle="--",
+        lw=2.0,
+        label=r"Short Put: $-\max(K - S_T, 0) + P_0$",
     )
-    ax2.set_title("Long Put Option", fontsize=16)
-    ax2.set_xlabel("Stock Price at Expiration ($S_T$)")
-    ax2.set_ylabel("Profit / Loss")
-    ax2.legend()
-    ax2.grid(True)
+    ax2.axhline(0, color=COLORS["secondary"], lw=0.8, linestyle=":")
+    ax2.axvline(
+        K, color=COLORS["text_muted"], lw=1.0, linestyle="--", label=r"Strike $K = 100$"
+    )
+    ax2.set_title(
+        r"European Put Option Payoff \& Profit at Expiry $T$",
+        fontsize=11.5,
+        fontweight="bold",
+        color=COLORS["accent_green"],
+    )
+    ax2.set_xlabel(
+        r"Underlying Asset Price at Expiry $S_T$", fontsize=10, fontweight="bold"
+    )
+    ax2.set_ylabel(r"Net Profit / Loss ($\$$)", fontsize=10, fontweight="bold")
+    ax2.legend(
+        loc="upper right",
+        frameon=True,
+        facecolor="white",
+        edgecolor=COLORS["border"],
+        fontsize=8.5,
+    )
 
-    fig.suptitle("Option Payoff and Profit/Loss Diagrams", fontsize=20, y=1.02)
-    plt.tight_layout()
-
-    # --- Save Figure ---
-    import os
-
-    save_dir = "images/09-Finance"
-    if not os.path.exists(save_dir):
-        os.makedirs(save_dir)
-
-    save_path = os.path.join(save_dir, "call_put_payoffs.png")
-    plt.savefig(save_path, dpi=150, bbox_inches="tight")
-    print(f"Plot saved to {save_path}")
+    output_path = "images/07-Financial-Economics/option_payoffs_call_put.png"
+    save_figure(fig, output_path)
+    update_metadata(
+        output_path,
+        "European call and put option profit-loss payoff profiles at expiration.",
+    )
 
 
 if __name__ == "__main__":
-    generate_option_payoff_diagrams()
+    generate_plot()

@@ -1,0 +1,7 @@
+flowchart TD
+    A["1. Outer Loop: Guess Interest Rate $r^{(0)}$"] --> B["2. Solve Household Dynamic Program<br/>- Value Function Iteration (VFI)<br/>- Policy Function $a'(a, z; r)$"]
+    B --> C["3. Compute Stationary Distribution $\mu(a, z)$<br/>- Fixed point of Markov transition $T_r(\mu) = \mu$"]
+    C --> D["4. Aggregate Capital Supply vs. Firm Demand<br/>- $K_s(r) = \int a \, d\mu(a, z)$<br/>- $K_d(r) = \left(\frac{r+\delta}{\alpha}\right)^{\frac{1}{\alpha-1}}$"]
+    D --> E{"Market Clearing?<br/>$|K_s(r) - K_d(r)| < \epsilon$"}
+    E -->|No: Update $r^{(k+1)}$ via Bisection| A
+    E -->|Yes: Converged| F["5. Stationary Equilibrium Output<br/>- Equilibrium Prices $(r^*, w^*)$<br/>- Macro Aggregates & Wealth Distribution $\mu^*$"]

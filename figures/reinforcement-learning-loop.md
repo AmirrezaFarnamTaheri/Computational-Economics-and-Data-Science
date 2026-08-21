@@ -1,0 +1,24 @@
+# Markov Decision Process Agent-Environment Loop
+
+Feedback control loop between economic agent choosing policy action and macroeconomic environment state transition.
+
+```mermaid
+flowchart LR
+    subgraph Agent ["Economic Decision Maker (Agent)"]
+        policy["Policy: $$\pi(a_t \mid s_t)$$"]
+        value["Value Function: $$V(s_t), \; Q(s_t, a_t)$$"]
+    end
+
+    subgraph Env ["Macroeconomic Environment"]
+        transition["State Transition: $$P(s_{t+1} \mid s_t, a_t)$$"]
+        reward["Reward: $$R(s_t, a_t)$$"]
+    end
+
+    Agent -->|"Action $$a_t \in \mathcal{A}(s_t)$$"| Env
+    Env -->|"State $$s_{t+1}$$, Reward $$R_{t+1}$$"| Agent
+
+    classDef agentBox fill:#EFF6FF,stroke:#3B82F6,stroke-width:2px,color:#1E3A8A;
+    classDef envBox fill:#ECFDF5,stroke:#10B981,stroke-width:2px,color:#065F46;
+    class Agent,policy,value agentBox;
+    class Env,transition,reward envBox;
+```

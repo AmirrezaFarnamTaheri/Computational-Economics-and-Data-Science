@@ -1,38 +1,137 @@
-import os
+"""
+Generates a publication-grade Causal Tree splitting logic diagram with rigorous LaTeX math.
+"""
 
-import graphviz
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
+
+import matplotlib.patches as patches
+import matplotlib.pyplot as plt
+from diagram_style import COLORS, apply_academic_style, save_figure, update_metadata
 
 
-def generate_causal_tree_split_image():
-    """
-    Generates an image visualizing the splitting logic of a Causal Tree.
-    """
-    # Ensure the target directory exists
-    output_dir = "images/causal_ml"
-    os.makedirs(output_dir, exist_ok=True)
+def generate_causal_tree_diagram():
+    fig, ax = plt.subplots(figsize=(10, 6.2), dpi=300)
+    apply_academic_style(ax, grid=False)
+    ax.set_xlim(-0.5, 5.5)
+    ax.set_ylim(-0.5, 3.6)
+    ax.axis("off")
 
-    # Define the graph
-    dot = graphviz.Digraph("Causal Tree")
-    dot.attr("node", shape="box", style="rounded", fontname="helvetica")
-    dot.attr(
-        label="Figure 2: Causal vs. Regression Tree Splitting Logic",
-        fontsize="16",
-        labelloc="t",
-        fontname="helvetica",
+    ax.text(
+        2.5,
+        3.3,
+        "Causal Tree Recursive Partitioning (Athey & Imbens, 2016)",
+        ha="center",
+        va="center",
+        fontsize=13,
+        fontweight="bold",
+        color=COLORS["primary"],
     )
 
-    dot.node("root", "Root Node\\n(Full Sample)\\nEst. Effect τ = 0.5")
-    dot.node("left", "Left Child\\nEst. Effect τ = -0.2")
-    dot.node("right", "Right Child\\nEst. Effect τ = 1.2")
+    def draw_tree_node(x, y, title, tau_val, n_t, n_c, color):
+        box = patches.FancyBboxPatch(
+            (x - 0.85, y - 0.45),
+            1.7,
+            0.9,
+            boxstyle="round,pad=0.1,rounding_size=0.1",
+            facecolor=color,
+            edgecolor=COLORS["border"],
+            linewidth=1.2,
+            zorder=3,
+        )
+        ax.add_patch(box)
+        ax.text(
+            x,
+            y + 0.22,
+            title,
+            ha="center",
+            va="center",
+            fontsize=10,
+            fontweight="bold",
+            color=COLORS["text_dark"],
+            zorder=4,
+        )
+        ax.text(
+            x,
+            y,
+            r"$\hat{\tau} = " + tau_val + r"$",
+            ha="center",
+            va="center",
+            fontsize=10,
+            fontweight="bold",
+            color=COLORS["primary"],
+            zorder=4,
+        )
+        ax.text(
+            x,
+            y - 0.22,
+            r"$N_{\mathrm{treated}}="
+            + str(n_t)
+            + r", \; N_{\mathrm{control}}="
+            + str(n_c)
+            + r"$",
+            ha="center",
+            va="center",
+            fontsize=8,
+            color=COLORS["text_muted"],
+            zorder=4,
+        )
 
-    dot.edge("root", "left", label="  Age < 40  ", fontname="helvetica")
-    dot.edge("root", "right", label="  Age >= 40  ", fontname="helvetica")
+    # Root
+    draw_tree_node(2.5, 2.2, r"Parent Node $\mathcal{S}$", "+2.40", 500, 500, "#F8FAFC")
 
-    # --- Render and Save ---
-    output_path = os.path.join(output_dir, "figure2_causal_tree_split")
-    dot.render(output_path, format="png", cleanup=True)
-    print(f"Image saved to {output_path}.png")
+    # Split criterion
+    ax.text(
+        2.5,
+        1.5,
+        r"$\mathrm{Split \; on \; Feature } \; X_1 \leq 45.0 \quad \left(\max \; \mathrm{Heterogeneity \; of } \; \hat{\tau}\right)$",
+        ha="center",
+        va="center",
+        fontsize=10,
+        fontweight="bold",
+        color=COLORS["secondary"],
+    )
+
+    # Children
+    draw_tree_node(
+        1.0,
+        0.5,
+        r"Left Leaf $\mathcal{S}_L \; (X_1 \leq 45)$",
+        "+0.85",
+        240,
+        260,
+        "#EFF6FF",
+    )
+    draw_tree_node(
+        4.0,
+        0.5,
+        r"Right Leaf $\mathcal{S}_R \; (X_1 > 45)$",
+        "+3.95",
+        260,
+        240,
+        "#ECFDF5",
+    )
+
+    # Arrows
+    arrow_props = dict(
+        arrowstyle="-|>", mutation_scale=18, lw=1.8, color=COLORS["secondary"]
+    )
+    ax.annotate(
+        "", xy=(1.2, 0.95), xytext=(2.2, 1.75), arrowprops=arrow_props, zorder=2
+    )
+    ax.annotate(
+        "", xy=(3.8, 0.95), xytext=(2.8, 1.75), arrowprops=arrow_props, zorder=2
+    )
+
+    output_path = "images/causal_ml/causal_tree_split.png"
+    save_figure(fig, output_path)
+    update_metadata(
+        output_path,
+        "Causal Tree recursive partitioning maximizing treatment effect heterogeneity across subsets.",
+    )
 
 
 if __name__ == "__main__":
-    generate_causal_tree_split_image()
+    generate_causal_tree_diagram()

@@ -1,3 +1,7 @@
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -86,7 +90,7 @@ def generate_lob_plot():
         os.makedirs(save_dir)
 
     save_path = os.path.join(save_dir, "limit_order_book.png")
-    plt.savefig(save_path, dpi=150, bbox_inches="tight")
+    plt.savefig(save_path, dpi=300, bbox_inches="tight")
     print(f"Plot saved to {save_path}")
 
 

@@ -1,3 +1,7 @@
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
@@ -18,7 +22,7 @@ def setup_plot(ax, title):
 
 
 # --- 1. Create the Convex Set Plot ---
-fig1, ax1 = plt.subplots(figsize=(6, 6), dpi=150)
+fig1, ax1 = plt.subplots(figsize=(6, 6), dpi=300)
 setup_plot(ax1, "A Convex Set")
 
 # Create a convex polygon (a pentagon)
@@ -49,7 +53,7 @@ print("Saved convex_set.png")
 
 
 # --- 2. Create the Non-Convex Set Plot ---
-fig2, ax2 = plt.subplots(figsize=(6, 6), dpi=150)
+fig2, ax2 = plt.subplots(figsize=(6, 6), dpi=300)
 setup_plot(ax2, "A Non-Convex Set")
 
 # Create a non-convex shape (a crescent)

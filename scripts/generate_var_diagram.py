@@ -1,62 +1,167 @@
-import os
+"""
+Generates a publication-grade Structural VAR (SVAR) identification and Cholesky ordering schematic with LaTeX math.
+"""
 
-import graphviz
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
+
+import matplotlib.patches as patches
+import matplotlib.pyplot as plt
+from diagram_style import COLORS, apply_academic_style, save_figure, update_metadata
 
 
 def generate_var_diagram():
-    output_dir = "images/08-Time-Series"
-    os.makedirs(output_dir, exist_ok=True)
+    fig, ax = plt.subplots(figsize=(10, 6.2), dpi=300)
+    apply_academic_style(ax, grid=False)
+    ax.set_xlim(0, 10)
+    ax.set_ylim(0, 6.2)
+    ax.axis("off")
 
-    dot = graphviz.Digraph(comment="VAR Identification")
-    dot.attr(rankdir="TB", dpi="300", bgcolor="white")
-    dot.attr(
-        "node",
-        shape="box",
-        style="filled",
-        fillcolor="white",
-        fontname="Helvetica",
-        fontsize="12",
+    ax.text(
+        5,
+        5.7,
+        "Structural VAR Identification: Cholesky Recursive Ordering",
+        ha="center",
+        va="center",
+        fontsize=13,
+        fontweight="bold",
+        color=COLORS["primary"],
     )
-    dot.attr("edge", fontname="Helvetica", fontsize="10")
 
-    # Structural Shocks
-    with dot.subgraph(name="cluster_shocks") as c:
-        c.attr(label="Structural Shocks (Uncorrelated)", style="dashed", color="gray")
-        c.node("u_gdp", "u_GDP\n(Supply/Demand)", shape="circle", fillcolor="#e6f3ff")
-        c.node("u_inf", "u_Inflation\n(Cost Push)", shape="circle", fillcolor="#e6f3ff")
-        c.node(
-            "u_rate", "u_Rate\n(Monetary Policy)", shape="circle", fillcolor="#e6f3ff"
+    def draw_node(x, y, label, sublabel, color):
+        box = patches.FancyBboxPatch(
+            (x - 1.2, y - 0.4),
+            2.4,
+            0.8,
+            boxstyle="round,pad=0.1,rounding_size=0.1",
+            facecolor=color,
+            edgecolor=COLORS["border"],
+            linewidth=1.2,
+            zorder=3,
+        )
+        ax.add_patch(box)
+        ax.text(
+            x,
+            y + 0.1,
+            label,
+            ha="center",
+            va="center",
+            fontsize=10.5,
+            color=COLORS["text_dark"],
+            zorder=4,
+        )
+        ax.text(
+            x,
+            y - 0.16,
+            sublabel,
+            ha="center",
+            va="center",
+            fontsize=8.5,
+            color=COLORS["text_muted"],
+            zorder=4,
         )
 
+    # Shocks
+    ax.text(
+        2,
+        4.5,
+        r"Structural Shocks $u_t \sim (0, I)$",
+        ha="center",
+        fontsize=10,
+        fontweight="bold",
+        color=COLORS["secondary"],
+    )
+    draw_node(2, 3.5, r"$u_{\mathrm{GDP}}$ (Supply Shock)", "Slow-moving", "#EFF6FF")
+    draw_node(2, 2.3, r"$u_{\pi}$ (Cost-Push Shock)", "Medium-moving", "#EFF6FF")
+    draw_node(2, 1.1, r"$u_R$ (Monetary Policy Shock)", "Fast-moving", "#EFF6FF")
+
     # Observed Variables
-    with dot.subgraph(name="cluster_vars") as c:
-        c.attr(label="Observed Variables (Time t)", style="solid", color="black")
-        c.node("y_gdp", "GDP Growth", style="filled", fillcolor="#fff2cc")
-        c.node("y_inf", "Inflation", style="filled", fillcolor="#fff2cc")
-        c.node("y_rate", "Fed Funds Rate", style="filled", fillcolor="#fff2cc")
+    ax.text(
+        8,
+        4.5,
+        r"Endogenous Variables $y_t$",
+        ha="center",
+        fontsize=10,
+        fontweight="bold",
+        color=COLORS["primary"],
+    )
+    draw_node(
+        8, 3.5, r"GDP Growth ($y_{1,t}$)", r"Affected by $u_{\mathrm{GDP}}$", "#ECFDF5"
+    )
+    draw_node(
+        8,
+        2.3,
+        r"Inflation ($y_{2,t}$)",
+        r"Affected by $u_{\mathrm{GDP}}, u_{\pi}$",
+        "#ECFDF5",
+    )
+    draw_node(
+        8, 1.1, r"Interest Rate ($y_{3,t}$)", r"Affected by all shocks", "#ECFDF5"
+    )
 
-    # Edges (Cholesky Ordering: GDP -> Inflation -> Rate)
+    arrow_props = dict(
+        arrowstyle="-|>", mutation_scale=16, lw=1.8, color=COLORS["secondary"]
+    )
 
-    # 1. GDP is affected by its own structural shock only (contemporaneously)
-    dot.edge("u_gdp", "y_gdp")
+    # Direct shocks to variables
+    ax.annotate("", xy=(6.8, 3.5), xytext=(3.2, 3.5), arrowprops=arrow_props, zorder=2)
+    ax.annotate("", xy=(6.8, 2.3), xytext=(3.2, 2.3), arrowprops=arrow_props, zorder=2)
+    ax.annotate("", xy=(6.8, 1.1), xytext=(3.2, 1.1), arrowprops=arrow_props, zorder=2)
 
-    # 2. Inflation is affected by its own shock AND GDP shock
-    dot.edge("u_inf", "y_inf")
-    dot.edge("y_gdp", "y_inf", label="Contemporaneous")
+    # Recursive Contemporaneous Spillovers (Cholesky Lower Triangular)
+    # GDP -> Inflation
+    ax.annotate(
+        "",
+        xy=(7.2, 2.7),
+        xytext=(7.2, 3.1),
+        arrowprops=dict(
+            arrowstyle="-|>", mutation_scale=14, lw=1.5, color=COLORS["accent_amber"]
+        ),
+        zorder=2,
+    )
+    # Inflation -> Rate
+    ax.annotate(
+        "",
+        xy=(7.2, 1.5),
+        xytext=(7.2, 1.9),
+        arrowprops=dict(
+            arrowstyle="-|>", mutation_scale=14, lw=1.5, color=COLORS["accent_amber"]
+        ),
+        zorder=2,
+    )
+    # GDP -> Rate
+    ax.annotate(
+        "",
+        xy=(8.8, 1.5),
+        xytext=(8.8, 3.1),
+        arrowprops=dict(
+            arrowstyle="-|>",
+            mutation_scale=14,
+            lw=1.5,
+            color=COLORS["accent_amber"],
+            connectionstyle="arc3,rad=-0.4",
+        ),
+        zorder=2,
+    )
 
-    # 3. Rate is affected by its own shock AND GDP AND Inflation
-    dot.edge("u_rate", "y_rate")
-    dot.edge("y_gdp", "y_rate")
-    dot.edge("y_inf", "y_rate", label="Contemporaneous")
+    ax.text(
+        5,
+        0.4,
+        r"Structural Impact: $e_t = A_0^{-1} u_t \quad (A_0^{-1} \mathrm{\; Lower \; Triangular \; Factor})$",
+        ha="center",
+        va="center",
+        fontsize=9.5,
+        color=COLORS["primary"],
+    )
 
-    # Invisible edges to align shocks with vars
-    dot.edge("u_gdp", "y_gdp", style="invis")
-    dot.edge("u_inf", "y_inf", style="invis")
-    dot.edge("u_rate", "y_rate", style="invis")
-
-    output_path = os.path.join(output_dir, "var_identification_diagram")
-    dot.render(output_path, format="png", cleanup=True)
-    print(f"Generated {output_path}.png")
+    output_path = "images/08-Time-Series/var_identification_diagram.png"
+    save_figure(fig, output_path)
+    update_metadata(
+        output_path,
+        "Structural VAR identification schematic showing Cholesky recursive ordering from slow to fast moving variables.",
+    )
 
 
 if __name__ == "__main__":

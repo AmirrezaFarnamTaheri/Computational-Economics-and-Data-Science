@@ -1,0 +1,23 @@
+# Box-Jenkins Time Series Modeling Pipeline
+
+Iterative diagnostic modeling cycle: Identification, Estimation, Diagnostic Checking, and Forecasting.
+
+```mermaid
+flowchart TD
+    A["Raw Time Series $$Y_t$$"] --> B["Stationarity Check<br/>ADF & KPSS Unit Root Tests"]
+    B -->|Non-Stationary| C["Differencing / De-trending<br/>$$\Delta^d Y_t$$"]
+    C --> B
+    B -->|Stationary $$d$$| D["Model Identification<br/>ACF & PACF Cutoff Analysis"]
+    D --> E["Parameter Estimation<br/>Maximum Likelihood / Conditional Least Squares"]
+    E --> F{"Diagnostic Checking<br/>Ljung-Box $$Q$$ on Residuals $$\hat{e}_t$$"}
+    F -->|Residuals White Noise? NO| D
+    F -->|Residuals White Noise? YES| G["Out-of-Sample Forecasting<br/>$$\mathbb{E}[Y_{t+h} \mid \mathcal{F}_t]$$"]
+    G --> H["Model Comparison & Selection<br/>AIC / BIC Minimization"]
+
+    classDef step fill:#F8FAFC,stroke:#64748B,stroke-width:1.5px,color:#0F172A;
+    classDef decision fill:#FEF3C7,stroke:#F59E0B,stroke-width:2px,color:#92400E;
+    classDef output fill:#ECFDF5,stroke:#10B981,stroke-width:2px,color:#065F46;
+    class A,B,C,D,E,G step;
+    class F decision;
+    class H output;
+```

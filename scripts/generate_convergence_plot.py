@@ -1,3 +1,7 @@
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -19,7 +23,7 @@ c_k = 0.5 ** (2**k)
 
 # --- Create the Plot ---
 plt.style.use("seaborn-v0_8-whitegrid")
-fig, ax = plt.subplots(figsize=(10, 6), dpi=150)
+fig, ax = plt.subplots(figsize=(10, 6), dpi=300)
 
 ax.plot(k, a_k, "o-", label=r"Linear Convergence ($q=0.5$)")
 ax.plot(k, b_k, "s--", label=r"Linear Convergence ($q=0.2$)")

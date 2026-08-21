@@ -1,3 +1,7 @@
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
 from math import factorial
 
 import matplotlib.pyplot as plt
@@ -31,7 +35,7 @@ def generate_taylor_plot():
 
     # --- Create the Plot ---
     sns.set_style("whitegrid")
-    fig, ax = plt.subplots(figsize=(10, 7), dpi=150)
+    fig, ax = plt.subplots(figsize=(10, 7), dpi=300)
 
     ax.plot(x, y_true, "k-", lw=2.5, label="True $\\sin(x)$")
     ax.plot(x, y_p1, "--", label="Degree 1 Approx.")

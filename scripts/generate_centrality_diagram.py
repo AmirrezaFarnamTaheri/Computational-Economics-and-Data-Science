@@ -1,126 +1,122 @@
-import os
+"""
+Generates a publication-grade visual explanation of graph centrality measures (Degree, Betweenness, Closeness, Eigenvector).
+"""
 
-from graphviz import Digraph
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
+
+import matplotlib.pyplot as plt
+from diagram_style import COLORS, apply_academic_style, save_figure, update_metadata
 
 
 def create_centrality_diagram():
-    """
-    Generates a visual explanation of different network centrality measures.
-    """
-    dot = Digraph(comment="Centrality Measures")
-    dot.attr(
-        "graph",
-        rankdir="TB",
-        bgcolor="transparent",
-        label="Understanding Node Centrality",
-        fontname="Helvetica",
-        fontsize="20",
-        labelloc="t",
+    fig, axes = plt.subplots(2, 2, figsize=(11, 9), dpi=300)
+    fig.suptitle(
+        "Network Centrality Measures in Financial & Economic Graphs",
+        fontsize=14,
+        fontweight="bold",
+        y=0.96,
+        color=COLORS["primary"],
     )
-    dot.attr("node", shape="circle", style="filled", fontname="Helvetica", width="1.2")
-    dot.attr("edge", arrowhead="none", penwidth="2")
 
-    # Common structure for all subgraphs
-    common_edges = [
-        ("B", "A"),
-        ("B", "C"),
-        ("C", "D"),
-        ("D", "E"),
-        ("C", "F"),
-        ("F", "G"),
+    measures = [
+        (
+            "Degree Centrality",
+            "Local connectivity: C_D(v) = deg(v)",
+            "Node with most direct counterparty linkages",
+            axes[0, 0],
+            COLORS["primary"],
+        ),
+        (
+            "Betweenness Centrality",
+            r"Bridge role: C_B(v) = \sum \sigma_{st}(v) / \sigma_{st}",
+            "Node on shortest path between other institutions",
+            axes[0, 1],
+            COLORS["accent_amber"],
+        ),
+        (
+            "Closeness Centrality",
+            r"Information speed: C_C(v) = 1 / \sum d(v, u)",
+            "Node with shortest average distance to all nodes",
+            axes[1, 0],
+            COLORS["accent_green"],
+        ),
+        (
+            "Eigenvector Centrality",
+            r"Systemic influence: \lambda v = A v",
+            "Node connected to highly connected central nodes",
+            axes[1, 1],
+            COLORS["accent_purple"],
+        ),
     ]
 
-    # 1. Degree Centrality
-    with dot.subgraph(name="cluster_degree") as c:
-        c.attr(label="Degree Centrality: Popularity", style="rounded", color="darkblue")
-        c.node("A", "A")
-        c.node("B", "B", fillcolor="gold")
-        c.node("C", "C", fillcolor="gold")
-        c.node("D", "D")
-        c.node("E", "E")
-        c.node("F", "F")
-        c.node("G", "G")
-        c.edges(common_edges)
-        c.attr(
-            labeljust="l",
-            labelloc="b",
-            label="Node C has the highest degree (3 connections).\\nIt is a local hub.",
+    for title, formula, desc, ax, color in measures:
+        apply_academic_style(ax, grid=False)
+        ax.set_xlim(-1.5, 1.5)
+        ax.set_ylim(-1.5, 1.5)
+        ax.axis("off")
+        ax.set_title(title, fontsize=11, fontweight="bold", color=color, pad=10)
+
+        # Draw a toy 6-node network
+        coords = {
+            0: (0.0, 0.0),  # Center target
+            1: (-0.9, 0.8),
+            2: (0.9, 0.8),
+            3: (-1.0, -0.6),
+            4: (1.0, -0.6),
+            5: (0.0, -1.1),
+        }
+        edges = [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 2), (3, 5), (4, 5)]
+        for u, v in edges:
+            ax.plot(
+                [coords[u][0], coords[v][0]],
+                [coords[u][1], coords[v][1]],
+                color=COLORS["border"],
+                lw=1.2,
+                zorder=1,
+            )
+
+        for n, (x, y) in coords.items():
+            is_target = n == 0
+            c = color if is_target else "#EFF6FF"
+            ec = color if is_target else COLORS["border"]
+            size = 0.24 if is_target else 0.16
+            circle = plt.Circle(
+                (x, y), size, facecolor=c, edgecolor=ec, lw=1.5, zorder=3
+            )
+            ax.add_patch(circle)
+            label = "Node v" if is_target else f"N_{n}"
+            ax.text(
+                x,
+                y,
+                label,
+                ha="center",
+                va="center",
+                fontsize=8 if is_target else 6.5,
+                fontweight="bold" if is_target else "normal",
+                color="white" if is_target else COLORS["text_dark"],
+                zorder=4,
+            )
+
+        ax.text(
+            0,
+            -1.35,
+            f"{formula}\n{desc}",
+            ha="center",
+            va="center",
+            fontsize=8,
+            color=COLORS["text_muted"],
         )
 
-    # 2. Betweenness Centrality
-    with dot.subgraph(name="cluster_betweenness") as c:
-        c.attr(
-            label="Betweenness Centrality: Bridge", style="rounded", color="firebrick"
-        )
-        c.node("A2", "A")
-        c.node("B2", "B")
-        c.node("C2", "C", fillcolor="coral")
-        c.node("D2", "D")
-        c.node("E2", "E")
-        c.node("F2", "F")
-        c.node("G2", "G")
-        c.edges(
-            [
-                ("B2", "A2"),
-                ("B2", "C2"),
-                ("C2", "D2"),
-                ("D2", "E2"),
-                ("C2", "F2"),
-                ("F2", "G2"),
-            ]
-        )
-        c.edge(
-            "A2",
-            "E2",
-            style="dashed",
-            color="firebrick",
-            constraint="false",
-            label="Path A->E",
-        )
-        c.edge(
-            "B2",
-            "G2",
-            style="dashed",
-            color="firebrick",
-            constraint="false",
-            label="Path B->G",
-        )
-        c.attr(
-            labeljust="l",
-            labelloc="b",
-            label="Node C is on most shortest paths (e.g., A-E, B-G).\\nIt acts as a critical bridge or gatekeeper.",
-        )
-
-    # 3. Eigenvector Centrality
-    with dot.subgraph(name="cluster_eigenvector") as c:
-        c.attr(
-            label="Eigenvector Centrality: Influence",
-            style="rounded",
-            color="darkgreen",
-        )
-        c.node("A3", "A")
-        c.node("B3", "B", fillcolor="yellowgreen")
-        c.node("C3", "C", fillcolor="gold")
-        c.node("D3", "D")
-        c.node("E3", "E")
-        c.node("F3", "F")
-        c.node("G3", "G")
-        c.edges(common_edges)
-        c.attr(
-            labeljust="l",
-            labelloc="b",
-            label="Node C is connected to B, which is also well-connected.\\nThis makes C more influential than F, even with equal degrees.",
-        )
-
-    # Save the file
-    output_dir = "images/10-Specialized-Models"
-    os.makedirs(output_dir, exist_ok=True)
-    output_path = os.path.join(output_dir, "centrality_measures_diagram")
-
-    dot.render(output_path, format="png", view=False, cleanup=True)
-    return f"{output_path}.png"
+    output_path = "images/09-Networks/network_centrality_measures.png"
+    save_figure(fig, output_path)
+    update_metadata(
+        output_path,
+        "Network centrality measures comparison illustrating Degree, Betweenness, Closeness, and Eigenvector centrality.",
+    )
 
 
 if __name__ == "__main__":
-    generated_file = create_centrality_diagram()
-    print(f"Diagram saved to: {generated_file}")
+    create_centrality_diagram()

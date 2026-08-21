@@ -1,3 +1,7 @@
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -38,7 +42,7 @@ def generate_stochastic_process_plot():
             linestyle="-",
             markersize=4,
             alpha=0.7,
-            label=f"Realization {i+1}",
+            label=f"Realization {i + 1}",
         )
 
     # --- Formatting ---

@@ -1,0 +1,24 @@
+flowchart LR
+    subgraph Shocks["Structural Shocks $u_t \sim \mathcal{N}(0, I)$"]
+        u1["$u_{GDP}$ (Supply/Demand)"]
+        u2["$u_{\pi}$ (Cost-Push)"]
+        u3["$u_{R}$ (Monetary Policy)"]
+    end
+
+    subgraph Matrix["Impact Matrix $A_0^{-1}$"]
+        m["Recursive Cholesky<br/>Ordering: $e_t = A_0^{-1} u_t$"]
+    end
+
+    subgraph Vars["Observed Endogenous Variables $y_t$"]
+        y1["GDP Growth ($y_{1,t}$)"]
+        y2["Inflation ($y_{2,t}$)"]
+        y3["Fed Funds Rate ($y_{3,t}$)"]
+    end
+
+    u1 --> y1
+    u2 --> y2
+    u3 --> y3
+
+    y1 -->|Contemporaneous| y2
+    y1 -->|Contemporaneous| y3
+    y2 -->|Contemporaneous| y3

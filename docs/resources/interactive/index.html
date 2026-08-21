@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Computational Economics & Data Science — Interactive Visual Laboratory</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#F0F9FF',
+              100: '#E0F2FE',
+              500: '#0284C7',
+              600: '#0369A1',
+              700: '#075985',
+              800: '#0C4A6E',
+              900: '#1E3A8A',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- KaTeX for math rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+  <!-- Three.js (r134) for Vanta and WebGL 3D Object -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <!-- Vanta.js Waves -->
+  <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
+
+  <!-- Mermaid.js -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    code, pre {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .webgl-object-shell {
+      position: relative;
+      width: min(100%, 720px);
+      aspect-ratio: 1 / 1;
+    }
+    .webgl-object-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .cobe-container {
+      width: 100%;
+      max-width: 480px;
+      aspect-ratio: 1 / 1;
+      position: relative;
+    }
+    #cobe-canvas {
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    .mermaid-card svg {
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 antialiased selection:bg-sky-500 selection:text-white">
+
+  <!-- Header / Hero with Vanta.js WebGL Animated Background -->
+  <header id="hero-vanta" class="relative overflow-hidden text-white min-h-[440px] flex flex-col justify-center items-center px-6 text-center border-b border-slate-800">
+    <div class="relative z-10 max-w-4xl mx-auto py-12">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-semibold uppercase tracking-wider text-sky-300 mb-6">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        Interactive Visual Laboratory
+      </div>
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4 text-white">
+        Computational Economics &amp; Data Science
+      </h1>
+      <p class="text-base md:text-lg text-slate-200 max-w-2xl mx-auto mb-8 font-light">
+        A publication-grade interactive suite integrating WebGL 3D parameter manifolds, Cobe global macroeconomic nodes, and mathematical architectural pipelines.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4 text-sm font-medium">
+        <a href="#threejs-section" class="px-5 py-2.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-semibold shadow-lg shadow-sky-500/20 transition">
+          WebGL 3D Manifold
+        </a>
+        <a href="#cobe-section" class="px-5 py-2.5 rounded-lg bg-white/10 hover:bg-white/20 backdrop-blur border border-white/20 transition">
+          Global Macro Globe
+        </a>
+        <a href="#mermaid-section" class="px-5 py-2.5 rounded-lg bg-white/10 hover:bg-white/20 backdrop-blur border border-white/20 transition">
+          Mermaid Architecture
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-24">
+
+    <!-- Section 1: WebGL 3D Geometric Object (Three.js PBR Engine) -->
+    <section id="threejs-section" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 lg:p-12">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <div class="lg:col-span-6 space-y-6">
+          <div class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-sky-600">
+            <span>Section 01</span> &bull; <span>WebGL 3D Geometry</span>
+          </div>
+          <h2 class="text-3xl font-bold tracking-tight text-slate-900">
+            Real-Time 3D Economic Manifold &amp; Utility Frontier
+          </h2>
+          <p class="text-slate-600 leading-relaxed text-sm">
+            Interactive PBR-rendered 3D geometric manifold illustrating high-dimensional economic decision frontiers, continuous value functions $V(k, z)$, and production level sets.
+          </p>
+
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-2">
+            <div class="flex justify-between font-mono text-slate-700">
+              <span class="font-semibold">Geometry:</span>
+              <span>Icosahedron faceted manifold</span>
+            </div>
+            <div class="flex justify-between font-mono text-slate-700">
+              <span class="font-semibold">Material:</span>
+              <span>MeshStandardMaterial (Metalness 0.52, Roughness 0.32)</span>
+            </div>
+            <div class="flex justify-between font-mono text-slate-700">
+              <span class="font-semibold">Lighting:</span>
+              <span>Key Directional (2.2) + Rim (0.95) + Ambient Fill</span>
+            </div>
+          </div>
+
+          <!-- Controls -->
+          <div class="space-y-4 pt-2">
+            <div>
+              <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                <span>Surface Roughness / Friction:</span>
+                <span id="roughness-val" class="font-mono text-sky-600">0.32</span>
+              </div>
+              <input type="range" id="roughness-slider" min="0.05" max="0.95" step="0.01" value="0.32" 
+                     class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600">
+            </div>
+            <div>
+              <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                <span>Rotation Velocity:</span>
+                <span id="speed-val" class="font-mono text-sky-600">1.0x</span>
+              </div>
+              <input type="range" id="speed-slider" min="0.0" max="3.0" step="0.1" value="1.0" 
+                     class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600">
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-6 flex justify-center items-center">
+          <div class="webgl-object-shell bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
+            <canvas class="webgl-object-canvas" data-webgl-3d-object></canvas>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section 2: Cobe.js Interactive Global Macroeconomic Globe -->
+    <section id="cobe-section" class="bg-slate-900 text-white rounded-2xl border border-slate-800 shadow-xl p-8 lg:p-12 overflow-hidden relative">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
+        
+        <div class="lg:col-span-6 space-y-6">
+          <div class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-sky-400">
+            <span>Section 02</span> &bull; <span>Cobe.js Globe</span>
+          </div>
+          <h2 class="text-3xl font-bold tracking-tight text-white">
+            Global Financial Architecture &amp; Central Banking Network
+          </h2>
+          <p class="text-slate-300 leading-relaxed text-sm">
+            High-performance WebGL spherical projection rendered at native DPR with live spatial markers for global macroeconomic monetary policy hubs and asset trading centers.
+          </p>
+
+          <div class="grid grid-cols-2 gap-3 text-xs pt-2">
+            <div class="p-3 rounded-lg bg-slate-800/80 border border-slate-700/60">
+              <div class="text-sky-400 font-bold">New York (Fed)</div>
+              <div class="text-slate-400 text-[11px] font-mono">40.71&deg; N, 74.00&deg; W</div>
+            </div>
+            <div class="p-3 rounded-lg bg-slate-800/80 border border-slate-700/60">
+              <div class="text-sky-400 font-bold">Frankfurt (ECB)</div>
+              <div class="text-slate-400 text-[11px] font-mono">50.11&deg; N, 8.68&deg; E</div>
+            </div>
+            <div class="p-3 rounded-lg bg-slate-800/80 border border-slate-700/60">
+              <div class="text-sky-400 font-bold">Tokyo (BoJ)</div>
+              <div class="text-slate-400 text-[11px] font-mono">35.67&deg; N, 139.65&deg; E</div>
+            </div>
+            <div class="p-3 rounded-lg bg-slate-800/80 border border-slate-700/60">
+              <div class="text-sky-400 font-bold">London (BoE)</div>
+              <div class="text-slate-400 text-[11px] font-mono">51.50&deg; N, 0.12&deg; W</div>
+            </div>
+          </div>
+
+          <p class="text-xs text-slate-400 italic">
+            Tip: Explore global nodes and monetary linkages interactively.
+          </p>
+        </div>
+
+        <div class="lg:col-span-6 flex justify-center items-center">
+          <div class="cobe-container flex justify-center items-center">
+            <canvas id="cobe-canvas"></canvas>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section 3: Mermaid Educational Architecture Diagrams with KaTeX Math -->
+    <section id="mermaid-section" class="space-y-8">
+      <div class="text-center max-w-3xl mx-auto">
+        <div class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-sky-600 mb-2">
+          <span>Section 03</span> &bull; <span>Structural Workflows</span>
+        </div>
+        <h2 class="text-3xl font-bold tracking-tight text-slate-900">
+          Academic Flowcharts &amp; Econometric Model Graphs
+        </h2>
+        <p class="text-slate-600 text-sm mt-2">
+          Verified Mermaid pipelines with full mathematical notation and KaTeX rendering.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        
+        <!-- Card 1: SVAR Identification -->
+        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between">
+          <div>
+            <h3 class="text-lg font-bold text-slate-900 mb-2">1. Structural VAR Identification</h3>
+            <p class="text-xs text-slate-500 mb-4">Cholesky lower-triangular decomposition mapping structural shocks $u_t$ to observable macro series $y_t$.</p>
+            <div class="mermaid-card bg-slate-50 p-4 rounded-lg border border-slate-200 overflow-x-auto text-xs">
+              <pre class="mermaid">
+flowchart TD
+    subgraph Shocks ["Structural Shocks"]
+        ugdp["u_GDP ~ N(0,1)<br/>Supply Shock"]
+        upi["u_pi ~ N(0,1)<br/>Cost-Push Shock"]
+        ur["u_R ~ N(0,1)<br/>Monetary Policy Shock"]
+    end
+    subgraph Observables ["Endogenous Variables"]
+        ygdp["GDP Growth"]
+        ypi["Inflation Rate"]
+        yr["Fed Funds Rate"]
+    end
+    ugdp --> ygdp
+    ugdp --> ypi
+    ugdp --> yr
+    upi --> ypi
+    upi --> yr
+    ur --> yr
+    classDef shock fill:#EFF6FF,stroke:#3B82F6,stroke-width:1.5px,color:#1E3A8A;
+    classDef obs fill:#ECFDF5,stroke:#10B981,stroke-width:1.5px,color:#065F46;
+    class ugdp,upi,ur shock;
+    class ygdp,ypi,yr obs;
+              </pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Box-Jenkins Modeling -->
+        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between">
+          <div>
+            <h3 class="text-lg font-bold text-slate-900 mb-2">2. Box-Jenkins Time Series Pipeline</h3>
+            <p class="text-xs text-slate-500 mb-4">Stationarity verification, ACF/PACF identification, estimation, and diagnostic checking.</p>
+            <div class="mermaid-card bg-slate-50 p-4 rounded-lg border border-slate-200 overflow-x-auto text-xs">
+              <pre class="mermaid">
+flowchart TD
+    A["Raw Series Y_t"] --> B["Stationarity Tests (ADF/KPSS)"]
+    B -->|Non-Stationary| C["Differencing (d)"]
+    C --> B
+    B -->|Stationary| D["ACF/PACF Identification (p,q)"]
+    D --> E["Maximum Likelihood Estimation"]
+    E --> F{"Ljung-Box Q Test"}
+    F -->|Fail| D
+    F -->|Pass| G["Out-of-Sample Forecasting"]
+    classDef step fill:#F8FAFC,stroke:#64748B,stroke-width:1.5px,color:#0F172A;
+    classDef dec fill:#FEF3C7,stroke:#F59E0B,stroke-width:2px,color:#92400E;
+    classDef out fill:#ECFDF5,stroke:#10B981,stroke-width:2px,color:#065F46;
+    class A,B,C,D,E step;
+    class F dec;
+    class G out;
+              </pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Aiyagari Equilibrium -->
+        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between">
+          <div>
+            <h3 class="text-lg font-bold text-slate-900 mb-2">3. Aiyagari General Equilibrium Algorithm</h3>
+            <p class="text-xs text-slate-500 mb-4">Nested fixed-point bisection on aggregate capital interest rate $r$ and household distribution $\mu(a, z)$.</p>
+            <div class="mermaid-card bg-slate-50 p-4 rounded-lg border border-slate-200 overflow-x-auto text-xs">
+              <pre class="mermaid">
+flowchart TD
+    guess["Guess r(0)"] --> vfi["Solve Bellman V(a,z; r)"]
+    vfi --> policy["Extract Policy a'(a,z)"]
+    policy --> dist["Invariant Distribution mu(a,z)"]
+    dist --> agg["Aggregate Supply K_s(r)"]
+    agg --> clear{"|K_s - K_d| < eps?"}
+    clear -->|No| update["Update r(k+1) via Bisection"]
+    update --> vfi
+    clear -->|Yes| eq["Equilibrium (r*, w*, mu*)"]
+    classDef outer fill:#EFF6FF,stroke:#3B82F6,stroke-width:1.8px,color:#1E3A8A;
+    classDef dec fill:#FEF3C7,stroke:#F59E0B,stroke-width:2px,color:#92400E;
+    classDef eq fill:#ECFDF5,stroke:#10B981,stroke-width:2px,color:#065F46;
+    class guess,vfi,policy,dist,agg,update outer;
+    class clear dec;
+    class eq eq;
+              </pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Fama-MacBeth Regression -->
+        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between">
+          <div>
+            <h3 class="text-lg font-bold text-slate-900 mb-2">4. Fama-MacBeth Two-Pass Pricing</h3>
+            <p class="text-xs text-slate-500 mb-4">Time-series estimation of asset factor exposures $eta_i$ followed by cross-sectional estimation of risk premia $\lambda_t$.</p>
+            <div class="mermaid-card bg-slate-50 p-4 rounded-lg border border-slate-200 overflow-x-auto text-xs">
+              <pre class="mermaid">
+flowchart TD
+    A["Panel Returns R_it, Factors F_t"] --> B["Pass 1: Time-Series Betas"]
+    B --> C["Factor Exposures beta_i"]
+    C --> D["Pass 2: Cross-Sectional Lambdas"]
+    D --> E["Risk Premia Series lambda_t"]
+    E --> F["Time Averaging & Shanken Correction"]
+    classDef pass fill:#EFF6FF,stroke:#3B82F6,stroke-width:2px,color:#1E3A8A;
+    classDef res fill:#ECFDF5,stroke:#10B981,stroke-width:2px,color:#065F46;
+    class A,C,E pass;
+    class B,D,F res;
+              </pre>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="bg-white border-t border-slate-200 py-8 text-center text-xs text-slate-500">
+    <p>Computational Economics &amp; Data Science Visual Laboratory &bull; Publication-Grade Open Science Suite</p>
+  </footer>
+
+  <!-- WebGL / Three.js / Cobe Scripts -->
+  <script type="module">
+    // 1. Initialize Vanta.js Waves on Hero
+    try {
+      if (window.VANTA && window.THREE) {
+        window.VANTA.WAVES({
+          el: "#hero-vanta",
+          mouseControls: true,
+          touchControls: true,
+          gyroControls: false,
+          minHeight: 200.00,
+          minWidth: 200.00,
+          scale: 1.00,
+          scaleMobile: 1.00,
+          color: 0x0f172a,
+          shininess: 35.00,
+          waveHeight: 14.00,
+          waveSpeed: 0.65,
+          zoom: 0.85
+        });
+      }
+    } catch(e) {
+      console.warn("Vanta.js initialization skipped:", e);
+    }
+
+    // 2. Initialize Three.js WebGL 3D Object (Icosahedron PBR Object)
+    function initWebGL3DObject(canvas, options = {}) {
+      if (!canvas) return () => {};
+
+      const renderer = new THREE.WebGLRenderer({
+        canvas,
+        antialias: true,
+        alpha: true,
+      });
+      renderer.setClearColor(0x000000, 0);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, options.maxDpr || 1.75));
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = options.exposure || 1.15;
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
+      camera.position.set(0, 0.2, 5.0);
+
+      const geometry = new THREE.IcosahedronGeometry(options.radius || 1.4, options.detail || 1);
+      const material = new THREE.MeshStandardMaterial({
+        color: options.color || 0x38bdf8,
+        metalness: options.metalness ?? 0.52,
+        roughness: options.roughness ?? 0.32,
+        emissive: options.emissive || 0x0c4a6e,
+        emissiveIntensity: options.emissiveIntensity ?? 0.3,
+        flatShading: true,
+      });
+
+      const object = new THREE.Mesh(geometry, material);
+      object.castShadow = true;
+      object.receiveShadow = true;
+      scene.add(object);
+
+      const ambient = new THREE.AmbientLight(0xffffff, 0.45);
+      scene.add(ambient);
+
+      const key = new THREE.DirectionalLight(0xffffff, 2.2);
+      key.position.set(3.4, 4.2, 4.8);
+      key.castShadow = true;
+      key.shadow.mapSize.set(1024, 1024);
+      scene.add(key);
+
+      const rim = new THREE.DirectionalLight(options.rimColor || 0x38bdf8, 0.95);
+      rim.position.set(-4.2, 1.2, -2.8);
+      scene.add(rim);
+
+      const shadowPlane = new THREE.Mesh(
+        new THREE.PlaneGeometry(5.2, 5.2),
+        new THREE.ShadowMaterial({ opacity: 0.25 })
+      );
+      shadowPlane.position.set(0, -1.65, 0);
+      shadowPlane.rotation.x = -Math.PI / 2;
+      shadowPlane.receiveShadow = true;
+      scene.add(shadowPlane);
+
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      let rafId = 0;
+      let speedMultiplier = 1.0;
+
+      function resize() {
+        const width = Math.max(1, canvas.clientWidth);
+        const height = Math.max(1, canvas.clientHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, options.maxDpr || 1.75));
+        renderer.setSize(width, height, false);
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+      }
+
+      function render(time = 0) {
+        const t = time * 0.001 * speedMultiplier;
+        object.rotation.x = -0.16 + Math.sin(t * 0.45) * 0.06;
+        object.rotation.y = t * 0.32;
+        object.rotation.z = Math.sin(t * 0.32) * 0.08;
+        object.position.y = reduceMotion ? 0 : Math.sin(t * 0.8) * 0.08;
+
+        renderer.render(scene, camera);
+        if (!reduceMotion) rafId = requestAnimationFrame(render);
+      }
+
+      function handleResize() {
+        cancelAnimationFrame(rafId);
+        resize();
+        render();
+      }
+
+      resize();
+      render();
+      window.addEventListener("resize", handleResize);
+
+      // Slider hooks
+      const roughnessSlider = document.getElementById("roughness-slider");
+      const roughnessVal = document.getElementById("roughness-val");
+      if (roughnessSlider) {
+        roughnessSlider.addEventListener("input", (e) => {
+          material.roughness = parseFloat(e.target.value);
+          roughnessVal.textContent = parseFloat(e.target.value).toFixed(2);
+        });
+      }
+
+      const speedSlider = document.getElementById("speed-slider");
+      const speedVal = document.getElementById("speed-val");
+      if (speedSlider) {
+        speedSlider.addEventListener("input", (e) => {
+          speedMultiplier = parseFloat(e.target.value);
+          speedVal.textContent = parseFloat(e.target.value).toFixed(1) + "x";
+        });
+      }
+
+      return () => {
+        cancelAnimationFrame(rafId);
+        window.removeEventListener("resize", handleResize);
+        geometry.dispose();
+        material.dispose();
+        shadowPlane.geometry.dispose();
+        shadowPlane.material.dispose();
+        renderer.dispose();
+      };
+    }
+
+    const canvas3d = document.querySelector("[data-webgl-3d-object]");
+    if (canvas3d) {
+      initWebGL3DObject(canvas3d, {
+        color: 0x38bdf8,
+        rimColor: 0x0284c7,
+        metalness: 0.52,
+        roughness: 0.32,
+        emissive: 0x0c4a6e
+      });
+    }
+
+    // 3. Initialize Cobe.js WebGL Globe via ESM dynamic import
+    import("https://cdn.skypack.dev/cobe").then(({ default: createGlobe }) => {
+      const cobeCanvas = document.getElementById("cobe-canvas");
+      if (!cobeCanvas) return;
+
+      let phi = 0;
+      let width = 0;
+
+      function onResize() {
+        width = cobeCanvas.offsetWidth;
+      }
+      window.addEventListener('resize', onResize);
+      onResize();
+
+      const globe = createGlobe(cobeCanvas, {
+        devicePixelRatio: Math.min(window.devicePixelRatio || 1, 2),
+        width: width * 2,
+        height: width * 2,
+        phi: 0,
+        theta: 0.2,
+        dark: 1,
+        diffuse: 1.2,
+        mapSamples: 16000,
+        mapBrightness: 6,
+        baseColor: [0.12, 0.18, 0.30],
+        markerColor: [0.22, 0.74, 0.97],
+        glowColor: [0.15, 0.35, 0.65],
+        markers: [
+          { location: [40.7128, -74.0060], size: 0.08 }, // New York
+          { location: [50.1109, 8.6821], size: 0.08 },   // Frankfurt
+          { location: [35.6762, 139.6503], size: 0.08 }, // Tokyo
+          { location: [51.5074, -0.1278], size: 0.08 },  // London
+          { location: [1.3521, 103.8198], size: 0.07 },  // Singapore
+          { location: [22.3193, 114.1694], size: 0.07 }, // Hong Kong
+          { location: [47.3769, 8.5417], size: 0.06 },   // Zurich
+        ],
+        onRender: (state) => {
+          state.phi = phi;
+          phi += 0.007;
+          state.width = width * 2;
+          state.height = width * 2;
+        }
+      });
+
+      setTimeout(() => {
+        cobeCanvas.style.opacity = '1';
+      }, 100);
+    }).catch(err => {
+      console.warn("Cobe.js could not be loaded:", err);
+    });
+
+    // 4. Initialize Mermaid
+    if (window.mermaid) {
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: 'neutral',
+        fontFamily: 'Inter',
+        securityLevel: 'loose'
+      });
+    }
+  </script>
+</body>
+</html>
