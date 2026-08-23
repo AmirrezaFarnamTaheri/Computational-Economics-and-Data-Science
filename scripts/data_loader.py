@@ -5,6 +5,7 @@ Network access is optional. FRED loaders prefer a fresh remote series when reque
 and transparently fall back to bundled CSV files, so core examples remain executable
 offline. Remote CSV downloads use explicit timeouts and atomic cache writes.
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -28,7 +29,14 @@ def _atomic_write(content: bytes, target: Path) -> None:
     temp.replace(target)
 
 
-def cached_download(url: str, cache_name: str, *, timeout: float = 20.0, sha256: str | None = None, refresh: bool = False) -> Path:
+def cached_download(
+    url: str,
+    cache_name: str,
+    *,
+    timeout: float = 20.0,
+    sha256: str | None = None,
+    refresh: bool = False,
+) -> Path:
     """Download *url* once and return a deterministic local cache path."""
     target = CACHE_DIR / cache_name
     if target.exists() and not refresh:
@@ -39,7 +47,9 @@ def cached_download(url: str, cache_name: str, *, timeout: float = 20.0, sha256:
     if sha256 is not None:
         actual = hashlib.sha256(payload).hexdigest()
         if actual.lower() != sha256.lower():
-            raise ValueError(f"SHA-256 mismatch for {url}: expected {sha256}, got {actual}")
+            raise ValueError(
+                f"SHA-256 mismatch for {url}: expected {sha256}, got {actual}"
+            )
     _atomic_write(payload, target)
     return target
 
@@ -54,13 +64,21 @@ def load_bundled_fred(series: str) -> pd.Series:
         raise ValueError(f"Expected date + value columns in {path}")
     dates = pd.to_datetime(frame.iloc[:, 0], errors="coerce")
     values = pd.to_numeric(frame.iloc[:, 1], errors="coerce")
-    result = pd.Series(values.to_numpy(), index=dates, name=series).dropna().sort_index()
+    result = (
+        pd.Series(values.to_numpy(), index=dates, name=series).dropna().sort_index()
+    )
     if result.empty:
         raise ValueError(f"No numeric observations in {path}")
     return result
 
 
-def load_fred(series: str, *, start: str | None = None, end: str | None = None, prefer_remote: bool = False) -> pd.Series:
+def load_fred(
+    series: str,
+    *,
+    start: str | None = None,
+    end: str | None = None,
+    prefer_remote: bool = False,
+) -> pd.Series:
     """Load a FRED series with an offline bundled-data fallback."""
     data: pd.Series
     if prefer_remote:

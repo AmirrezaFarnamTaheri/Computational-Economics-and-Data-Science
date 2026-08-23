@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Create executable real-data replication labs supported by bundled datasets."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -22,7 +23,11 @@ def write_if_missing(path: Path, cells: list) -> bool:
     if path.exists():
         return False
     nb = nbf.v4.new_notebook(cells=cells)
-    nb.metadata["kernelspec"] = {"display_name": "Python 3", "language": "python", "name": "python3"}
+    nb.metadata["kernelspec"] = {
+        "display_name": "Python 3",
+        "language": "python",
+        "name": "python3",
+    }
     nb.metadata["language_info"] = {"name": "python", "version": "3.11"}
     nbf.write(nb, path)
     return True
@@ -292,7 +297,9 @@ def main() -> None:
         created.append("Card-Krueger")
     if fama_french():
         created.append("Fama-French")
-    print(f"Created {len(created)} replication notebooks: {', '.join(created) if created else 'none (already present)'}")
+    print(
+        f"Created {len(created)} replication notebooks: {', '.join(created) if created else 'none (already present)'}"
+    )
 
 
 if __name__ == "__main__":

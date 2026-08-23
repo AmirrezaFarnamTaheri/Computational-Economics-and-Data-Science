@@ -1,4 +1,5 @@
 """Small, teaching-oriented econometrics utilities shared by Module 06 notebooks."""
+
 from __future__ import annotations
 
 from collections.abc import Callable
@@ -29,7 +30,11 @@ class MCMCSampler:
 
     def _evaluate(self, params: Array) -> float:
         argument: float | Array = float(params[0]) if params.size == 1 else params
-        value = self.log_posterior(argument, self.data) if self.data is not None else self.log_posterior(argument)
+        value = (
+            self.log_posterior(argument, self.data)
+            if self.data is not None
+            else self.log_posterior(argument)
+        )
         value = float(value)
         return value if np.isfinite(value) else -np.inf
 

@@ -5,6 +5,7 @@ The audit is intentionally static: it validates every notebook without importing
 executing optional scientific stacks. Runtime execution is a separate verification
 layer because many advanced notebooks require network, GPU, or system dependencies.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -27,18 +28,34 @@ PLACEHOLDER_RE = re.compile(
     r"\b(?:TODO|FIXME)\b|implementation would go here|raise\s+NotImplementedError",
     re.IGNORECASE,
 )
-BLANKET_WARNING_RE = re.compile(
-    r"warnings\.filterwarnings\(\s*['\"]ignore['\"]\s*\)"
-)
+BLANKET_WARNING_RE = re.compile(r"warnings\.filterwarnings\(\s*['\"]ignore['\"]\s*\)")
 
 REQUIRED_SECTIONS = {
     "lens": re.compile(r"^##\s+The Lens(?::|\s|$)", re.MULTILINE | re.IGNORECASE),
-    "objectives": re.compile(r"^#{1,4}\s+(?:\d+(?:\.\d+)*[.)]?\s+)?Learning Objectives\b", re.MULTILINE | re.IGNORECASE),
-    "prerequisites": re.compile(r"^#{1,4}\s+(?:\d+(?:\.\d+)*[.)]?\s+)?Prerequisites\b", re.MULTILINE | re.IGNORECASE),
-    "toc": re.compile(r"^#{1,4}\s+(?:\d+(?:\.\d+)*[.)]?\s+)?Table of Contents\b", re.MULTILINE | re.IGNORECASE),
-    "exercises": re.compile(r"^#{1,4}\s+(?:\d+(?:\.\d+)*[.)]?\s+)?(?:.*\bExercises?\b|Test Your Knowledge\b)", re.MULTILINE | re.IGNORECASE),
-    "summary": re.compile(r"^#{1,4}\s+(?:\d+(?:\.\d+)*[.)]?\s+)?(?:Summary|Summary & Key Takeaways)\b", re.MULTILINE | re.IGNORECASE),
-    "references": re.compile(r"^#{1,4}\s+(?:\d+(?:\.\d+)*[.)]?\s+)?(?:.*\bReferences\b.*|Further Reading\b)", re.MULTILINE | re.IGNORECASE),
+    "objectives": re.compile(
+        r"^#{1,4}\s+(?:\d+(?:\.\d+)*[.)]?\s+)?Learning Objectives\b",
+        re.MULTILINE | re.IGNORECASE,
+    ),
+    "prerequisites": re.compile(
+        r"^#{1,4}\s+(?:\d+(?:\.\d+)*[.)]?\s+)?Prerequisites\b",
+        re.MULTILINE | re.IGNORECASE,
+    ),
+    "toc": re.compile(
+        r"^#{1,4}\s+(?:\d+(?:\.\d+)*[.)]?\s+)?Table of Contents\b",
+        re.MULTILINE | re.IGNORECASE,
+    ),
+    "exercises": re.compile(
+        r"^#{1,4}\s+(?:\d+(?:\.\d+)*[.)]?\s+)?(?:.*\bExercises?\b|Test Your Knowledge\b)",
+        re.MULTILINE | re.IGNORECASE,
+    ),
+    "summary": re.compile(
+        r"^#{1,4}\s+(?:\d+(?:\.\d+)*[.)]?\s+)?(?:Summary|Summary & Key Takeaways)\b",
+        re.MULTILINE | re.IGNORECASE,
+    ),
+    "references": re.compile(
+        r"^#{1,4}\s+(?:\d+(?:\.\d+)*[.)]?\s+)?(?:.*\bReferences\b.*|Further Reading\b)",
+        re.MULTILINE | re.IGNORECASE,
+    ),
 }
 
 
@@ -123,17 +140,29 @@ def audit_notebook(path: Path, root: Path) -> NotebookResult:
         nb = json.load(handle)
 
     cells = nb.get("cells", [])
-    markdown = "\n\n".join(_source(c) for c in cells if c.get("cell_type") == "markdown")
-    code_cells = [(i, _source(c)) for i, c in enumerate(cells) if c.get("cell_type") == "code"]
+    markdown = "\n\n".join(
+        _source(c) for c in cells if c.get("cell_type") == "markdown"
+    )
+    code_cells = [
+        (i, _source(c)) for i, c in enumerate(cells) if c.get("cell_type") == "code"
+    ]
 
-    missing_sections = [name for name, pattern in REQUIRED_SECTIONS.items() if not pattern.search(markdown)]
+    missing_sections = [
+        name
+        for name, pattern in REQUIRED_SECTIONS.items()
+        if not pattern.search(markdown)
+    ]
     missing_exercise_tiers = [
-        label for label in ("Conceptual", "Applied", "Challenge")
+        label
+        for label in ("Conceptual", "Applied", "Challenge")
         if not re.search(rf"\b{label}\b", markdown, re.IGNORECASE)
     ]
     missing_badges = [
         badge
-        for badge, needle in (("Colab", "colab.research.google.com"), ("Binder", "mybinder.org"))
+        for badge, needle in (
+            ("Colab", "colab.research.google.com"),
+            ("Binder", "mybinder.org"),
+        )
         if needle not in markdown
     ]
 
@@ -147,7 +176,9 @@ def audit_notebook(path: Path, root: Path) -> NotebookResult:
     blanket_warnings: list[int] = []
     for index, source in code_cells:
         if PLACEHOLDER_RE.search(source):
-            placeholders.append(f"cell {index}: {PLACEHOLDER_RE.search(source).group(0)}")
+            placeholders.append(
+                f"cell {index}: {PLACEHOLDER_RE.search(source).group(0)}"
+            )
         if BLANKET_WARNING_RE.search(source):
             blanket_warnings.append(index)
         try:
@@ -158,14 +189,18 @@ def audit_notebook(path: Path, root: Path) -> NotebookResult:
     broken_images: list[str] = []
     for match in IMAGE_RE.finditer(markdown):
         candidate = _resolve_image(path, match.group(1), root)
-        if candidate is not None and (not candidate.is_file() or candidate.stat().st_size == 0):
+        if candidate is not None and (
+            not candidate.is_file() or candidate.stat().st_size == 0
+        ):
             broken_images.append(match.group(1))
 
     broken_code_images: list[str] = []
     for _, source in code_cells:
         for match in CODE_IMAGE_RE.finditer(source):
             candidate = _resolve_image(path, match.group(1), root)
-            if candidate is not None and (not candidate.is_file() or candidate.stat().st_size == 0):
+            if candidate is not None and (
+                not candidate.is_file() or candidate.stat().st_size == 0
+            ):
                 broken_code_images.append(match.group(1))
 
     empty_cells = [i for i, cell in enumerate(cells) if not _source(cell).strip()]
@@ -190,7 +225,9 @@ def audit_notebook(path: Path, root: Path) -> NotebookResult:
 
 def iter_notebooks(root: Path) -> Iterable[Path]:
     for path in sorted(root.rglob("*.ipynb")):
-        if ".ipynb_checkpoints" not in path.parts and not any(part.startswith(".") for part in path.relative_to(root).parts[:-1]):
+        if ".ipynb_checkpoints" not in path.parts and not any(
+            part.startswith(".") for part in path.relative_to(root).parts[:-1]
+        ):
             yield path
 
 
@@ -213,24 +250,50 @@ def markdown_report(results: list[NotebookResult]) -> str:
         for result in failures:
             lines.append(f"### `{result.path}`")
             for key, value in asdict(result).items():
-                if key not in {"path", "cells", "code_cells", "markdown_cells", "empty_cells"} and value:
+                if (
+                    key
+                    not in {
+                        "path",
+                        "cells",
+                        "code_cells",
+                        "markdown_cells",
+                        "empty_cells",
+                    }
+                    and value
+                ):
                     lines.append(f"- **{key.replace('_', ' ').title()}:** {value}")
             lines.append("")
     else:
-        lines += ["## Result", "", "All blocking notebook-quality invariants passed.", ""]
-    lines += ["## Per-Notebook Ledger", "", "| Notebook | Cells | Code | Empty cells | Status |", "|---|---:|---:|---:|---|"]
+        lines += [
+            "## Result",
+            "",
+            "All blocking notebook-quality invariants passed.",
+            "",
+        ]
+    lines += [
+        "## Per-Notebook Ledger",
+        "",
+        "| Notebook | Cells | Code | Empty cells | Status |",
+        "|---|---:|---:|---:|---|",
+    ]
     for result in results:
         status = "PASS" if not result.errors else "FAIL"
-        lines.append(f"| `{result.path}` | {result.cells} | {result.code_cells} | {len(result.empty_cells)} | {status} |")
+        lines.append(
+            f"| `{result.path}` | {result.cells} | {result.code_cells} | {len(result.empty_cells)} | {status} |"
+        )
     lines.append("")
     return "\n".join(lines)
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
+    parser.add_argument(
+        "--root", type=Path, default=Path(__file__).resolve().parents[1]
+    )
     parser.add_argument("--output-dir", type=Path, default=None)
-    parser.add_argument("--strict", action="store_true", help="exit non-zero on blocking findings")
+    parser.add_argument(
+        "--strict", action="store_true", help="exit non-zero on blocking findings"
+    )
     args = parser.parse_args()
     root = args.root.resolve()
     output = (args.output_dir or root / "audit").resolve()
@@ -242,13 +305,24 @@ def main() -> int:
         "cells": sum(result.cells for result in results),
         "code_cells": sum(result.code_cells for result in results),
         "blocking_notebooks": sum(bool(result.errors) for result in results),
-        "results": [asdict(result) | {"status": "PASS" if not result.errors else "FAIL"} for result in results],
+        "results": [
+            asdict(result) | {"status": "PASS" if not result.errors else "FAIL"}
+            for result in results
+        ],
     }
-    (output / "notebook_audit.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
-    (output / "NOTEBOOK_AUDIT.md").write_text(markdown_report(results), encoding="utf-8")
+    (output / "notebook_audit.json").write_text(
+        json.dumps(summary, indent=2), encoding="utf-8"
+    )
+    (output / "NOTEBOOK_AUDIT.md").write_text(
+        markdown_report(results), encoding="utf-8"
+    )
 
-    print(f"Audited {len(results)} notebooks; blocking findings in {summary['blocking_notebooks']}.")
-    print(f"Reports: {output / 'NOTEBOOK_AUDIT.md'} and {output / 'notebook_audit.json'}")
+    print(
+        f"Audited {len(results)} notebooks; blocking findings in {summary['blocking_notebooks']}."
+    )
+    print(
+        f"Reports: {output / 'NOTEBOOK_AUDIT.md'} and {output / 'notebook_audit.json'}"
+    )
     return 1 if args.strict and summary["blocking_notebooks"] else 0
 
 

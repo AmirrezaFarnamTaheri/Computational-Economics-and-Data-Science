@@ -5,6 +5,7 @@ The script is intentionally idempotent: each inserted block has a stable heading
 and is added only when absent. It supplements existing derivations; it does not replace
 or claim to mechanically verify them.
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -98,7 +99,11 @@ def insertion_index(cells: list[dict]) -> int:
     for i, cell in enumerate(cells):
         if cell.get("cell_type") != "markdown":
             continue
-        if re.search(r"^#{1,4}\s+(?:Summary|Summary & Key Takeaways|References|Further Reading)\b", text(cell), re.I | re.M):
+        if re.search(
+            r"^#{1,4}\s+(?:Summary|Summary & Key Takeaways|References|Further Reading)\b",
+            text(cell),
+            re.I | re.M,
+        ):
             return i
     return len(cells)
 
@@ -116,17 +121,21 @@ def main() -> int:
             heading = block.splitlines()[0].strip()
             if heading in joined:
                 continue
-            new_blocks.append({
-                "cell_type": "markdown",
-                "id": stable_id(rel, heading),
-                "metadata": {},
-                "source": [line + "\n" for line in block.splitlines()],
-            })
+            new_blocks.append(
+                {
+                    "cell_type": "markdown",
+                    "id": stable_id(rel, heading),
+                    "metadata": {},
+                    "source": [line + "\n" for line in block.splitlines()],
+                }
+            )
         if not new_blocks:
             continue
         idx = insertion_index(cells)
         cells[idx:idx] = new_blocks
-        path.write_text(json.dumps(nb, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+        path.write_text(
+            json.dumps(nb, indent=1, ensure_ascii=False) + "\n", encoding="utf-8"
+        )
         changed += 1
         added += len(new_blocks)
     print(f"Enriched {changed} notebooks with {added} audit-targeted theory blocks.")

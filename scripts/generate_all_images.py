@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Safe subprocess orchestrator for curriculum image-generation scripts."""
+
 from __future__ import annotations
 
 import argparse
@@ -14,7 +15,11 @@ SCRIPTS = ROOT / "scripts"
 
 
 def discover() -> list[Path]:
-    excluded = {Path(__file__).name, "generate_image_manifest.py", "generate_release_audit.py"}
+    excluded = {
+        Path(__file__).name,
+        "generate_image_manifest.py",
+        "generate_release_audit.py",
+    }
     return [p for p in sorted(SCRIPTS.glob("generate_*.py")) if p.name not in excluded]
 
 
@@ -24,7 +29,9 @@ def main() -> int:
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--timeout", type=int, default=120)
     parser.add_argument("--continue-on-error", action="store_true")
-    parser.add_argument("--report", type=Path, default=ROOT / "audit" / "image_generation_report.json")
+    parser.add_argument(
+        "--report", type=Path, default=ROOT / "audit" / "image_generation_report.json"
+    )
     args = parser.parse_args()
     scripts = discover()
     if args.list:
@@ -38,9 +45,21 @@ def main() -> int:
             continue
         start = time.perf_counter()
         try:
-            proc = subprocess.run([sys.executable, str(script)], cwd=ROOT, text=True, capture_output=True, timeout=args.timeout)
+            proc = subprocess.run(
+                [sys.executable, str(script)],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                timeout=args.timeout,
+            )
             status = "PASS" if proc.returncode == 0 else "FAIL"
-            row = {"script": rel, "status": status, "returncode": proc.returncode, "seconds": round(time.perf_counter() - start, 3), "stderr_tail": proc.stderr[-1200:]}
+            row = {
+                "script": rel,
+                "status": status,
+                "returncode": proc.returncode,
+                "seconds": round(time.perf_counter() - start, 3),
+                "stderr_tail": proc.stderr[-1200:],
+            }
         except subprocess.TimeoutExpired:
             row = {"script": rel, "status": "TIMEOUT", "seconds": args.timeout}
         results.append(row)

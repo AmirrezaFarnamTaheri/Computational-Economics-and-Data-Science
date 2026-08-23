@@ -7,6 +7,7 @@ reference blocks, equation review boxes, cell IDs, and a small set of confirmed
 broken code cells. Content-heavy frontier additions live in
 ``scripts/create_frontier_notebooks.py``.
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -99,14 +100,38 @@ MODULE_REFERENCES = {
 }
 
 TOPIC_REFERENCES: list[tuple[str, str]] = [
-    ("difference_in_differences", "Callaway, B. & Sant'Anna, P. H. C. (2021). Difference-in-differences with multiple time periods. *Journal of Econometrics*, 225(2), 200–230."),
-    ("difference_in_differences", "Sun, L. & Abraham, S. (2021). Estimating dynamic treatment effects in event studies with heterogeneous treatment effects. *Journal of Econometrics*, 225(2), 175–199."),
-    ("causal_ml", "Chernozhukov, V. et al. (2018). Double/debiased machine learning for treatment and structural parameters. *The Econometrics Journal*, 21(1), C1–C68."),
-    ("portfolio", "Ledoit, O. & Wolf, M. (2004). A well-conditioned estimator for large-dimensional covariance matrices. *Journal of Multivariate Analysis*, 88(2), 365–411."),
-    ("option", "Carr, P. & Madan, D. (1999). Option valuation using the fast Fourier transform. *Journal of Computational Finance*, 2(4), 61–73."),
-    ("structural_estimation", "Hotz, V. J. & Miller, R. A. (1993). Conditional choice probabilities and the estimation of dynamic models. *Review of Economic Studies*, 60(3), 497–529."),
-    ("continuous_states", "Carroll, C. D. (2006). The method of endogenous gridpoints for solving dynamic stochastic optimization problems. *Economics Letters*, 91(3), 312–320."),
-    ("heterogeneous_agent", "Auclert, A., Bardóczy, B., Rognlie, M. & Straub, L. (2021). Using the sequence-space Jacobian to solve and estimate heterogeneous-agent models. *Econometrica*, 89(5), 2375–2408."),
+    (
+        "difference_in_differences",
+        "Callaway, B. & Sant'Anna, P. H. C. (2021). Difference-in-differences with multiple time periods. *Journal of Econometrics*, 225(2), 200–230.",
+    ),
+    (
+        "difference_in_differences",
+        "Sun, L. & Abraham, S. (2021). Estimating dynamic treatment effects in event studies with heterogeneous treatment effects. *Journal of Econometrics*, 225(2), 175–199.",
+    ),
+    (
+        "causal_ml",
+        "Chernozhukov, V. et al. (2018). Double/debiased machine learning for treatment and structural parameters. *The Econometrics Journal*, 21(1), C1–C68.",
+    ),
+    (
+        "portfolio",
+        "Ledoit, O. & Wolf, M. (2004). A well-conditioned estimator for large-dimensional covariance matrices. *Journal of Multivariate Analysis*, 88(2), 365–411.",
+    ),
+    (
+        "option",
+        "Carr, P. & Madan, D. (1999). Option valuation using the fast Fourier transform. *Journal of Computational Finance*, 2(4), 61–73.",
+    ),
+    (
+        "structural_estimation",
+        "Hotz, V. J. & Miller, R. A. (1993). Conditional choice probabilities and the estimation of dynamic models. *Review of Economic Studies*, 60(3), 497–529.",
+    ),
+    (
+        "continuous_states",
+        "Carroll, C. D. (2006). The method of endogenous gridpoints for solving dynamic stochastic optimization problems. *Economics Letters*, 91(3), 312–320.",
+    ),
+    (
+        "heterogeneous_agent",
+        "Auclert, A., Bardóczy, B., Rognlie, M. & Straub, L. (2021). Using the sequence-space Jacobian to solve and estimate heterogeneous-agent models. *Econometrica*, 89(5), 2375–2408.",
+    ),
 ]
 
 
@@ -159,8 +184,12 @@ def ensure_badges(nb, path: Path) -> None:
         "Code License: MIT",
         "Content License: CC BY 4.0",
     )
-    lines = [line for line in lines if not any(marker in line for marker in badge_markers)]
-    title_idx = next((i for i, line in enumerate(lines) if re.match(r"^#\s+\S", line)), 0)
+    lines = [
+        line for line in lines if not any(marker in line for marker in badge_markers)
+    ]
+    title_idx = next(
+        (i for i, line in enumerate(lines) if re.match(r"^#\s+\S", line)), 0
+    )
     before = lines[: title_idx + 1]
     after = lines[title_idx + 1 :]
     while after and not after[0].strip():
@@ -285,13 +314,18 @@ def standardize_and_expand_lens(nb, path: Path) -> None:
         lens_start = re.search(r"(?im)^## The Lens:[^\n]*\n", src)
         if lens_start:
             tail = src[lens_start.end() :]
-            stop = re.search(r"(?im)^#{2,3}\s+(?:Learning Objectives|Prerequisites|Table of Contents|\d+\.)", tail)
+            stop = re.search(
+                r"(?im)^#{2,3}\s+(?:Learning Objectives|Prerequisites|Table of Contents|\d+\.)",
+                tail,
+            )
             lens_body = tail[: stop.start()] if stop else tail
             words = re.findall(r"\b[\w'-]+\b", re.sub(r"[$*_>`#]", " ", lens_body))
             if len(words) < 150 and "**Economic question.**" not in lens_body:
                 insertion = framing_for(module, title)
                 if stop:
-                    tail = tail[: stop.start()] + insertion + "\n\n" + tail[stop.start() :]
+                    tail = (
+                        tail[: stop.start()] + insertion + "\n\n" + tail[stop.start() :]
+                    )
                 else:
                     tail += insertion
                 src = src[: lens_start.end()] + tail
@@ -328,8 +362,12 @@ def add_hpp_objectives_prereqs(nb, path: Path) -> None:
     set_text(lens, text(lens).rstrip() + block)
 
 
-def ensure_learning_path(nb, path: Path, prev_path: Path | None, next_path: Path | None) -> None:
-    if any("**Learning path:**" in text(c) for c in nb.cells if c.cell_type == "markdown"):
+def ensure_learning_path(
+    nb, path: Path, prev_path: Path | None, next_path: Path | None
+) -> None:
+    if any(
+        "**Learning path:**" in text(c) for c in nb.cells if c.cell_type == "markdown"
+    ):
         return
     parts = []
     if prev_path:
@@ -363,7 +401,10 @@ def ensure_filename_prerequisite(nb, path: Path, prev_path: Path | None) -> None
         src = text(cell)
         if re.search(r"(?im)^#{2,4}\s+Prerequisites\b", src):
             if prev_path.name not in src:
-                src = src.rstrip() + f"\n* **Learning-path prerequisite:** [`{prev_path.name}`]({prev_path.name})\n"
+                src = (
+                    src.rstrip()
+                    + f"\n* **Learning-path prerequisite:** [`{prev_path.name}`]({prev_path.name})\n"
+                )
                 set_text(cell, src)
             return
 
@@ -445,7 +486,11 @@ def headings(nb) -> list[str]:
             if not m:
                 continue
             h = re.sub(r"<.*?>", "", m.group(1)).strip()
-            if not re.search(r"lens|learning objectives|prereq|table of contents|summary|exercise|reference", h, re.I):
+            if not re.search(
+                r"lens|learning objectives|prereq|table of contents|summary|exercise|reference",
+                h,
+                re.I,
+            ):
                 out.append(h)
     return out
 
@@ -462,7 +507,10 @@ def insert_before_end_sections(nb, cell) -> None:
     for i, c in enumerate(nb.cells):
         if c.cell_type != "markdown":
             continue
-        if re.search(r"(?im)^\s*#{1,4}\s+.*(?:Summary|Key Takeaways|Exercises|Problem Set|References|Further Reading)\b", text(c)):
+        if re.search(
+            r"(?im)^\s*#{1,4}\s+.*(?:Summary|Key Takeaways|Exercises|Problem Set|References|Further Reading)\b",
+            text(c),
+        ):
             idx = i
             break
     nb.cells.insert(idx, cell)
@@ -510,7 +558,10 @@ def ensure_exercise_tiers(nb, path: Path) -> None:
     summary instead of rewriting instructor-authored problems.
     """
     markdown = "\n".join(text(c) for c in nb.cells if c.cell_type == "markdown")
-    if all(re.search(rf"\b{label}\b", markdown, re.I) for label in ("Conceptual", "Applied", "Challenge")):
+    if all(
+        re.search(rf"\b{label}\b", markdown, re.I)
+        for label in ("Conceptual", "Applied", "Challenge")
+    ):
         return
     generated = exercise_block(module_of(path), title_of(nb), headings(nb))
     body = generated.split("\n\n", 1)[1]
@@ -541,10 +592,15 @@ def ensure_summary(nb, path: Path) -> None:
     # Before references if present; otherwise append after exercises.
     idx = len(nb.cells)
     for i, c in enumerate(nb.cells):
-        if c.cell_type == "markdown" and re.search(r"(?im)^\s*#{1,4}\s+.*(?:References|Further Reading)\b", text(c)):
+        if c.cell_type == "markdown" and re.search(
+            r"(?im)^\s*#{1,4}\s+.*(?:References|Further Reading)\b", text(c)
+        ):
             idx = i
             break
-    nb.cells.insert(idx, new_markdown_cell(summary_block(module_of(path), title_of(nb), headings(nb))))
+    nb.cells.insert(
+        idx,
+        new_markdown_cell(summary_block(module_of(path), title_of(nb), headings(nb))),
+    )
 
 
 def refs_for(path: Path) -> list[str]:
@@ -631,7 +687,9 @@ def confirmed_code_repairs(nb, path: Path) -> None:
 
     elif rel == "06-Econometrics/02A_MLE_Principles_and_Geometry.ipynb":
         for cell in nb.cells:
-            if cell.cell_type == "code" and text(cell).lstrip().startswith("## Implementation Note"):
+            if cell.cell_type == "code" and text(cell).lstrip().startswith(
+                "## Implementation Note"
+            ):
                 cell.cell_type = "markdown"
                 cell.pop("execution_count", None)
                 cell.pop("outputs", None)
@@ -643,13 +701,15 @@ def confirmed_code_repairs(nb, path: Path) -> None:
                 src = text(cell).replace(
                     "        except:\n            pass",
                     "        except (TypeError, AttributeError, IndexError):\n"
-                    "            display(Markdown(\"> **Note:** Observation count is unavailable for this data container.\"))",
+                    '            display(Markdown("> **Note:** Observation count is unavailable for this data container."))',
                 )
                 set_text(cell, src)
 
     elif rel == "07-Machine-Learning/06_Deep_Learning_Foundations.ipynb":
         for cell in nb.cells:
-            if cell.cell_type != "code" or "# === Environment Setup ===" not in text(cell):
+            if cell.cell_type != "code" or "# === Environment Setup ===" not in text(
+                cell
+            ):
                 continue
             src = text(cell)
             src = re.sub(
@@ -682,10 +742,14 @@ def confirmed_code_repairs(nb, path: Path) -> None:
                 and re.search(r"(?m)^\s*pass\s*$", text(c))
             )
         ]
-        replacement_load = '''glove_vectors = None\nif GENSIM_AVAILABLE:\n    try:\n        # The first call downloads and caches the model through gensim-data.\n        glove_vectors = api.load("glove-wiki-gigaword-100")\n        display(Markdown("> **Note:** GloVe vectors loaded and cached successfully."))\n    except (OSError, ValueError, RuntimeError) as exc:\n        display(Markdown(f"> **Note:** GloVe vectors are unavailable in this environment: `{exc}`"))\nelse:\n    display(Markdown("> **Note:** `gensim` is not installed; skipping the pretrained-embedding lab."))'''
-        replace_source_matching(nb, "glove_vectors = api.load('glove-wiki-gigaword-100')", replacement_load)
-        replacement_sim = '''if glove_vectors is not None:\n    query_word = "finance"\n    if query_word in glove_vectors.key_to_index:\n        neighbors = glove_vectors.most_similar(query_word, topn=8)\n        similarity_table = pd.DataFrame(neighbors, columns=["word", "cosine_similarity"])\n        display(similarity_table)\n\n        analogy = glove_vectors.most_similar(positive=["bank", "money"], negative=["river"], topn=5)\n        display(Markdown("**A simple vector-arithmetic probe (`bank + money - river`):**"))\n        display(pd.DataFrame(analogy, columns=["word", "cosine_similarity"]))\n    else:\n        display(Markdown(f"> **Note:** `{query_word}` is not present in the selected vocabulary."))'''
-        replace_source_matching(nb, "# 2. Explore Semantic Similarities", replacement_sim)
+        replacement_load = """glove_vectors = None\nif GENSIM_AVAILABLE:\n    try:\n        # The first call downloads and caches the model through gensim-data.\n        glove_vectors = api.load("glove-wiki-gigaword-100")\n        display(Markdown("> **Note:** GloVe vectors loaded and cached successfully."))\n    except (OSError, ValueError, RuntimeError) as exc:\n        display(Markdown(f"> **Note:** GloVe vectors are unavailable in this environment: `{exc}`"))\nelse:\n    display(Markdown("> **Note:** `gensim` is not installed; skipping the pretrained-embedding lab."))"""
+        replace_source_matching(
+            nb, "glove_vectors = api.load('glove-wiki-gigaword-100')", replacement_load
+        )
+        replacement_sim = """if glove_vectors is not None:\n    query_word = "finance"\n    if query_word in glove_vectors.key_to_index:\n        neighbors = glove_vectors.most_similar(query_word, topn=8)\n        similarity_table = pd.DataFrame(neighbors, columns=["word", "cosine_similarity"])\n        display(similarity_table)\n\n        analogy = glove_vectors.most_similar(positive=["bank", "money"], negative=["river"], topn=5)\n        display(Markdown("**A simple vector-arithmetic probe (`bank + money - river`):**"))\n        display(pd.DataFrame(analogy, columns=["word", "cosine_similarity"]))\n    else:\n        display(Markdown(f"> **Note:** `{query_word}` is not present in the selected vocabulary."))"""
+        replace_source_matching(
+            nb, "# 2. Explore Semantic Similarities", replacement_sim
+        )
 
     elif rel == "08-Time-Series/03_ARIMA_and_Forecasting.ipynb":
         nb.cells = [
@@ -719,8 +783,10 @@ def confirmed_code_repairs(nb, path: Path) -> None:
                 and re.search(r"(?m)^\s*pass\s*$", text(c))
             )
         ]
-        loader = '''from pathlib import Path\n\nseries_to_load = {"PCECC96": "LogCons", "DPIC96": "LogInc"}\nstart, end = "1960-01-01", "2019-12-31"\n\ndef _load_consumption_income():\n    if PDR_AVAILABLE:\n        try:\n            downloaded = web.DataReader(list(series_to_load), "fred", start, end)\n            return downloaded, "FRED"\n        except (OSError, ValueError, KeyError) as exc:\n            display(Markdown(f"> **Note:** FRED download failed (`{exc}`); using bundled snapshots."))\n\n    def locate(filename):\n        candidates = [Path("data") / filename, Path("../data") / filename]\n        path = next((candidate for candidate in candidates if candidate.exists()), None)\n        if path is None:\n            raise FileNotFoundError(f"Bundled {filename} was not found.")\n        return path\n\n    cons_path, inc_path = locate("PCECC96.csv"), locate("DPIC96.csv")\n    cons = pd.read_csv(cons_path, index_col="observation_date", parse_dates=True)\n    inc = pd.read_csv(inc_path, index_col="observation_date", parse_dates=True)\n    return pd.concat([cons, inc], axis=1), f"local snapshots: {cons_path}, {inc_path}"\n\ndata_raw, macro_source = _load_consumption_income()\ndf = np.log(data_raw[list(series_to_load)].astype(float)).dropna()\ndf.columns = list(series_to_load.values())\ndf = df.loc[start:end]\ndisplay(Markdown(f"> **Data source:** {macro_source}; {len(df):,} aligned observations."))\ndf.plot(title="Log Real Consumption and Disposable Income")\nplt.show()\n\n# Engle-Granger cointegration test\nscore, p_value, _ = coint(df["LogCons"], df["LogInc"])\ncointegrated = bool(p_value < 0.05)\nconclusion = "reject" if cointegrated else "do not reject"\ndisplay(Markdown(\n    f"> **Engle-Granger result:** p-value = {p_value:.4f}; {conclusion} the null of no cointegration at the 5% level."\n))'''
-        replace_source_matching(nb, "data_raw = web.DataReader(list(series_to_load.keys())", loader)
+        loader = """from pathlib import Path\n\nseries_to_load = {"PCECC96": "LogCons", "DPIC96": "LogInc"}\nstart, end = "1960-01-01", "2019-12-31"\n\ndef _load_consumption_income():\n    if PDR_AVAILABLE:\n        try:\n            downloaded = web.DataReader(list(series_to_load), "fred", start, end)\n            return downloaded, "FRED"\n        except (OSError, ValueError, KeyError) as exc:\n            display(Markdown(f"> **Note:** FRED download failed (`{exc}`); using bundled snapshots."))\n\n    def locate(filename):\n        candidates = [Path("data") / filename, Path("../data") / filename]\n        path = next((candidate for candidate in candidates if candidate.exists()), None)\n        if path is None:\n            raise FileNotFoundError(f"Bundled {filename} was not found.")\n        return path\n\n    cons_path, inc_path = locate("PCECC96.csv"), locate("DPIC96.csv")\n    cons = pd.read_csv(cons_path, index_col="observation_date", parse_dates=True)\n    inc = pd.read_csv(inc_path, index_col="observation_date", parse_dates=True)\n    return pd.concat([cons, inc], axis=1), f"local snapshots: {cons_path}, {inc_path}"\n\ndata_raw, macro_source = _load_consumption_income()\ndf = np.log(data_raw[list(series_to_load)].astype(float)).dropna()\ndf.columns = list(series_to_load.values())\ndf = df.loc[start:end]\ndisplay(Markdown(f"> **Data source:** {macro_source}; {len(df):,} aligned observations."))\ndf.plot(title="Log Real Consumption and Disposable Income")\nplt.show()\n\n# Engle-Granger cointegration test\nscore, p_value, _ = coint(df["LogCons"], df["LogInc"])\ncointegrated = bool(p_value < 0.05)\nconclusion = "reject" if cointegrated else "do not reject"\ndisplay(Markdown(\n    f"> **Engle-Granger result:** p-value = {p_value:.4f}; {conclusion} the null of no cointegration at the 5% level."\n))"""
+        replace_source_matching(
+            nb, "data_raw = web.DataReader(list(series_to_load.keys())", loader
+        )
         # Remove the obsolete fallback/test/result fragments now consolidated above.
         obsolete_markers = [
             "if not PDR_AVAILABLE:",
@@ -731,7 +797,9 @@ def confirmed_code_repairs(nb, path: Path) -> None:
         kept = []
         for c in nb.cells:
             src = text(c)
-            if c.cell_type == "code" and any(marker in src for marker in obsolete_markers):
+            if c.cell_type == "code" and any(
+                marker in src for marker in obsolete_markers
+            ):
                 # Keep our newly consolidated cell (it contains coint but also macro_source).
                 if "macro_source" in src and "_load_consumption_income" in src:
                     kept.append(c)
@@ -762,12 +830,21 @@ def repair_optional_import_passes(nb, path: Path) -> None:
         if cell.cell_type != "code":
             continue
         src = text(cell)
-        if rel == "07-Machine-Learning/05_Dimensionality_Reduction_and_Clustering.ipynb" and "import yfinance as yf" in src and "except Exception:\n    pass" in src:
+        if (
+            rel
+            == "07-Machine-Learning/05_Dimensionality_Reduction_and_Clustering.ipynb"
+            and "import yfinance as yf" in src
+            and "except Exception:\n    pass" in src
+        ):
             src = src.replace(
                 "try:\n    import yfinance as yf\nexcept Exception:\n    pass",
                 "try:\n    import yfinance as yf\n    YFINANCE_AVAILABLE = True\nexcept ImportError:\n    yf = None\n    YFINANCE_AVAILABLE = False",
             )
-        if rel == "07-Machine-Learning/09_LSTMs_and_GRUs.ipynb" and "import pandas_datareader.data as web" in src and "except Exception:\n    pass" in src:
+        if (
+            rel == "07-Machine-Learning/09_LSTMs_and_GRUs.ipynb"
+            and "import pandas_datareader.data as web" in src
+            and "except Exception:\n    pass" in src
+        ):
             src = src.replace(
                 "try:\n    import pandas_datareader.data as web\nexcept Exception:\n    pass",
                 "try:\n    import pandas_datareader.data as web\n    PDR_AVAILABLE = True\nexcept ImportError:\n    web = None\n    PDR_AVAILABLE = False",
@@ -776,7 +853,6 @@ def repair_optional_import_passes(nb, path: Path) -> None:
 
 
 def repair_broken_image_references(nb, path: Path) -> None:
-    rel = path.relative_to(ROOT).as_posix()
     replacements = {
         "../images/01-Foundations/1.1-eniac-programmers.gif": "../images/01-Foundations/1.1-eniac-programmers.jpg",
         "../images/01-Foundations/1.4.1-list-internal-structure.png": "../images/01-Foundations/1.5-list-internals.png",
@@ -807,7 +883,9 @@ def ensure_ids(nb, path: Path) -> None:
     for i, cell in enumerate(nb.cells):
         cid = cell.get("id")
         if not cid or cid in used:
-            digest = hashlib.sha1(f"{rel}:{i}:{text(cell)[:160]}".encode()).hexdigest()[:12]
+            digest = hashlib.sha1(f"{rel}:{i}:{text(cell)[:160]}".encode()).hexdigest()[
+                :12
+            ]
             cid = f"cell-{digest}"
             counter = 1
             while cid in used:
@@ -820,7 +898,7 @@ def ensure_ids(nb, path: Path) -> None:
 def write_supporting_svg() -> None:
     out = ROOT / "images/01-Foundations/1.3-data-model-translation.svg"
     out.write_text(
-        '''<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
+        """<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
 <title id="title">From economic concept to Python data representation</title>
 <desc id="desc">A four-stage diagram linking an economic concept to mathematical representation, Python type, and validation checks.</desc>
 <rect width="1200" height="520" fill="#f8fafc"/>
@@ -839,7 +917,7 @@ def write_supporting_svg() -> None:
   <g stroke="#475569" stroke-width="4" fill="none"><path d="M285 240 H330"/><path d="M565 240 H610"/><path d="M845 240 H890"/></g>
   <g fill="#475569"><path d="M330 240 l-14 -9 v18z"/><path d="M610 240 l-14 -9 v18z"/><path d="M890 240 l-14 -9 v18z"/></g>
   <text x="600" y="410" font-size="21" fill="#334155">Choose a representation that preserves the economic invariant you need to test.</text>
-</g></svg>''',
+</g></svg>""",
         encoding="utf-8",
     )
 

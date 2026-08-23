@@ -1,4 +1,5 @@
 """Regression gates for repository-wide notebook quality invariants."""
+
 from __future__ import annotations
 
 import importlib.util
@@ -25,7 +26,11 @@ def test_all_notebooks_are_accounted_for():
 
 
 def test_notebook_structural_contract():
-    failures = [(r.path, r.missing_sections, r.missing_badges) for r in results() if r.missing_sections or r.missing_badges]
+    failures = [
+        (r.path, r.missing_sections, r.missing_badges)
+        for r in results()
+        if r.missing_sections or r.missing_badges
+    ]
     assert not failures
 
 
