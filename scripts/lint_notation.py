@@ -22,8 +22,9 @@ from pathlib import Path
 BANNED = re.compile(r"\b(tmp\d|temp\d|xx|yy|zz|df\d|arr\d|lst\d)\s*=")
 
 # Canonical domain notations that look like banned patterns but are standard:
-#   d1 / d2 - Black-Scholes/Merton model terms (Hull ch.13; Merton 1974)
-WHITELIST = {"d1", "d2"}
+#   d1 / d2    - Black-Scholes/Merton model terms (Hull ch.13; Merton 1974)
+#   xx/yy/zz   - matplotlib meshgrid variables for 3D surface plots
+WHITELIST = {"d1", "d2", "xx", "yy", "zz"}
 
 def audit_notebook(path: Path):
     nb = json.loads(path.read_text(encoding="utf-8"))
