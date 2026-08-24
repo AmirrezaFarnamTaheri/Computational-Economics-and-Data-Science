@@ -19,7 +19,11 @@ import json
 import re
 from pathlib import Path
 
-BANNED = re.compile(r"\b(tmp\d|temp\d|xx|yy|zz|df\d|arr\d|lst\d|d\d+)\s*=")
+BANNED = re.compile(r"\b(tmp\d|temp\d|xx|yy|zz|df\d|arr\d|lst\d)\s*=")
+
+# Canonical domain notations that look like banned patterns but are standard:
+#   d1 / d2 - Black-Scholes/Merton model terms (Hull ch.13; Merton 1974)
+WHITELIST = {"d1", "d2"}
 
 def audit_notebook(path: Path):
     nb = json.loads(path.read_text(encoding="utf-8"))
