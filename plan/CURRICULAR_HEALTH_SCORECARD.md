@@ -245,6 +245,19 @@ then WP-5/6 (pedagogy), WP-7–9 (assets), WP-10/11 (assessment), WP-12–15
 (tooling). Each round ends with the standard gates: strict audit 129/0,
 pytest green, ruff/black clean, and a PR documentation comment.
 
+**Progress:** WP-1 landed its enforcement foundation (`scripts/lint_notation.py`).
+**WP-2 completed 2026-08-25** — proof-hardening pass over Foundations +
+Numerical Methods: Contraction Mapping Theorem proof sketch added (geometric-series /
+Cauchy / uniqueness chain); cobweb stability and OLS normal equations now derived
+line by line instead of asserted; Gauss–Hermite change of variables worked step
+by step; eigen-decomposition stability claim justified via diagonalization; and
+dimension annotations added to every derivation-bearing markdown cell in both
+modules (detector sweep: 22 → 0 unannotated cells; 0 hand-waving markers — the
+six remaining keyword hits are ordinary English usage, not math hand-waving).
+Pre-existing f-string syntax blockers in `06_Regression_Discontinuity` and
+`09_LSTMs_and_GRUs` repaired to restore the strict-audit gate. Gates at
+completion: strict audit 129/0 · pytest 63/63 · ruff/black clean.
+
 ---
 
 ## 5. Standing Quality Contract (enforced today, kept forever)
