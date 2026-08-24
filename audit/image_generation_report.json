@@ -1,0 +1,177 @@
+[
+  {
+    "script": "scripts\\generate_aiyagari_animation.py",
+    "status": "PASS",
+    "returncode": 0,
+    "seconds": 8.313,
+    "stderr_tail": ""
+  },
+  {
+    "script": "scripts\\generate_aiyagari_diagram.py",
+    "status": "PASS",
+    "returncode": 0,
+    "seconds": 1.126,
+    "stderr_tail": ""
+  },
+  {
+    "script": "scripts\\generate_animation.py",
+    "status": "PASS",
+    "returncode": 0,
+    "seconds": 0.91,
+    "stderr_tail": ""
+  },
+  {
+    "script": "scripts\\generate_appendix_images.py",
+    "status": "PASS",
+    "returncode": 0,
+    "seconds": 5.83,
+    "stderr_tail": ""
+  },
+  {
+    "script": "scripts\\generate_binomial_tree_viz.py",
+    "status": "PASS",
+    "returncode": 0,
+    "seconds": 0.868,
+    "stderr_tail": ""
+  },
+  {
+    "script": "scripts\\generate_box_jenkins_diagram.py",
+    "status": "PASS",
+    "returncode": 0,
+    "seconds": 1.033,
+    "stderr_tail": ""
+  },
+  {
+    "script": "scripts\\generate_causal_collider_dag.py",
+    "status": "PASS",
+    "returncode": 0,
+    "seconds": 0.842,
+    "stderr_tail": ""
+  },
+  {
+    "script": "scripts\\generate_causal_confounding_dag.py",
+    "status": "PASS",
+    "returncode": 0,
+    "seconds": 0.923,
+    "stderr_tail": ""
+  },
+  {
+    "script": "scripts\\generate_causal_ml_images.py",
+    "status": "PASS",
+    "returncode": 0,
+    "seconds": 1.02,
+    "stderr_tail": ""
+  },
+  {
+    "script": "scripts\\generate_causal_tree_split_image.py",
+    "status": "PASS",
+    "returncode": 0,
+    "seconds": 1.018,
+    "stderr_tail": ""
+  },
+  {
+    "script": "scripts\\generate_centrality_diagram.py",
+    "status": "PASS",
+    "returncode": 0,
+    "seconds": 1.115,
+    "stderr_tail": ""
+  },
+  {
+    "script": "scripts\\generate_clt_plots.py",
+    "status": "PASS",
+    "returncode": 0,
+    "seconds": 5.86,
+    "stderr_tail": ""
+  },
+  {
+    "script": "scripts\\generate_cml_sml_plot.py",
+    "status": "PASS",
+    "returncode": 0,
+    "seconds": 1.584,
+    "stderr_tail": ""
+  },
+  {
+    "script": "scripts\\generate_cointegration_viz.py",
+    "status": "PASS",
+    "returncode": 0,
+    "seconds": 1.659,
+    "stderr_tail": ""
+  },
+  {
+    "script": "scripts\\generate_comparative_statics_plot.py",
+    "status": "PASS",
+    "returncode": 0,
+    "seconds": 3.127,
+    "stderr_tail": ""
+  },
+  {
+    "script": "scripts\\generate_contagion_animation.py",
+    "status": "PASS",
+    "returncode": 0,
+    "seconds": 1.242,
+    "stderr_tail": ""
+  },
+  {
+    "script": "scripts\\generate_convergence_plot.py",
+    "status": "PASS",
+    "returncode": 0,
+    "seconds": 1.194,
+    "stderr_tail": ""
+  },
+  {
+    "script": "scripts\\generate_convex_plots.py",
+    "status": "PASS",
+    "returncode": 0,
+    "seconds": 2.709,
+    "stderr_tail": ""
+  },
+  {
+    "script": "scripts\\generate_eigenvector_plot.py",
+    "status": "PASS",
+    "returncode": 0,
+    "seconds": 3.189,
+    "stderr_tail": ""
+  },
+  {
+    "script": "scripts\\generate_emergence_diagram.py",
+    "status": "PASS",
+    "returncode": 0,
+    "seconds": 1.163,
+    "stderr_tail": ""
+  },
+  {
+    "script": "scripts\\generate_fama_macbeth_diagram.py",
+    "status": "PASS",
+    "returncode": 0,
+    "seconds": 1.141,
+    "stderr_tail": ""
+  },
+  {
+    "script": "scripts\\generate_gradient_field_plot.py",
+    "status": "PASS",
+    "returncode": 0,
+    "seconds": 5.295,
+    "stderr_tail": ""
+  },
+  {
+    "script": "scripts\\generate_gradient_plot.py",
+    "status": "PASS",
+    "returncode": 0,
+    "seconds": 1.587,
+    "stderr_tail": ""
+  },
+  {
+    "script": "scripts\\generate_images.py",
+    "status": "PASS",
+    "returncode": 0,
+    "seconds": 116.936,
+    "stderr_tail": ""
+  },
+  {
+    "script": "scripts\\generate_ito_lemma_viz.py",
+    "status": "FAIL",
+    "returncode": 106,
+    "seconds": 0.017,
+    "stderr_tail": "No pyvenv.cfg file\n"
+  }
+]

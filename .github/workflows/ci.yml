@@ -67,7 +67,10 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install nbformat
+          pip install nbformat ipython
 
-      - name: Validate notebook JSON
-        run: python scripts/audit_notebooks.py
+      - name: Validate curriculum notebooks
+        run: python scripts/validate_notebooks.py
+
+      - name: Validate documentation links and labs
+        run: python scripts/audit_docs.py --strict

@@ -3,7 +3,7 @@
 Graduate-level course repository on modern computational methods in economics, econometrics, dynamic modeling, machine learning, and quantitative finance.
 
 ## Tech Stack
-- **Language & Runtime:** Python 3.10+ (tested against Python 3.11)
+- **Language & Runtime:** Python 3.11+ (tested against Python 3.11)
 - **Environment Management:** Conda / Mamba (`environment.yml`), `uv` / `pip` (`requirements.txt`, `pyproject.toml`)
 - **Computational Core:** `numpy`, `scipy`, `pandas`, `sympy`, `numba`, `dask`, `cupy`
 - **Econometrics & Time Series:** `statsmodels`, `linearmodels`, `arch`
@@ -22,7 +22,10 @@ Graduate-level course repository on modern computational methods in economics, e
 
 ## Testing & Validation
 - **Run Unit Tests:** `pytest tests/ -v --tb=short`
-- **Audit Notebooks JSON & Structure:** `python scripts/audit_notebooks.py`
+- **Strict Curriculum Audit:** `python scripts/audit_curriculum_ast.py --strict`
+- **Dependency Audit:** `python scripts/audit_dependencies.py`
+- **Documentation Audit:** `python scripts/audit_docs.py --strict`
+- **Proof-Structure Triage:** `python scripts/audit_proofs.py`
 - **Check Formatting:** `black --check --diff .`
 - **Run Linter:** `ruff check .`
 
@@ -30,14 +33,14 @@ Graduate-level course repository on modern computational methods in economics, e
 - `01-Foundations/`: Python fundamentals, data structures, data acquisition (APIs/SQL), NumPy, Pandas, SymPy, SciPy, Complexity (25 notebooks).
 - `02-Numerical-Methods/`: Linear algebra, differentiation, root-finding, optimization, interpolation, integration, ODEs (8 notebooks).
 - `03-Economic-Modeling/`: Dynamic programming (VFI/PFI), continuous state DP, discrete choice, structural estimation (`DiscreteDP`, `dp_solver.py`) (8 notebooks).
-- `04-Macro-Models/`: Job search, Neoclassical growth, RBC models (foundations, solution, surprise shocks, news shocks), OLG, New Keynesian, HANK (10 notebooks).
-- `05-Micro-Models/`: Consumer/producer theory, General Equilibrium (welfare theorems, Brouwer fixed point), game theory, auctions, discrete choice, principal-agent (6 notebooks).
-- `06-Econometrics/`: OLS, MLE, Causal inference ($d$-separation, DAGs), GMM, IV, RDD, Synthetic controls, DiD, Bayesian, Panel data (13 notebooks).
+- `04-Macro-Models/`: Job search, Neoclassical growth, RBC models (foundations, solution, surprise shocks, news shocks), OLG, New Keynesian, HANK, and continuous-time HJB macro (11 notebooks).
+- `05-Micro-Models/`: Consumer/producer theory, General Equilibrium (welfare theorems, Brouwer fixed point), game theory, auctions, discrete choice, principal-agent, and BLP demand estimation (7 notebooks).
+- `06-Econometrics/`: OLS, MLE, Causal inference ($d$-separation, DAGs), GMM, IV, RDD, synthetic control, DiD/SDID, Bayesian, and panel methods (14 notebooks).
 - `07-Machine-Learning/`: SML, GBM, SVM, Ensembles, Deep Learning (Universal Approximation), CNNs, RNNs, LSTMs, Transformers, VAEs, SSL, RL, Causal ML, NLP, GNNs (22 notebooks).
-- `08-Time-Series/`: ARMA, ARIMA, VAR (identification, IRF, FEVD), GARCH, Cointegration / VECM, Stationarity tests (ADF / KPSS) (8 notebooks).
-- `09-Finance/`: Portfolio theory, Asset pricing, Option pricing, Continuous-time finance (Itô calculus, Black-Scholes), Credit risk, BGG financial frictions (7 notebooks).
-- `10-Specialized-Models/`: Agent-based models, HANK general equilibrium, network economics (3 notebooks).
-- `Appendix/`: Mathematical foundations (Real Analysis A1, Multivariate Calculus A2, Probability Theory A3, Linear Algebra A4) & Tooling tutorials (T1 Quarto, T2 Chetty replication, T3 Otter) (7 notebooks).
+- `08-Time-Series/`: ARMA, ARIMA, VAR (identification, IRF, FEVD), GARCH, cointegration/VECM, stationarity tests, and nonlinear state-space/particle filtering (9 notebooks).
+- `09-Finance/`: Portfolio theory, asset pricing, option pricing, continuous-time finance (Itô calculus, Black-Scholes), credit risk, BGG financial frictions, and Hawkes-process market microstructure (8 notebooks).
+- `10-Specialized-Models/`: Agent-based models, HANK general equilibrium, network economics, and a DICE-inspired climate-macro integrated assessment lab (4 notebooks).
+- `Appendix/`: Mathematical foundations (A1–A4), publishing/autograding tools (T1–T3), and replication labs (T2 Chetty, T4 Card–Krueger, T5 Fama–French) (9 notebooks).
 - `high_performance_python/`: HPC, Numba JIT, Dask distributed computing, CuPy GPU acceleration (4 notebooks).
 - `scripts/`: Image generators, macro solvers (`macro_utils.py`), data downloaders, notebook auditors.
 - `tests/`: Pytest suites for dynamic programming (`test_dp_solver.py`), macroeconomic QZ solvers (`test_macro_utils.py`), Tauchen discretization (`test_macro_vfi_utils.py`), and notebook JSON integrity (`test_notebooks.py`).

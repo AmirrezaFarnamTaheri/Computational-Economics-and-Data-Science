@@ -213,12 +213,16 @@ def main():
         if audit_data:
             report.append(audit_data)
 
+    # Legacy structural report. Keep generated artifacts out of the repository root.
+    output_dir = os.path.join(root_dir, "audit", "legacy")
+    os.makedirs(output_dir, exist_ok=True)
+
     # Write JSON report
-    with open("notebook_structure_report.json", "w") as f:
+    with open(os.path.join(output_dir, "notebook_structure_report.json"), "w") as f:
         json.dump(report, f, indent=2)
 
     # Write Markdown report
-    with open("notebook_structure.md", "w") as f:
+    with open(os.path.join(output_dir, "notebook_structure.md"), "w") as f:
         f.write("# Notebook Audit Report\n\n")
         f.write(f"Total Notebooks: {len(report)}\n\n")
 

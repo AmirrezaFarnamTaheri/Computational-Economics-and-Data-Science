@@ -83,7 +83,7 @@ Try these steps:
 
 3. **Create fresh environment:**
    ```bash
-   conda env remove -n computational-econ
+   conda env remove -n computational-economics
    conda env create -f environment.yml
    ```
 
@@ -189,7 +189,7 @@ Please:
 
 1. **Verify installation:**
    ```bash
-   conda activate computational-econ
+   conda activate computational-economics
    jupyter lab --version
    ```
 
@@ -213,11 +213,11 @@ Please:
 **Check these:**
 
 1. **Correct kernel selected?**
-   - Kernel → Change Kernel → computational-econ
+   - Kernel → Change Kernel → computational-economics
 
 2. **Environment activated?**
    ```bash
-   conda activate computational-econ
+   conda activate computational-economics
    ```
 
 3. **Package installed?**

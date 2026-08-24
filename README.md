@@ -82,6 +82,8 @@ Supplementary notebooks for publishing and course infrastructure.
 - **`T1_Publishing_with_Quarto.ipynb`**: Producing publication-ready HTML/PDF reports from notebooks with Quarto.
 - **`T2_Replication_Exercise_Chetty_2014.ipynb`**: A full replication exercise using public mobility data.
 - **`T3_Autograding_with_Otter.ipynb`**: Building autograded assignments with Otter-Grader.
+- **`T4_Replication_Card_Krueger_1994.ipynb`**: Reproducing the canonical two-wave New Jersey–Pennsylvania minimum-wage Difference-in-Differences design from a bundled 820-row restaurant panel, with manual and regression estimators.
+- **`T5_Replication_Fama_French_Five_Factor.ipynb`**: Five-factor time-series regressions for bundled U.S. industry portfolios, with heteroskedasticity-robust inference and transparent sample-scope caveats.
 
 ### Part 1: Foundations (`01-Foundations/`)
 This section covers the bedrock skills needed for any computational work.

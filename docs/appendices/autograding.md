@@ -1,5 +1,5 @@
-# Autograding with Otter
+# Autograding
 
-!!! note "Content coming soon"
-    This page will be auto-generated from the course notebooks.
-    See the corresponding `.ipynb` files in the repository for the full content.
+The autograding appendix demonstrates testable exercises and assignment structure with Otter-Grader. It complements the three-tier Conceptual → Applied → Challenge exercise ladder used across the curriculum.
+
+[Read the complete autograding notebook](../notebooks/Appendix/T3_Autograding_with_Otter.md){ .md-button }
