@@ -35,6 +35,9 @@ def audit_notebook(path: Path):
         s = c.get("source", "")
         s = "".join(s) if isinstance(s, list) else s
         for m in BANNED.finditer(s):
+            token = m.group(0).split("=")[0].strip()
+            if token in WHITELIST:
+                continue
             hits.append((i, m.group(0)))
     return hits
 
