@@ -301,6 +301,14 @@ projection geometry, DiD parallel trends, sharp-RD fit, GARCH clustering,
 Amdahl's law, VFI convergence) with README index. All wired references
 resolve (0 broken); gates at completion: strict audit 129/0 · pytest 63/63 ·
 ruff/black clean.
+**WP-8 completed 2026-08-25** — cheat-sheet cards: 12 markdown cards in
+`docs/cheatsheets/` (one per module: Foundations, Numerical Methods,
+Economic Modeling, Macro, Micro, Econometrics, ML, Time Series, Finance,
+Specialized, Mathematics Appendix, High-Performance Python) plus an index
+page, each carrying core objects **with dimensions**, workhorse formulas, and
+algorithm-complexity tables; wired into the mkdocs nav under "Cheat Sheets";
+all cross-links verified to resolve. Gates at completion: strict audit
+129/0 · pytest 63/63 · ruff/black clean.
 
 ---
 

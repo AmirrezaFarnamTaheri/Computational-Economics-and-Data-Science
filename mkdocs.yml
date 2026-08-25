@@ -239,6 +239,21 @@ nav:
       - Heterogeneous Agents: modules/10-specialized/02-heterogeneous.md
       - Network Economics: modules/10-specialized/03-networks.md
 
+  - Cheat Sheets:
+    - Overview: cheatsheets/index.md
+    - Foundations: cheatsheets/01-foundations.md
+    - Numerical Methods: cheatsheets/02-numerical-methods.md
+    - Economic Modeling (DP): cheatsheets/03-economic-modeling.md
+    - Macro Models: cheatsheets/04-macro-models.md
+    - Micro Models: cheatsheets/05-micro-models.md
+    - Econometrics: cheatsheets/06-econometrics.md
+    - Machine Learning: cheatsheets/07-machine-learning.md
+    - Time Series: cheatsheets/08-time-series.md
+    - Finance: cheatsheets/09-finance.md
+    - Specialized Models: cheatsheets/10-specialized-models.md
+    - Mathematics Appendix: cheatsheets/11-appendix-mathematics.md
+    - High-Performance Python: cheatsheets/12-high-performance-python.md
+
   - Resources:
     - resources/index.md
     - Code Style Guide: resources/code-style.md
