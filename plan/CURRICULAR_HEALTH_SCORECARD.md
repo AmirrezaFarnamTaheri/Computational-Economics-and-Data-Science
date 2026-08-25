@@ -309,6 +309,13 @@ page, each carrying core objects **with dimensions**, workhorse formulas, and
 algorithm-complexity tables; wired into the mkdocs nav under "Cheat Sheets";
 all cross-links verified to resolve. Gates at completion: strict audit
 129/0 · pytest 63/63 · ruff/black clean.
+**WP-9 completed 2026-08-25** — annotated bibliography: 12 module pages in
+`docs/bibliography/` plus an index, each with a **reading pathway** and
+entries in three categories (**seminal / modern / theoretical**), all
+real standard citations with 1–2 sentence annotations tying each source to
+this curriculum; wired into the mkdocs nav under "Bibliography"; links
+verified. Gates at completion: strict audit 129/0 · pytest 63/63 ·
+ruff/black clean.
 
 ---
 
