@@ -325,6 +325,23 @@ leaked holdout, weak instruments, collider control, boundary extrapolation,
 deadly-triad misconfiguration, …), asks for diagnosis against the lecture's
 theory, a repair, and verification. Detector sweep: 0 → 129/129 covered.
 Gates at completion: strict audit 129/0 · pytest 63/63 · ruff/black clean.
+**WP-11 completed 2026-08-25** — pytest harness for notebook solution
+functions: `tests/test_notebook_solution_functions.py` loads worked solution
+code directly out of lecture notebooks and validates it with parameterized
+edge cases (29 tests: NPV/protocol contracts, exception contracts,
+correlated-equilibrium LP on PD/coordination/BoS, Tauchen transition
+properties, normal-CDF edges, Chebyshev VFI and Euler time-iteration
+convergence + feasibility + dense-grid Euler residuals, robust savings
+bounds, Rust NFXP flow utilities). The harness immediately caught and fixed
+three latent curriculum bugs: (1) the Euler-iteration cell cold-started at a
+zero policy (u'(0) undefined for CRRA) and never moved; (2) its update
+omitted the budget-constraint linkage and the state-conditional expectation,
+diverging for beta(1+r) < 1 — replaced with correct budget-linked time
+iteration; (3) both Chebyshev solvers fitted raw nodes but evaluated with a
+domain mapping, so fits were meaningless — now domain-consistent via
+`Chebyshev.fit(..., domain=...)`, with the VFI Bellman loop generalized to
+arbitrary node counts. Suite grew 63 → 92. Gates at completion: strict audit
+129/0 · pytest 92/92 · ruff/black clean.
 
 ---
 
