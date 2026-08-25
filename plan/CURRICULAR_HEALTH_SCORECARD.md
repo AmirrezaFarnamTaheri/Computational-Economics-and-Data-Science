@@ -292,6 +292,15 @@ squares, Card-Krueger's New Jersey survey, the two-cultures year 2001,
 coins-and-graph-paper segregation, Banach 1922 → Blackwell 1965, and the end
 of Moore's-law free lunch. Greppable via "Historical Context —". Gates at
 completion: strict audit 129/0 · pytest 63/63 · ruff/black clean.
+**WP-7 completed 2026-08-25** — visual density fill: discovered 108 orphaned
+figures already on disk and wired 46 of them (plus 9 newly authored figures)
+into 38 flagged figure-less lectures, at the exact teaching section for each
+topic; new deterministic, headless Matplotlib generators committed under
+`figures/src/` (Solow diagram, NK determinacy regions, consumer tangency, OLS
+projection geometry, DiD parallel trends, sharp-RD fit, GARCH clustering,
+Amdahl's law, VFI convergence) with README index. All wired references
+resolve (0 broken); gates at completion: strict audit 129/0 · pytest 63/63 ·
+ruff/black clean.
 
 ---
 
