@@ -263,6 +263,16 @@ vs. matrix status of every estimand) added to all 56 derivation-bearing
 markdown cells across 22 notebooks, including the Key-Equations review boxes
 (detector sweep: 56 → 0 unannotated; 0 hand-waving markers). Gates at
 completion: strict audit 129/0 · pytest 63/63 · ruff/black clean.
+**WP-4 completed 2026-08-25** — proof-hardening pass III over ML, Finance, and
+Appendix theorems: dimension annotations added to all 59 derivation-bearing
+markdown cells across 24 notebooks (network tensor shapes for RNN/LSTM/GRU,
+Transformer attention, GNN message passing, Gram matrices; RL objectives and
+gradients in parameter space; SDF/option/credit/Hawkes scalars with units;
+appendix proof compendium objects), plus one hand-waving adverb tightened in
+the A1 Bellman-verification discussion (detector sweep: 59 → 0 unannotated;
+remaining keyword hits are ordinary English or exercise instructions asking
+students to prove steps). Gates at completion: strict audit 129/0 ·
+pytest 63/63 · ruff/black clean. **Rigor spine WP-1→WP-4 complete.**
 
 ---
 
