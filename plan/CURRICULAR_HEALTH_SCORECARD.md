@@ -366,13 +366,29 @@ Introduction lecture). Each runs standalone, uses ipywidgets sliders when
 available, and falls back to deterministic static rendering otherwise;
 verified by static smoke runs of all three plus visual QA. Gates at
 completion: strict audit 129/0 · pytest 92/92 · ruff/black clean.
+**WP-14 completed 2026-08-25** — `@njit` RNG redesign (K-01): all five
+jitted kernels that drew random numbers inside `@njit` bodies now draw
+OUTSIDE with a seeded `default_rng` Generator and receive the arrays as
+arguments — EM01 `simulate_asset_distribution` (a Generator captured inside
+the njit body, which cannot compile), Foundations-23
+`simulate_buffer_stock_numba`, EM04 `simulate_moments` (fixed SMM draws
+drawn once in `AiyagariModel`, making the objective deterministic), HPP-01
+`monte_carlo_pi_numba` (parallel `prange` + global RNG is thread-unsafe),
+Numba-02 `monte_carlo_pi_numba`. Top-to-bottom verification of all five
+notebooks additionally surfaced and fixed four execution-order/API bugs
+(numpy-before-import in three setup cells, a missing `brentq` import,
+`rng.random(n, 2)` misusing the Generator API, and an unbounded
+multiprocessing sweep demo that deadlocks under Windows/Jupyter spawn —
+bounded to stay CI-friendly; HPP-01's multiprocessing demo remains
+interactive-only). Gates at completion: strict audit 129/0 · pytest 92/92 ·
+ruff/black clean.
 
 ---
 
 ## 5. Standing Quality Contract (enforced today, kept forever)
 
 1. Every change passes `scripts/audit_curriculum_ast.py --strict` (129/0).
-2. `pytest tests/` stays green (currently 63).
+2. `pytest tests/` stays green (currently 92).
 3. `ruff check .` and `black --check .` stay clean.
 4. No placeholders, no blanket warning suppression, resolvable images,
    unique cell ids — enforced by the auditor.
