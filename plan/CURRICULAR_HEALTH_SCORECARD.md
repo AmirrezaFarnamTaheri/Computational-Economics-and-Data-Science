@@ -49,7 +49,7 @@ Legend: ✅ verified green · 🟡 partial / flagged · 🔴 known gap · ⚪ no
 | ID | Class | Location | Severity |
 |---|---|---|---|
 | K-01 | `@njit` cells on legacy global RNG | EMOD-01, HPP | Medium |
-| K-02 | Stub functions flagged (~20) — mostly legitimate ABCs needing human triage | repo-wide | Low |
+| K-02 | ~~Stub functions flagged (~20)~~ **RESOLVED (WP-15)**: AST-based triage found exactly 4 stubs, all LEGIT interface declarations (ABC abstractmethod + 3 Protocol methods, each implemented concretely in the same notebook); inventory guarded by `tests/test_stub_inventory.py` | repo-wide | Resolved |
 | K-03 | Duplicate headings (contextual) | 8 instances | Low |
 | K-04 | Silent except (contextual) | 1 instance | Low |
 | K-05 | TS-04C IRF/FEVD depth; 05/07 polish | Time Series | Medium |
@@ -382,6 +382,19 @@ multiprocessing sweep demo that deadlocks under Windows/Jupyter spawn —
 bounded to stay CI-friendly; HPP-01's multiprocessing demo remains
 interactive-only). Gates at completion: strict audit 129/0 · pytest 92/92 ·
 ruff/black clean.
+**WP-15 completed 2026-08-25** — stub-function triage (K-02): an AST-based
+sweep (function bodies that are entirely `...` / `pass` /
+`raise NotImplementedError` / docstring-only) found exactly **4 stubs** —
+the earlier "~20 flagged" was keyword noise. All four are LEGIT interface
+declarations in the OOP lecture's ABC-vs-Protocol lesson
+(`AbstractValuationModel.calculate_npv`, `ValuationProtocol.calculate_npv`,
+`ProductionFunction.produce`, `UtilityFunction.calculate_utility`), each
+implemented concretely in the same notebook and exercised by the WP-11
+harness. Triage recorded as a permanent guard:
+`tests/test_stub_inventory.py` fails CI on any new untriaged stub or stale
+inventory entry. Zero stubs required fixing. Gates at completion: strict
+audit 129/0 · pytest 94/94 · ruff/black clean.
+**ROADMAP COMPLETE: WP-1 → WP-15 all delivered (2026-08-25).**
 
 ---
 
