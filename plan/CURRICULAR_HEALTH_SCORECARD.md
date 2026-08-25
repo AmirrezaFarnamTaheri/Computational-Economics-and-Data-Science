@@ -356,6 +356,16 @@ lock was verified by building a fresh venv from the pins and running the
 full CI sequence locally (audit 129/0, pytest 92/92, ruff/black clean, all
 four notebooks executed). Gates at completion: strict audit 129/0 · pytest
 92/92 · ruff/black clean.
+**WP-13 completed 2026-08-25** — interactive widget labs: `labs/` with three
+self-contained scripts (README included) — `lr_schedules_lab.py` (five
+learning-rate schedules vs gradient-descent loss, Deep Learning lecture),
+`ode_stability_lab.py` (explicit/implicit Euler and RK4 vs exact solution
+with stability-region diagrams, ODE lecture), `cobweb_stability_lab.py`
+(cobweb plot and time path against the |d/b| < 1 stability condition,
+Introduction lecture). Each runs standalone, uses ipywidgets sliders when
+available, and falls back to deterministic static rendering otherwise;
+verified by static smoke runs of all three plus visual QA. Gates at
+completion: strict audit 129/0 · pytest 92/92 · ruff/black clean.
 
 ---
 
