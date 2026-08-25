@@ -273,6 +273,14 @@ the A1 Bellman-verification discussion (detector sweep: 59 → 0 unannotated;
 remaining keyword hits are ordinary English or exercise instructions asking
 students to prove steps). Gates at completion: strict audit 129/0 ·
 pytest 63/63 · ruff/black clean. **Rigor spine WP-1→WP-4 complete.**
+**WP-5 completed 2026-08-25** — Common-Pitfalls callouts: two authored
+pitfalls (error → consequence → fix) added before the exercises section of
+each of 38 core lectures spanning all twelve module groups — **76 callouts
+total**, exceeding the ≥60 acceptance floor. Callouts are lecture-specific
+(aliasing, view-vs-copy, weak instruments, collider control, staggered TWFE,
+deadly triad, estimation-error-maximizing portfolios, one-seed ABM stories,
+…) and greppable via "Common Pitfalls in This Lecture". Gates at completion:
+strict audit 129/0 · pytest 63/63 · ruff/black clean.
 
 ---
 
