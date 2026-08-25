@@ -257,6 +257,12 @@ six remaining keyword hits are ordinary English usage, not math hand-waving).
 Pre-existing f-string syntax blockers in `06_Regression_Discontinuity` and
 `09_LSTMs_and_GRUs` repaired to restore the strict-audit gate. Gates at
 completion: strict audit 129/0 · pytest 63/63 · ruff/black clean.
+**WP-3 completed 2026-08-25** — proof-hardening pass over Econometrics +
+Macro Models: dimension annotations (object shapes, parameter ranges, scalar
+vs. matrix status of every estimand) added to all 56 derivation-bearing
+markdown cells across 22 notebooks, including the Key-Equations review boxes
+(detector sweep: 56 → 0 unannotated; 0 hand-waving markers). Gates at
+completion: strict audit 129/0 · pytest 63/63 · ruff/black clean.
 
 ---
 
