@@ -281,6 +281,17 @@ total**, exceeding the ≥60 acceptance floor. Callouts are lecture-specific
 deadly triad, estimation-error-maximizing portfolios, one-seed ABM stories,
 …) and greppable via "Common Pitfalls in This Lecture". Gates at completion:
 strict audit 129/0 · pytest 63/63 · ruff/black clean.
+**WP-6 completed 2026-08-25** — why-this-matters historical
+contextualization: 39 authored "Historical Context" entries (authors, venues,
+years checked against the standard published histories) appended to the Lens
+cell of 38 lectures, giving every module ≥3 entries across all twelve module
+groups — e.g. Bellman's RAND naming anecdote, Rust's bus mechanic Harold
+Zurcher, Solow's residual, Arrow-Debreu via Kakutani, Legendre-vs-Gauss least
+squares, Card-Krueger's New Jersey survey, the two-cultures year 2001,
+"Attention is all you need", Black-Scholes meeting the CBOE, Schelling's
+coins-and-graph-paper segregation, Banach 1922 → Blackwell 1965, and the end
+of Moore's-law free lunch. Greppable via "Historical Context —". Gates at
+completion: strict audit 129/0 · pytest 63/63 · ruff/black clean.
 
 ---
 
