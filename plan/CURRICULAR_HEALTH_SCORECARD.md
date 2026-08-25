@@ -342,6 +342,20 @@ domain mapping, so fits were meaningless — now domain-consistent via
 `Chebyshev.fit(..., domain=...)`, with the VFI Bellman loop generalized to
 arbitrary node counts. Suite grew 63 → 92. Gates at completion: strict audit
 129/0 · pytest 92/92 · ruff/black clean.
+**WP-12 completed 2026-08-25** — deterministic-execution hardening:
+`environment.lock.yml` pins the deterministic core (python 3.11; numpy 2.5.2,
+scipy 1.18.0, numba 0.67.0, matplotlib 3.11.1, pandas 2.3.3, nbclient/
+nbconvert/ipykernel, pytest 9.1.1, ruff 0.16.4, black 26.5.1) and a new CI
+job `deterministic-execution` installs exactly those pins, re-runs all four
+standing gates, and executes four dependency-light deterministic lectures
+top-to-bottom (Foundations 03/12, Numerical 04, EM 02) with artifacts
+uploaded. The top-to-bottom runs immediately caught and fixed two
+execution-order bugs invisible to static audits: 12_NumPy used `np` before
+importing it, and EM02's time-iteration cell never imported `brentq`. The
+lock was verified by building a fresh venv from the pins and running the
+full CI sequence locally (audit 129/0, pytest 92/92, ruff/black clean, all
+four notebooks executed). Gates at completion: strict audit 129/0 · pytest
+92/92 · ruff/black clean.
 
 ---
 

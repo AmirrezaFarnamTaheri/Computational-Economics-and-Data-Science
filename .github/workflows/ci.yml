@@ -74,3 +74,69 @@ jobs:
 
       - name: Validate documentation links and labs
         run: python scripts/audit_docs.py --strict
+
+  deterministic-execution:
+    # WP-12: pinned environment + top-to-bottom runs of the deterministic
+    # lecture subset, on the exact versions locked in environment.lock.yml.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Extract pins from environment.lock.yml
+        run: |
+          python - <<'PY'
+          import pathlib, yaml
+          deps = yaml.safe_load(pathlib.Path("environment.lock.yml").read_text())["dependencies"]
+          pins = [d for d in deps if isinstance(d, str) and d != "pip"]
+          pins += [p for d in deps if isinstance(d, dict) for p in d.get("pip", [])]
+          pathlib.Path("requirements-ci.txt").write_text("\n".join(pins) + "\n")
+          PY
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-lock-${{ hashFiles('environment.lock.yml') }}
+
+      - name: Install pinned environment
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements-ci.txt
+
+      - name: Show resolved versions
+        run: |
+          python -c "import numpy, scipy, pandas, matplotlib, numba; print('numpy', numpy.__version__); print('scipy', scipy.__version__); print('pandas', pandas.__version__); print('matplotlib', matplotlib.__version__); print('numba', numba.__version__)"
+
+      - name: Strict structural audit (129 / 0)
+        run: python scripts/audit_curriculum_ast.py --strict --output-dir build/audit
+
+      - name: Run test suite (includes solution-function harness)
+        run: pytest tests/ -q --tb=short
+
+      - name: Lint and format gates
+        run: |
+          ruff check .
+          black --check .
+
+      - name: Top-to-bottom execution of deterministic lectures
+        run: |
+          mkdir -p build/exec
+          jupyter nbconvert --to notebook --execute \
+            --ExecutePreprocessor.timeout=600 \
+            --output-dir build/exec \
+            "01-Foundations/03_Python_Fundamentals_Data_Types.ipynb" \
+            "01-Foundations/12_NumPy.ipynb" \
+            "02-Numerical-Methods/04_Root_Finding.ipynb" \
+            "03-Economic-Modeling/02_DP_with_Continuous_States.ipynb"
+
+      - name: Upload executed notebooks
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: executed-notebooks
+          path: build/exec/
