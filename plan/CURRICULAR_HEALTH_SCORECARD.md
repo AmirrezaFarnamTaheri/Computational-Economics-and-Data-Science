@@ -316,6 +316,15 @@ real standard citations with 1–2 sentence annotations tying each source to
 this curriculum; wired into the mkdocs nav under "Bibliography"; links
 verified. Gates at completion: strict audit 129/0 · pytest 63/63 ·
 ruff/black clean.
+**WP-10 completed 2026-08-25** — Tier-3 failure-analysis items: authored one
+lecture-specific failure-analysis exercise for **every one of the 129
+notebooks** (109 added as "3b. Failure analysis (Challenge)" inside the
+Three-Tier ladders; 20 appended to the exercises sections of lectures without
+a Tier-3 slot). Each presents a concrete plausible failure (diverging solver,
+leaked holdout, weak instruments, collider control, boundary extrapolation,
+deadly-triad misconfiguration, …), asks for diagnosis against the lecture's
+theory, a repair, and verification. Detector sweep: 0 → 129/129 covered.
+Gates at completion: strict audit 129/0 · pytest 63/63 · ruff/black clean.
 
 ---
 
