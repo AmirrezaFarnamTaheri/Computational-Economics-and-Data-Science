@@ -223,12 +223,22 @@ def audit_notebook(path: Path, root: Path) -> NotebookResult:
     )
 
 
+# Directories that are never source notebooks: build artifacts, executed
+# output mirrors, dependency caches, and any dir starting with ".".
+# The audit only inspects the curated source tree under repo root.
+_SKIP_DIRS = frozenset({"build", "node_modules", "venv", ".venv"})
+
+
 def iter_notebooks(root: Path) -> Iterable[Path]:
     for path in sorted(root.rglob("*.ipynb")):
-        if ".ipynb_checkpoints" not in path.parts and not any(
-            part.startswith(".") for part in path.relative_to(root).parts[:-1]
-        ):
-            yield path
+        rel_parts = path.relative_to(root).parts
+        if ".ipynb_checkpoints" in rel_parts:
+            continue
+        if any(part.startswith(".") for part in rel_parts[:-1]):
+            continue
+        if any(part in _SKIP_DIRS for part in rel_parts):
+            continue
+        yield path
 
 
 def markdown_report(results: list[NotebookResult]) -> str:
