@@ -1,6 +1,6 @@
 # High-Performance Python Cheat Sheet
 
-> Quick reference for the High-Performance Python module. Details: [High Performance Computing](../../high_performance_python/01_High_Performance_Computing.ipynb) (notebook).
+> Quick reference for the High-Performance Python module. Details: [High Performance Computing](../notebooks/high_performance_python/01_High_Performance_Computing.md) (notebook).
 
 ## Core objects & dimensions
 

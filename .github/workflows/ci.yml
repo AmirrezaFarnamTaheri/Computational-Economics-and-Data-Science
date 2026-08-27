@@ -124,15 +124,31 @@ jobs:
           black --check .
 
       - name: Top-to-bottom execution of deterministic lectures
+        # ci/deterministic_notebooks.txt is the canonical list of lectures
+        # whose top-to-bottom execution is in scope for CI. Each entry is a
+        # repo-relative path to a .ipynb file. The list is curated: lectures
+        # that require GPU, network, multiprocessing spawn, or proprietary
+        # data are intentionally excluded; see plan/ docs for the inclusion
+        # rule. WP-12 set up the lock + tier-0 entries; this job now covers
+        # the full dependency-light tier (74 lectures as of 2026-08-27).
         run: |
           mkdir -p build/exec
+          mapfile -t NOTEBOOKS < <(grep -v '^\s*#' ci/deterministic_notebooks.txt | grep -v '^\s*$')
+          if [ ${#NOTEBOOKS[@]} -eq 0 ]; then
+            echo "::error::ci/deterministic_notebooks.txt is empty"
+            exit 1
+          fi
+          echo "Executing ${#NOTEBOOKS[@]} deterministic lectures from ci/deterministic_notebooks.txt"
+          for nb in "${NOTEBOOKS[@]}"; do
+            if [ ! -f "$nb" ]; then
+              echo "::error::Listed notebook not found: $nb"
+              exit 1
+            fi
+          done
           jupyter nbconvert --to notebook --execute \
             --ExecutePreprocessor.timeout=600 \
             --output-dir build/exec \
-            "01-Foundations/03_Python_Fundamentals_Data_Types.ipynb" \
-            "01-Foundations/12_NumPy.ipynb" \
-            "02-Numerical-Methods/04_Root_Finding.ipynb" \
-            "03-Economic-Modeling/02_DP_with_Continuous_States.ipynb"
+            "${NOTEBOOKS[@]}"
 
       - name: Upload executed notebooks
         if: always()
@@ -140,3 +156,34 @@ jobs:
         with:
           name: executed-notebooks
           path: build/exec/
+
+  docs-strict:
+    # mkdocs --strict catches broken anchor links, missing nav targets,
+    # missing referenced images, and unreferenced / missing markdown files.
+    # The cheat-sheet (WP-8) and bibliography (WP-9) sections added new nav
+    # entries whose links have only been checked manually; this job makes
+    # any regression a CI failure.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-docs-${{ hashFiles('mkdocs.yml', 'docs/**') }}
+
+      - name: Install mkdocs + theme + plugins
+        run: |
+          pip install --upgrade pip
+          pip install mkdocs mkdocs-material
+          pip install mkdocs-git-revision-date-localized-plugin mkdocs-minify-plugin
+          pip install mkdocs-glightbox mkdocs-redirects
+
+      - name: Build docs in strict mode
+        run: mkdocs build --strict

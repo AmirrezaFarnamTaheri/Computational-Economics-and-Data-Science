@@ -241,3 +241,6 @@ dask-worker-space/
 !README.md
 !requirements.txt
 !environment.yml
+
+# Agent scratchpads (session intermediates)
+.agent_scratchpad/
