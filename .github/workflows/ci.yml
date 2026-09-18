@@ -36,7 +36,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.13'
 
       - name: Cache pip
         uses: actions/cache@v4
@@ -169,6 +169,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Full history is required so mkdocs-git-revision-date-localized
+          # can resolve page dates; a shallow clone makes it warn, which
+          # fails `mkdocs build --strict`.
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
