@@ -44,7 +44,7 @@ def test_relative_images_resolve_inside_repository():
             parent = track_dir
 
         html = generator.rewrite_links("![fig](../images/foo/plot.png)", FakeNotebook())
-        expected = f"{generator.RAW}/images/foo/plot.png"
+        expected = generator.raw_url(stub)
         assert html == f"![fig]({expected})", html
     finally:
         # The stub is test scaffolding, not a committed asset; leaving it in the
@@ -72,7 +72,7 @@ def test_repository_file_links_resolve_to_raw_urls():
             "(../LICENSE)"
         )
         out = generator.rewrite_links(badge, nb)
-        assert f"{generator.RAW}/LICENSE)" in out, out
+        assert f"{generator.raw_url(generator.ROOT / 'LICENSE')})" in out, out
         # The badge image itself is untouched (external URL).
         assert "img.shields.io/badge/Code%20License-MIT-yellow.svg" in out
     finally:
@@ -104,7 +104,30 @@ def test_plain_relative_data_links_resolve_to_raw_urls():
     target.write_text("x\n1\n", encoding="utf-8")
     try:
         out = generator.rewrite_links("[sample](../data/plain_link_probe.csv)", nb)
-        assert out == f"[sample]({generator.RAW}/data/plain_link_probe.csv)"
+        assert out == f"[sample]({generator.raw_url(target)})"
     finally:
         nb.unlink()
         target.unlink()
+
+
+def test_notebook_links_stay_inside_generated_docs():
+    track_dir = generator.ROOT / "01-Foundations"
+    source = track_dir / "source_link_probe.ipynb"
+    target = track_dir / "target_link_probe.ipynb"
+    source.write_text("{}", encoding="utf-8")
+    target.write_text("{}", encoding="utf-8")
+    try:
+        out = generator.rewrite_links(
+            "[next](target_link_probe.ipynb#2.1-Next-Step)", source
+        )
+        assert out == "[next](target_link_probe.md#21-next-step)"
+        assert "github.com" not in out
+    finally:
+        source.unlink()
+        target.unlink()
+
+
+def test_raw_links_are_immutable_commit_links():
+    url = generator.raw_url(generator.ROOT / "LICENSE")
+    assert "/main/" not in url
+    assert generator.path_revision(str((generator.ROOT / "LICENSE").resolve())) in url
