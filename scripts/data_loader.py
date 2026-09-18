@@ -40,6 +40,13 @@ def cached_download(
     """Download *url* once and return a deterministic local cache path."""
     target = CACHE_DIR / cache_name
     if target.exists() and not refresh:
+        if sha256 is not None:
+            actual = hashlib.sha256(target.read_bytes()).hexdigest()
+            if actual.lower() != sha256.lower():
+                raise ValueError(
+                    f"SHA-256 mismatch for cached {target}: "
+                    f"expected {sha256}, got {actual}"
+                )
         return target
     response = requests.get(url, timeout=timeout)
     response.raise_for_status()
