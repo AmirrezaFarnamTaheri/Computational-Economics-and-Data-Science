@@ -51,6 +51,21 @@ def source(cell: dict) -> str:
 
 
 def rewrite_links(text: str, notebook: Path) -> str:
+    def repository_file_url(target: str) -> str | None:
+        file_part, _sep, _frag = target.strip().partition("#")
+        if not file_part:
+            return None
+        resolved = (notebook.parent / file_part).resolve()
+        try:
+            rel = resolved.relative_to(ROOT.resolve()).as_posix()
+        except ValueError:
+            return None
+        # Only rewrite links that point at a committed/local repository file;
+        # nonexistent paths must remain visible so the docs audit can flag them.
+        if not (ROOT.resolve() / rel).is_file():
+            return None
+        return f"{RAW}/{rel}"
+
     def image(match: re.Match[str]) -> str:
         target = match.group(2).strip()
         if re.match(r"^(?:https?:|data:|attachment:)", target, re.I):
@@ -73,36 +88,21 @@ def rewrite_links(text: str, notebook: Path) -> str:
         suffix = f"#{anchor[0]}" if anchor else ""
         return f"{match.group(1)}{REPO}/blob/main/{rel}{suffix}{match.group(3)}"
 
-    def file_link(match: re.Match[str]) -> str:
+    def badge_file_link(match: re.Match[str]) -> str:
         target = match.group(1).strip()
-        file_part, _sep, _frag = target.partition("#")
-        if not file_part:
-            return match.group(0)
-        resolved = (notebook.parent / file_part).resolve()
-        try:
-            rel = resolved.relative_to(ROOT.resolve()).as_posix()
-        except ValueError:
-            return match.group(0)
-        # Only rewrite links that point at a committed file; a link to a
-        # nonexistent path is a notebook-side defect and should survive
-        # verbatim so the docs audit can report it.
-        if not (ROOT.resolve() / rel).is_file():
-            return match.group(0)
-        return f"]({RAW}/{rel})"
-
-    text = LINK_RE.sub(notebook_link, IMAGE_RE.sub(image, text))
-    text = BADGE_FILE_RE.sub(file_link, text)
+        url = repository_file_url(target)
+        return match.group(0) if url is None else f"]({url})"
 
     def plain_file_link(match: re.Match[str]) -> str:
         target = match.group(1).strip()
-        rewritten = file_link(
-            re.match(r".*", f"]({target})")
-        )
-        if rewritten == f"]({target})":
+        url = repository_file_url(target)
+        if url is None:
             return match.group(0)
-        label = match.group(0).split("](", 1)[0] + "]("
-        return label + rewritten[2:]
+        prefix = match.group(0).rsplit("](", 1)[0]
+        return f"{prefix}]({url})"
 
+    text = LINK_RE.sub(notebook_link, IMAGE_RE.sub(image, text))
+    text = BADGE_FILE_RE.sub(badge_file_link, text)
     return PLAIN_FILE_RE.sub(plain_file_link, text)
 
 
