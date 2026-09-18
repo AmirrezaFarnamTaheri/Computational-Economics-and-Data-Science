@@ -51,8 +51,8 @@ The log-likelihood surface encodes both fit and uncertainty. Its slope (the scor
 > **Learning path:** Building on [`01_Linear_Model_and_OLS.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/06-Econometrics/01_Linear_Model_and_OLS.ipynb); next continue with [`02B_MLE_Optimization_and_Applications.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/06-Econometrics/02B_MLE_Optimization_and_Applications.ipynb).
 
 ### Table of Contents
-1. [Introduction: The Principle of Maximum Likelihood](#intro)
-2. [The Likelihood and Log-Likelihood Functions](#likelihood)
+1. [Introduction: The Principle of Maximum Likelihood](#1-introduction-the-principle-of-maximum-likelihood)
+2. [The Likelihood and Log-Likelihood Functions](#the-lens-likelihood-as-geometry)
 3. [The Geometry of the Log-Likelihood Function](#geometry)
    - [The Score Vector](#score)
    - [The Fisher Information Matrix](#info)

@@ -56,7 +56,7 @@ Identification schemes (like Cholesky ordering) impose economic structure on the
 
 ### Table of Contents
 1. [The Lens: Identification in Multivariate Systems](#the-lens-identification-in-multivariate-systems)
-2. [The Identification Problem](#identification-problem)
+2. [The Identification Problem](#1-the-identification-problem)
 3. [Summary](#summary)
 
 <a id='cholesky-lab'></a>

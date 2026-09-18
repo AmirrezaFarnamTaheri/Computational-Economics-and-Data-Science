@@ -52,7 +52,7 @@ Empirical economics is facing a data deluge. Administrative records, scanner dat
 3.  [Dask DataFrames: Parallelizing Pandas](#3-dask-dataframes-parallelizing-pandas)
     *   [Example: Analyzing a Large CSV](#example-analyzing-a-large-csv)
 4.  [Dask Arrays: Parallelizing NumPy](#4-dask-arrays-parallelizing-numpy)
-5.  [Summary](#5-summary)
+5.  [Summary](#summary)
 
 ### 1. Introduction: The Scaling Problem
 

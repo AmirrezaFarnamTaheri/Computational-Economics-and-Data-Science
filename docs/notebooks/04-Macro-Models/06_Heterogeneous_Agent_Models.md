@@ -65,7 +65,7 @@ We need to understand how inequality affects the macroeconomy and vice-versa.
 4.  [Policy Transmission in HANK Models](#4-policy-transmission-in-hank-models)
     *   [The Importance of the MPC Distribution](#the-importance-of-the-mpc-distribution)
     *   [The Indirect Effects of Monetary Policy](#the-indirect-effects-of-monetary-policy)
-5.  [Summary](#5-summary)
+5.  [Summary](#summary)
 6.  [Exercises](#6-exercises)
 
 ### 1. Introduction: The HANK Revolution

@@ -46,8 +46,8 @@ pd.options.display.float_format = "{:,.2f}".format
 7. [Reshaping Data: Pivoting and Stacking](#reshaping-data-stack-unstack-and-pivot_table)
 8. [Time Series Analysis](#time-series-analysis)
 9. [Writing Clean and Performant Pandas Code](#writing-clean-and-performant-pandas-code)
-    - [Method Chaining and `.pipe()`](#method-chaining-and-pipe))
-    - [Memory Savings with Categorical Data](#using-categorical-data-for-memory-and-performance)
+    - [Method Chaining and `.pipe()`](#method-chaining-and-pipe)
+    - [Memory Savings with Categorical Data](#memory-savings-with-categorical-data)
 10. [Summary](#summary)
 11. [Exercises](#exercises)
 

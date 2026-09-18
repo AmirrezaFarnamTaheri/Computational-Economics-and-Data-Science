@@ -45,19 +45,19 @@ if not PD_READER_AVAILABLE: print("The 'pandas_datareader' library is not instal
 
 ### Table of Contents
 
-1.  [The Unifying Theory: The Stochastic Discount Factor (SDF)](#1-the-unifying-theory-the-stochastic-discount-factor-sdf))
+1.  [The Unifying Theory: The Stochastic Discount Factor (SDF)](#1-the-unifying-theory-the-stochastic-discount-factor-sdf)
     - [Deriving the SDF from Micro-foundations](#deriving-the-sdf-from-micro-foundations)
-2.  [Model 1: The Consumption-Based CAPM (CCAPM)](#2-model-1-the-consumption-based-capm-ccapm))
+2.  [Model 1: The Consumption-Based CAPM (CCAPM)](#2-model-1-the-consumption-based-capm-ccapm)
     - [The Equity Premium Puzzle and the Hansen-Jagannathan Bound](#the-equity-premium-puzzle-and-the-hansen-jagannathan-bound)
-3.  [Model 2: The Capital Asset Pricing Model (CAPM)](#3-model-2-the-capital-asset-pricing-model-capm))
+3.  [Model 2: The Capital Asset Pricing Model (CAPM)](#3-model-2-the-capital-asset-pricing-model)
 4.  [Model 3: The Fama-French Five-Factor Model](#4-model-3-the-fama-french-five-factor-model)
 5.  [Testing Asset Pricing Models: Fama-MacBeth Regressions](#5-testing-asset-pricing-models-fama-macbeth-regressions)
-6.  [Unified Case Study](#6-unified-case-study)
+6.  [Unified Case Study](#6-unified-case-study-testing-factor-models)
     - [Data Collection](#data-collection)
     - [Time-Series Regressions (First Pass)](#time-series-regressions-first-pass))
     - [Fama-MacBeth Regressions (Second Pass)](#fama-macbeth-regressions-second-pass))
     - [Analysis and Interpretation](#analysis-and-interpretation)
-7.  [Summary](#7-summary)
+7.  [Summary](#summary)
 8.  [Exercises](#8-exercises)
 
 ### 1. The Unifying Theory: The Stochastic Discount Factor (SDF)

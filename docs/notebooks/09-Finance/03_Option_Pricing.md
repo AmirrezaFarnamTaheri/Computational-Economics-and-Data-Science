@@ -66,7 +66,7 @@ except ImportError:
 3.  [Model 1: The Binomial Asset Pricing Model](#3-model-1-the-binomial-asset-pricing-model)
     - [Constructing a Binomial Tree](#constructing-a-binomial-tree)
     - [The Replicating Portfolio and Risk-Neutral Pricing](#the-replicating-portfolio-and-risk-neutral-pricing)
-4.  [Model 2: The Black-Scholes-Merton (BSM) Model](#4-model-2-the-black-scholes-merton-bsm)-Model)
+4.  [Model 2: The Black-Scholes-Merton (BSM) Model](#4-model-2-the-black-scholes-merton-bsm-model)
     - [Deriving the BSM Partial Differential Equation](#deriving-the-bsm-partial-differential-equation)
     - [The BSM Formula for European Options](#the-bsm-formula-for-european-options)
 5.  [Risk Management: The Greeks](#5-risk-management-the-greeks)
@@ -76,7 +76,7 @@ except ImportError:
 7.  [Real-World Application: The Volatility Smile](#7-real-world-application-the-volatility-smile)
     - [Case Study: Calculating Implied Volatility for AAPL Options](#case-study-calculating-implied-volatility-for-aapl-options)
 8.  [Beyond Black-Scholes: Handling the Smile](#8-beyond-black-scholes-handling-the-smile)
-9.  [Summary](#9-summary)
+9.  [Summary](#summary)
 10. [Exercises](#10-exercises)
 
 ### 1. Introduction to Options and Payoffs

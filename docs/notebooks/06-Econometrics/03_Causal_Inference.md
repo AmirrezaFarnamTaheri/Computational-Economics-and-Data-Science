@@ -43,9 +43,9 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 
 1. [The Lens: Correlation is not Causation](#the-lens-correlation-is-not-causation)
 2. [The Potential Outcomes Framework](#1-the-potential-outcomes-framework)
-3. [Directed Acyclic Graphs (DAGs) and Causal Identification](#2-directed-acyclic-graphs-dags)-and-Causal-Identification)
+3. [Directed Acyclic Graphs (DAGs) and Causal Identification](#2-directed-acyclic-graphs-dags-and-causal-identification)
 4. [Matching Methods: Controlling for Observables](#3-matching-methods-controlling-for-observables)
-5. [A Bridge to Quasi-Experiments: The Local Average Treatment Effect (LATE)](#4-a-bridge-to-quasi-experiments-the-local-average-treatment-effect-late))
+5. [A Bridge to Quasi-Experiments: The Local Average Treatment Effect (LATE)](#4-a-bridge-to-quasi-experiments-the-local-average-treatment-effect-late)
 6. [Exercises](#5-exercises)
 7. [Summary](#summary)
 

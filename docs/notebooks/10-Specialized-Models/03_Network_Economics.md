@@ -64,8 +64,8 @@ Traditional economics often assumes agents interact anonymously through a centra
 3.  [Application 2: Financial Networks and Systemic Risk](#3-application-2-financial-networks-and-systemic-risk)
     - [Modeling Contagion](#modeling-contagion)
 4.  [Application 3: Production Networks and Aggregate Fluctuations](#4-application-3-production-networks-and-aggregate-fluctuations)
-    - [The Acemoglu et al. (2012) Framework](#the-acemoglu-et-al-2012)-Framework)
-5.  [Summary](#5-summary-and-key-takeaways)
+    - [The Acemoglu et al. (2012) Framework](#the-acemoglu-et-al-2012-framework)
+5.  [Summary](#summary)
 6.  [Exercises](#6-exercises)
 
 ### 1. The Economy as a Network: Concepts and Measures

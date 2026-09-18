@@ -73,14 +73,14 @@ Many modern economic models are computationally intractable with standard method
 
 ### Table of Contents
 1.  [Introduction: Why and When to Optimize](#1-introduction-why-and-when-to-optimize)
-2.  [Just-In-Time (JIT) Compilation with Numba](#2-just-in-time-jit)-Compilation-with-Numba)
+2.  [Just-In-Time (JIT) Compilation with Numba](#2-just-in-time-jit-compilation-with-numba)
 3.  [Parallel Computing: Theory and Practice](#3-parallel-computing-theory-and-practice)
-    *   [The Limits of Parallelization: Amdahl's Law](#the-limits-of-parallelization-amdahls-law)
-    *   [The Global Interpreter Lock (GIL) and Multiprocessing](#the-global-interpreter-lock-gil)-and-Multiprocessing)
+    *   [The Limits of Parallelization: Amdahl's Law](#the-limits-of-parallelization-amdahl)
+    *   [The Global Interpreter Lock (GIL) and Multiprocessing](#the-global-interpreter-lock-gil-and-multiprocessing)
     *   [High-Level Parallelism with Dask](#high-level-parallelism-with-dask)
 4.  [GPU Computing for Massively Parallel Problems](#4-gpu-computing-for-massively-parallel-problems)
 5.  [Profiling: Finding the Bottleneck](#5-profiling-finding-the-bottleneck)
-6.  [Summary](#6-summary)
+6.  [Summary](#summary)
 
 ### 1. Introduction: Why and When to Optimize
 

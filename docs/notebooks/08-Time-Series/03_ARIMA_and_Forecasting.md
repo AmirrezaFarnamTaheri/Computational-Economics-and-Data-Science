@@ -64,19 +64,19 @@ ARIMA extends ARMA by differencing away trends so the remaining dynamics can be 
 
 ### Table of Contents
 
-1.  [**Introduction: Handling Non-Stationary Time Series**](#intro)
-2.  [**Integrated Processes and Differencing**](#integrated)
-    - [The Random Walk: A Prototypical I(1) Process](#random-walk)
-3.  [**The Box-Jenkins Methodology**](#box-jenkins)
-4.  [**The ARIMA(p,d,q) Model**](#arima)
-5.  [**Forecasting with ARIMA**](#forecasting)
-    - [Case Study: Forecasting US Industrial Production](#case-study)
-6.  [**Model Validation and Evaluation**](#validation)
+1.  [**Introduction: Handling Non-Stationary Time Series**](#1-introduction-handling-non-stationary-time-series)
+2.  [**Integrated Processes and Differencing**](#2-integrated-processes-and-differencing)
+    - [The Random Walk: A Prototypical I(1) Process](#the-random-walk-a-prototypical-i1-process)
+3.  [**The Box-Jenkins Methodology**](#3-the-box-jenkins-methodology)
+4.  [**The ARIMA(p,d,q) Model**](#4-the-arimapdq-model)
+5.  [**Forecasting with ARIMA**](#5-forecasting-with-arima)
+    - [Case Study: Forecasting US Industrial Production](#case-study-forecasting-us-industrial-production)
+6.  [**Model Validation and Evaluation**](#6-model-validation-and-evaluation)
     - [Time Series Cross-Validation](#cv)
     - [Code Lab: Evaluating Forecast Accuracy](#code-cv)
-7.  [**Automated Forecasting with Prophet**](#prophet)
-8.  [**Exercises**](#exercises)
-9.  [**Summary and Key Takeaways**](#summary)
+7.  [**Automated Forecasting with Prophet**](#7-automated-forecasting-with-prophet)
+8.  [**Exercises**](#8-exercises)
+9.  [**Summary and Key Takeaways**](#9-summary-and-key-takeaways)
 
 ### First Principles: The Components of Prophet
 

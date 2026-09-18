@@ -34,15 +34,15 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 
 ### Table of Contents
 
-1.  [**What is Multi-modal Learning?**](#intro)
-2.  [**Economic Applications**](#econ-apps)
-3.  [**Fusion Strategies**](#fusion)
-    - [Early Fusion (Feature-level)](#early-fusion)
-    - [Late Fusion (Decision-level)](#late-fusion)
-    - [Intermediate/Hybrid Fusion](#intermediate-fusion)
-4.  [**Code Lab: Fusing Tabular and Text Data**](#code-lab)
-5.  [**Challenges in Multi-modal Learning**](#challenges)
-6.  [**Summary**](#summary)
+1.  [**What is Multi-modal Learning?**](#1-what-is-multi-modal-learning)
+2.  [**Economic Applications**](#2-economic-applications)
+3.  [**Fusion Strategies**](#3-fusion-strategies)
+    - [Early Fusion (Feature-level)](#31-early-fusion-feature-level)
+    - [Late Fusion (Decision-level)](#32-late-fusion-decision-level)
+    - [Intermediate/Hybrid Fusion](#33-intermediate-or-hybrid-fusion)
+4.  [**Code Lab: Fusing Tabular and Text Data**](#4-code-lab-fusing-tabular-and-text-data)
+5.  [**Challenges in Multi-modal Learning**](#5-challenges-in-multi-modal-learning)
+6.  [**Summary**](#6-summary)
 
 ## The Lens: Combining Multiple Data Sources
 **What problem are we solving?**

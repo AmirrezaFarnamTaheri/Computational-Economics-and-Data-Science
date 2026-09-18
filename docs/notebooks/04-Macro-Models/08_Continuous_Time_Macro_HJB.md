@@ -30,11 +30,11 @@ The economic question is not simply whether we can solve a partial differential 
 
 ## Table of Contents
 
-1. [Continuous-time Bellman equation](#continuous-time-bellman-equation)
-2. [Upwind discretization](#upwind-discretization)
-3. [Executable HJB solver](#executable-hjb-solver)
-4. [Stationary Fokker-Planck distribution](#stationary-fokker-planck-distribution)
-5. [Diagnostics and economic interpretation](#diagnostics-and-economic-interpretation)
+1. [Continuous-time Bellman equation](#1-continuous-time-bellman-equation)
+2. [Upwind discretization](#2-upwind-discretization)
+3. [Executable HJB solver](#3-executable-hjb-solver)
+4. [Stationary Fokker-Planck distribution](#4-stationary-fokker-planck-distribution)
+5. [Diagnostics and economic interpretation](#5-diagnostics-and-economic-interpretation)
 6. [Exercises](#exercises)
 
 ```python

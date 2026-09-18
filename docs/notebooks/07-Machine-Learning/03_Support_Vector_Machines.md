@@ -31,12 +31,12 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 
 ### Table of Contents
 
-1.  [**The Geometric Intuition: Maximal Margin Classifier**](#intro)
-2.  [**Support Vectors and the Soft Margin**](#soft-margin)
-3.  [**The Kernel Trick for Non-linear Data**](#kernel-trick)
-4.  [**Code Lab: SVM for Classification**](#code-lab)
-5.  [**When to Use SVMs**](#when-to-use)
-6.  [**Summary**](#summary)
+1.  [**The Geometric Intuition: Maximal Margin Classifier**](#1-the-geometric-intuition-maximal-margin-classifier)
+2.  [**Support Vectors and the Soft Margin**](#2-support-vectors-and-the-soft-margin)
+3.  [**The Kernel Trick for Non-linear Data**](#3-the-kernel-trick-for-non-linear-data)
+4.  [**Code Lab: SVM for Classification**](#4-code-lab-svm-for-classification)
+5.  [**When to Use SVMs**](#5-when-to-use-svms)
+6.  [**Summary**](#6-summary)
 
 ## The Lens: Maximum-Margin Classification
 **What problem are we solving?**

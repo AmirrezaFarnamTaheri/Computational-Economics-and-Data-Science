@@ -27,10 +27,10 @@ plt.rcParams.update({'figure.dpi': 130, 'font.size': 12, 'axes.titlesize': 'x-la
 
 1.  [Introduction: The World of Ticks and Trades](#1-introduction-the-world-of-ticks-and-trades)
 2.  [Handling Tick Data](#2-handling-tick-data)
-3.  [The Limit Order Book (LOB) and Key Concepts](#3-the-limit-order-book-lob)-and-Key-Concepts)
+3.  [The Limit Order Book (LOB) and Key Concepts](#3-the-limit-order-book-lob-and-key-concepts)
 4.  [Realized Volatility and Microstructure Noise](#4-realized-volatility-and-microstructure-noise)
-5.  [Order Flow Imbalance (OFI)](#5-order-flow-imbalance-ofi))
-6.  [Summary](#6-summary)
+5.  [Order Flow Imbalance (OFI)](#5-order-flow-imbalance-ofi)
+6.  [Summary](#summary)
 
 ## The Lens: Finance at the Speed of Light
 **What economic problem are we solving?**

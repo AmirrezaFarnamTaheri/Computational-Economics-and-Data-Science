@@ -83,7 +83,7 @@ Linear algebra is the computational engine behind virtually every quantitative m
 - [4.3 Eigenvalues and Eigenvectors](#43-eigenvalues-and-eigenvectors)
 - [4.4 Matrix Decompositions](#44-matrix-decompositions)
 - [4.5 Vector and Matrix Norms](#45-vector-and-matrix-norms)
-- [4.6 Important Theorems (Summary)](#46-important-theorems-summary))
+- [4.6 Important Theorems (Summary)](#46-important-theorems-summary)
 - [Summary](#summary)
 
 **Historical Note:** While the concepts of determinants and solving systems of linear equations have been studied for centuries, the formalization of matrices and matrix algebra is largely a 19th-century development. The term "matrix" was coined by **James Joseph Sylvester** in 1850. **Arthur Cayley** developed the algebraic properties of matrices, including multiplication and inversion, making him a key figure in the founding of modern linear algebra.

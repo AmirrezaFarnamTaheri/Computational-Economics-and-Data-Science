@@ -19,7 +19,7 @@ import pandas as pd
 
 ### Table of Contents
 1. [The Lens: Discrete Choices with Conditional Value Functions](#the-lens-discrete-choices-with-conditional-value-functions)
-2. [The Rust (1987) Model: Optimal Replacement](#the-rust-1987)-Model:-Optimal-Replacement)
+2. [The Rust (1987) Model: Optimal Replacement](#1-the-rust-1987-model-optimal-replacement)
 3. [Summary](#summary)
 
 > **Historical Context — Harold Zurcher's buses (1987).** John Rust's 1987 Econometrica paper modeled a Madison, Wisconsin bus mechanic replacing engines optimally under uncertainty — the first landmark pairing of dynamic programming with micro panel data. Structural estimation as practiced across IO, labor, and macro largely traces to this study of grease and mileage.

@@ -39,14 +39,14 @@ if not SYMPY_AVAILABLE: print("The 'sympy' library is not installed (`pip instal
     - [Visualizing Geometric Brownian Motion](#visualizing-geometric-brownian-motion)
     - [Itô's Lemma: The Chain Rule for Stochastic Processes](#itos-lemma-the-chain-rule-for-stochastic-processes)
 3.  [Dynamic Optimization in Continuous Time: The HJB Equation](#3-dynamic-optimization-in-continuous-time-the-hjb-equation)
-4.  [Application 1: Merton's Portfolio Problem (1969)](#4-application-1-mertons-portfolio-problem-1969))
+4.  [Application 1: Merton's Portfolio Problem (1969)](#4-application-1-mertons-portfolio-problem-1969)
     - [The Complete Symbolic Solution](#the-complete-symbolic-solution)
     - [Numerical Analysis and Comparative Statics](#numerical-analysis-and-comparative-statics)
     - [Simulating the Optimal Wealth Path](#simulating-the-optimal-wealth-path)
 5.  [Application 2: Linking HJB to Arbitrage-Free Pricing](#5-application-2-linking-hjb-to-arbitrage-free-pricing)
     - [The Martingale Pricing Framework and State-Price Density](#the-martingale-pricing-framework-and-state-price-density)
     - [Deriving the Black-Scholes-Merton PDE](#deriving-the-black-scholes-merton-pde)
-6.  [Summary](#6-summary)
+6.  [Summary](#summary)
 7.  [Exercises](#7-exercises)
 
 ### 1. Introduction to Continuous Time
@@ -206,15 +206,19 @@ else:
     display(Eq(symbols('C^*/W'), cancel(C_final / W)))
     display(Eq(symbols('alpha^*'), cancel(alpha_final)))
 
-    # 6. Substitute policies back into HJB and solve for the constant A
-    hjb_substituted = hjb_objective.subs([(C, C_final), (alpha, alpha_final), (V.diff(W), V_guess.diff(W)), (V.diff(W,2), V_guess.diff(W,2))])
-    hjb_equation = Eq(rho * V_guess, hjb_substituted)
-    A_sol = solve(hjb_equation, A)[0]
+    # 6. Recover the constant A from the consumption-to-wealth ratio
+    # The HJB residual is not a polynomial in A (it mixes A and A**(1/gamma)),
+    # so `solve(hjb_equation, A)` is not tractable in closed form. Because the
+    # optimal policies depend on the value function only through the ratio
+    # V'/V'', the consumption-to-wealth ratio delta = C*/W is the quantity that
+    # the HJB pins down, and A then follows from delta directly.
+    delta = (rho - (1 - gamma) * (r + (mu - r)**2 / (2 * gamma * sigma**2))) / gamma
+    A_sol = delta**(-gamma)
 
     print("> **Note:** **Step 3: Solving for the Value Function**")
     display(Markdown(r"Substituting the optimal policies back into the HJB allows us to solve for the constant $A$. The consumption-to-wealth ratio is constant, so we can define $\delta = C^*/W$. The solution for $A$ gives the value function:"))
-    delta = solve(Eq(symbols('C/W'), C_final/W), symbols('A'))[0]
-    display(Eq(symbols('delta'), delta**(-gamma)))
+    display(Eq(symbols('delta'), delta))
+    display(Eq(symbols('A'), A_sol))
 ```
 
 #### Numerical Analysis and Comparative Statics

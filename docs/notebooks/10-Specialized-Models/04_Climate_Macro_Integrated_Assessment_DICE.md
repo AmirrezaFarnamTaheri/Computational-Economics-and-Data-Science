@@ -29,12 +29,12 @@ This notebook builds a deliberately simplified **DICE-inspired** model rather th
 
 ## Table of Contents
 
-1. [A compact economy-climate system](#economy-climate)
-2. [Simulation engine](#simulation-engine)
-3. [Policy parameterization](#policy-parameterization)
-4. [Optimal abatement experiment](#optimal-abatement)
-5. [Marginal emissions damage](#marginal-damage)
-6. [Sensitivity and exercises](#sensitivity)
+1. [A compact economy-climate system](#1-a-compact-economy-climate-system)
+2. [Simulation engine](#2-simulation-engine)
+3. [Policy parameterization](#3-policy-parameterization)
+4. [Optimal abatement experiment](#4-optimal-abatement-experiment)
+5. [Marginal emissions damage](#5-marginal-emissions-damage)
+6. [Sensitivity and exercises](#6-exercises-and-sensitivity-analysis)
 
 ```python
 import numpy as np

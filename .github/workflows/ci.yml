@@ -42,14 +42,14 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-test-${{ hashFiles('requirements.txt') }}
+          key: ${{ runner.os }}-pip-test-${{ hashFiles('requirements-test.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-test-
 
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install pytest nbformat numpy scipy
+          pip install -r requirements-test.txt
 
       - name: Run tests
         run: pytest tests/ -v --tb=short

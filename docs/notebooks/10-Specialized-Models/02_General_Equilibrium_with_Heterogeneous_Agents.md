@@ -53,11 +53,11 @@ The **Aiyagari (1994) model** is the foundational framework for analyzing the ec
 ## Table of Contents
 
 1. [Beyond the Representative Agent](#1-beyond-the-representative-agent-the-need-for-heterogeneity)
-2. [The Aiyagari (1994) Model](#2-the-aiyagari-1994)-Model:-A-Canon-of-Macroeconomics)
+2. [The Aiyagari (1994) Model](#2-the-aiyagari-1994-model-a-canon-of-macroeconomics)
 3. [Computational Strategy](#3-computational-strategy-solving-the-model)
 4. [Code Implementation and Results](#4-code-implementation-and-results)
 5. [The Importance of the Aiyagari Model](#5-the-importance-of-the-aiyagari-model)
-6. [Summary](#6-summary-and-key-takeaways)
+6. [Summary](#summary)
 7. [Exercises](#7-exercises)
 
 ### 1. Beyond the Representative Agent: The Need for Heterogeneity

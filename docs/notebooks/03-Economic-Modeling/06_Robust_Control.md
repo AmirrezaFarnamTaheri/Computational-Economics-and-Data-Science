@@ -57,8 +57,8 @@ This turns a single-agent optimization problem into a zero-sum game against a ma
     *   [The Robust Bellman Equation](#the-robust-bellman-equation)
     *   [The Worst-Case Belief](#the-worst-case-belief)
 3.  [Application: Robust Precautionary Savings](#3-application-robust-precautionary-savings)
-4.  [Alternative: Smooth Ambiguity Aversion (KMM)](#4-alternative-smooth-ambiguity-aversion-kmm))
-5.  [Summary](#5-summary)
+4.  [Alternative: Smooth Ambiguity Aversion (KMM)](#4-alternative-smooth-ambiguity-aversion-kmm)
+5.  [Summary](#summary)
 6.  [Exercises](#6-exercises)
 
 ### 1. From Risk to Ambiguity

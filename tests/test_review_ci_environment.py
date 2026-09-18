@@ -6,9 +6,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
+# Git tracks the workflow in lowercase; a case-insensitive local checkout can
+# mask a mismatch that breaks the Linux runner.
+WORKFLOW = ROOT / ".github/workflows/ci.yml"
+
 
 def test_ci_exports_only_pip_requirements(tmp_path, monkeypatch):
-    workflow = (ROOT / ".github/workflows/CI.yml").read_text(encoding="utf-8")
+    workflow = WORKFLOW.read_text(encoding="utf-8")
     match = re.search(r"python - <<'PY'\n(.*?)^          PY$", workflow, re.M | re.S)
     assert match is not None
     code = "\n".join(line[10:] for line in match.group(1).splitlines())
@@ -31,7 +35,7 @@ def test_ci_exports_only_pip_requirements(tmp_path, monkeypatch):
 
 
 def test_deterministic_python_matches_lock():
-    workflow = (ROOT / ".github/workflows/CI.yml").read_text(encoding="utf-8")
+    workflow = WORKFLOW.read_text(encoding="utf-8")
     deterministic = workflow.split("  deterministic-execution:", 1)[1].split(
         "  docs-strict:", 1
     )[0]

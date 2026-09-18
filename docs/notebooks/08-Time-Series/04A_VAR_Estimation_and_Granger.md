@@ -53,10 +53,10 @@ The economy is a deeply interconnected system. A hike in interest rates doesn't 
 
 ### Table of Contents
 1. [The Lens: The Web of Macroeconomics](#the-lens-the-web-of-macroeconomics)
-2. [Introduction: From Univariate to Multivariate Time Series](#intro)
-3. [The VAR(p) Model](#var-model)
-   - [Estimation and Lag Selection](#estimation)
-4. [Granger Causality](#granger)
+2. [Introduction: From Univariate to Multivariate Time Series](#1-introduction-from-univariate-to-multivariate-time-series)
+3. [The VAR(p) Model](#2-the-varp-model)
+   - [Estimation and Lag Selection](#estimation-and-lag-selection)
+4. [Granger Causality](#3-granger-causality)
 5. [Summary](#summary)
 
 <a id='intro'></a>

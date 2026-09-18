@@ -60,7 +60,7 @@ Economics often involves solving models that require millions of iterations—es
 3.  [Numba with NumPy](#3-numba-with-numpy)
 4.  [Automatic Parallelization](#4-automatic-parallelization)
 5.  [When to Use Numba](#5-when-to-use-numba)
-6.  [Summary](#6-summary)
+6.  [Summary](#summary)
 
 ### 1. Introduction
 

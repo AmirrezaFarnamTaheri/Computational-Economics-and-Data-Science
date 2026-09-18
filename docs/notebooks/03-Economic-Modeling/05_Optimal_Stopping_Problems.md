@@ -68,7 +68,7 @@ The solution is characterized by a **Reservation Strategy**: a threshold state (
     *   [From Bellman to HJB](#from-bellman-to-hjb)
     *   [Application: Irreversible Investment under Uncertainty](#application-irreversible-investment-under-uncertainty)
 4.  [Application 2: American Option Pricing](#4-application-2-american-option-pricing)
-5.  [Summary](#5-summary)
+5.  [Summary](#summary)
 6.  [Exercises](#6-exercises)
 
 ### 1. The Structure of Optimal Stopping Problems

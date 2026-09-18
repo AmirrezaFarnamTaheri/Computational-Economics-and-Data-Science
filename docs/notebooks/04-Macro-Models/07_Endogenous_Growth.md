@@ -58,14 +58,14 @@ This notebook models the economics of ideas.
 
 ## Table of Contents
 1.  [The Economics of Ideas](#1-the-economics-of-ideas)
-2.  [The Romer (1990) Model: Expanding Variety](#2-the-romer-1990)-Model:-Expanding-Variety)
+2.  [The Romer (1990) Model: Expanding Variety](#2-the-romer-1990-model-expanding-variety)
     *   [The Model Environment](#the-model-environment)
     *   [Solving for the Balanced Growth Path](#solving-for-the-balanced-growth-path)
     *   [Welfare Analysis: Market vs. Planner](#welfare-analysis-market-vs-planner)
 3.  [The Uzawa-Lucas Model: Human Capital](#3-the-uzawa-lucas-model-human-capital)
 4.  [Application: Growth and the Environment](#4-application-growth-and-the-environment)
 5.  [Critiques and Extensions: Semi-Endogenous Growth](#5-critiques-and-extensions-semi-endogenous-growth)
-6.  [Summary](#6-summary)
+6.  [Summary](#summary)
 7.  [Exercises](#7-exercises)
 
 ### 1. The Economics of Ideas

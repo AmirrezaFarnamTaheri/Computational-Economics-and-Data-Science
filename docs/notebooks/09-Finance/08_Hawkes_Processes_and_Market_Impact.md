@@ -28,11 +28,11 @@ The economic question is whether observed clustering reflects an endogenous feed
 
 ## Table of Contents
 
-1. [Self-exciting point processes](#hawkes-model)
-2. [Stability and branching](#stability)
-3. [Ogata thinning](#ogata)
-4. [Intensity diagnostics](#intensity-diagnostics)
-5. [Square-root market impact](#market-impact)
+1. [Self-exciting point processes](#1-self-exciting-point-processes)
+2. [Stability and branching](#2-stability-and-branching)
+3. [Ogata thinning](#3-ogata-thinning)
+4. [Intensity diagnostics](#4-intensity-diagnostics)
+5. [Square-root market impact](#5-square-root-market-impact)
 6. [Exercises](#exercises)
 
 ```python

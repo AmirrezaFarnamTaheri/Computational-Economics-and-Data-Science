@@ -41,19 +41,19 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 
 ### Table of Contents
 
-1.  [**Introduction: Networks with Memory**](#intro)
-2.  [**The Simple RNN: A Formal View**](#formal-rnn)
-3.  [**Training RNNs: Backpropagation Through Time (BPTT)**](#bptt)
-    - [The Vanishing and Exploding Gradient Problem](#gradients)
-4.  [**Advanced RNN Architectures**](#advanced)
+1.  [**Introduction: Networks with Memory**](#1-introduction-networks-with-memory)
+2.  [**The Simple RNN: A Formal View**](#2-the-simple-rnn-a-formal-view)
+3.  [**Training RNNs: Backpropagation Through Time (BPTT)**](#3-training-rnns-backpropagation-through-time-bptt)
+    - [The Vanishing and Exploding Gradient Problem](#the-vanishing-and-exploding-gradient-problem)
+4.  [**Advanced RNN Architectures**](#4-advanced-rnn-architectures)
     - [Deep (Stacked) RNNs](#deep-rnn)
-    - [Bidirectional RNNs](#bidirectional-rnn)
-5.  [**Implementation and Applications**](#implementation)
-    - [Application 1: Time Series Forecasting](#app-ts)
-    - [Application 2: Sentiment Analysis of Financial News](#app-nlp)
-6.  [**A From-Scratch RNN Cell**](#scratch)
-7.  [**Exercises**](#exercises)
-8.  [**Summary and Key Takeaways**](#summary)
+    - [Bidirectional RNNs](#42-bidirectional-rnns)
+5.  [**Implementation and Applications**](#5-implementation-and-applications)
+    - [Application 1: Time Series Forecasting](#application-1-time-series-forecasting)
+    - [Application 2: Sentiment Analysis of Financial News](#application-2-sentiment-analysis-of-financial-news)
+6.  [**A From-Scratch RNN Cell**](#6-a-from-scratch-rnn-cell)
+7.  [**Exercises**](#7-exercises)
+8.  [**Summary and Key Takeaways**](#8-summary-and-key-takeaways)
 
 ## The Lens: Learning Sequential Patterns
 **What problem are we solving?**

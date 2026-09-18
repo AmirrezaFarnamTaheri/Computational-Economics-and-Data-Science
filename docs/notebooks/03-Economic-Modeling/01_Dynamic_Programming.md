@@ -46,14 +46,14 @@ except ImportError:
 ## Table of Contents
 
 1.  [The Lens: The Recursive Structure of Choice](#the-lens-the-recursive-structure-of-choice)
-2.  [The Principle of Optimality: A Cake Eating Problem](#the-principle-of-optimality-a-cake-eating-problem)
-3.  [The Bellman Equation for Infinite Horizon Problems](#the-bellman-equation-for-infinite-horizon-problems)
-4.  [A Canonical Model: The Stochastic Growth Model](#a-canonical-model-the-stochastic-growth-model)
-5.  [Numerical Solution Algorithms](#numerical-solution-algorithms)
-6.  [Analysis of the Solution](#analysis-of-the-solution)
-7.  [Simulating the Stationary Distribution](#simulating-the-stationary-distribution)
-8.  [Summary](#summary)
-9.  [Exercises](#exercises)
+2.  [The Principle of Optimality: A Cake Eating Problem](#1-the-principle-of-optimality-a-cake-eating-problem)
+3.  [The Bellman Equation for Infinite Horizon Problems](#2-the-bellman-equation-for-infinite-horizon-problems)
+4.  [A Canonical Model: The Stochastic Growth Model](#3-a-canonical-model-the-stochastic-growth-model)
+5.  [Numerical Solution Algorithms](#4-numerical-solution-algorithms)
+6.  [Analysis of the Solution](#5-analysis-of-the-solution)
+7.  [Simulating the Stationary Distribution](#6-simulating-the-stationary-distribution)
+8.  [Summary](#7-summary)
+9.  [Exercises](#8-exercises)
 
 > **Historical Context — Bellman names dynamic programming (1950s).** Working at RAND, Richard Bellman coined the name 'dynamic programming' to hide the mathematics from Defense Secretary Charles Wilson ('the word research bothered him'), as he later recounted in his autobiography. His 1957 book stated the principle of optimality used in every value function iteration below.
 

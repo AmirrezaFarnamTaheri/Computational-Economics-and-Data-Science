@@ -12,17 +12,17 @@
 
 ### Table of Contents
 
-1.  [**The Counterfactual Problem in Case Studies**](#counterfactual-problem)
-2.  [**The Idea of Synthetic Control**](#idea-synthetic-control)
-3.  [**The Synthetic Control Algorithm**](#algorithm)
-    - [Mathematical Formulation](#math-formulation)
-4.  [**Case Study: The Economic Costs of Conflict in the Basque Country**](#case-study)
-    - [Data and Setup](#data-setup)
-    - [Implementation with a Native Constrained Solver](#implementation)
-    - [Visualizing the Results](#visualizing-results)
-5.  [**Inference and Robustness Checks**](#inference)
-6.  [**Advantages and Limitations**](#advantages-limitations)
-7.  [**Exercises**](#exercises)
+1.  [**The Counterfactual Problem in Case Studies**](#1-the-counterfactual-problem-in-case-studies)
+2.  [**The Idea of Synthetic Control**](#2-the-idea-of-synthetic-control)
+3.  [**The Synthetic Control Algorithm**](#3-the-synthetic-control-algorithm)
+    - [Mathematical Formulation](#mathematical-formulation)
+4.  [**Case Study: The Economic Costs of Conflict in the Basque Country**](#4-case-study-the-economic-costs-of-conflict-in-the-basque-country)
+    - [Data and Setup](#data-and-setup)
+    - [Implementation with a Native Constrained Solver](#implementation-a-transparent-native-solver)
+    - [Visualizing the Results](#visualizing-the-results)
+5.  [**Inference and Robustness Checks**](#5-inference-and-robustness-checks)
+6.  [**Advantages and Limitations**](#6-advantages-and-limitations)
+7.  [**Exercises**](#7-exercises)
 8.  [**Summary and Key Takeaways**](#summary)
 
 <a id='counterfactual-problem'></a>

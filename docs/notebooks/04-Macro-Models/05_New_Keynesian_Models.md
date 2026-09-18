@@ -62,15 +62,15 @@ It boils macroeconomics down to three equations:
 ## Table of Contents
 1.  [The New Keynesian Synthesis](#1-the-new-keynesian-synthesis)
 2.  [Microfoundations of the Three-Equation Model](#2-microfoundations-of-the-three-equation-model)
-    *   [The Dynamic IS Curve](#the-dynamic-is-curve)
+    *   [The Dynamic IS Curve](#the-dynamic-is-curve-aggregate-demand)
     *   [The New Keynesian Phillips Curve (NKPC)](#the-new-keynesian-phillips-curve-nkpc))
     *   [The Monetary Policy Rule](#the-monetary-policy-rule)
 3.  [Solving and Analyzing the Canonical Model](#3-solving-and-analyzing-the-canonical-model)
     *   [The Model in Matrix Form](#the-model-in-matrix-form)
     *   [Impulse Response to a Monetary Policy Shock](#impulse-response-to-a-monetary-policy-shock)
 4.  [Optimal Monetary Policy](#4-optimal-monetary-policy)
-5.  [The Zero Lower Bound (ZLB)](#5-the-zero-lower-bound-zlb))
-6.  [Summary](#6-summary)
+5.  [The Zero Lower Bound (ZLB)](#5-the-zero-lower-bound-zlb)
+6.  [Summary](#summary)
 7.  [Exercises](#7-exercises)
 
 ### 1. The New Keynesian Synthesis

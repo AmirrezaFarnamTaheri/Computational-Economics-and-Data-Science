@@ -12,11 +12,11 @@
 
 ### Table of Contents
 
-1.  [**Why GNNs? The Importance of Network Data in Economics**](#why-gnns)
-2.  [**The Message Passing Mechanism**](#message-passing)
-3.  [**Case Study: Supply Chain Shock Propagation**](#gnn-case-study)
-4.  [**Exercises**](#exercises)
-5.  [**Summary and Key Takeaways**](#summary)
+1.  [**Why GNNs? The Importance of Network Data in Economics**](#1-why-gnns-the-importance-of-network-data-in-economics)
+2.  [**The Message Passing Mechanism**](#2-the-message-passing-mechanism)
+3.  [**Case Study: Supply Chain Shock Propagation**](#3-case-study-supply-chain-shock-propagation)
+4.  [**Exercises**](#4-exercises)
+5.  [**Summary and Key Takeaways**](#5-summary-and-key-takeaways)
 
 ## The Lens: Learning on Network-Structured Data
 **What problem are we solving?**

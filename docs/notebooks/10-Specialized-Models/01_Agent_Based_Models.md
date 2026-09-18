@@ -48,12 +48,12 @@ if not NX_AVAILABLE: print("NetworkX not found. Skipping network-based ABM secti
 3.  [Foundational Model 2: Axelrod's Tournament and the Evolution of Cooperation](#3-foundational-model-2-axelrods-tournament-and-the-evolution-of-cooperation)
     - [Implementing the Iterated Prisoner's Dilemma](#implementing-the-iterated-prisoners-dilemma)
 4.  [Application 1: Financial Market ABMs](#4-application-1-financial-market-abms)
-    - [The Kirman (1993) "Ants" Model of Herd Behavior](#the-kirman-1993)-"Ants"-Model-of-Herd-Behavior)
-    - [An Artificial Stock Market (Lux & Marchesi)](#an-artificial-stock-market-lux-marchesi))
+    - [The Kirman (1993) "Ants" Model of Herd Behavior](#the-kirman-1993-ants-model-of-herd-behavior)
+    - [An Artificial Stock Market (Lux & Marchesi)](#an-artificial-stock-market-lux-marchesi)
 5.  [Application 2: A Simple Agent-Based Macroeconomic Model](#5-application-2-a-simple-agent-based-macroeconomic-model)
     - [Generating Endogenous Business Cycles](#generating-endogenous-business-cycles)
 6.  [Strengths, Weaknesses, and Validation](#6-strengths-weaknesses-and-validation)
-7.  [Summary](#7-summary)
+7.  [Summary](#summary)
 8.  [Exercises](#8-exercises)
 
 ## The Lens: The Economy as an Ecosystem

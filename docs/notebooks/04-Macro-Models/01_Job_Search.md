@@ -26,12 +26,12 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 ## Table of Contents
 
 1.  [The Lens: Frictions in the Labor Market](#the-lens-frictions-in-the-labor-market)
-2.  [The McCall Job Search Model](#the-mccall-job-search-model)
-3.  [The Diamond-Mortensen-Pissarides (DMP) Matching Model](#the-diamond-mortensen-pissarides-dmp)-Matching-Model)
-4.  [On-the-Job Search and Wage Dispersion](#on-the-job-search-and-wage-dispersion)
-5.  [Assortative Matching](#assortative-matching)
-6.  [Summary](#summary)
-7.  [Exercises](#exercises)
+2.  [The McCall Job Search Model](#1-the-mccall-job-search-model)
+3.  [The Diamond-Mortensen-Pissarides (DMP) Matching Model](#2-the-diamond-mortensen-pissarides-dmp-matching-model)
+4.  [On-the-Job Search and Wage Dispersion](#3-on-the-job-search-and-wage-dispersion)
+5.  [Assortative Matching](#4-assortative-matching)
+6.  [Summary](#5-summary)
+7.  [Exercises](#6-exercises)
 
 ## The Lens: Frictions in the Labor Market
 **What problem are we solving?**

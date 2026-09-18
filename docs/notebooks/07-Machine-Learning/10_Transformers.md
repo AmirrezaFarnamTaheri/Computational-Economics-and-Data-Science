@@ -34,18 +34,18 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 
 ### Table of Contents
 
-1.  [**Introduction: Beyond Recurrence**](#intro)
-2.  [**The Transformer Architecture: A Formal View**](#architecture)
-    - [Positional Encoding](#positional)
-    - [Scaled Dot-Product Attention](#attention)
-    - [Multi-Head Attention](#multi-head)
-3.  [**Theoretical Advantages over RNNs**](#advantages)
-4.  [**Implementation from Scratch**](#scratch)
+1.  [**Introduction: Beyond Recurrence**](#1-introduction-beyond-recurrence)
+2.  [**The Transformer Architecture: A Formal View**](#2-the-transformer-architecture-a-formal-view)
+    - [Positional Encoding](#21-positional-encoding)
+    - [Scaled Dot-Product Attention](#the-lens-attention-is-all-you-need)
+    - [Multi-Head Attention](#23-multi-head-attention)
+3.  [**Theoretical Advantages over RNNs**](#3-theoretical-advantages-over-rnns)
+4.  [**Implementation from Scratch**](#4-implementation-from-scratch)
     - [From-Scratch Self-Attention](#scratch-attention)
     - [Case Study: Forecasting a Chaotic Time Series](#scratch-lorenz)
-5.  [**Vision Transformer (ViT)**](#vit)
-6.  [**Exercises**](#exercises)
-7.  [**Summary and Key Takeaways**](#summary)
+5.  [**Vision Transformer (ViT)**](#5-vision-transformer-vit)
+6.  [**Exercises**](#6-exercises)
+7.  [**Summary and Key Takeaways**](#7-summary-and-key-takeaways)
 
 ## The Lens: Attention Is All You Need
 **What problem are we solving?**

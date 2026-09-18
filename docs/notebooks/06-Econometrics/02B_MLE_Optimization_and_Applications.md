@@ -50,11 +50,11 @@ Numerical optimizers and reusable likelihood classes let us estimate complex mod
 
 ### Table of Contents
 1. [The Lens: Solving MLE in Practice](#the-lens-solving-mle-in-practice)
-2. [Numerical Optimization and Implementation](#numerical)
-3. [A Reusable `MLEstimator` Class](#mle-class)
-4. [Application: Probit Model for Binary Choice](#probit)
-5. [Verification with Statsmodels](#verify)
-6. [Hypothesis Testing: The Holy Trinity](#trinity)
+2. [Numerical Optimization and Implementation](#1-numerical-optimization-and-implementation)
+3. [A Reusable `MLEstimator` Class](#a-reusable-mlestimator-class)
+4. [Application: Probit Model for Binary Choice](#2-application-probit-model-for-binary-choice)
+5. [Verification with Statsmodels](#verification-with-statsmodels)
+6. [Hypothesis Testing: The Holy Trinity](#5-hypothesis-testing-the-holy-trinity)
 7. [Summary and Key Takeaways](#summary)
 
 <a id='numerical'></a>

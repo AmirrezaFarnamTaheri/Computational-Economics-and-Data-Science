@@ -32,11 +32,11 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 
 ### Table of Contents
 
-1.  [**Boosting Intuition: Learning from Errors**](#intro)
-2.  [**The Gradient Boosting Algorithm**](#algorithm)
-3.  [**XGBoost: The Workhorse of Tabular Data**](#xgboost)
-4.  [**Code Lab: Predicting House Prices with XGBoost**](#code-lab)
-5.  [**Summary**](#summary)
+1.  [**Boosting Intuition: Learning from Errors**](#1-boosting-intuition-learning-from-errors)
+2.  [**The Gradient Boosting Algorithm**](#2-the-gradient-boosting-algorithm)
+3.  [**XGBoost: The Workhorse of Tabular Data**](#3-xgboost-the-workhorse-of-tabular-data)
+4.  [**Code Lab: Predicting House Prices with XGBoost**](#4-code-lab-predicting-house-prices-with-xgboost)
+5.  [**Summary**](#5-summary)
 
 ## The Lens: Ensembles of Weak Learners
 **What problem are we solving?**

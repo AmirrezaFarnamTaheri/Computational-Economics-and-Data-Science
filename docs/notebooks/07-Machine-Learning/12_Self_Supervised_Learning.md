@@ -35,17 +35,17 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 
 ### Table of Contents
 
-1.  [**Introduction: Learning from the Data Itself**](#intro)
-2.  [**Generative/Reconstructive Learning: Autoencoders**](#autoencoders)
-    - [The Denoising Autoencoder (DAE)](#dae)
+1.  [**Introduction: Learning from the Data Itself**](#1-introduction-learning-from-the-data-itself)
+2.  [**Generative/Reconstructive Learning: Autoencoders**](#2-generativereconstructive-learning-autoencoders)
+    - [The Denoising Autoencoder (DAE)](#21-the-denoising-autoencoder-dae)
     - [The Variational Autoencoder (VAE)](#vae)
-3.  [**Contrastive Learning: SimCLR**](#contrastive)
-    - [The NT-Xent Loss Function](#nt-xent)
-4.  [**Applications in Economics**](#applications)
-    - [Application 1: Denoising and Generative Modeling](#app-dae-vae)
-    - [Application 2: Economic Feature Extraction from Text](#app-text)
-5.  [**Exercises**](#exercises)
-6.  [**Summary and Key Takeaways**](#summary)
+3.  [**Contrastive Learning: SimCLR**](#3-contrastive-learning-simclr)
+    - [The NT-Xent Loss Function](#the-nt-xent-loss-function)
+4.  [**Applications in Economics**](#4-applications-in-economics)
+    - [Application 1: Denoising and Generative Modeling](#application-1-denoising-and-generative-modeling)
+    - [Application 2: Economic Feature Extraction from Text](#application-2-economic-feature-extraction-from-text)
+5.  [**Exercises**](#5-exercises)
+6.  [**Summary and Key Takeaways**](#6-summary-and-key-takeaways)
 
 ## The Lens: Learning Without Labels
 **What problem are we solving?**

@@ -67,13 +67,13 @@ Cointegration tests whether a linear combination of I(1) series is stationary, i
 
 ### Table of Contents
 
-1.  [**Introduction: The Problem of Non-Stationary Variables**](#intro)
-    - [Spurious Regression](#spurious)
-2.  [**Cointegration: The Long-Run Relationship**](#cointegration)
-3.  [**Vector Error Correction Models (VECM)**](#vecm)
-4.  [**Case Study: Consumption and Income**](#case-study)
-5.  [**Exercises**](#exercises)
-6.  [**Summary and Key Takeaways**](#summary)
+1.  [**Introduction: The Problem of Non-Stationary Variables**](#1-introduction-the-problem-of-non-stationary-variables)
+    - [Spurious Regression](#spurious-regression)
+2.  [**Cointegration: The Long-Run Relationship**](#2-cointegration-the-long-run-relationship)
+3.  [**Vector Error Correction Models (VECM)**](#3-vector-error-correction-models-vecm)
+4.  [**Case Study: Consumption and Income**](#case-study-cointegration-between-consumption-and-income)
+5.  [**Exercises**](#5-exercises)
+6.  [**Summary and Key Takeaways**](#6-summary-and-key-takeaways)
 
 <a id='intro'></a>
 ## 1. Introduction: The Problem of Non-Stationary Variables

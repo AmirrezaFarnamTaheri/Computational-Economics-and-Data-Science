@@ -33,12 +33,12 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 
 ### Table of Contents
 
-1.  [**The Wisdom of the Crowd: Introduction to Ensembling**](#intro)
-2.  [**Bagging: Reducing Variance**](#bagging)
-3.  [**Boosting: Reducing Bias**](#boosting)
-4.  [**Stacking: Combining Heterogeneous Models**](#stacking)
-5.  [**Code Lab: Comparing Ensemble Techniques**](#code-lab)
-6.  [**Summary**](#summary)
+1.  [**The Wisdom of the Crowd: Introduction to Ensembling**](#1-the-wisdom-of-the-crowd-introduction-to-ensembling)
+2.  [**Bagging: Reducing Variance**](#2-bagging-reducing-variance)
+3.  [**Boosting: Reducing Bias**](#3-boosting-reducing-bias)
+4.  [**Stacking: Combining Heterogeneous Models**](#4-stacking-combining-heterogeneous-models)
+5.  [**Code Lab: Comparing Ensemble Techniques**](#5-code-lab-comparing-ensemble-techniques)
+6.  [**Summary**](#6-summary)
 
 ## The Lens: The Wisdom of Crowds
 **What problem are we solving?**

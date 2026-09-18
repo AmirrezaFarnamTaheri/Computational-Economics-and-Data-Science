@@ -35,11 +35,11 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 
 ### Table of Contents
 
-1.  [**Introduction: Data Compression and Feature Learning**](#intro)
-2.  [**The Autoencoder Architecture**](#architecture)
-3.  [**Code Lab: Building a Simple Autoencoder for Denoising**](#code-lab)
-4.  [**Variational Autoencoders (VAEs)**](#vaes)
-5.  [**Summary**](#summary)
+1.  [**Introduction: Data Compression and Feature Learning**](#1-introduction-data-compression-and-feature-learning)
+2.  [**The Autoencoder Architecture**](#2-the-autoencoder-architecture)
+3.  [**Code Lab: Building a Simple Autoencoder for Denoising**](#3-code-lab-building-a-simple-autoencoder-for-denoising)
+4.  [**Variational Autoencoders (VAEs)**](#4-variational-autoencoders-vaes)
+5.  [**Summary**](#5-summary)
 
 ## The Lens: Learning Compressed Representations
 **What problem are we solving?**

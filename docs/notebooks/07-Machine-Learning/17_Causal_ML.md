@@ -54,7 +54,7 @@ if not ECONML_AVAILABLE: display(Markdown("> **Note:** The 'econml' library is n
 
 ## Table of Contents
 
-1. [Introduction](#introduction)
+1. [Introduction](#1-introduction-prediction-in-service-of-inference)
 
 ## The Lens: When Prediction Meets Causation
 **What problem are we solving?**

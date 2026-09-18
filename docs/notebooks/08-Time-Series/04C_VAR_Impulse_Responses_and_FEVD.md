@@ -63,7 +63,7 @@ Impulse responses (IRFs) and forecast error variance decompositions (FEVDs) tran
 ### Table of Contents
 1. [The Lens: Tracing Shock Propagation](#the-lens-tracing-shock-propagation)
 2. [Impulse Response Functions (IRFs)](#irf)
-3. [Forecast Error Variance Decomposition (FEVD)](#fevd)
+3. [Forecast Error Variance Decomposition (FEVD)](#2-forecast-error-variance-decomposition-fevd)
 4. [Summary](#summary)
 
 ```python

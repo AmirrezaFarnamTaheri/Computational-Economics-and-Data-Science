@@ -35,9 +35,9 @@ np.set_printoptions(suppress=True, linewidth=120, precision=6)
 2.  [Solving the Stochastic Growth Model](#2-solving-the-stochastic-growth-model)
     *   [2.1 Method 1: VFI on Coefficients](#21-method-1-vfi-on-coefficients)
     *   [2.2 Method 2: Iterating on the Euler Equation Residuals](#22-method-2-iterating-on-the-euler-equation-residuals)
-    *   [2.3 Method 3: The Endogenous Grid Method (EGM)](#23-method-3-the-endogenous-grid-method-egm))
-3.  [Performance Comparison](#3-performance-comparison)
-4.  [Summary](#4-summary)
+    *   [2.3 Method 3: The Endogenous Grid Method (EGM)](#23-method-3-the-endogenous-grid-method-egm)
+3.  [Performance Comparison](#3-performance-comparison-and-visualization)
+4.  [Summary](#summary)
 5.  [Exercises](#5-exercises)
 
 ## The Lens: Approximating the Continuum

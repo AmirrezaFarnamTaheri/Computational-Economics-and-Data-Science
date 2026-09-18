@@ -50,7 +50,7 @@ Some computational tasks in economics—like solving high-dimensional dynamic pr
 3.  [Moving Data Between CPU and GPU](#3-moving-data-between-cpu-and-gpu)
 4.  [Benchmarking: CPU vs. GPU Performance](#4-benchmarking-cpu-vs-gpu-performance)
 5.  [A More Complex Example: SVD](#5-a-more-complex-example-svd)
-6.  [Summary](#6-summary)
+6.  [Summary](#summary)
 
 ### 1. CPU vs. GPU: A Tale of Two Processors
 

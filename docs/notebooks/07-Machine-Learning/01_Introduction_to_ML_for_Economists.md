@@ -66,14 +66,14 @@ except ImportError:
     - [The Bias-Variance Trade-off](#the-bias-variance-trade-off)
     - [Cross-Validation](#cross-validation)
 2.  [Regularization for High-Dimensional Data](#2-regularization-for-high-dimensional-data)
-    - [Objective Functions of Ridge ($L_2$) and Lasso ($L_1$)](#objective-functions-of-ridge-l_2)-and-Lasso-($L_1$))
+    - [Objective Functions of Ridge ($L_2$) and Lasso ($L_1$)](#objective-functions-of-ridge-l_2-and-lasso-l_1)
     - [Geometric Intuition: Why Lasso Performs Feature Selection](#geometric-intuition-why-lasso-performs-feature-selection)
 3.  [Causal Machine Learning](#3-causal-machine-learning)
-    - [The Challenge: Regularization Bias and Confounding](#the-challenge-regularization-bias-and-confounding)
+    - [The Challenge: Regularization Bias and Confounding](#the-challenge-why-naive-ml-fails-for-causal-inference)
     - [The Solution: Double/Debiased ML](#the-solution-doubledebiased-ml)
 4.  [Case Study: Forecasting the Equity Premium](#4-case-study-forecasting-the-equity-premium)
 5.  [Unsupervised Learning: Clustering](#5-unsupervised-learning-clustering)
-6.  [Summary](#6-summary)
+6.  [Summary](#summary)
 7.  [Exercises](#7-exercises)
 
 ## The Lens: A Tale of Two Cultures

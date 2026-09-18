@@ -28,11 +28,11 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 ```
 
 ### Table of Contents
-1.  [The Moral Hazard Problem (Hidden Action)](#1-the-moral-hazard-problem-hidden-action))
+1.  [The Moral Hazard Problem (Hidden Action)](#1-the-moral-hazard-problem-hidden-action)
     *   [1.1 The Static Incentive-Insurance Trade-Off](#11-the-static-incentive-insurance-trade-off)
-    *   [1.2 The First-Order Approach (Continuous Effort)](#12-the-first-order-approach-continuous-effort))
+    *   [1.2 The First-Order Approach (Continuous Effort)](#12-the-first-order-approach-continuous-effort)
     *   [1.3 Dynamic Moral Hazard](#13-dynamic-moral-hazard)
-2.  [The Adverse Selection Problem (Hidden Information)](#2-the-adverse-selection-problem-hidden-information))
+2.  [The Adverse Selection Problem (Hidden Information)](#2-the-adverse-selection-problem-hidden-information)
     *   [2.1 The Optimal Screening Menu](#21-the-optimal-screening-menu)
     *   [2.2 The Revelation Principle](#22-the-revelation-principle)
 3.  [Application: Optimal Unemployment Insurance](#3-application-optimal-unemployment-insurance)

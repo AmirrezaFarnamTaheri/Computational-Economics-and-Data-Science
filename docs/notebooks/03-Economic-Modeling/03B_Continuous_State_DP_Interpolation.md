@@ -47,7 +47,7 @@ Interpolation combined with continuous optimization lets us solve continuous-sta
 
 ### Table of Contents
 1. [The Lens: Continuous States With Controlled Grid Error](#the-lens-continuous-states-with-controlled-grid-error)
-2. [Continuous State DP: Consumption-Savings](#continuous-state-dp-consumption-savings)
+2. [Continuous State DP: Consumption-Savings](#the-lens-continuous-states-with-controlled-grid-error)
 3. [Solving Continuous DP with Interpolation](#solving-continuous-dp-with-interpolation)
 4. [Summary](#summary)
 

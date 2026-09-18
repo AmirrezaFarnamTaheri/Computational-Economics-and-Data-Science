@@ -30,11 +30,11 @@ The computational core is a fixed point. Observed shares are held fixed while th
 
 ## Table of Contents
 
-1. [From random utility to market shares](#random-utility)
-2. [Berry's contraction](#berry-contraction)
-3. [Synthetic random-coefficients market](#synthetic-market)
-4. [Inversion diagnostics](#inversion-diagnostics)
-5. [From inversion to BLP GMM](#blp-gmm)
+1. [From random utility to market shares](#1-from-random-utility-to-market-shares)
+2. [Berry's contraction](#2-berrys-contraction)
+3. [Synthetic random-coefficients market](#3-synthetic-random-coefficients-market)
+4. [Inversion diagnostics](#4-inversion-diagnostics)
+5. [From inversion to BLP GMM](#5-from-share-inversion-to-blp-gmm)
 6. [Exercises](#exercises)
 
 ```python

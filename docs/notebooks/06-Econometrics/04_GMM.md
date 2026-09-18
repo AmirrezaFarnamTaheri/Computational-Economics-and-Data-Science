@@ -12,20 +12,20 @@
 
 ### Table of Contents
 
-1.  [**Introduction: The Power of Moment Conditions**](#intro)
-    - [Biographical Note: Lars Peter Hansen](#hansen)
-2.  [**From Moments to an Objective Function**](#objective)
-    - [The GMM Criterion Function](#criterion)
-    - [The Role of the Weighting Matrix](#weighting)
-3.  [**The Two-Step Efficient GMM Estimator**](#two-step)
+1.  [**Introduction: The Power of Moment Conditions**](#1-introduction-the-power-of-moment-conditions)
+    - [Biographical Note: Lars Peter Hansen](#biographical-note-lars-peter-hansen-1952-present)
+2.  [**From Moments to an Objective Function**](#2-from-moments-to-an-objective-function)
+    - [The GMM Criterion Function](#the-gmm-criterion-function)
+    - [The Role of the Weighting Matrix](#the-role-of-the-weighting-matrix)
+3.  [**The Two-Step Efficient GMM Estimator**](#3-the-two-step-efficient-gmm-estimator)
     - [Step 1: A Consistent First Step](#step1)
     - [Step 2: The Optimal Weighting Matrix and Efficient Estimation](#step2)
-4.  [**Asymptotic Properties of the GMM Estimator**](#asymptotics)
-5.  [**Implementation: A Reusable GMM Tool**](#gmm-class)
-6.  [**Example 1: Instrumental Variables as GMM**](#iv)
-7.  [**Example 2: Non-Linear GMM for Asset Pricing**](#nonlinear)
-8.  [**Hypothesis Testing: The J-Test for Overidentifying Restrictions**](#j-test)
-9.  [**Exercises**](#exercises)
+4.  [**Asymptotic Properties of the GMM Estimator**](#4-asymptotic-properties-of-the-gmm-estimator)
+5.  [**Implementation: A Reusable GMM Tool**](#5-implementation-a-reusable-gmm-tool)
+6.  [**Example 1: Instrumental Variables as GMM**](#6-example-1-instrumental-variables-as-gmm)
+7.  [**Example 2: Non-Linear GMM for Asset Pricing**](#7-example-2-non-linear-gmm-for-asset-pricing)
+8.  [**Hypothesis Testing: The J-Test for Overidentifying Restrictions**](#8-hypothesis-testing-the-j-test-for-overidentifying-restrictions)
+9.  [**Exercises**](#9-exercises)
 10. [**Summary and Key Takeaways**](#summary)
 
 ### Learning Objectives

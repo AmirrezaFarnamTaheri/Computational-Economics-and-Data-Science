@@ -38,8 +38,8 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 ### Table of Contents
 
 1.  [The Lens: The Macroeconomy with a Balance Sheet](#the-lens-the-macroeconomy-with-a-balance-sheet)
-2.  [Microfoundations: The Costly State Verification Problem](#microfoundations-the-costly-state-verification-problem)
-3.  [The BGG Model in a DSGE Framework](#the-bgg-model-in-a-dsge-framework)
+2.  [Microfoundations: The Costly State Verification Problem](#2-microfoundations-the-costly-state-verification-problem)
+3.  [The BGG Model in a DSGE Framework](#3-the-bgg-model-in-a-dsge-framework)
 4.  [Numerical Solution: Solving the Log-Linear System](#numerical-solution-solving-the-log-linear-system)
 5.  [Case Study: The Impact of a Technology Shock](#case-study-the-impact-of-a-technology-shock)
 6.  [Summary](#summary)

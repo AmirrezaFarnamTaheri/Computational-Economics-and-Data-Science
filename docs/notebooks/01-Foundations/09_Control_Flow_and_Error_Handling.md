@@ -39,7 +39,7 @@ plt.rcParams.update(
 ### Table of Contents
 1. [The Lens: Directing Logic and Managing Failure](#the-lens-directing-logic-and-managing-failure)
 2. [Conditional Logic: `if`, `elif`, and `else`](#conditional-logic-if-elif-and-else)
-    - [Conditional Expressions (The Ternary Operator)](#conditional-expressions-the-ternary-operator))
+    - [Conditional Expressions (The Ternary Operator)](#conditional-expressions-the-ternary-operator)
 3. [Iteration: `for` and `while` Loops](#iteration-for-and-while-loops)
     - [The `for` Loop and the Iterator Protocol](#the-for-loop-and-the-iterator-protocol)
     - [The `while` Loop: Numerical Convergence](#the-while-loop-repeating-until-a-condition-is-false)

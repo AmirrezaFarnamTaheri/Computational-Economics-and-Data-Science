@@ -33,9 +33,9 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 3.  [Application: Labor Supply and Taxation](#3-application-labor-supply-and-taxation)
 4.  [Choice Under Uncertainty](#4-choice-under-uncertainty)
     *   [4.1 Expected Utility and Risk Aversion](#41-expected-utility-and-risk-aversion)
-    *   [4.2 The Stochastic Discount Factor (SDF)](#42-the-stochastic-discount-factor-sdf))
+    *   [4.2 The Stochastic Discount Factor (SDF)](#42-the-stochastic-discount-factor-sdf)
 5.  [General Equilibrium](#5-general-equilibrium)
-6.  [Summary](#6-summary)
+6.  [Summary](#summary)
 7.  [Exercises](#7-exercises)
 
 ## The Lens: The Atom of Economics

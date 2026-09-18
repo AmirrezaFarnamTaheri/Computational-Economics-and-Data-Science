@@ -28,11 +28,11 @@ The economic question is whether the hidden state can be learned from the sequen
 
 ## Table of Contents
 
-1. [Nonlinear state-space model](#nonlinear-state-space)
-2. [Sequential importance sampling](#sequential-importance)
-3. [Systematic resampling](#systematic-resampling)
-4. [Bootstrap particle filter](#bootstrap-filter)
-5. [Diagnostics](#diagnostics)
+1. [Nonlinear state-space model](#1-nonlinear-state-space-model)
+2. [Sequential importance sampling](#2-sequential-importance-sampling)
+3. [Systematic resampling](#3-systematic-resampling)
+4. [Bootstrap particle filter](#4-bootstrap-particle-filter)
+5. [Diagnostics](#5-diagnostics)
 6. [Exercises](#exercises)
 
 ```python

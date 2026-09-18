@@ -39,19 +39,19 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 
 ### Table of Contents
 
-1.  [**Introduction: Solving the Vanishing Gradient Problem**](#intro)
-2.  [**Long Short-Term Memory (LSTM)**](#lstm)
-    - [Intuition: The Cell State as a Conveyor Belt](#lstm-intuition)
-    - [The Gating Mechanism: A Formal View](#lstm-math)
-3.  [**Gated Recurrent Unit (GRU)**](#gru)
-    - [A Simpler Gating Architecture](#gru-math)
-4.  [**Practical Considerations for Training**](#practical)
-5.  [**Applications**](#applications)
-    - [Application 1: Sentiment Analysis of Financial News](#app-nlp)
-    - [Application 2: Macroeconomic Forecasting](#app-macro)
-6.  [**A From-Scratch LSTM Cell**](#scratch)
-7.  [**Exercises**](#exercises)
-8.  [**Summary and Key Takeaways**](#summary)
+1.  [**Introduction: Solving the Vanishing Gradient Problem**](#1-introduction-solving-the-vanishing-gradient-problem)
+2.  [**Long Short-Term Memory (LSTM)**](#2-long-short-term-memory-lstm)
+    - [Intuition: The Cell State as a Conveyor Belt](#intuition-the-cell-state-as-a-conveyor-belt)
+    - [The Gating Mechanism: A Formal View](#the-gating-mechanism-a-formal-view)
+3.  [**Gated Recurrent Unit (GRU)**](#3-gated-recurrent-unit-gru)
+    - [A Simpler Gating Architecture](#a-simpler-gating-architecture)
+4.  [**Practical Considerations for Training**](#4-practical-considerations-for-training)
+5.  [**Applications**](#5-applications)
+    - [Application 1: Sentiment Analysis of Financial News](#application-1-sentiment-analysis-of-financial-news)
+    - [Application 2: Macroeconomic Forecasting](#application-2-macroeconomic-forecasting)
+6.  [**A From-Scratch LSTM Cell**](#6-a-from-scratch-lstm-cell)
+7.  [**Exercises**](#7-exercises)
+8.  [**Summary and Key Takeaways**](#8-summary-and-key-takeaways)
 
 ## The Lens: Long-Term Memory for Sequences
 **What problem are we solving?**

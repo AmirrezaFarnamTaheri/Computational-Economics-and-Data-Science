@@ -24,16 +24,16 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 ### Table of Contents
 
 1.  [Introduction: The Option to Default](#1-introduction-the-option-to-default)
-2.  [Structural Models: The Merton (1974) Framework](#2-structural-models-the-merton-1974)-Framework)
+2.  [Structural Models: The Merton (1974) Framework](#2-structural-models-the-merton-1974-framework)
     - [Equity as a Call Option](#equity-as-a-call-option)
     - [Implementation and Sensitivity Analysis](#implementation-and-sensitivity-analysis)
-3.  [Reduced-Form Models: Jarrow-Turnbull (1995)](#3-reduced-form-models-jarrow-turnbull-1995))
+3.  [Reduced-Form Models: Jarrow-Turnbull (1995)](#3-reduced-form-models-jarrow-turnbull-1995)
     - [Hazard Rates and Default Intensity](#hazard-rates-and-default-intensity)
 4.  [Application: Calibrating Merton's Model to Real Data](#4-application-calibrating-mertons-model-to-real-data)
     - [The KMV Iterative Algorithm](#the-kmv-iterative-algorithm)
-    - [Calculating Distance-to-Default (DD)](#calculating-distance-to-default-dd))
+    - [Calculating Distance-to-Default (DD)](#calculating-distance-to-default-dd)
 5.  [The Credit Spread Puzzle](#5-the-credit-spread-puzzle)
-6.  [Summary](#6-summary)
+6.  [Summary](#summary)
 7.  [Exercises](#7-exercises)
 
 ## The Lens: Default as a Rational Choice

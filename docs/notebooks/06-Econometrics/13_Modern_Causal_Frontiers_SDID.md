@@ -28,11 +28,11 @@ This notebook focuses on the mechanism rather than presenting a package call as 
 
 ## Table of Contents
 
-1. [The SDID estimand](#sdid-estimand)
-2. [Unit and time balancing](#unit-time-balancing)
-3. [Synthetic panel experiment](#synthetic-panel)
-4. [Estimator comparison](#estimator-comparison)
-5. [Matrix completion and sensitivity](#matrix-completion)
+1. [The SDID estimand](#1-the-sdid-estimand)
+2. [Unit and time balancing](#2-unit-and-time-balancing)
+3. [Synthetic panel experiment](#3-synthetic-panel-experiment)
+4. [Estimator comparison](#4-estimator-comparison)
+5. [Matrix completion and sensitivity](#5-matrix-completion-and-sensitivity)
 6. [Exercises](#exercises)
 
 ```python

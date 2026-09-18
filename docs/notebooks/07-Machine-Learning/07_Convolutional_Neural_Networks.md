@@ -33,13 +33,13 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 
 ### Table of Contents
 
-1.  [**Introduction: The Power of Hierarchy and Invariance**](#intro)
-2.  [**Core Components of a CNN**](#components)
-    - [The Convolutional Layer](#convolution)
-    - [The Pooling Layer](#pooling)
-3.  [**Building a CNN for Image Classification**](#code-lab)
-4.  [**Economic Applications of CNNs**](#econ-apps)
-5.  [**Summary**](#summary)
+1.  [**Introduction: The Power of Hierarchy and Invariance**](#1-introduction-the-power-of-hierarchy-and-invariance)
+2.  [**Core Components of a CNN**](#2-core-components-of-a-cnn)
+    - [The Convolutional Layer](#07-convolutional-neural-networks)
+    - [The Pooling Layer](#22-the-pooling-layer)
+3.  [**Building a CNN for Image Classification**](#3-building-a-cnn-for-image-classification)
+4.  [**Economic Applications of CNNs**](#4-economic-applications-of-cnns)
+5.  [**Summary**](#5-summary)
 
 ## The Lens: Learning Spatial Patterns
 **What problem are we solving?**

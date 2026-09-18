@@ -36,17 +36,17 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 
 ### Table of Contents
 
-1.  [**Introduction to Generative Modeling**](#intro)
-2.  [**Variational Autoencoders (VAEs)**](#vae)
+1.  [**Introduction to Generative Modeling**](#1-introduction-to-generative-modeling)
+2.  [**Variational Autoencoders (VAEs)**](#2-variational-autoencoders-vaes)
     - [Architecture and Key Idea](#vae-arch)
-    - [The Reparameterization Trick](#reparam)
+    - [The Reparameterization Trick](#22-the-reparameterization-trick)
     - [Code Lab: VAE for MNIST Generation](#code-vae)
-3.  [**Generative Adversarial Networks (GANs)**](#gan)
+3.  [**Generative Adversarial Networks (GANs)**](#3-generative-adversarial-networks-gans)
     - [Architecture and Key Idea](#gan-arch)
     - [The Adversarial Training Process](#gan-training)
-    - [Code Lab: Simple GAN for MNIST Generation](#code-gan)
-4.  [**A Brief History: Deep Belief Networks (DBNs)**](#dbn)
-5.  [**Summary**](#summary)
+    - [Code Lab: Simple GAN for MNIST Generation](#33-code-lab-simple-gan-for-mnist-generation)
+4.  [**A Brief History: Deep Belief Networks (DBNs)**](#4-a-brief-history-deep-belief-networks-dbns)
+5.  [**Summary**](#5-summary)
 
 ## The Lens: Learning to Generate Data
 **What problem are we solving?**

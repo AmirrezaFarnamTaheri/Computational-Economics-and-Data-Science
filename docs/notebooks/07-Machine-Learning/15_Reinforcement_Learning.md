@@ -44,19 +44,19 @@ if not DEEP_RL_AVAILABLE: display(Markdown("> **Note:** TensorFlow and/or Gymnas
 
 ### Table of Contents
 
-1.  [**Introduction: Learning Goal-Directed Behavior**](#intro)
-2.  [**The Mathematical Framework: Markov Decision Processes (MDPs)**](#mdps)
-    - [The Bellman Optimality Equations](#bellman)
-3.  [**Model-Free Learning: Q-Learning**](#q-learning)
-    - [Code Lab: Q-Learning for a Grid World](#code-q-learning)
-4.  [**Deep Reinforcement Learning: Deep Q-Networks (DQN)**](#dqn)
-    - [Code Lab: DQN for CartPole](#code-dqn)
-5.  [**Policy Gradient Methods**](#policy-gradient)
+1.  [**Introduction: Learning Goal-Directed Behavior**](#1-introduction-learning-goal-directed-behavior)
+2.  [**The Mathematical Framework: Markov Decision Processes (MDPs)**](#2-the-mathematical-framework-markov-decision-processes-mdps)
+    - [The Bellman Optimality Equations](#21-the-bellman-optimality-equations)
+3.  [**Model-Free Learning: Q-Learning**](#3-model-free-learning-q-learning)
+    - [Code Lab: Q-Learning for a Grid World](#code-lab-q-learning-to-solve-a-grid-world)
+4.  [**Deep Reinforcement Learning: Deep Q-Networks (DQN)**](#4-deep-reinforcement-learning-deep-q-networks-dqn)
+    - [Code Lab: DQN for CartPole](#code-lab-deep-q-network-dqn-for-cartpole)
+5.  [**Policy Gradient Methods**](#5-policy-gradient-methods)
     - [The Policy Gradient Theorem: A Proof Sketch](#pg-theorem)
-6.  [**Actor-Critic Methods**](#actor-critic)
-7.  [**Case Study: Optimal Resource Extraction**](#casestudy)
-8.  [**Exercises**](#exercises)
-9.  [**Summary and Key Takeaways**](#summary)
+6.  [**Actor-Critic Methods**](#6-actor-critic-methods)
+7.  [**Case Study: Optimal Resource Extraction**](#7-case-study-optimal-resource-extraction-the-fish-pond-problem)
+8.  [**Exercises**](#8-exercises)
+9.  [**Summary and Key Takeaways**](#9-summary-and-key-takeaways)
 
 ## The Lens: Learning to Act Optimally
 **What problem are we solving?**
