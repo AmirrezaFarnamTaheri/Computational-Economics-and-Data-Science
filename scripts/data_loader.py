@@ -71,9 +71,12 @@ def load_bundled_fred(series: str) -> pd.Series:
         raise ValueError(f"Expected date + value columns in {path}")
     dates = pd.to_datetime(frame.iloc[:, 0], errors="coerce")
     values = pd.to_numeric(frame.iloc[:, 1], errors="coerce")
-    result = (
-        pd.Series(values.to_numpy(), index=dates, name=series).dropna().sort_index()
-    )
+    valid = dates.notna() & values.notna()
+    result = pd.Series(
+        values.loc[valid].to_numpy(),
+        index=pd.DatetimeIndex(dates.loc[valid]),
+        name=series,
+    ).sort_index()
     if result.empty:
         raise ValueError(f"No numeric observations in {path}")
     return result
