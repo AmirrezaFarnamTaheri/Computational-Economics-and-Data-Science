@@ -49,22 +49,24 @@ Traditional economics often assumes agents interact anonymously through a centra
 * **Macro/Finance:** Familiarity with banking systems and input-output linkages is helpful.
 * **Learning-path prerequisite:** [`02_General_Equilibrium_with_Heterogeneous_Agents.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/10-Specialized-Models/02_General_Equilibrium_with_Heterogeneous_Agents.ipynb)
 
+> **Historical Context — Granovetter 1973, PageRank 1998.** Mark Granovetter's 'Strength of Weak Ties' founded network thinking in social science; Larry Page and Sergey Brin's PageRank (1998) applied eigenvector centrality to the web and built an empire on it. Job referral, trade, and systemic-risk literatures all run through these two ideas.
+
 > **Learning path:** Building on [`02_General_Equilibrium_with_Heterogeneous_Agents.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/10-Specialized-Models/02_General_Equilibrium_with_Heterogeneous_Agents.ipynb); this notebook closes the current track.
 
 ### Table of Contents
-1.  [The Economy as a Network: Concepts and Measures](#1.-The-Economy-as-a-Network:-Concepts-and-Measures)
-    - [Representing Networks: Adjacency Matrices](#Representing-Networks:-Adjacency-Matrices)
-    - [Canonical Network Models: ER, WS, and BA](#Canonical-Network-Models)
-    - [Measuring Node Importance: Centrality](#Measuring-Node-Importance:-Centrality)
-2.  [Application 1: Social Networks](#2.-Application-1:-Social-Networks)
-    - [Social Learning: The DeGroot Model](#Social-Learning:-The-DeGroot-Model)
-    - [Information Diffusion and Threshold Models](#Information-Diffusion-and-Threshold-Models)
-3.  [Application 2: Financial Networks and Systemic Risk](#3.-Application-2:-Financial-Networks-and-Systemic-Risk)
-    - [Modeling Contagion](#Modeling-Contagion)
-4.  [Application 3: Production Networks and Aggregate Fluctuations](#4.-Application-3:-Production-Networks-and-Aggregate-Fluctuations)
-    - [The Acemoglu et al. (2012) Framework](#The-Acemoglu-et-al.-(2012)-Framework)
-5.  [Summary](#5.-Summary-and-Key-Takeaways)
-6.  [Exercises](#6.-Exercises)
+1.  [The Economy as a Network: Concepts and Measures](#1-the-economy-as-a-network-concepts-and-measures)
+    - [Representing Networks: Adjacency Matrices](#representing-networks-adjacency-matrices)
+    - [Canonical Network Models: ER, WS, and BA](#canonical-network-models)
+    - [Measuring Node Importance: Centrality](#measuring-node-importance-centrality)
+2.  [Application 1: Social Networks](#2-application-1-social-networks)
+    - [Social Learning: The DeGroot Model](#social-learning-the-degroot-model)
+    - [Information Diffusion and Threshold Models](#information-diffusion-and-threshold-models)
+3.  [Application 2: Financial Networks and Systemic Risk](#3-application-2-financial-networks-and-systemic-risk)
+    - [Modeling Contagion](#modeling-contagion)
+4.  [Application 3: Production Networks and Aggregate Fluctuations](#4-application-3-production-networks-and-aggregate-fluctuations)
+    - [The Acemoglu et al. (2012) Framework](#the-acemoglu-et-al-2012)-Framework)
+5.  [Summary](#5-summary-and-key-takeaways)
+6.  [Exercises](#6-exercises)
 
 ### 1. The Economy as a Network: Concepts and Measures
 
@@ -357,6 +359,8 @@ print("> **Note:** A single shock to a central sector causes a significant and p
 **2. Reproduce and diagnose (Applied):** Reproduce an example involving 1. The Economy as a Network: Concepts and Measures, Representing Networks: Adjacency Matrices, then change one input and explain the result before running the code.
 
 **3. Robust extension (Challenge):** Extend the example to a larger or less convenient case and document the correctness and performance checks needed before trusting the result.
+
+**3b. Failure analysis (Challenge):** PageRank on a directed graph with dead ends returns ranks summing to less than one, so scores are not comparable across runs. Diagnose the dangling-node mass leak, repair with the teleportation/damping correction, and verify normalization after the fix.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

@@ -210,6 +210,8 @@ $$\delta_{jt}=x_{jt}'\beta-\alpha p_{jt}+\xi_{jt},$$
 
 **3. Endogenous prices (Challenge):** Generate price using an unobserved cost shock correlated with `xi`, add an excluded cost shifter as an instrument, and implement the outer IV/GMM step. Compare OLS and IV estimates of the price coefficient.
 
+**Failure analysis (Challenge):** The BLP contraction diverges for $\sigma > 1$, and predicted shares for one product exceed one. Diagnose the contraction's scaling and the inner-loop tolerance, repair with damping (or the squarem accelerator) and tighter inner tolerance, and verify shares lie in $[0, 1]$ and sum to one per market.
+
 ## Summary & Key Takeaways
 
 - Random coefficients relax the simple-logit substitution pattern by allowing heterogeneous tastes.

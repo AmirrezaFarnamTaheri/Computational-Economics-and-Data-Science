@@ -36,20 +36,20 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 ```
 
 ### Table of Contents
-1.  [The Random Utility Model (RUM) Framework](#1.-The-Random-Utility-Model-(RUM)-Framework)
-2.  [The Multinomial Logit (MNL)](#2.-The-Multinomial-Logit-(MNL))
-    *   [2.1 Derivation from Gumbel Distributed Errors](#2.1-Derivation-from-Gumbel-Distributed-Errors)
-    *   [2.2 The IIA Property and its Limitations](#2.2-The-IIA-Property-and-its-Limitations)
-3.  [Relaxing the IIA Assumption: Nested and Mixed Logit](#3.-Relaxing-the-IIA-Assumption:-Nested-and-Mixed-Logit)
-    *   [3.1 The Nested Logit Model](#3.1-The-Nested-Logit-Model)
-    *   [3.2 The Mixed Logit Model](#3.2-The-Mixed-Logit-Model)
-4.  [Estimation Methods](#4.-Estimation-Methods)
-    *   [4.1 Maximum Likelihood (for MNL and Nested Logit)](#4.1-Maximum-Likelihood-(for-MNL-and-Nested-Logit))
-    *   [4.2 Maximum Simulated Likelihood (for Mixed Logit)](#4.2-Maximum-Simulated-Likelihood-(for-Mixed-Logit))
-    *   [4.3 Bayesian Estimation via MCMC](#4.3-Bayesian-Estimation-via-MCMC)
-5.  [Application: The BLP Model of Demand](#5.-Application:-The-BLP-Model-of-Demand)
-6.  [Chapter Summary](#6.-Chapter-Summary)
-7.  [Exercises](#7.-Exercises)
+1.  [The Random Utility Model (RUM) Framework](#1-the-random-utility-model-rum)-Framework)
+2.  [The Multinomial Logit (MNL)](#2-the-multinomial-logit-mnl))
+    *   [2.1 Derivation from Gumbel Distributed Errors](#21-derivation-from-gumbel-distributed-errors)
+    *   [2.2 The IIA Property and its Limitations](#22-the-iia-property-and-its-limitations)
+3.  [Relaxing the IIA Assumption: Nested and Mixed Logit](#3-relaxing-the-iia-assumption-nested-and-mixed-logit)
+    *   [3.1 The Nested Logit Model](#31-the-nested-logit-model)
+    *   [3.2 The Mixed Logit Model](#32-the-mixed-logit-model)
+4.  [Estimation Methods](#4-estimation-methods)
+    *   [4.1 Maximum Likelihood (for MNL and Nested Logit)](#41-maximum-likelihood-for-mnl-and-nested-logit))
+    *   [4.2 Maximum Simulated Likelihood (for Mixed Logit)](#42-maximum-simulated-likelihood-for-mixed-logit))
+    *   [4.3 Bayesian Estimation via MCMC](#43-bayesian-estimation-via-mcmc)
+5.  [Application: The BLP Model of Demand](#5-application-the-blp-model-of-demand)
+6.  [Chapter Summary](#6-chapter-summary)
+7.  [Exercises](#7-exercises)
 
 ## The Lens: Choosing Categories
 **What problem are we solving?**
@@ -78,6 +78,8 @@ We model the probability of choosing an option.
 *   **Math:** Probability distributions (Gumbel, Normal), Maximum Likelihood.
 *   **Economics:** Utility Maximization, Econometrics.
 * **Learning-path prerequisite:** [`03_Game_Theory_and_Auctions.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/05-Micro-Models/03_Game_Theory_and_Auctions.ipynb)
+
+> **Historical Context — McFadden rides BART (1974).** Daniel McFadden developed conditional logit estimating demand for San Francisco's then-new BART system, linking random utility theory to real behavioral data (Nobel 2000). The infamous red-bus/blue-bus thought experiment exposed IIA — the limitation that nested and mixed logit were invented to repair.
 
 > **Learning path:** Building on [`03_Game_Theory_and_Auctions.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/05-Micro-Models/03_Game_Theory_and_Auctions.ipynb); next continue with [`05_Principal_Agent_Models.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/05-Micro-Models/05_Principal_Agent_Models.ipynb).
 
@@ -209,6 +211,8 @@ $$P_{ni} = P(i | \text{nest } k) \times P(\text{nest } k)$$
 **2. Reproduce and diagnose (Applied):** Construct a small numerical example using 1. The Random Utility Model (RUM) Framework, 2. The Multinomial Logit (MNL). Verify feasibility and optimality/equilibrium conditions numerically rather than relying only on the solver status.
 
 **3. Robust extension (Challenge):** Relax one substantive assumption—information, convexity, symmetry, commitment, or market completeness—and predict how equilibrium or welfare changes before computing the extension.
+
+**3b. Failure analysis (Challenge):** Predicted mode shares stop summing to one after a new transit category is added, and the data clearly violate the red-bus/blue-bus independence pattern. Diagnose the IIA restriction of plain logit, repair with nested or mixed logit, and test the improvement with a Hausman-type comparison on the added alternative.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

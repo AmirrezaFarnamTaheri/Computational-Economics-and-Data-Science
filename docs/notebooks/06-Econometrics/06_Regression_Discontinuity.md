@@ -32,7 +32,7 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 
 ## Table of Contents
 
-1. [Introduction](#Introduction)
+1. [Introduction](#introduction)
 
 ## The Lens: Nature's Experiments
 **What problem are we solving?**
@@ -43,7 +43,7 @@ Sometimes, a policy assigns treatment based on an arbitrary cutoff.
 **Regression Discontinuity Design (RDD)** exploits these sharp jumps. The intuition is that individuals just below the cutoff (59) are virtually identical to those just above (60), except for the treatment.
 
 **Why this method?**
-RDD is widely considered the most credible quasi-experimental design for causal inference because the identification assumption (continuity of potential outcomes at the cutoff) is testable and intuitive.
+RDD is widely considered the most credible quasi-experimental design for causal inference because the estimand is local and transparent, and the continuity assumption is intuitive. Continuity itself is not testable; the design offers falsification diagnostics, such as density and covariate-placebo checks, whose failure undermines credibility.
 
 
 
@@ -65,6 +65,9 @@ RDD is widely considered the most credible quasi-experimental design for causal 
 
 ## 1. The Formal RD Framework
 
+![Sharp RD](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/06-Econometrics/rd_sharp_fit.png)
+*Figure: A sharp RD design: binned outcome, local fits, and the jump at the cutoff..*
+
 Let $X_i$ be the running variable for individual $i$ and $c$ be the cutoff. In a **Sharp RD**, treatment $D_i$ is a deterministic function: $D_i = \mathbf{1}\{X_i \ge c\}$.
 
 The parameter of interest is the average causal effect at the cutoff:
@@ -76,6 +79,8 @@ The central identifying assumption is that the potential outcome functions, $E[Y
 Under this assumption, any observed jump, or **discontinuity**, in the actual outcome function at the cutoff must be attributed solely to the causal effect of the treatment:
 $$ \tau_{SRD} = \lim_{x \downarrow c} E[Y_i|X_i=x] - \lim_{x \uparrow c} E[Y_i|X_i=x] $$ 
 This assumption would be violated if agents could precisely manipulate their running variable to sort themselves non-randomly around the cutoff.
+
+**Dimension notes:** running variable $X_i \in \mathbb{R}$, cutoff $c \in \mathbb{R}$, treatment $D_i \in \{0,1\}$; potential outcomes are scalars, and $\tau_{SRD}$ is a scalar functional evaluated exactly at the boundary $X_i = c$.
 
 ## 2. Estimation: Local Polynomial Regression
 
@@ -127,7 +132,7 @@ def plot_rd_bandwidth(bandwidth):
     ax.plot(x_below, pred_below, 'b-', lw=3, label='Control Fit'); ax.plot(x_above, pred_above, 'r-', lw=3, label='Treatment Fit')
     ax.axvline(cutoff, color='k', ls='--', label='Cutoff'); ax.legend()
     ax.set_title(f'RD Plot (Bandwidth = {bandwidth:.2f})'); plt.show()
-    display(Markdown(f'> **Note:** Estimated Effect: {rd_model.params['treatment']:.3f} (95% CI: {rd_model.conf_int().loc['treatment'].to_string(float_format='%.3f')})'))
+    display(Markdown(f'> **Note:** Estimated Effect: {rd_model.params["treatment"]:.3f} (95% CI: {rd_model.conf_int().loc["treatment"].to_string(float_format="%.3f")})'))
 ```
 
 ### 2.2 Fuzzy RD as Instrumental Variables
@@ -136,10 +141,12 @@ In a **Fuzzy RD** design, crossing the cutoff only changes the *probability* of 
 
 This setup is perfectly analyzed using the **cutoff as an instrumental variable (IV)** for treatment status. The logic is as follows:
 1.  **First Stage:** The instrument (a dummy for being above the cutoff, $Z_i = \mathbf{1}\{X_i \ge c\}$) must be a strong predictor of the actual treatment received, $D_i$. We can test this by examining the discontinuity in the probability of treatment at the cutoff.
-2.  **Exclusion Restriction:** The instrument $Z_i$ must affect the outcome $Y_i$ *only* through its effect on the treatment $D_i$. This is guaranteed by the continuity assumption of the RD design.
+2.  **Exclusion Restriction:** The instrument $Z_i$ must affect the outcome $Y_i$ *only* through its effect on the treatment $D_i$. Continuity of the potential-outcome functions is necessary but not sufficient here: the exclusion restriction additionally rules out a direct jump in outcomes at the cutoff for given treatment, which fails when the cutoff itself shifts behavior. Monotonicity of take-up in the instrument is also required for the LATE interpretation.
 
 The Fuzzy RD estimate is the ratio of the jump in the outcome to the jump in the treatment probability at the cutoff:
 $$ \tau_{FRD} = \frac{\lim_{x \downarrow c} E[Y_i|X_i=x] - \lim_{x \uparrow c} E[Y_i|X_i=x]}{\lim_{x \downarrow c} E[D_i|X_i=x] - \lim_{x \uparrow c} E[D_i|X_i=x]} $$
+
+**Dimension notes:** same scalar setup as Sharp RD; what changes is the first stage — the take-up jump $E[D \mid X = c^+] - E[D \mid X = c^-] \in (0, 1]$ — so the fuzzy estimand is the ratio of two scalar limits (a Wald estimand).
 
 ### Fuzzy RD Example: Estimating the LATE
 
@@ -182,9 +189,9 @@ The credibility of any RD design rests on its core assumptions, which must be te
 
 ## 4. Regression Kink Design (RKD)
 
-The **Regression Kink Design (RKD)** is an extension of RD used when the treatment itself does not change discontinuously, but its *slope* with respect to the running variable does. The causal effect is identified by the change in the slope of the outcome variable at the kink point.
+An RKD uses a change in the slope of a continuous treatment schedule at a threshold. Under smoothness and exclusion restrictions, a nonzero treatment-slope change, and suitable restrictions on heterogeneity, the ratio of the outcome-slope change to the treatment-slope change identifies a local causal response.
 
-**Example:** In many tax systems, the marginal tax rate changes at specific income thresholds. The treatment is the tax rate, which is a function of income (the running variable). The function is continuous, but its slope changes at the kink points. RKD allows us to estimate the elasticity of taxable income with respect to the marginal tax rate by measuring the change in the slope of the income distribution at these kink points.
+In this synthetic example, **total tax liability** is continuous in income and has slope 0.10 below the threshold and 0.25 above it. The marginal tax rate jumps; it is not itself the continuous, kinked treatment. The outcome changes by 0.5 units per unit of liability. This is a level response, not an elasticity. The global linear fits are justified by this chosen DGP; an application would need local fitting and bandwidth/bias analysis.
 
 ### Regression Kink Design (RKD) Illustration
 
@@ -195,7 +202,7 @@ n_obs = 2000; kink_point = 50000
 running_var_k = rng.uniform(20000, 80000, n_obs)
 running_var_centered_k = running_var_k - kink_point
 
-# Treatment (e.g., marginal tax rate) has a kink
+# Treatment (total tax liability) is continuous with a slope kink
 treatment_k = 0.1 * running_var_k + 0.15 * np.maximum(0, running_var_centered_k)
 # Outcome has a corresponding kink
 outcome_k = 1000 + 0.5 * treatment_k + rng.normal(0, 500, n_obs)
@@ -220,7 +227,11 @@ ax.legend(); plt.show()
 ```
 
 ```python
-display(Markdown(f"> **Note:** The change in slope is given by the coefficient on the interaction term 'income_centered:above_kink': {rkd_model.params['income_centered:above_kink']:.3f}"))
+slope_change = rkd_model.params['income_centered:above_kink']
+treatment_slope_change = 0.15
+rkd_effect = slope_change / treatment_slope_change
+rkd_ci = rkd_model.conf_int().loc['income_centered:above_kink'] / treatment_slope_change
+display(Markdown(f"> **RKD:** Outcome-slope change = {slope_change:.3f}; effect per unit of tax liability = {rkd_effect:.3f} (95% CI: {rkd_ci.iloc[0]:.3f}, {rkd_ci.iloc[1]:.3f}). True simulated response = 0.5. The denominator is known, so the interval scales the regression coefficient interval."))
 ```
 
 ## Key Equations
@@ -243,6 +254,8 @@ $$Y_i = \beta_0 + \beta_1 (X_i - c) + \beta_2 D_i + \beta_3 [D_i \times (X_i - c
 
 $$\tau_{FRD} = \frac{\lim_{x \downarrow c} E[Y_i|X_i=x] - \lim_{x \uparrow c} E[Y_i|X_i=x]}{\lim_{x \downarrow c} E[D_i|X_i=x] - \lim_{x \uparrow c} E[D_i|X_i=x]}$$
 
+**Dimension notes:** all quantities are scalars: running variable and cutoff in $\mathbb{R}$, treatment in $\{0,1\}$; every $\tau$ denotes a scalar limit estimand taken at the cutoff from the stated side.
+
 ## Exercises
 
 **1. Mechanism and assumptions (Conceptual):** Define the estimand in **06 Regression Discontinuity**, list the identifying assumptions, and give a concrete data-generating process that violates one assumption while leaving the others intact.
@@ -250,6 +263,8 @@ $$\tau_{FRD} = \frac{\lim_{x \downarrow c} E[Y_i|X_i=x] - \lim_{x \uparrow c} E[
 **2. Reproduce and diagnose (Applied):** Implement or reproduce the estimator using the material on 1. The Formal RD Framework, 1.1 The Identification Assumption: Continuity. Report uncertainty and at least two diagnostics; then compare with an alternative specification that targets the same estimand.
 
 **3. Robust extension (Challenge):** Run a Monte Carlo or sensitivity exercise that varies the most fragile identifying condition. Quantify bias/coverage or the range of estimates and state what evidence would change your substantive conclusion.
+
+**3b. Failure analysis (Challenge):** Estimates swing wildly with bandwidth, and the density of the running variable jumps at the cutoff. Diagnose possible sorting/manipulation (McCrary test) and bandwidth sensitivity, repair with robust bandwidth selection (Calonico-Cattaneo-Titiunik) and a manipulation discussion, and report the sensitivity table.
 
 <details>
 <summary>Solution guidance</summary>
@@ -263,7 +278,7 @@ A strong solution states assumptions before computation, includes an independent
 RDD approximates a randomized experiment near the cutoff.
 
 **Key Takeaways:**
-*   **Visual Proof:** RDD results should be visible in a plot. If you can't see the jump, it's probably not there.
+*   **Statistical uncertainty:** The jump should be estimated with confidence bands at the cutoff; a plot alone is not inference, and small true jumps can be hard to see.
 *   **Bandwidth Choice:** There is a bias-variance trade-off. A smaller bandwidth around the cutoff reduces bias but increases variance (fewer data points).
 *   **Falsification Tests:** We check for discontinuities in baseline covariates. There should be none.
 

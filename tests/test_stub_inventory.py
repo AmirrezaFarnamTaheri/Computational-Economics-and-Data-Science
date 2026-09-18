@@ -15,6 +15,9 @@ exercised by tests/test_notebook_solution_functions.py):
 - 11_Object_Oriented_Programming.ipynb cell 17:
     ProductionFunction.produce             (Protocol interface)
     UtilityFunction.calculate_utility      (Protocol interface)
+- 04_Python_Data_Model.ipynb cell 27:
+    GenericModel.solve                     (ABC abstractmethod)
+    GenericModel.simulate                  (ABC abstractmethod)
 """
 
 from __future__ import annotations
@@ -47,13 +50,33 @@ INVENTORY = {
         17,
         "UtilityFunction.calculate_utility",
     ): "LEGIT",
+    (
+        "01-Foundations/04_Python_Data_Model.ipynb",
+        27,
+        "GenericModel.solve",
+    ): "LEGIT",
+    (
+        "01-Foundations/04_Python_Data_Model.ipynb",
+        27,
+        "GenericModel.simulate",
+    ): "LEGIT",
 }
 
 
 def stub_kind(fn: ast.FunctionDef) -> str | None:
-    if len(fn.body) != 1:
+    body = list(fn.body)
+    # A leading docstring is documentation, not an implementation; strip it so
+    # documented stubs ("docstring" + pass/.../raise) classify like bare ones.
+    if (
+        len(body) > 1
+        and isinstance(body[0], ast.Expr)
+        and isinstance(body[0].value, ast.Constant)
+        and isinstance(body[0].value.value, str)
+    ):
+        body = body[1:]
+    if len(body) != 1:
         return None
-    node = fn.body[0]
+    node = body[0]
     if isinstance(node, ast.Pass):
         return "pass"
     if (

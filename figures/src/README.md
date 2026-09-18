@@ -1,33 +1,35 @@
-#!/usr/bin/env python3
-"""README for figures/src — executable Matplotlib figure generators (WP-7).
+# Reproducible teaching figures
 
-Each script in this directory builds one figure used by the curriculum and
-writes it into `images/<module>/<name>.png` relative to the repository root.
-Scripts are:
+Each script generates a PNG in `images/<module>/` relative to the repository root.
+The scripts require NumPy and Matplotlib, use the noninteractive Agg backend, and
+use fixed random seeds when simulating data. They make no network requests.
 
-- deterministic (fixed RNG seeds; no network, no filesystem inputs)
-- headless (`matplotlib.use("Agg")`)
-- standalone: runnable with any Python that has matplotlib + numpy
+From the repository root, regenerate one figure:
 
-    # regenerate a single figure
-    python figures/src/solow_diagram.py
+```bash
+python figures/src/solow_diagram.py
+```
 
-    # regenerate every figure
-    for f in figures/src/*.py; do python "$f"; done   (see run_all.sh)
+Or regenerate all nine figures in Bash:
 
-Figures marked "illustrative" visualize a concept with chosen parameters;
-they are teaching aids, not empirical results. Empirical-style plots
-(e.g. rd_sharp_fit) simulate data from the stated DGP with a fixed seed so
-the picture is exactly reproducible.
+```bash
+for f in figures/src/*.py; do python "$f"; done
+```
 
-Index (script -> lecture wired):
-  solow_diagram.py              -> 04-Macro/02_Neoclassical_Growth (sec 1.1)
-  nk_determinacy_regions.py     -> 04-Macro/05_New_Keynesian (policy rule)
-  consumer_tangency.py          -> 05-Micro/01_Consumer_Producer (duality)
-  ols_projection_geometry.py    -> 06-Econometrics/01_OLS (theory)
-  did_parallel_trends.py        -> 06-Econometrics/08_DiD (sec 1)
-  rd_sharp_fit.py               -> 06-Econometrics/06_RD (sec 1)
-  garch_volatility_clustering.py-> 08-Time-Series/05_ARCH_GARCH (stylized facts)
-  amdahls_law.py                -> high_performance_python/01_HPC (Amdahl)
-  vfi_convergence.py            -> 03-Economic-Modeling/01_DP (VFI section)
-"""
+| Generator | Target notebook |
+|---|---|
+| `solow_diagram.py` | `04-Macro-Models/02_Neoclassical_Growth.ipynb` |
+| `nk_determinacy_regions.py` | `04-Macro-Models/05_New_Keynesian_Models.ipynb` |
+| `consumer_tangency.py` | `05-Micro-Models/01_Consumer_and_Producer_Theory.ipynb` |
+| `ols_projection_geometry.py` | `06-Econometrics/01_Linear_Model_and_OLS.ipynb` |
+| `did_parallel_trends.py` | `06-Econometrics/08_Difference_in_Differences.ipynb` |
+| `rd_sharp_fit.py` | `06-Econometrics/06_Regression_Discontinuity.ipynb` |
+| `garch_volatility_clustering.py` | `08-Time-Series/05_Volatility_Modeling_ARCH_GARCH.ipynb` |
+| `amdahls_law.py` | `high_performance_python/01_High_Performance_Computing.ipynb` |
+| `vfi_convergence.py` | `03-Economic-Modeling/01_Dynamic_Programming.ipynb` |
+
+These are teaching illustrations, not empirical estimates. The RD plot fits
+simulated data, so its estimated discontinuity differs from the generating
+parameter. The VFI plot performs the stated number of Bellman updates with a
+zero-cake boundary. The OLS diagram is a one-regressor, no-intercept example in
+two-dimensional observation space.

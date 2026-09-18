@@ -29,7 +29,7 @@ IMAGE_DIR.mkdir(parents=True, exist_ok=True)
 
 ## Table of Contents
 
-1. [Introduction](#Introduction)
+1. [Introduction](#introduction)
 
 ## The Lens: Scalable Assessment for Computational Courses
 **What problem are we solving?**
@@ -291,6 +291,8 @@ if HYPOTHESIS_AVAILABLE:
 **2. Reproduce and diagnose (Applied):** Work a concrete example from 1. The Otter-Grader Workflow, 2. Code Lab: Authoring a Master Assignment Notebook by hand and verify it computationally. Show the intermediate algebra, not only the final result.
 
 **3. Robust extension (Challenge):** Remove one hypothesis and construct a counterexample or boundary case. Explain exactly which line of the original proof fails and what weaker conclusion, if any, remains.
+
+**3b. Failure analysis (Challenge):** Every student passes the autograder because tests compare floats with `==`, and one seeded bug goes undetected. Diagnose the float-equality test design, repair with `pytest.approx` tolerances and edge-case tests, and verify the suite now catches the seeded bug.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

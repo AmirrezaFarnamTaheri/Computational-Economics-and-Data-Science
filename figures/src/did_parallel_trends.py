@@ -26,7 +26,7 @@ OUT = (
 
 def main() -> None:
     t = np.arange(-4, 5)
-    treated = 2.0 + 0.55 * t + np.where(t >= 0, 1.6, 0.0) * (t >= 0)
+    treated = 2.0 + 0.55 * t + np.where(t >= 0, 1.6, 0.0)
     control = 1.4 + 0.55 * t
     counterfactual = control + (treated[0] - control[0])
 
@@ -45,14 +45,14 @@ def main() -> None:
     ax.axvline(0.0, color="gray", lw=1.0, ls=":")
     ax.annotate(
         "",
-        xy=(-0.12, treated[-1]),
-        xytext=(-0.12, counterfactual[-1]),
+        xy=(t[-1], treated[-1]),
+        xytext=(t[-1], counterfactual[-1]),
         arrowprops=dict(arrowstyle="<->", color="#2e7d32", lw=1.8),
     )
     ax.annotate(
         r"DiD estimate $\hat{\delta}$",
-        xy=(-0.18, (treated[-1] + counterfactual[-1]) / 2),
-        xytext=(-16, 0),
+        xy=(t[-1], (treated[-1] + counterfactual[-1]) / 2),
+        xytext=(-8, -18),
         textcoords="offset points",
         fontsize=10,
         color="#2e7d32",

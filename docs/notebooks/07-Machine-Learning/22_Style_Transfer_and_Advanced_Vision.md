@@ -42,7 +42,7 @@ if not TENSORFLOW_AVAILABLE: display(Markdown("> **Note:** TensorFlow not found.
 
 ## Table of Contents
 
-1. [Introduction](#Introduction)
+1. [Introduction](#introduction)
 
 ## The Lens: Seeing the Economy Through Images
 **What problem are we solving?**
@@ -56,14 +56,15 @@ Style transfer and advanced vision models push beyond basic classification to un
 **Economic question.** In *22 Style Transfer and Advanced Vision*, what must remain economically invariant when the computational representation changes? For economists, predictive performance is useful but not sufficient. The model must be evaluated against the decision or forecasting problem, the information set available at prediction time, and the cost of distribution shift or leakage. Ask what inductive bias the method introduces, how tuning choices are validated out of sample, and which errors matter economically. When the goal is causal or structural, prediction should be treated as a nuisance component rather than evidence of identification by itself.
 
 ### Learning Objectives
-* **Implement** neural style transfer using pre-trained CNN feature extractors.
-* **Apply** object detection and semantic segmentation to satellite or street-level imagery.
-* **Use** advanced vision architectures (Vision Transformers, U-Net) for economic applications.
-* **Evaluate** vision model outputs with appropriate metrics (IoU, mAP).
+* **Implement** neural style transfer with a pre-trained VGG19 feature extractor, including Gram-matrix style representations and content/style loss weighting.
+* **Explain** which image properties content losses and Gram-matrix style losses capture, and how layer choice changes both.
+* **Connect** texture and style features to economic measurement tasks such as land-use or infrastructure assessment, and state what such features cannot establish.
+* **Evaluate** optimization stability and output quality with loss curves, Gram-matrix statistics, and perceptual checks.
 
 ### Prerequisites
 * **CNNs:** Convolutional architectures, transfer learning, and feature maps (Module 07 - CNNs).
-* **Deep Learning:** PyTorch training loops and pre-trained models (Module 07 - DL Foundations).
+* **Deep Learning:** Keras training loops and pre-trained models (Module 07 - DL Foundations).
+
 * **Learning-path prerequisite:** [`21_ML_for_Macro_Forecasting.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/07-Machine-Learning/21_ML_for_Macro_Forecasting.ipynb)
 
 > **Learning path:** Building on [`21_ML_for_Macro_Forecasting.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/07-Machine-Learning/21_ML_for_Macro_Forecasting.ipynb); this notebook closes the current track.
@@ -82,6 +83,8 @@ $$ \mathcal{L}_{content} = \frac{1}{2} \sum_{i,j} (F_{ij}^l - C_{ij}^l)^2 $$
 #### 1.2 Style Loss
 The **style** of an image is captured by the correlations between the activations of different filters in the *lower* layers of a CNN. These correlations represent textures, colors, and common patterns. The **Gram matrix** is a tool to measure these correlations. For a layer's feature map, the Gram matrix is the inner product of the vectorized feature maps. The style loss is then the squared difference between the Gram matrices of the style image and the generated image, summed across several layers.
 $$ \mathcal{L}_{style} = \sum_{l} w_l E_l \quad \text{where} \quad E_l = \frac{1}{4 N_l^2 M_l^2} \sum_{i,j} (G_{ij}^l - A_{ij}^l)^2 $$
+
+**Dimension notes:** layer features flattened to $F \in \mathbb{R}^{C \times M}$ ($C$ filters, $M$ spatial locations); Gram matrix $G = F F' \in \mathbb{R}^{C \times C}$ compares filter correlations; style loss is a weighted scalar distance between Gram matrices of style and generated images.
 
 ### 2. Implementation with TensorFlow
 We will use a pre-trained VGG19 network to extract the necessary features and then optimize an input image to minimize the combined loss.
@@ -276,6 +279,8 @@ While style transfer is primarily an artistic application, the underlying techni
 **2. Reproduce and diagnose (Applied):** Build a leakage-safe validation experiment using 1. The Theory: Content and Style Loss, 1.1 Content Loss. Compare a simple baseline with the featured method using an economically relevant metric and report uncertainty across folds or seeds.
 
 **3. Robust extension (Challenge):** Stress-test the model under temporal, subgroup, or covariate distribution shift. Identify which performance degradation matters for the downstream economic decision and propose one mitigation without using the test set for tuning.
+
+**3b. Failure analysis (Challenge):** Style transfer output is noise: random-init Gram matrices dominate, and the content weight was left near zero. Diagnose the loss-weighting and iteration budget, repair with balanced $(\alpha, \beta)$ and enough steps, and verify perceptually plus by comparing Gram-matrix statistics.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

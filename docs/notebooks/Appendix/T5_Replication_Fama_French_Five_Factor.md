@@ -132,3 +132,5 @@ The exercise uses real bundled factor and industry-portfolio data, but the five-
 ## References & Further Reading
 - Fama, E. F. & French, K. R. (2015). A five-factor asset pricing model. *Journal of Financial Economics*, 116(1), 1–22.
 - Cochrane, J. H. (2005). *Asset Pricing*. Princeton University Press.
+
+**Failure analysis (Challenge):** Replicated alphas are significant but flip sign relative to the paper — factor returns were built with the wrong rebalancing date and a look-ahead in the sort. Diagnose the timing construction, repair to the official convention, and verify correlations with the published factor returns.

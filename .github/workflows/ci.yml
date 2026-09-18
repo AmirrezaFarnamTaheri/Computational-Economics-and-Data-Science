@@ -76,8 +76,7 @@ jobs:
         run: python scripts/audit_docs.py --strict
 
   deterministic-execution:
-    # WP-12: pinned environment + top-to-bottom runs of the deterministic
-    # lecture subset, on the exact versions locked in environment.lock.yml.
+    # Pinned direct dependencies for the deterministic lecture subset.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -85,15 +84,19 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.13'
+
+      - name: Install lockfile parser
+        run: python -m pip install PyYAML
 
       - name: Extract pins from environment.lock.yml
         run: |
           python - <<'PY'
           import pathlib, yaml
           deps = yaml.safe_load(pathlib.Path("environment.lock.yml").read_text())["dependencies"]
-          pins = [d for d in deps if isinstance(d, str) and d != "pip"]
-          pins += [p for d in deps if isinstance(d, dict) for p in d.get("pip", [])]
+          pins = [p for d in deps if isinstance(d, dict) for p in d.get("pip", [])]
+          if not pins:
+              raise SystemExit("environment.lock.yml has no pip requirements")
           pathlib.Path("requirements-ci.txt").write_text("\n".join(pins) + "\n")
           PY
 

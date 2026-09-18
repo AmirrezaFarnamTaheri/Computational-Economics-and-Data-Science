@@ -42,18 +42,22 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 ```
 
 ### Table of Contents
-1. [The Lens: From Data to Insight](#The-Lens:-From-Data-to-Insight-and-Argument)
-2. [Why Visualize? Anscombe's Quartet](#Why-Visualize?-Anscombe's-Quartet)
-3. [The Grammar of Graphics](#The-Grammar-of-Graphics:-A-Theory-of-Visualization)
-4. [The Python Visualization Landscape](#The-Python-Visualization-Landscape)
-    - [Matplotlib: The Imperative Workhorse](#Matplotlib:-The-Imperative-Workhorse)
-    - [Seaborn: High-Level Statistical Graphics](#Seaborn:-High-Level-Statistical-Graphics)
-    - [Altair: Declarative Interactive Visualization](#Altair:-Declarative-Interactive-Visualization)
-    - [Plotnine: The Grammar of Graphics in Python](#Plotnine:-The-Grammar-of-Graphics-in-Python)
-5. [Choosing the Right Plot for Your Data](#Choosing-the-Right-Plot-for-Your-Data)
-6. [Customizing Plots for Publication](#Customizing-Plots-for-Publication)
-7. [Summary](#Summary)
-8. [Exercises](#Exercises)
+1. [The Lens: From Data to Insight](#the-lens-from-data-to-insight-and-argument)
+2. [Why Visualize? Anscombe's Quartet](#why-visualize-anscombes-quartet)
+3. [The Grammar of Graphics](#the-grammar-of-graphics-a-theory-of-visualization)
+4. [The Python Visualization Landscape](#the-python-visualization-landscape)
+    - [Matplotlib: The Imperative Workhorse](#matplotlib-the-imperative-workhorse)
+    - [Seaborn: High-Level Statistical Graphics](#seaborn-high-level-statistical-graphics)
+    - [Altair: Declarative Interactive Visualization](#altair-declarative-interactive-visualization)
+    - [Plotnine: The Grammar of Graphics in Python](#plotnine-the-grammar-of-graphics-in-python)
+5. [Choosing the Right Plot for Your Data](#choosing-the-right-plot-for-your-data)
+6. [Customizing Plots for Publication](#customizing-plots-for-publication)
+7. [Summary](#summary)
+8. [Exercises](#exercises)
+
+> **Historical Context — John Hunter's matplotlib (2003).** matplotlib was written by John D. Hunter, a neurobiologist studying epilepsy who wanted MATLAB-quality charts without the license fee; he died far too young in 2012, and the community still maintains his design.
+
+> **Historical Context — Tukey, Cleveland, and the Grammar of Graphics.** John Tukey's *Exploratory Data Analysis* (1977) legitimized drawing pictures before fitting models; William Cleveland's 1980s experiments established how humans read scales; Leland Wilkinson's *Grammar of Graphics* (1999) turned plots into composable objects — the idea behind ggplot and seaborn.
 
 ## The Lens: 16-Data-Visualization
 Data visualization is a critical tool for exploration, analysis, and, most importantly, **argumentation**. A well-designed plot is a form of non-verbal, quantitative reasoning. It can reveal patterns that tables of summary statistics hide, highlight outliers that might otherwise be missed, and communicate complex findings with an immediacy that words alone cannot achieve.
@@ -312,39 +316,10 @@ plt.ylabel("Life Expectancy (Years)")
 plt.show()
 ```
 
-### Customizing Plots for Publication
-
-Creating a plot for exploration is different from creating one for publication. Publication plots must be self-contained, clear in black-and-white (often), and high resolution.
-
-Key steps for polishing a plot:
-1.  **Remove Chartjunk:** Remove unnecessary borders, gridlines, and backgrounds (`sns.despine()`).
-2.  **Direct Labeling:** Instead of a legend, label lines directly if possible.
-3.  **Typography:** Use a consistent and readable font size. Use weights to emphasize key points.
-4.  **Color:** Use color accessible palettes (e.g., Viridis, colorblind-friendly).
-5.  **Resolution:** Save as vector graphics (PDF/SVG) or high-DPI PNGs.
-
-```python
-# Example of a polished, publication-ready plot style
-with plt.style.context("seaborn-v0_8-white"):
-    fig, ax = plt.subplots(figsize=(8, 5), dpi=150)
-
-    # Plotting
-    sns.scatterplot(data=gapminder[gapminder.year==2007], x="gdpPercap", y="life_expect",
-                    hue="continent", size="pop", sizes=(20, 400), alpha=0.7, ax=ax, legend=False)
-
-    # Customization
-    ax.set_xscale("log")
-    ax.set_title("Global Development in 2007", fontsize=16, weight="bold", loc="left")
-    ax.set_xlabel("GDP Per Capita (Log Scale)", fontsize=12)
-    ax.set_ylabel("Life Expectancy", fontsize=12)
-    sns.despine(trim=True)
-
-    # Annotate specific points instead of a full legend
-    ax.text(40000, 82, "Europe", color="#4C72B0", weight="bold")
-    ax.text(2000, 55, "Africa", color="#C44E52", weight="bold")
-
-    plt.show()
-```
+> **Common Pitfalls in This Lecture**
+>
+> - **Truncated axes.** Starting a bar-chart axis at a nonzero baseline doubles perceived effect sizes; readers assume ratios encode area. Reserve truncated axes for line charts, annotate breaks, and let bar lengths start at zero.
+> - **Overplotting.** Ten thousand opaque points collapse into an unreadable blob whose dark regions are artifacts of ink, not data. Use `alpha`, smaller markers, hexbin or 2D density estimates before drawing conclusions.
 
 ### Three-Tier Practice Ladder
 
@@ -353,6 +328,8 @@ with plt.style.context("seaborn-v0_8-white"):
 **2. Reproduce and diagnose (Applied):** Reproduce an example involving Why Visualize? Anscombe's Quartet, The Grammar of Graphics: A Theory of Visualization, then change one input and explain the result before running the code.
 
 **3. Robust extension (Challenge):** Extend the example to a larger or less convenient case and document the correctness and performance checks needed before trusting the result.
+
+**3b. Failure analysis (Challenge):** Two charts of the same unemployment series 'contradict' each other: one truncates the y-axis at 6%, the other dual-encodes axes so lines cross spuriously. Diagnose the misleading encodings, repair with honest baselines, single axes, and annotations, and write the design rule you would add to a team style guide.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

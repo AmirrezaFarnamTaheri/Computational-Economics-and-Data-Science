@@ -9,6 +9,11 @@
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/high_performance_python/02_Accelerating_Code_with_Numba.ipynb) [![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main?filepath=high_performance_python/02_Accelerating_Code_with_Numba.ipynb) [![Code License: MIT](https://img.shields.io/badge/Code%20License-MIT-yellow.svg)](../LICENSE) [![Content License: CC BY 4.0](https://img.shields.io/badge/Content%20License-CC%20BY%204.0-blue.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 ```python
+import numpy as np
+
+
+rng = np.random.default_rng(42)  # single reproducible generator
+
 %config InlineBackend.figure_format = "retina"
 # === Environment Setup ===
 import random
@@ -43,17 +48,19 @@ Economics often involves solving models that require millions of iterations—es
 - Familiarity with functions, NumPy, and reproducible timing experiments.
 * **Learning-path prerequisite:** [`01_High_Performance_Computing.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/high_performance_python/01_High_Performance_Computing.ipynb)
 
+> **Historical Context — LLVM 2000, Numba 2012.** Chris Lattner wrote LLVM at the University of Illinois starting in 2000, making language-agnostic JIT compilation practical. Continuum Analytics pointed it at Python numeric loops in 2012: `@njit` decorators now routinely match hand-written C — without leaving pandas.
+
 > **Learning path:** Building on [`01_High_Performance_Computing.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/high_performance_python/01_High_Performance_Computing.ipynb); next continue with [`03_Parallel_Computing_with_Dask.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/high_performance_python/03_Parallel_Computing_with_Dask.ipynb).
 
 ### Table of Contents
-1.  [Introduction](#1.-Introduction)
-2.  [A Canonical Example: The Monte Carlo Pi Simulation](#2.-A-Canonical-Example:-The-Monte-Carlo-Pi-Simulation)
-    *   [Pure Python Implementation](#Pure-Python-Implementation)
-    *   [Numba Implementation](#Numba-Implementation)
-3.  [Numba with NumPy](#3.-Numba-with-NumPy)
-4.  [Automatic Parallelization](#4.-Automatic-Parallelization)
-5.  [When to Use Numba](#5.-When-to-Use-Numba)
-6.  [Summary](#6.-Summary)
+1.  [Introduction](#1-introduction)
+2.  [A Canonical Example: The Monte Carlo Pi Simulation](#2-a-canonical-example-the-monte-carlo-pi-simulation)
+    *   [Pure Python Implementation](#pure-python-implementation)
+    *   [Numba Implementation](#numba-implementation)
+3.  [Numba with NumPy](#3-numba-with-numpy)
+4.  [Automatic Parallelization](#4-automatic-parallelization)
+5.  [When to Use Numba](#5-when-to-use-numba)
+6.  [Summary](#6-summary)
 
 ### 1. Introduction
 
@@ -99,23 +106,29 @@ To accelerate this function with Numba, we simply apply the `@njit` decorator. `
 **Important:** Numba cannot compile all Python code. For example, it does not support the standard `random` module. We must use `np.random.rand()` inside the Numba-jitted function.
 
 ```python
+# The uniform points are drawn OUTSIDE the jitted kernel with a seeded
+# Generator: reproducible and free of the legacy global RNG inside @njit.
+rng_mc = np.random.default_rng(42)
+points = rng_mc.random((num_samples, 2))
+
+
 @njit
-def monte_carlo_pi_numba(num_samples):
+def monte_carlo_pi_numba(pts):
     """Estimates pi using a Numba-compiled loop."""
     acc = 0
-    for _ in range(num_samples):
-        x = np.random.rand()
-        y = np.random.rand()
+    for i in range(pts.shape[0]):
+        x = pts[i, 0]
+        y = pts[i, 1]
         if (x**2 + y**2) < 1.0:
             acc += 1
-    return 4.0 * acc / num_samples
+    return 4.0 * acc / pts.shape[0]
 
 # The first run compiles the function
 print("Warming up Numba...")
-monte_carlo_pi_numba(1)
+monte_carlo_pi_numba(points[:2])
 
 # Now let's time it
-numba_time = timeit.timeit(lambda: monte_carlo_pi_numba(num_samples), number=1)
+numba_time = timeit.timeit(lambda: monte_carlo_pi_numba(points), number=1)
 print(f"Numba time:       {numba_time:.4f} seconds")
 print(f"> **Note:** Speedup: {py_time / numba_time:.1f}x")
 ```
@@ -186,6 +199,8 @@ Numba is not a silver bullet. It works best on a specific type of problem:
 **2. Reproduce and diagnose (Applied):** Optimize the workload using 1. Introduction, 2. A Canonical Example: The Monte Carlo Pi Simulation. Report warm-up separately from steady-state timing, use multiple repetitions, and verify numerical equivalence to the baseline.
 
 **3. Robust extension (Challenge):** Scale the workload until the bottleneck changes (compute, memory bandwidth, serialization, transfer, or scheduler overhead). Identify the crossover point and recommend when the optimization should not be used.
+
+**3b. Failure analysis (Challenge):** `@njit` is *slower* than pure Python on first call and no faster afterwards — the function fell back to object mode because it receives a list of strings. Diagnose the silent object-mode fallback, repair with typed containers/ signatures, and verify compilation mode via `numba` diagnostics.
 
 <details>
 <summary>Solution guidance</summary>

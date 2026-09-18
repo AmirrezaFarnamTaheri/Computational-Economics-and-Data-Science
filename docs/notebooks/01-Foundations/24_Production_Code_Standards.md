@@ -35,13 +35,13 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 ```
 
 ### Table of Contents
-1. [The Lens: From Research to Production](#The-Lens:-From-Research-to-Production)
-2. [Logging: Your Model's Diary](#Logging:-Your-Model's-Diary)
-3. [API Design: Serving Your Model](#API-Design:-Serving-Your-Model)
-4. [Type Hinting for Scientific Code](#Type-Hinting-for-Scientific-Code)
-5. [CI/CD: Automating Quality and Deployment](#CI/CD:-Automating-Quality-and-Deployment)
-6. [Summary](#Summary)
-7. [Exercises](#Exercises)
+1. [The Lens: From Research to Production](#the-lens-from-research-to-production)
+2. [Logging: Your Model's Diary](#logging-your-models-diary)
+3. [API Design: Serving Your Model](#api-design-serving-your-model)
+4. [Type Hinting for Scientific Code](#type-hinting-for-scientific-code)
+5. [CI/CD: Automating Quality and Deployment](#cicd-automating-quality-and-deployment)
+6. [Summary](#summary)
+7. [Exercises](#exercises)
 
 ## The Lens: 24-Production-Code-Standards
 The skills required to produce a high-quality research paper are not the same as those required to build a robust, reliable software system. This chapter bridges that gap, providing an introduction to the best practices required to turn the models developed in a research context into **production-ready** applications that can be deployed, monitored, and trusted in a live environment.
@@ -165,6 +165,8 @@ A full CI/CD pipeline for an economic model might look like this:
 **2. Reproduce and diagnose (Applied):** Reproduce an example involving Logging: Your Model's Diary, API Design: Serving Your Model, then change one input and explain the result before running the code.
 
 **3. Robust extension (Challenge):** Extend the example to a larger or less convenient case and document the correctness and performance checks needed before trusting the result.
+
+**3b. Failure analysis (Challenge):** A working script fails review: module-level mutable state, one silent `except: pass`, and zero tests. Diagnose each violation against the production standards checklist, refactor to pure functions with explicit exceptions plus a `pytest` suite, and add the linters/CI gates that would have caught all three.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

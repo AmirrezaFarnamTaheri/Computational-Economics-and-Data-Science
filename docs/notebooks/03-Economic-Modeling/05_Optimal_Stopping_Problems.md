@@ -55,19 +55,21 @@ The solution is characterized by a **Reservation Strategy**: a threshold state (
 *   **Economics:** Dynamic Programming, Search Theory.
 * **Learning-path prerequisite:** [`04_Estimation_and_Calibration.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/03-Economic-Modeling/04_Estimation_and_Calibration.ipynb)
 
+> **Historical Context — Wald's wartime stopping rules (1943–1947).** Abraham Wald developed sequential analysis during WWII (initially classified) because testing bullets one-at-a-time saved samples; his 1947 book formalized optimal stopping. The McCall job-search model (1970) carried the same mathematics into labor economics, where reservation wages live on.
+
 > **Learning path:** Building on [`04_Estimation_and_Calibration.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/03-Economic-Modeling/04_Estimation_and_Calibration.ipynb); next continue with [`06_Robust_Control.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/03-Economic-Modeling/06_Robust_Control.ipynb).
 
 ## Table of Contents
-1.  [The Structure of Optimal Stopping Problems](#1.-The-Structure-of-Optimal-Stopping-Problems)
-    *   [The Secretary Problem](#The-Secretary-Problem)
-    *   [The Bellman Equation for Optimal Stopping](#The-Bellman-Equation-for-Optimal-Stopping)
-2.  [Application 1: The McCall Job Search Model](#2.-Application-1:-The-McCall-Job-Search-Model)
-3.  [Continuous Time: The HJB Equation and Real Options](#3.-Continuous-Time:-The-HJB-Equation-and-Real-Options)
-    *   [From Bellman to HJB](#From-Bellman-to-HJB)
-    *   [Application: Irreversible Investment under Uncertainty](#Application:-Irreversible-Investment-under-Uncertainty)
-4.  [Application 2: American Option Pricing](#4.-Application-2:-American-Option-Pricing)
-5.  [Summary](#5.-Summary)
-6.  [Exercises](#6.-Exercises)
+1.  [The Structure of Optimal Stopping Problems](#1-the-structure-of-optimal-stopping-problems)
+    *   [The Secretary Problem](#the-secretary-problem)
+    *   [The Bellman Equation for Optimal Stopping](#the-bellman-equation-for-optimal-stopping)
+2.  [Application 1: The McCall Job Search Model](#2-application-1-the-mccall-job-search-model)
+3.  [Continuous Time: The HJB Equation and Real Options](#3-continuous-time-the-hjb-equation-and-real-options)
+    *   [From Bellman to HJB](#from-bellman-to-hjb)
+    *   [Application: Irreversible Investment under Uncertainty](#application-irreversible-investment-under-uncertainty)
+4.  [Application 2: American Option Pricing](#4-application-2-american-option-pricing)
+5.  [Summary](#5-summary)
+6.  [Exercises](#6-exercises)
 
 ### 1. The Structure of Optimal Stopping Problems
 
@@ -112,7 +114,7 @@ print(f"> **Note:** The reservation wage is w_bar = ${w_bar:.2f}")
 
 fig, ax = plt.subplots()
 ax.plot(w_grid, w_grid / (1 - BETA), lw=2.5, label='Value of Accepting Offer w')
-ax.axhline((1 - BETA) * w_bar, lw=2.5, color='orange', label='Value of Continuing Search')
+ax.axhline(w_bar / (1 - BETA), lw=2.5, color='orange', label='Value of Continuing Search')
 ax.axvline(w_bar, color='k', ls='--', label=f'Reservation Wage w* = {w_bar:.2f}')
 ax.set(xlabel='Wage Offer (w)', ylabel='Lifetime Value', title='Optimal Stopping Policy in Job Search'); ax.legend()
 plt.show()
@@ -132,7 +134,7 @@ A cornerstone of modern corporate finance is the **real options** approach to in
 
 The value of the investment option, $F(P)$, must satisfy the HJB equation in the continuation region:
 $$ rF = \mu P F'(P) + \frac{1}{2} \sigma^2 P^2 F''(P) $$
-This is an ODE with the general solution $F(P) = A_1 P^{\gamma_1} + A_2 P^{\gamma_2}$, where $\gamma_1 > 1$ and $\gamma_2 < 0$ are the roots of the characteristic quadratic. Economic conditions rule out the explosive positive root, so $F(P) = A P^\gamma$. The solution is found by imposing boundary conditions (value matching and smooth pasting) at the optimal investment threshold $P^*$. This yields the solution for the investment threshold:
+This is an ODE with the general solution $F(P) = A_1 P^{\gamma_1} + A_2 P^{\gamma_2}$, where $\gamma_1 > 1$ and $\gamma_2 < 0$ are the roots of the characteristic quadratic. Assume $r>\mu$ and $\sigma>0$. The condition $F(P)\to0$ as $P\to0$ rules out the negative root, which diverges at zero, so $F(P) = A P^{\gamma_1}$ in the continuation region. The solution is found by imposing boundary conditions (value matching and smooth pasting) at the optimal investment threshold $P^*$. This yields the solution for the investment threshold:
 $$ P^* = \frac{\gamma_1}{\gamma_1 - 1} I $$
 where $\gamma_1 = \frac{1}{2} - \frac{\mu}{\sigma^2} + \sqrt{\left(\frac{\mu}{\sigma^2} - \frac{1}{2}\right)^2 + \frac{2r}{\sigma^2}} > 1$. The term $\frac{\gamma_1}{\gamma_1 - 1} > 1$ is the **real options multiplier**. It shows that the firm should wait until the project's value $P$ is significantly greater than the investment cost $I$. This gap represents the **option value of waiting** and increases with uncertainty (volatility $\sigma$).
 
@@ -147,17 +149,20 @@ dt = T_exp / N_periods
 S_grid = np.linspace(50, 150, N_S)
 
 # Discretize the shock distribution (approximating a random walk)
-p_up = 0.5 * (1 + (R - 0.5*SIGMA**2)*np.sqrt(dt)/SIGMA)
-p_down = 1 - p_up
 u, d = np.exp(SIGMA * np.sqrt(dt)), np.exp(-SIGMA * np.sqrt(dt))
+p_up = (np.exp(R * dt) - d) / (u - d)
+p_down = 1 - p_up
+assert 0 <= p_up <= 1
 
 V = np.maximum(K - S_grid, 0) # Value at expiration
 
 for t in range(N_periods - 1, -1, -1):
     # Calculate expected continuation value
     S_up = S_grid * u; S_down = S_grid * d
-    V_up = np.interp(S_up, S_grid, V)
+    V_up = np.interp(S_up, S_grid, V, right=0.0)
     V_down = np.interp(S_down, S_grid, V)
+    # Low-price put boundary: immediate exercise, rather than flat extrapolation.
+    V_down = np.where(S_down < S_grid[0], K - S_down, V_down)
     EV = p_up * V_up + p_down * V_down
 
     # Bellman update
@@ -165,7 +170,7 @@ for t in range(N_periods - 1, -1, -1):
 
 V_option = V
 exercise_boundary = S_grid[np.isclose(V_option, K - S_grid, atol=1e-3)]
-exercise_price = exercise_boundary[0] if len(exercise_boundary)>0 else np.nan
+exercise_price = exercise_boundary[-1] if len(exercise_boundary)>0 else np.nan
 print(f"> **Note:** The optimal exercise boundary is at S* = ${exercise_price:.2f}")
 
 plt.figure(figsize=(10, 7))
@@ -204,6 +209,8 @@ $$V(w) = \max \left\{ \underbrace{\frac{w}{1-\beta}}_{\text{StopValue}}, \quad \
 **2. Reproduce and diagnose (Applied):** Reproduce one quantitative result from the sections on 1. The Structure of Optimal Stopping Problems, The Secretary Problem. Change one economically meaningful parameter over a defensible grid, report the policy/value/equilibrium response, and verify convergence with a residual or tighter tolerance.
 
 **3. Robust extension (Challenge):** Design a policy or shock counterfactual that changes one mechanism at a time. Compare welfare or transition dynamics against the baseline and explain which conclusion is structural versus calibration-specific.
+
+**3b. Failure analysis (Challenge):** The computed reservation wage is non-monotone in assets, contradicting the comparative statics proved in class. Diagnose interpolation noise versus a genuine coding error by refining the grid and switching interpolant, repair accordingly, and verify the fixed rule is monotone to within tolerance.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

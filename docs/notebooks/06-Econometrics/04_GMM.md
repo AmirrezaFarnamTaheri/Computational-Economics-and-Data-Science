@@ -68,6 +68,8 @@ GMM is incredibly flexible.
 * **Linear Algebra:** Matrix operations, inverses, and quadratic forms.
 * **Learning-path prerequisite:** [`03_Causal_Inference.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/06-Econometrics/03_Causal_Inference.ipynb)
 
+> **Historical Context — Lars Hansen 1982.** Lars Peter Hansen's 1982 Econometrica paper unified IV, MLE, and moment-based calibration into GMM, immediately applying it to test the consumption CAPM with Singleton. One estimator, one asymptotic theory — and a share of the 2013 Nobel for it.
+
 > **Learning path:** Building on [`03_Causal_Inference.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/06-Econometrics/03_Causal_Inference.ipynb); next continue with [`05_Instrumental_Variables.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/06-Econometrics/05_Instrumental_Variables.ipynb).
 
 <a id='intro'></a>
@@ -96,9 +98,11 @@ Lars Peter Hansen is an American economist and econometrician at the University 
 Hansen's work on GMM provided a framework that was not only theoretically elegant but also immensely practical. It gave economists a tool to confront complex economic models with data without needing to make strong, often unrealistic, distributional assumptions. His development of the J-test for overidentifying restrictions also provided a crucial tool for testing the validity of the underlying economic assumptions embodied in the moment conditions. His contributions are a cornerstone of graduate-level econometrics and are applied in nearly every field of empirical economics.
 
 ```python
+
 # === Environment Setup ===
 import matplotlib.pyplot as plt
 import numpy as np
+rng = np.random.default_rng(42)  # single reproducible generator
 import pandas as pd
 import statsmodels.api as sm
 from IPython.display import display
@@ -122,7 +126,7 @@ Let's formalize the GMM principle. Suppose our economic theory implies a set of 
 
 $$ E[g(W_i, \theta_0)] = 0 $$
 
-where $W_i$ is a vector of observed data for individual $i$, $\theta_0$ is the $k \times 1$ vector of true parameters we want to estimate, and $g(\cdot)$ is a vector-valued function with $r$ elements. For the model to be identified, we need at least as many moment conditions as parameters, so $r \ge k$.
+where $W_i$ is a vector of observed data for individual $i$, $\theta_0$ is the $k \times 1$ vector of true parameters we want to estimate, and $g(\cdot)$ is a vector-valued function with $r$ elements. For the model to be identified, we need at least as many moment conditions as parameters, so $r \ge k$. This order condition is not sufficient: local identification also requires the population moment Jacobian to have column rank $k$.
 
 The sample analogue of the population moment condition is the sample average:
 
@@ -156,6 +160,8 @@ $$ S = Var(\sqrt{N} g_N(\theta_0)) = E[g(W_i, \theta_0)g(W_i, \theta_0)'] $$
 
 The optimal weighting matrix is therefore $W_{opt} = S^{-1}$. The problem is that $S$ itself depends on the unknown true parameters $\theta_0$. This leads to a sequential estimation procedure.
 
+**Dimension notes:** $W_i \in \mathbb{R}^m$ stacks the observed data for unit $i$ and $\theta_0 \in \Theta \subseteq \mathbb{R}^k$, so the moment function maps $g: \mathbb{R}^m \times \Theta \to \mathbb{R}^r$: one equation per orthogonality condition.
+
 <a id='two-step'></a>
 ## 3. The Two-Step Efficient GMM Estimator
 
@@ -186,6 +192,8 @@ Finally, we solve the GMM problem again, this time using the estimated optimal w
 $$ \hat{\theta}_{GMM} = \arg\min_{\theta} g_N(\theta)' \hat{S}^{-1} g_N(\theta) $$
 
 This second-step estimator, $\hat{\theta}_{GMM}$, is the **efficient GMM estimator**.
+
+**Dimension notes:** the criterion $g_N(\theta)' W g_N(\theta)$ is scalar for any weighting matrix $W \in \mathbb{R}^{r \times r}$ (symmetric positive semi-definite); the efficient choice estimates $S \in \mathbb{R}^{r \times r}$, the long-run variance of $\sqrt{N}\, g_N(\theta_0)$.
 
 <a id='asymptotics'></a>
 ## 4. Asymptotic Properties of the GMM Estimator
@@ -331,6 +339,8 @@ This is a set of $r$ moment conditions for the $k$ parameters in $\beta$. We can
 ### Simulation
 Let's simulate a model with one endogenous regressor and two instruments.
 
+**Dimension notes:** $y_i \in \mathbb{R}$, regressors $\mathbf{x}_i \in \mathbb{R}^k$, instruments $\mathbf{z}_i \in \mathbb{R}^r$ with $r \ge k$; the moment contribution $\mathbf{z}_i (y_i - \mathbf{x}_i' \beta) \in \mathbb{R}^r$ stacks one condition per instrument.
+
 ### IV as GMM: Simulation
 
 ```python
@@ -351,13 +361,13 @@ z2 = rng.standard_normal(N)
 Z = np.vstack([z1, z2]).T
 
 # Disturbance term 'v' for the endogenous regressor
-v = 0.7 * z1 + 0.3 * z2 + rng.standard_normal(N)
+v = rng.standard_normal(N)  # independent of the instruments
 
 # Error term 'u' for the main equation
 u = 0.5 * v + rng.standard_normal(N) # u and v are correlated
 
 # Endogenous regressor 'x'
-x = 1 + 0.5 * v
+x = 1 + 0.7 * z1 + 0.3 * z2 + 0.5 * v
 
 # Dependent variable 'y'
 X = sm.add_constant(x)
@@ -369,6 +379,7 @@ y = X @ true_beta + u
 > **Note:** Estimating the model using our GMMEstimator class.
 
 ```python
+# Estimate using instruments independent of the simulated structural error.
 
 # The instruments for the model include the constant and z1, z2
 instruments = sm.add_constant(Z)
@@ -393,6 +404,8 @@ gmm_iv.summary()
 ```python
 iv_sm = IV2SLS(y, X, instruments).fit()
 print(iv_sm.summary())
+
+print("Known simulation slope:", true_beta[1])
 ```
 
 <a id='nonlinear'></a>
@@ -413,6 +426,8 @@ $$ E\left[\left(\beta \left(\frac{C_{t+1}}{C_t}\right)^{-\gamma} R_{i, t+1} - 1\
 
 This provides a set of non-linear moment conditions that we can use to estimate the structural parameters $(\beta, \gamma)$. We can use lagged consumption growth and lagged returns as instruments $Z_t$.
 
+**Dimension notes:** consumption $C_t$ and the SDF $M_{t+1}$ are scalars; gross returns on the test assets stack into $R_{t+1} \in \mathbb{R}^r$; each instrument $Z_t$ turns the scalar pricing error into one moment, giving $r$ conditions for $\theta = (\delta, \gamma)'$.
+
 ### Non-Linear GMM: CCAPM Estimation
 
 ```python
@@ -420,7 +435,7 @@ This provides a set of non-linear moment conditions that we can use to estimate 
 # 1. Load or simulate asset pricing data
 ```
 
-> **Note:** We simulate time-series data for consumption growth and asset returns.
+> **Simulation:** Independent one-period economies have a state observed before consumption growth and returns. Returns are constructed from the true SDF plus an independent mean-zero pricing shock, so the conditional Euler equation holds. State-dependent consumption growth gives the moment Jacobian rank two; iid lagged instruments would not identify both parameters. These are illustrative simulated data, not an empirical CCAPM test.
 
 ```python
 rng = np.random.default_rng(seed=42)
@@ -429,20 +444,14 @@ T = 500
 # True parameters (beta is close to 1, gamma is positive)
 true_params = {'beta': 0.99, 'gamma': 2.5}
 
-# Simulate data
-cons_growth = np.exp(rng.normal(0.02, 0.02, T))
-asset_return = np.exp(rng.normal(0.06, 0.15, T))
-
-# Create lagged instruments
-Z_t = np.vstack([
-    np.ones(T-1),
-    cons_growth[:-1],
-    asset_return[:-1]
-]).T
-
-# Align data
-C_t1_over_Ct = cons_growth[1:]
-R_t1 = asset_return[1:]
+# Independent one-period observations with a state known before returns.
+state_t = rng.uniform(-1, 1, T)
+C_t1_over_Ct = np.exp(0.02 + 0.08 * state_t + rng.normal(0, 0.03, T))
+true_sdf = true_params['beta'] * C_t1_over_Ct ** (-true_params['gamma'])
+# The independent, mean-zero pricing shock enforces E_t[M R - 1] = 0.
+pricing_shock = rng.uniform(-0.03, 0.03, T)
+R_t1 = (1 + pricing_shock) / true_sdf
+Z_t = np.column_stack([np.ones(T), state_t, state_t**2])
 
 data_ccapm = {'c_growth': C_t1_over_Ct, 'returns': R_t1, 'instruments': Z_t}
 
@@ -466,6 +475,7 @@ def ccapm_moment_conditions(theta, data):
 > **Note:** Estimating the CCAPM parameters using our GMMEstimator.
 
 ```python
+# Fit the state-instrumented, conditionally valid synthetic Euler moments.
 gmm_ccapm = GMMEstimator(ccapm_moment_conditions, data_ccapm, param_names=['beta', 'gamma'])
 gmm_ccapm.fit(start_params=[0.95, 2.0])
 gmm_ccapm.summary()
@@ -485,10 +495,10 @@ Under the null hypothesis that all $r$ moment conditions are valid, the J-statis
 $$ J \xrightarrow{d} \chi^2_{r-k} $$
 
 **Interpretation:**
-- A **small J-statistic** (and a large p-value) means the sample moments are close to zero, so we **do not reject** the null hypothesis. This provides support for the model's specification and the validity of the instruments.
 - A **large J-statistic** (and a small p-value) means that at least some of the sample moments are far from zero, even after choosing the best possible parameters. We **reject** the null hypothesis, which suggests that the model is misspecified (i.e., at least one of our moment conditions is false).
+- A **small J-statistic** (and a large p-value) is consistent with the overidentifying restrictions. It is *not* proof of instrument validity: the test has power only in the directions sampled by these $r$ conditions, and failing to reject never establishes exogeneity.
 
-The J-test is a crucial diagnostic tool for any GMM application. In our IV example, the J-statistic was small and the p-value was large, indicating that our instruments were valid.
+The J-test is a diagnostic, not a certificate. In a just-identified model ($r = k$) the objective is zero if a feasible sample-moment root exists and the test has no content at all.
 
 ## Key Equations
 
@@ -510,6 +520,8 @@ $$J(\theta, W) = N \cdot g_N(\theta)' W g_N(\theta)$$
 
 $$S = Var(\sqrt{N} g_N(\theta_0)) = E[g(W_i, \theta_0)g(W_i, \theta_0)']$$
 
+**Dimension notes:** $g(W_i, \theta) \in \mathbb{R}^r$, sample analogue $g_N(\theta) \in \mathbb{R}^r$, optimal weighting $S \in \mathbb{R}^{r \times r}$, parameters $\theta \in \mathbb{R}^k$; the GMM criterion and the $J$-statistic are scalars.
+
 ### Three-Tier Practice Ladder
 
 **1. Mechanism and assumptions (Conceptual):** Define the estimand in **Chapter 6.03: The Generalized Method of Moments (GMM)**, list the identifying assumptions, and give a concrete data-generating process that violates one assumption while leaving the others intact.
@@ -517,6 +529,8 @@ $$S = Var(\sqrt{N} g_N(\theta_0)) = E[g(W_i, \theta_0)g(W_i, \theta_0)']$$
 **2. Reproduce and diagnose (Applied):** Implement or reproduce the estimator using the material on 1. Introduction: The Power of Moment Conditions, Biographical Note: Lars Peter Hansen (1952-Present). Report uncertainty and at least two diagnostics; then compare with an alternative specification that targets the same estimand.
 
 **3. Robust extension (Challenge):** Run a Monte Carlo or sensitivity exercise that varies the most fragile identifying condition. Quantify bias/coverage or the range of estimates and state what evidence would change your substantive conclusion.
+
+**3b. Failure analysis (Challenge):** The J-test rejects the asset-pricing model, but the student re-runs it using the *first-step* weighting matrix and declares the rejection an artifact. Diagnose the incorrect inference (wrong weighting matrix and degrees of freedom for the claim), repair with the efficient two-step J-test at $r-k$ dof, and interpret the rejection properly.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 
@@ -574,6 +588,8 @@ If you use only `[const, z1]` as instruments, you now have $r=2$ instruments and
 **Advantages:** The CUE GMM estimator has better finite-sample properties than the two-step estimator. It is less prone to the finite-sample bias that can affect two-step GMM. In theory, it can be more efficient in small samples.
 **Disadvantages:** The CUE is computationally much more expensive. The weighting matrix $S(\theta)$ changes at every single iteration of the numerical optimizer, which means it must be re-calculated and re-inverted repeatedly. The objective function becomes much more complex to minimize. In contrast, the two-step estimator only requires calculating the weighting matrix once. For large datasets or complex models, the computational burden of CUE can be prohibitive.
 
+**Dimension notes:** throughout the solutions: moments $g_N(\hat{\beta}_{GMM}) \in \mathbb{R}^r$, parameters in $\mathbb{R}^k$, and the $J$ statistic is a scalar compared against $\chi^2_{r-k}$ critical values.
+
 # Summary
 
 GMM allows us to estimate parameters using only theoretical moment conditions.
@@ -592,10 +608,9 @@ GMM allows us to estimate parameters using only theoretical moment conditions.
 # E[(x - mu)^2 - sigma^2] = 0
 
 # Generate Data
-np.random.seed(42)
 true_mu = 5.0
 true_sigma = 2.0
-data = np.random.normal(true_mu, true_sigma, 1000)
+data = rng.normal(true_mu, true_sigma, 1000)
 
 def gmm_objective(params, data, W):
     mu, sigma = params
@@ -603,15 +618,19 @@ def gmm_objective(params, data, W):
 
     # Moment conditions (vector g)
     m1 = data - mu
-    m2 = (data - mu)**2 - sigma**2
-    g = np.array([np.mean(m1), np.mean(m2)])
+    with np.errstate(over='ignore', invalid='ignore'):
+        m2 = (data - mu)**2 - sigma**2
+        g = np.array([np.mean(m1), np.mean(m2)])
+    if not np.all(np.isfinite(g)):
+        return 1e12
 
     # J = n * g' W g
     return n * g.T @ W @ g
 
 # 1. Identity Matrix as Weighting Matrix (First Step)
 W_eye = np.eye(2)
-res_1 = minimize(gmm_objective, x0=[0, 1], args=(data, W_eye), method='Nelder-Mead')
+# Bounds keep the variance parameter positive so the objective stays finite.
+res_1 = minimize(gmm_objective, x0=[0, 1], args=(data, W_eye), method='Nelder-Mead', bounds=[(None, None), (1e-12, None)])
 print(f"Step 1 Estimates: mu={res_1.x[0]:.4f}, sigma={res_1.x[1]:.4f}")
 
 # 2. Optimal Weighting Matrix
@@ -624,7 +643,7 @@ S = np.cov(M) # Spectral density / Covariance of moments
 W_opt = np.linalg.inv(S)
 
 # Second Step Estimation
-res_2 = minimize(gmm_objective, x0=res_1.x, args=(data, W_opt), method='Nelder-Mead')
+res_2 = minimize(gmm_objective, x0=res_1.x, args=(data, W_opt), method='Nelder-Mead', bounds=[(None, None), (1e-12, None)])
 print(f"Step 2 Estimates (Optimal GMM): mu={res_2.x[0]:.4f}, sigma={res_2.x[1]:.4f}")
 print(f"True Parameters: mu={true_mu}, sigma={true_sigma}")
 ```

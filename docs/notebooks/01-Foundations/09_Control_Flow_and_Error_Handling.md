@@ -10,6 +10,7 @@
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/01-Foundations/09_Control_Flow_and_Error_Handling.ipynb) [![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main?filepath=01-Foundations/09_Control_Flow_and_Error_Handling.ipynb) [![Code License: MIT](https://img.shields.io/badge/Code%20License-MIT-yellow.svg)](../LICENSE) [![Content License: CC BY 4.0](https://img.shields.io/badge/Content%20License-CC%20BY%204.0-blue.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 ```python
+
 # --- Global Notebook Setup ---
 import itertools
 import math
@@ -18,6 +19,7 @@ from contextlib import contextmanager
 
 import matplotlib.pyplot as plt
 import numpy as np
+rng = np.random.default_rng(42)  # single reproducible generator
 
 # Apply the standard course style for all plots
 plt.style.use("seaborn-v0_8-whitegrid")
@@ -35,23 +37,23 @@ plt.rcParams.update(
 ```
 
 ### Table of Contents
-1. [The Lens: Directing Logic and Managing Failure](#The-Lens:-Directing-Logic-and-Managing-Failure)
-2. [Conditional Logic: `if`, `elif`, and `else`](#Conditional-Logic:-if,-elif,-and-else)
-    - [Conditional Expressions (The Ternary Operator)](#Conditional-Expressions-(The-Ternary-Operator))
-3. [Iteration: `for` and `while` Loops](#Iteration:-for-and-while-Loops)
-    - [The `for` Loop and the Iterator Protocol](#The-for-Loop-and-the-Iterator-Protocol)
-    - [The `while` Loop: Numerical Convergence](#The-while-Loop:-Repeating-Until-a-Condition-is-False)
-    - [Advanced Control Flow: `break`, `continue`, `else`](#Advanced-Control-Flow:-break,-continue,-and-the-else-Clause)
-    - [Memory-Efficient Iteration with `itertools`](#Memory-Efficient-Iteration-with-Generators-and-itertools)
-4. [Exception Handling: The `try` Statement](#Exception-Handling:-The-try-Statement)
-    - [The Full `try/except/else/finally` Structure](#The-Full-try/except/else/finally-Structure)
-    - [Context Managers: The `with` Statement](#Context-Managers:-The-with-Statement)
-    - [Suppressing Errors with `contextlib.suppress`](#Suppressing-Errors-with-contextlib.suppress)
-    - [LBYL vs. EAFP](#LBYL-vs.-EAFP:-Two-Philosophies-of-Error-Handling)
-    - [Defining and Chaining Custom Exceptions](#Defining-and-Chaining-Custom-Exceptions)
-5. [Structural Pattern Matching: The `match` Statement](#Structural-Pattern-Matching:-The-match-Statement)
-6. [Summary](#Summary)
-7. [Exercises](#Exercises)
+1. [The Lens: Directing Logic and Managing Failure](#the-lens-directing-logic-and-managing-failure)
+2. [Conditional Logic: `if`, `elif`, and `else`](#conditional-logic-if-elif-and-else)
+    - [Conditional Expressions (The Ternary Operator)](#conditional-expressions-the-ternary-operator))
+3. [Iteration: `for` and `while` Loops](#iteration-for-and-while-loops)
+    - [The `for` Loop and the Iterator Protocol](#the-for-loop-and-the-iterator-protocol)
+    - [The `while` Loop: Numerical Convergence](#the-while-loop-repeating-until-a-condition-is-false)
+    - [Advanced Control Flow: `break`, `continue`, `else`](#advanced-control-flow-break-continue-and-the-else-clause)
+    - [Memory-Efficient Iteration with `itertools`](#memory-efficient-iteration-with-generators-and-itertools)
+4. [Exception Handling: The `try` Statement](#exception-handling-the-try-statement)
+    - [The Full `try/except/else/finally` Structure](#the-full-tryexceptelsefinally-structure)
+    - [Context Managers: The `with` Statement](#context-managers-the-with-statement)
+    - [Suppressing Errors with `contextlib.suppress`](#suppressing-errors-with-contextlibsuppress)
+    - [LBYL vs. EAFP](#lbyl-vs-eafp-two-philosophies-of-error-handling)
+    - [Defining and Chaining Custom Exceptions](#defining-and-chaining-custom-exceptions)
+5. [Structural Pattern Matching: The `match` Statement](#structural-pattern-matching-the-match-statement)
+6. [Summary](#summary)
+7. [Exercises](#exercises)
 
 ## The Lens: 09-Control-Flow-and-Error-Handling
 A program is more than a static list of calculations; it is a dynamic process that must make decisions, repeat actions, and respond gracefully to unexpected situations. The constructs that govern this process are fundamental to programming. **Control flow** statements (`if`, `for`, `while`, `match`) direct the logical path of execution, forming the core of any algorithm. **Error handling** (`try...except`) provides the mechanism for building robust and resilient programs that can anticipate and manage failures without crashing.
@@ -227,8 +229,7 @@ for feature_pair in itertools.combinations(features, 2):
 
 print("\nA 10-step random walk simulated with `accumulate`:")
 # Simulate a simple random walk: x_t = x_{t-1} + shock_t
-np.random.seed(123)
-shocks = np.random.randn(10)
+shocks = rng.standard_normal(10)
 # The `accumulate` function performs a cumulative sum by default
 random_walk = list(itertools.accumulate(shocks, initial=0))
 print([f"{x:.2f}" for x in random_walk])
@@ -291,30 +292,30 @@ The `contextlib` module provides helpers like `@contextmanager` to easily create
 ```python
 @contextmanager
 def temporary_seed(seed):
-    """A context manager to temporarily set NumPy's random seed."""
-    # __enter__ part: Get the current state and set the new seed
-    original_state = np.random.get_state()
-    np.random.seed(seed)
+    """Temporarily replace this notebook's Generator, restoring it on exit."""
+    # Save the Generator itself so its stream resumes unchanged after the block.
+    global rng
+    original_rng = rng
+    rng = np.random.default_rng(seed)
     print(f"  (Entering context: seed set to {seed})")
     try:
         yield  # The code inside the 'with' block runs here
     finally:
         # __exit__ part: Always restore the original state
-        np.random.set_state(original_state)
+        rng = original_rng
         print("  (Exiting context: original random state restored)")
 
-
 print("Generating random numbers outside the context:")
-print(f"  Draw 1: {np.random.rand(2)}")
-print(f"  Draw 2: {np.random.rand(2)}")
+print(f"  Draw 1: {rng.random(2)}")
+print(f"  Draw 2: {rng.random(2)}")
 
 print("\nUsing the context manager for a reproducible block:")
 with temporary_seed(123):
-    print(f"  Inside block, Draw 1: {np.random.rand(2)}")
-    print(f"  Inside block, Draw 2: {np.random.rand(2)}")
+    print(f"  Inside block, Draw 1: {rng.random(2)}")
+    print(f"  Inside block, Draw 2: {rng.random(2)}")
 
 print("\nGenerating random numbers again outside the context (should be different):")
-print(f"  Draw 3: {np.random.rand(2)}")
+print(f"  Draw 3: {rng.random(2)}")
 ```
 
 #### Suppressing Errors with `contextlib.suppress`
@@ -376,19 +377,19 @@ When you catch a low-level exception and raise a more specific, high-level one, 
 class ModelError(Exception):
     """Base class for all errors in our hypothetical modeling library."""
 
-    pass
+    """Base exception for model execution failures."""
 
 
 class ModelNotConvergedError(ModelError):
     """Raised when a numerical model fails to converge."""
 
-    pass
+    """Raised when numerical solution does not converge."""
 
 
 class ParameterError(ModelError):
     """Raised when a model parameter is invalid."""
 
-    pass
+    """Raised when model parameters violate constraints."""
 
 
 def solve_model(params):
@@ -443,6 +444,11 @@ process_command(["exit"])
 process_command("help")  # This will hit the default case
 ```
 
+> **Common Pitfalls in This Lecture**
+>
+> - **Bare `except:`.** A bare `except` swallows *everything*, including `KeyboardInterrupt` and genuine bugs, turning typos into silent wrong answers. Catch the narrowest exception you can handle and let the rest propagate.
+> - **Float loop termination.** `while balance != target:` with `balance += 0.1` never terminates exactly, because 0.1 is not representable in binary. Terminate on a tolerance (`abs(balance - target) < eps`) or a counted bound.
+
 ### Three-Tier Practice Ladder
 
 **1. Mechanism and assumptions (Conceptual):** Explain the central computational idea in **09-Control-Flow-and-Error-Handling** and connect it to one explicit economic object or research workflow.
@@ -450,6 +456,8 @@ process_command("help")  # This will hit the default case
 **2. Reproduce and diagnose (Applied):** Reproduce an example involving Conditional Logic: `if`, `elif`, and `else`, Conditional Expressions (The Ternary Operator), then change one input and explain the result before running the code.
 
 **3. Robust extension (Challenge):** Extend the example to a larger or less convenient case and document the correctness and performance checks needed before trusting the result.
+
+**3b. Failure analysis (Challenge):** A bare `except:` swallowed a `TypeError`, returned `None`, and the real crash surfaced three functions later as a baffling `AttributeError`. Diagnose the swallowed exception from the traceback, repair with specific exception types and logging, and show how the original stack trace is preserved rather than hidden.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

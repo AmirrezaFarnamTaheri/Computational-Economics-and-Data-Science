@@ -15,9 +15,9 @@
 
 - **ARMA(p, q)**: $\underbrace{y_t - \sum_{i=1}^p \phi_i y_{t-i}}_{AR} = \underbrace{\epsilon_t + \sum_{j=1}^q \theta_j \epsilon_{t-j}}_{MA}$.
 - Stationarity: AR roots outside the unit circle; invertibility: MA roots outside. AR(1) ACF: $\rho_k = \phi^k$.
-- ARIMA(p, d, q): difference $d$ times until stationary; forecast MSE grows with $h$, forecasts converge to the mean.
+- ARIMA(p, d, q): difference $d$ times to model a stationary series. Stationary ARMA forecasts approach the unconditional mean; integrated level forecasts need not mean-revert (a random walk forecasts its last observed level).
 - **GARCH(1,1)**: $\sigma_t^2 = \omega + \alpha u_{t-1}^2 + \beta \sigma_{t-1}^2$; need $\omega > 0$, $\alpha + \beta < 1$; unconditional variance $\frac{\omega}{1-\alpha-\beta}$; persistence $\alpha + \beta$.
-- Wold: any covariance-stationary series is $\mu + \sum_{j=0}^\infty \psi_j \epsilon_{t-j}$, $\sum \psi_j^2 < \infty$.
+- Wold: a purely nondeterministic covariance-stationary series is $\mu + \sum_{j=0}^\infty \psi_j \epsilon_{t-j}$, $\sum \psi_j^2 < \infty$. In general, a deterministic component must also be included.
 
 ## Multivariate (VAR)
 

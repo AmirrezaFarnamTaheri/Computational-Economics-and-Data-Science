@@ -43,8 +43,6 @@ By the end of this notebook, you will be able to:
 
 ```python
 # === Environment Setup ===
-import warnings
-
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.integrate import solve_bvp, solve_ivp
@@ -100,9 +98,12 @@ For a 2D system with Jacobian $J$, let $T = \text{tr}(J)$ and $D = \det(J)$. The
 *   $D > 0, T > 0$: Source (Unstable).
 
 ### 1.3 Bifurcation Theory
+
+![Saddle-node bifurcation](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/02-Numerical-Methods/saddle_node_bifurcation.png)
+*Figure: A saddle-node bifurcation in a one-dimensional system..*
 Dynamic systems depend on parameters. As a parameter changes, the stability or number of fixed points can change. This is a **Bifurcation**.
-**Example: Saddle-Node Bifurcation** ($\'dot{x} = r + x^2$)
-*   $r < 0$: Two fixed points (Stable $\sqrt{-r}$, Unstable $-\sqrt{-r}$).
+**Example: Saddle-Node Bifurcation** ($\dot{x} = r + x^2$)
+*   $r < 0$: Two fixed points (Stable $-\sqrt{-r}$, Unstable $+\sqrt{-r}$): here $f'(x^*) = 2x^*$ is negative at the left branch and positive at the right one.
 *   $r = 0$: One semi-stable fixed point ($x=0$).
 *   $r > 0$: No fixed points (Bottleneck).
 At $r=0$, the two fixed points collide and annihilate. This condition is characterized by $f(x^*) = 0$ AND $f'(x^*) = 0$.
@@ -141,7 +142,10 @@ params = (1.1, 0.4, 0.1, 0.4)
 t_span = [0, 50]
 z0 = [10, 10]
 
-sol = solve_ivp(lotka_volterra, t_span, z0, args=params, dense_output=True)
+# Tight tolerance: Lotka-Volterra orbits are closed, and the default
+# rtol=1e-3 lets the numerical cycle visibly spiral instead.
+sol = solve_ivp(lotka_volterra, t_span, z0, args=params,
+                dense_output=True, rtol=1e-8, atol=1e-10)
 
 t = np.linspace(0, 50, 300)
 z = sol.sol(t)
@@ -164,6 +168,9 @@ plt.show()
 
 ## 2. The Ramsey-Cass-Koopmans (RCK) Model
 
+![RCK phase diagram](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/02-Numerical-Methods/rck_model.png)
+*Figure: Phase diagram of the Ramsey-Cass-Koopmans system..*
+
 The central model of neoclassical growth. Households optimize lifetime utility.
 
 **System:**
@@ -171,9 +178,9 @@ The central model of neoclassical growth. Households optimize lifetime utility.
 2.  $\frac{\dot{c}}{c} = \frac{1}{\theta} (\alpha k^{\alpha-1} - \delta - \rho - \theta g)$ (Euler Equation)
 
 **Linearization:**
-The Jacobian $J$ evaluated at the steady state $(k^*, c^*)$ is:
-$$ J = \begin{bmatrix} \frac{\partial \dot{k}}{\partial k} & \frac{\partial \dot{k}}{\partial c} \\ \frac{\partial \dot{c}}{\partial k} & \frac{\partial \dot{c}}{\partial c} \end{bmatrix} = \begin{bmatrix} \rho & -1 \\ \frac{c^*}{\theta} \alpha (\alpha-1) (k^*)^{\alpha-2} & 0 \end{bmatrix} $$
-The trace is $\rho > 0$. The determinant is negative. Thus, eigenvalues are real with opposite signs. **Saddle Path confirmed.**
+Both state variables are positive scalars, so the phase space is $(k, c) \in \mathbb{R}_{++}^2$ and the linearized dynamics live in $\mathbb{R}^{2 \times 2}$. The Jacobian $J$ evaluated at the steady state $(k^*, c^*)$ is:
+$$ J = \begin{bmatrix} \frac{\partial \dot{k}}{\partial k} & \frac{\partial \dot{k}}{\partial c} \\ \frac{\partial \dot{c}}{\partial k} & \frac{\partial \dot{c}}{\partial c} \end{bmatrix} = \begin{bmatrix} \rho+\theta g-n-g & -1 \\ \frac{c^*}{\theta} \alpha (\alpha-1) (k^*)^{\alpha-2} & 0 \end{bmatrix} $$
+The determinant is negative ($\det\,J = \frac{c^*}{\theta}\alpha(\alpha-1)(k^*)^{\alpha-2} < 0$ because $\alpha < 1$), so the eigenvalues are real with opposite signs regardless of the trace; the saddle path is confirmed. (The trace is $\rho + \theta g - n - g$, which equals $\rho > 0$ under this notebook's calibration.)
 
 This system has a **Saddle Point**. Given $k_0$, there is a *unique* initial consumption $c_0$ that puts us on the path to the steady state.
 
@@ -193,9 +200,12 @@ print(f"Steady State: k*={k_star:.2f}, c*={c_star:.2f}")
 # ODE System
 def rck_system(t, z, p):
     k, c = z
+    if k <= 0:
+        # Guard for the shooting search: k**alpha and k**(alpha-1)
+        # produce NaNs for k < 0, so freeze the motion there instead.
+        # (Must come BEFORE any fractional powers are evaluated.)
+        return [0.0, c]
     dk = k**p['alpha'] - (p['n'] + p['g'] + p['delta'])*k - c
-    if k <= 0: dk = 0 # Prevent negative capital issues during search
-
     mpk = p['alpha'] * k**(p['alpha']-1)
     dc = (c / p['theta']) * (mpk - p['delta'] - p['rho'] - p['theta']*p['g'])
     return [dk, dc]
@@ -217,7 +227,7 @@ Imagine you are trying to hit a target (the steady state $k^*$) with a cannon. Y
 Mathematically, we are finding the root of the error function $E(c_0) = k(T|c_0) - k^*$.
 
 ### Demonstration: The Stiffness Trap
-Consider a simple stiff system: $\dot{y} = -1000y + 1000\sin(t)$. The decay is extremely fast ($e^{-1000t}$), but the driving force is slow ($\sin t$). Explicit solvers like `RK45` must take tiny steps ($h < 2/1000$) to remain stable, even though the solution looks smooth. Implicit solvers (`Radau`) can take large steps.
+Consider a simple stiff system: $\dot{y} = -1000y + 1000\sin(t)$. The decay is extremely fast ($e^{-1000t}$), but the driving force is slow ($\sin t$). Explicit solvers like `RK45` are stability-limited to steps of order $|\lambda|^{-1}$ (about 0.001 here) even though the solution looks smooth. Implicit solvers (`Radau`) choose steps based on accuracy alone and stay stable at any step size. The cell below runs the race.
 
 **Economic Analogy:** Asset prices adjust instantly (fast), while capital accumulates slowly (slow). This makes many macro models stiff.
 
@@ -231,15 +241,32 @@ For Hamiltonian systems (where energy is conserved, like planetary motion or uti
 4.  Use a root finder to adjust $c_0$ until $E(c_0) = 0$ (or close enough).
 
 ```python
+# Demonstration: the stiffness trap in numbers
+def stiff_rhs(t, y):
+    return -1000 * (y - np.sin(t))
+
+t_span = [0.0, 5.0]
+y0 = [0.0]
+
+sol_rk45 = solve_ivp(stiff_rhs, t_span, y0, method='RK45',
+                     rtol=1e-6, atol=1e-9)
+sol_radau = solve_ivp(stiff_rhs, t_span, y0, method='Radau',
+                      rtol=1e-6, atol=1e-9)
+
+print(f"RK45  (explicit): {len(sol_rk45.t)} internal time points")
+print(f"Radau (implicit): {len(sol_radau.t)} internal time points")
+print("Both track the same smooth solution; the explicit solver crawls"
+      " because stability, not accuracy, caps its step size.")
+```
+
+```python
 def shooting_objective(c0_guess, k0, T, p, k_target):
     # Solve IVP
     sol = solve_ivp(rck_system, [0, T], [k0, c0_guess], args=(p,), rtol=1e-6)
     k_T = sol.y[0][-1]
-    # We want k_T to be k_star (or slightly above/below depending on stability manifold)
-    # Actually, simpler condition: on the saddle path, c(T) should be near c_star
-    # But let's check distance from steady state
-    dist = k_T - k_target
-    return dist
+    # Root condition: land on the target capital stock. Only the c0 on
+    # the saddle path survives to T without diverging away from k_star.
+    return k_T - k_target
 
 k0 = 0.5 * k_star
 T_horizon = 100
@@ -251,7 +278,8 @@ c0_optimal = brentq(shooting_objective, 0.01, 2.0, args=(k0, T_horizon, p, k_sta
 print(f"Optimal Initial Consumption c0: {c0_optimal:.4f}")
 
 # Simulate the optimal path
-sol_opt = solve_ivp(rck_system, [0, T_horizon], [k0, c0_optimal], args=(p,), dense_output=True)
+sol_opt = solve_ivp(rck_system, [0, T_horizon], [k0, c0_optimal], args=(p,),
+                    dense_output=True, rtol=1e-6)  # match the shooting tolerance
 t_path = np.linspace(0, T_horizon, 200)
 z_path = sol_opt.sol(t_path)
 
@@ -267,7 +295,7 @@ plt.show()
 
 ### 4. Robust BVP Solving with `solve_bvp`
 
-The shooting method can be unstable because the unstable manifold (any path not exactly on the saddle) diverges exponentially. A more robust method is **Finite Difference Relaxation**, implemented in `scipy.integrate.solve_bvp`. This solves for the entire path simultaneously.
+The shooting method can be unstable because the unstable manifold (any path not exactly on the saddle) diverges exponentially. A more robust approach solves for the entire path simultaneously. `scipy.integrate.solve_bvp` uses fourth-order **collocation** with residual control and an adaptive mesh, rather than a finite-difference shooting scheme.
 
 ```python
 # solve_bvp requires:
@@ -277,8 +305,8 @@ The shooting method can be unstable because the unstable manifold (any path not 
 # 4. Initial guess for y at those points
 
 def bvp_system(t, z, p=p):
-    # Wrapper to unpack p properly (solve_bvp doesn't support 'args' directly in older versions,
-    # but we can use closure or partial. Here we use global p for simplicity in notebook)
+    # Default argument captures the parameter dict defined above;
+    # solve_bvp calls f(t, y) with no extra arguments.
     k, c = z
     dk = k**p['alpha'] - (p['n'] + p['g'] + p['delta'])*k - c
     mpk = p['alpha'] * k**(p['alpha']-1)
@@ -300,7 +328,7 @@ y_guess[0, :] = np.linspace(k0, k_star, x_mesh.size)
 y_guess[1, :] = np.linspace(0.5, c_star, x_mesh.size)
 
 # Solve
-res_bvp = solve_bvp(lambda t, y: bvp_system(t, y), bc, x_mesh, y_guess)
+res_bvp = solve_bvp(bvp_system, bc, x_mesh, y_guess)
 
 if res_bvp.success:
     print("solve_bvp converged!")
@@ -324,6 +352,11 @@ else:
 *   **Shooting Method:** Converts a BVP into a root-finding problem over an IVP.
 *   **Relaxation (`solve_bvp`):** More robust for unstable systems than shooting.
 
+> **Common Pitfalls in This Lecture**
+>
+> - **Explicit solvers on stiff systems.** RCK-style models with fast and slow eigenvalues force explicit Runge-Kutta to crawl with microscopic steps. Detect stiffness (solver step-size warnings) and switch to implicit `Radau` or `BDF` — often orders of magnitude faster *and* stable.
+> - **Loose tolerances.** `rtol=1e-3` defaults can bend phase diagrams qualitatively: spirals become nodes, saddle paths drift. Tighten `rtol`/`atol` until the trajectory stops moving, especially before teaching stability from a simulation plot.
+
 ## Exercises
 
 ### 1. Conceptual: Bifurcations
@@ -334,6 +367,8 @@ Simulate the SIR (Susceptible-Infected-Recovered) model of epidemiology. $\dot{S
 
 ### 3. Challenge: Reverse Shooting
 The shooting method is unstable for long horizons because the unstable manifold diverges. **Reverse Shooting** (time reversal) turns the unstable manifold into a stable one. Simulate the RCK model *backwards* starting from near the steady state $(k^* - \epsilon, c^* - \delta)$ to trace out the saddle path more robustly.
+
+**Failure analysis (Challenge):** `solve_ivp` with RK45 takes minutes on the RCK system and warns about step-size, while a larger step makes the trajectory blow up. Diagnose stiffness from the eigenvalue spread, repair with an implicit solver (`Radau`/`BDF`), and compare step counts and accuracy against the explicit run.
 
 ## References & Further Reading
 

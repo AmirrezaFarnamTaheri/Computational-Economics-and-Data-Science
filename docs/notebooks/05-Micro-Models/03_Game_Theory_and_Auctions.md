@@ -31,12 +31,12 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 ```
 
 ### Table of Contents
-1.  [The Complexity of Finding Nash Equilibria](#1.-The-Complexity-of-Finding-Nash-Equilibria)
-    *   [1.1 Beyond Nash: Correlated Equilibrium](#1.1-Beyond-Nash:-Correlated-Equilibrium)
-2.  [Mechanism Design: Engineering the Rules of the Game](#2.-Mechanism-Design:-Engineering-the-Rules-of-the-Game)
-    *   [2.1 Application: Sponsored Search Auctions](#2.1-Application:-Sponsored-Search-Auctions)
-    *   [2.2 The VCG Mechanism: Achieving Truthfulness and Efficiency](#2.2-The-VCG-Mechanism:-Achieving-Truthfulness-and-Efficiency)
-3.  [Exercises](#3.-Exercises)
+1.  [The Complexity of Finding Nash Equilibria](#1-the-complexity-of-finding-nash-equilibria)
+    *   [1.1 Beyond Nash: Correlated Equilibrium](#11-beyond-nash-correlated-equilibrium)
+2.  [Mechanism Design: Engineering the Rules of the Game](#2-mechanism-design-engineering-the-rules-of-the-game)
+    *   [2.1 Application: Sponsored Search Auctions](#21-application-sponsored-search-auctions)
+    *   [2.2 The VCG Mechanism: Achieving Truthfulness and Efficiency](#22-the-vcg-mechanism-achieving-truthfulness-and-efficiency)
+3.  [Exercises](#3-exercises)
 
 ## The Lens: Strategic Interaction
 **What problem are we solving?**
@@ -67,6 +67,8 @@ We solve for the **Nash Equilibrium**: a situation where no player wants to devi
 *   **Economics:** Expected Utility, Strategic dominance.
 * **Learning-path prerequisite:** [`02_General_Equilibrium.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/05-Micro-Models/02_General_Equilibrium.ipynb)
 
+> **Historical Context — Nash 1950, Vickrey 1961.** John Nash's half-page PNAS note (1950, written at 21) defined equilibrium in general games — Nobel 1994. William Vickrey's 1961 auction paper founded mechanism design; the 1994 FCC spectrum auctions designed by Milgrom and Wilson put it to work (Nobel 2020).
+
 > **Learning path:** Building on [`02_General_Equilibrium.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/05-Micro-Models/02_General_Equilibrium.ipynb); next continue with [`04_Discrete_Choice_Models.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/05-Micro-Models/04_Discrete_Choice_Models.ipynb).
 
 ### 1. The Complexity of Finding Nash Equilibria
@@ -82,15 +84,18 @@ This computational hardness was formalized in a landmark 2009 paper by Daskalaki
 # Payoff matrix for a classic 2x2 game: "Battle of the Sexes"
 payoffs_A = np.array([[3, 1], [0, 2]]) # Player A's payoffs (Opera, Football)
 payoffs_B = np.array([[2, 1], [0, 3]]) # Player B's payoffs (Opera, Football)
-battle_of_sexes = nash.Game(payoffs_A, payoffs_B)
 
 if NASHPY_AVAILABLE:
+    battle_of_sexes = nash.Game(payoffs_A, payoffs_B)
     # The support_enumeration method iterates through all possible subsets of strategies
     # to find all Nash equilibria for a two-player game. This is feasible for small games.
     equilibria = list(battle_of_sexes.support_enumeration())
     display(Markdown(f'> **Note:** Found {len(equilibria)} Nash Equilibria for Battle of the Sexes:'))
     for i, eq in enumerate(equilibria):
         print(f"  Eq {i+1} (A's mix, B's mix): ({np.round(eq[0], 2)}, {np.round(eq[1], 2)})")
+else:
+    print("nashpy is not installed - skipping support enumeration "
+          "(pip install nashpy to run this cell).")
 ```
 
 > **Note:** The first two are pure strategy equilibria (Opera,Opera and Football,Football). The third is the mixed strategy equilibrium where players randomize to make their opponent indifferent.
@@ -102,23 +107,25 @@ if NASHPY_AVAILABLE:
 # We can visualize the mixed-strategy Nash equilibrium by plotting the best response functions.
 # Let p be the probability A plays 'Opera' and q be the probability B plays 'Opera'.
 
-# A's Payoffs: (3, 1) vs (0, 2)
-# E[u_A(Opera)] = 3q + 0(1-q) = 3q
-# E[u_A(Football)] = 1q + 2(1-q) = 2 - q
-# A plays Opera if 3q > 2 - q => 4q > 2 => q > 0.5
+# A's Payoffs: rows are A's actions (Opera, Football), columns are B's actions.
+# E[u_A(Opera)]   = 3q + 1(1-q) = 1 + 2q      (payoff 1 when B deviates to Football)
+# E[u_A(Football)] = 0q + 2(1-q) = 2 - 2q
+# A plays Opera if 1 + 2q > 2 - 2q => q > 1/4
 
-# B's Payoffs: (2, 1) vs (0, 3)
-# E[u_B(Opera)] = 2p + 0(1-p) = 2p
+# B's Payoffs: rows index A's action, columns index B's action.
+# E[u_B(Opera)]   = 2p + 0(1-p) = 2p          (B gets 0 playing Opera vs A's Football)
 # E[u_B(Football)] = 1p + 3(1-p) = 3 - 2p
-# B plays Opera if 2p > 3 - 2p => 4p > 3 => p > 0.75
+# B plays Opera if 2p > 3 - 2p => p > 3/4
+
+# Mixed-strategy Nash equilibrium: (p*, q*) = (3/4, 1/4).
 
 fig, ax = plt.subplots(figsize=(8, 8))
 
 # A's Best Response (p as function of q)
-# If q < 0.5, A plays Football (p=0). If q > 0.5, A plays Opera (p=1).
+# If q < 0.25, A plays Football (p=0). If q > 0.25, A plays Opera (p=1).
 q_vals = np.linspace(0, 1, 100)
-p_response_A = np.where(q_vals < 0.5, 0, np.where(q_vals > 0.5, 1, 0.5)) 
-# Note: At q=0.5, A is indifferent, so p can be anything [0, 1]. We denote this with a vertical line.
+p_response_A = np.where(q_vals < 0.25, 0, np.where(q_vals > 0.25, 1, 0.5))
+# Note: At q=1/4, A is indifferent, so p can be anything in [0, 1] (horizontal segment).
 
 # B's Best Response (q as function of p)
 # If p < 0.75, B plays Football (q=0). If p > 0.75, B plays Opera (q=1).
@@ -127,9 +134,9 @@ q_response_B = np.where(p_vals < 0.75, 0, np.where(p_vals > 0.75, 1, 0.5))
 
 # Plotting lines
 ax.plot(p_response_A, q_vals, 'b-', label="Player A's Best Response", lw=2)
-ax.vlines(0, 0, 0.5, colors='b', lw=2)
-ax.vlines(1, 0.5, 1, colors='b', lw=2)
-ax.hlines(0.5, 0, 1, colors='b', lw=2, linestyles='--') # Indifference zone
+ax.vlines(0, 0, 0.25, colors='b', lw=2)
+ax.vlines(1, 0.25, 1, colors='b', lw=2)
+ax.hlines(0.25, 0, 1, colors='b', lw=2, linestyles='--') # A is indifferent along q = 1/4
 
 ax.plot(p_vals, q_response_B, 'r-', label="Player B's Best Response", lw=2)
 ax.hlines(0, 0, 0.75, colors='r', lw=2)
@@ -139,7 +146,7 @@ ax.vlines(0.75, 0, 1, colors='r', lw=2, linestyles='--') # Indifference zone
 # Intersections
 ax.plot(0, 0, 'ko', markersize=10, label='Pure NE (F, F)')
 ax.plot(1, 1, 'ko', markersize=10, label='Pure NE (O, O)')
-ax.plot(0.75, 0.5, 'g*', markersize=15, label='Mixed NE')
+ax.plot(0.75, 0.25, 'g*', markersize=15, label='Mixed NE (p*=3/4, q*=1/4)')
 
 ax.set_title("Nash Equilibria: Intersection of Best Response Functions")
 ax.set_xlabel("Prob. Player A plays Opera (p)")
@@ -217,7 +224,7 @@ if ce_dist is not None:
 > **Note:** Found a correlated equilibrium distribution that maximizes total welfare:
 
 ```python
-if NASHPY_AVAILABLE:
+if ce_dist is not None:
     # Round to handle small numerical precision issues
     df_ce = pd.DataFrame(np.round(ce_dist, 5), index=['A:Opera', 'A:Football'], columns=['B:Opera', 'B:Football'])
     print(df_ce)
@@ -361,7 +368,12 @@ print(f"Optimal allocation: {alloc}")
 print(f"VCG Payments: {p}")
 ```
 
-> **Note:** Alice gets the bundle because her value of $18 is higher than Bob getting both items separately ($8+$6=$14). She pays $14, which is exactly the value Bob would have gotten if she wasn't there. This is the 'harm' she does to Bob.
+> **Note:** Alice gets the bundle because her value of $18 is higher than Bob's standalone welfare without her, which is $12 — his declared value for the bundle 'XY'. (His separate values of $8+$6=14 cannot be combined by the mechanism, since he reported a bundle value of only $12.) Alice pays $12, which is exactly the value Bob would have gotten if she wasn't there. This is the 'harm' she does to Bob.
+
+> **Common Pitfalls in This Lecture**
+>
+> - **One equilibrium is not *the* prediction.** `nashpy` may return a single Nash equilibrium among several. With multiple equilibria, reporting one as 'the' outcome ignores selection — discuss refinements or payoffs before concluding.
+> - **Mixed strategies from purged supports.** Computing mixed probabilities without first eliminating dominated strategies can put weight on actions no rational player uses, producing a 'solution' that fails its own support conditions. Verify each support action is a best response.
 
 ### Three-Tier Practice Ladder
 
@@ -370,6 +382,8 @@ print(f"VCG Payments: {p}")
 **2. Reproduce and diagnose (Applied):** Construct a small numerical example using 1. The Complexity of Finding Nash Equilibria, Finding Nash Equilibria with nashpy. Verify feasibility and optimality/equilibrium conditions numerically rather than relying only on the solver status.
 
 **3. Robust extension (Challenge):** Relax one substantive assumption—information, convexity, symmetry, commitment, or market completeness—and predict how equilibrium or welfare changes before computing the extension.
+
+**3b. Failure analysis (Challenge):** `nashpy` returns a single equilibrium that the write-up treats as the unique prediction, and a support-enumeration pass missed a mixed equilibrium because a dominated strategy was left in the support. Diagnose both errors, repair by enumerating all equilibria with pruned supports, and verify each support action is a best response.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

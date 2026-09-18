@@ -8,18 +8,23 @@ import hashlib
 import json
 from pathlib import Path
 
-from audit_curriculum_ast import REQUIRED_SECTIONS, audit_notebook
+from audit_curriculum_ast import (
+    REQUIRED_SECTIONS,
+    audit_notebook,
+    iter_notebooks,
+)
 
 EXCLUDED_PARTS = {".pytest_cache", "__pycache__", ".ipynb_checkpoints", "site"}
 EXCLUDED_FILES = {"audit/CHANGE_MANIFEST.md", "audit/CHANGE_MANIFEST.json"}
 
 
 def notebooks(root: Path) -> list[Path]:
-    return [
-        p
-        for p in sorted(root.rglob("*.ipynb"))
-        if not any(part in EXCLUDED_PARTS for part in p.parts)
-    ]
+    """Curated source notebooks only; mirrors the strict audit's enumeration.
+
+    The old ``rglob`` scan double-counted ``build/exec`` execution artifacts,
+    inflating the notebook count from 129 to 203 after a deterministic run.
+    """
+    return list(iter_notebooks(root))
 
 
 def metrics(root: Path) -> dict[str, int]:
@@ -73,6 +78,11 @@ def file_hashes(root: Path) -> dict[str, str]:
         rel = path.relative_to(root).as_posix()
         if rel in EXCLUDED_FILES or any(
             part in EXCLUDED_PARTS for part in path.relative_to(root).parts
+        ):
+            continue
+        if "build" in path.relative_to(root).parts or any(
+            part in {".venv", "venv", "node_modules"}
+            for part in path.relative_to(root).parts
         ):
             continue
         if path.suffix == ".pyc":

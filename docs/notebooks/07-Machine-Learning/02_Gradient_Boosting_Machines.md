@@ -12,6 +12,8 @@
 # === Environment Setup ===
 import matplotlib.pyplot as plt
 import numpy as np
+
+rng = np.random.default_rng(42)  # single reproducible generator
 import xgboost as xgb
 from IPython.display import Image, Markdown, display
 from sklearn.metrics import mean_squared_error
@@ -59,6 +61,8 @@ XGBoost, LightGBM, and CatBoost dominate ML competitions and applied economics. 
 * **`01-Foundations/13_Pandas.ipynb`**: Tabular data handling.
 * **`01-Foundations/14_Matplotlib.ipynb`**: Plotting and diagnostics.
 
+> **Historical Context — Two cultures, one year (2001).** Leo Breiman's 'Statistical Modeling: The Two Cultures' (Statistical Science, 2001) predicted data-driven algorithms would eclipse parametric modeling — the same journal year saw his Random Forests and Jerome Friedman's gradient boosting. XGBoost (Chen and Guestrin, KDD 2016) turned the recipe into Kaggle's favorite weapon.
+
 > **Learning path:** Building on [`01_Introduction_to_ML_for_Economists.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/07-Machine-Learning/01_Introduction_to_ML_for_Economists.ipynb); next continue with [`03_Support_Vector_Machines.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/07-Machine-Learning/03_Support_Vector_Machines.ipynb).
 
 <a id='intro'></a>
@@ -80,6 +84,9 @@ The core idea is to fit a sequence of weak learners (e.g., shallow decision tree
 <a id='xgboost'></a>
 ## 3. XGBoost: The Workhorse of Tabular Data
 
+![Feature importance](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/07-Machine-Learning/feature_importance.png)
+*Figure: Feature importance from a boosted tree ensemble..*
+
 **XGBoost (eXtreme Gradient Boosting)** is a highly efficient and effective implementation of the gradient boosting algorithm. It includes several key innovations:
 - **Regularization:** It adds L1 and L2 regularization terms to the objective function to prevent overfitting.
 - **Sparsity Awareness:** It can handle missing values efficiently.
@@ -97,9 +104,8 @@ Let's use XGBoost to predict house prices from a set of features.
 ```python
 
 # Generate synthetic data
-np.random.seed(42)
-X = np.random.rand(100, 5) * 10
-y = 50 + (X[:, 0] * 1.5) + (X[:, 1] * 0.8) + (X[:, 2] * 2.1) + np.random.randn(100) * 5
+X = rng.random((100, 5)) * 10
+y = 50 + (X[:, 0] * 1.5) + (X[:, 1] * 0.8) + (X[:, 2] * 2.1) + rng.standard_normal(100) * 5
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
@@ -126,6 +132,11 @@ plt.title('Feature Importance')
 plt.show()
 ```
 
+> **Common Pitfalls in This Lecture**
+>
+> - **Unstopped boosting.** Boosting adds trees until told to stop; without early stopping on a validation set, hundreds of rounds memorize noise. Set `early_stopping_rounds`, keep `learning_rate` modest, and tune `max_depth` down for tabular economic data.
+> - **Time-aware splitting gone wrong.** Random cross-validation on chronologically ordered data lets the model peek at the future (leakage through later rows). Use expanding-window or blocked splits so every fold trains only on its past.
+
 ## Exercises
 
 **1. Mechanism and assumptions (Conceptual):** Explain the loss/objective and inductive bias of **02 Gradient Boosting Machines**. Distinguish optimization error, estimation error, and generalization error in the economic use case.
@@ -133,6 +144,8 @@ plt.show()
 **2. Reproduce and diagnose (Applied):** Build a leakage-safe validation experiment using 1. Boosting Intuition: Learning from Errors, 2. The Gradient Boosting Algorithm. Compare a simple baseline with the featured method using an economically relevant metric and report uncertainty across folds or seeds.
 
 **3. Robust extension (Challenge):** Stress-test the model under temporal, subgroup, or covariate distribution shift. Identify which performance degradation matters for the downstream economic decision and propose one mitigation without using the test set for tuning.
+
+**3b. Failure analysis (Challenge):** Validation loss falls for 200 rounds then climbs, and feature importance is dominated by an ID-like column. Diagnose overfitting plus target leakage, repair with early stopping and removing the offending feature, and verify the importance ranking becomes interpretable.
 
 <details>
 <summary>Solution guidance</summary>
@@ -154,9 +167,8 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
 # Generate Data (Credit Scoring Example)
-np.random.seed(42)
 n = 1000
-X_credit = np.random.normal(0, 1, (n, 10))
+X_credit = rng.normal(0, 1, (n, 10))
 # Non-linear decision boundary
 logits = 2 * X_credit[:, 0]**2 - 3 * np.sin(X_credit[:, 1]) + X_credit[:, 2] * X_credit[:, 3]
 p = 1 / (1 + np.exp(-logits))

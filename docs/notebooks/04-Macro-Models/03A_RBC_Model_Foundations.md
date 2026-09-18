@@ -38,7 +38,7 @@ warnings.filterwarnings('ignore', category=FutureWarning)
   * [Learning Objectives](#learning-objectives)
   * [Prerequisites](#prerequisites)
   * [1.1 Equilibrium Conditions](#11-equilibrium-conditions)
-  * [1.2 The Social Planner's Problem](#12-the-social-planner's-problem)
+  * [1.2 The Social Planner's Problem](#12-the-social-planners-problem)
 * [Summary](#summary)
 
 ## The Lens: Microfoundations of Aggregates
@@ -66,6 +66,8 @@ This part focuses on the economic structure that later solution methods will lin
 * **`04-Macro-Models/02_Neoclassical_Growth.ipynb`**: Growth model foundations and steady-state concepts.
 * **`03-Economic-Modeling/01_Dynamic_Programming.ipynb`**: Dynamic optimization basics.
 * **Economics:** Lagrangian optimization and general equilibrium theory.
+
+> **Historical Context — Time to build (1982).** Finn Kydland and Edward Prescott's 1982 Econometrica paper 'Time to Build and Aggregate Fluctuations' showed a calibrated stochastic growth model could mimic business-cycle moments, launching quantitative macroeconomics. The calibration-versus-estimation argument it started has never fully ended; both authors shared the 2004 Nobel.
 
 > **Learning path:** Building on [`02_Neoclassical_Growth.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/04-Macro-Models/02_Neoclassical_Growth.ipynb); next continue with [`03B_RBC_Model_Solution.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/04-Macro-Models/03B_RBC_Model_Solution.ipynb).
 
@@ -96,6 +98,8 @@ The model consists of the following key equations derived from optimization:
     $$ \ln A_t = \rho \ln A_{t-1} + \epsilon_t $$
     Productivity ($A_t$) follows an AR(1) process.
 
+**Dimension notes:** per-period choices $C_t, L_t$ and prices $w_t, r_t$ are scalars; preference/technology parameters $\psi, \sigma, \phi, \alpha, \delta, \beta$ are constants with $\beta \in (0,1)$; $E_t$ conditions on date-$t$ information.
+
 ### 1.2 The Social Planner's Problem
 
 By the **First Welfare Theorem**, the competitive equilibrium allocation is identical to the solution of a Social Planner's problem:
@@ -124,6 +128,13 @@ $$r_t = \alpha A_t K_t^{\alpha-1} L_t^{1-\alpha}, \quad w_t = (1-\alpha) A_t K_t
 
 $$Y_t = C_t + K_{t+1} - (1-\delta)K_t$$
 
+**Dimension notes:** all per-period objects are scalars; $\beta \in (0,1)$, $\sigma, \psi > 0$; conditional expectations $E_t[\cdot]$ map date-$t$ information to a number.
+
+> **Common Pitfalls in This Lecture**
+>
+> - **Filter-induced moments.** Comparing model moments computed on raw series with data moments computed on HP-filtered series is apples-to-oranges: filtering manufactures cyclicity. Apply identical transformations to both before judging fit.
+> - **Blanchard-Kahn miscounts.** If the number of unstable eigenvalues exceeds forward-looking variables (or vice versa) the linearized system is explosive or indeterminate — often the symptom of $\beta \geq 1$ or a mis-set depreciation. Count eigenvalues before interpreting impulse responses.
+
 ## Exercises
 
 **1. Mechanism and assumptions (Conceptual):** State the equilibrium/optimality condition that organizes **03A Real Business Cycle (RBC) Models: Foundations**. Explain which assumption guarantees existence, uniqueness, or stability, and identify a limiting case where that argument weakens.
@@ -131,6 +142,8 @@ $$Y_t = C_t + K_{t+1} - (1-\delta)K_t$$
 **2. Reproduce and diagnose (Applied):** Reproduce one quantitative result from the sections on 1.1 Equilibrium Conditions, 1.2 The Social Planner's Problem. Change one economically meaningful parameter over a defensible grid, report the policy/value/equilibrium response, and verify convergence with a residual or tighter tolerance.
 
 **3. Robust extension (Challenge):** Design a policy or shock counterfactual that changes one mechanism at a time. Compare welfare or transition dynamics against the baseline and explain which conclusion is structural versus calibration-specific.
+
+**3b. Failure analysis (Challenge):** The log-linearized model simulates explosively, and the eigenvalue count does not match the number of forward-looking variables. Diagnose the Blanchard-Kahn failure (here: $\beta > 1$ from a typo), repair the parameterization, and add an automatic BK-count assertion before any simulation runs.
 
 <details>
 <summary>Solution guidance</summary>

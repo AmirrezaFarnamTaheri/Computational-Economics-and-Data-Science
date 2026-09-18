@@ -87,6 +87,8 @@ The weights are chosen to minimize the distance between the pre-treatment charac
 $$ \min_{W} || X_1 - X_0 W ||_V = \sqrt{(X_1 - X_0 W)' V (X_1 - X_0 W)} $$
 where $V$ is a weighting matrix that reflects the relative importance of the different pre-treatment characteristics. The choice of $V$ is crucial and is often chosen to minimize the mean squared prediction error of the outcome variable in the pre-treatment period.
 
+**Dimension notes:** with $J+1$ units, the weight vector $W = (w_2, \dots, w_{J+1})' \in \Delta_{J-1}$ lives on the simplex (nonnegative, sums to one); pre-treatment characteristics $X_1 \in \mathbb{R}^{m}$ for the treated unit and $X_0 \in \mathbb{R}^{m \times J}$ for the donor pool, so $V \in \mathbb{R}^{m \times m}$ weights the $m$ characteristics and the loss is scalar.
+
 <a id='case-study'></a>
 ## 4. Case Study: The Economic Costs of Conflict in the Basque Country
 
@@ -292,6 +294,8 @@ if not df_smoking.empty:
 **2. Reproduce and diagnose (Applied):** Implement or reproduce the estimator using the material on 1. The Counterfactual Problem in Case Studies, 2. The Idea of Synthetic Control. Report uncertainty and at least two diagnostics; then compare with an alternative specification that targets the same estimand.
 
 **3. Robust extension (Challenge):** Run a Monte Carlo or sensitivity exercise that varies the most fragile identifying condition. Quantify bias/coverage or the range of estimates and state what evidence would change your substantive conclusion.
+
+**3b. Failure analysis (Challenge):** The synthetic control's pre-period fit is terrible, and all weight sits on a single donor unit that looks like an outlier. Diagnose donor-pool contamination and degenerate weights, repair with a cleaned donor pool and the ridge/parsimony constraints, then run in-time and in-space placebo tests.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

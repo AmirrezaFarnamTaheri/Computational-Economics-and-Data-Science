@@ -9,6 +9,11 @@
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/high_performance_python/01_High_Performance_Computing.ipynb) [![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main?filepath=high_performance_python/01_High_Performance_Computing.ipynb) [![Code License: MIT](https://img.shields.io/badge/Code%20License-MIT-yellow.svg)](../LICENSE) [![Content License: CC BY 4.0](https://img.shields.io/badge/Content%20License-CC%20BY%204.0-blue.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 ```python
+import numpy as np
+
+
+rng = np.random.default_rng(42)  # single reproducible generator
+
 # === Environment Setup ===
 import math
 import random
@@ -62,18 +67,20 @@ Many modern economic models are computationally intractable with standard method
 - **`../01-Foundations/23_Profiling_and_Performance.ipynb`**: profiling and benchmark discipline.
 - Familiarity with functions, NumPy, and reproducible timing experiments.
 
+> **Historical Context — Moore 1965, free lunch over ~2005.** Gordon Moore's 1965 observation of doubling transistor counts held for four decades; around 2005 clock speeds plateaued and vendors shipped more cores instead. Performance stopped arriving with new hardware — it must be programmed via vectorization and parallelism, which is precisely this module's subject.
+
 > **Learning path:** This notebook is the entry point for this track; next continue with [`02_Accelerating_Code_with_Numba.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/high_performance_python/02_Accelerating_Code_with_Numba.ipynb).
 
 ### Table of Contents
-1.  [Introduction: Why and When to Optimize](#1.-Introduction:-Why-and-When-to-Optimize)
-2.  [Just-In-Time (JIT) Compilation with Numba](#2.-Just-In-Time-(JIT)-Compilation-with-Numba)
-3.  [Parallel Computing: Theory and Practice](#3.-Parallel-Computing:-Theory-and-Practice)
-    *   [The Limits of Parallelization: Amdahl's Law](#The-Limits-of-Parallelization:-Amdahl's-Law)
-    *   [The Global Interpreter Lock (GIL) and Multiprocessing](#The-Global-Interpreter-Lock-(GIL)-and-Multiprocessing)
-    *   [High-Level Parallelism with Dask](#High-Level-Parallelism-with-Dask)
-4.  [GPU Computing for Massively Parallel Problems](#4.-GPU-Computing-for-Massively-Parallel-Problems)
-5.  [Profiling: Finding the Bottleneck](#5.-Profiling:-Finding-the-Bottleneck)
-6.  [Summary](#6.-Summary)
+1.  [Introduction: Why and When to Optimize](#1-introduction-why-and-when-to-optimize)
+2.  [Just-In-Time (JIT) Compilation with Numba](#2-just-in-time-jit)-Compilation-with-Numba)
+3.  [Parallel Computing: Theory and Practice](#3-parallel-computing-theory-and-practice)
+    *   [The Limits of Parallelization: Amdahl's Law](#the-limits-of-parallelization-amdahls-law)
+    *   [The Global Interpreter Lock (GIL) and Multiprocessing](#the-global-interpreter-lock-gil)-and-Multiprocessing)
+    *   [High-Level Parallelism with Dask](#high-level-parallelism-with-dask)
+4.  [GPU Computing for Massively Parallel Problems](#4-gpu-computing-for-massively-parallel-problems)
+5.  [Profiling: Finding the Bottleneck](#5-profiling-finding-the-bottleneck)
+6.  [Summary](#6-summary)
 
 ### 1. Introduction: Why and When to Optimize
 
@@ -111,17 +118,20 @@ def monte_carlo_pi_python(n_samples):
 # - `parallel=True` allows Numba to automatically parallelize the loop.
 # - `cache=True` saves the compiled function to disk, making subsequent calls faster.
 @njit(parallel=True, cache=True)
-def monte_carlo_pi_numba(n_samples):
-    """Estimates pi using a Numba-compiled, parallel loop."""
+def monte_carlo_pi_numba(points):
+    """Estimates pi using a Numba-compiled, parallel loop.
+
+    The uniform points are drawn OUTSIDE with a seeded Generator and passed
+    in: np.random calls inside a prange loop are not thread-safe.
+    """
     acc = 0
     # `prange` is Numba's parallel range, which works like range() but splits the
     # work across multiple CPU cores.
-    for i in prange(n_samples):
-        # Inside a Numba function, we must use NumPy's random functions.
-        x, y = np.random.rand(), np.random.rand()
+    for i in prange(points.shape[0]):
+        x, y = points[i, 0], points[i, 1]
         if x**2 + y**2 < 1.0:
             acc += 1
-    return 4.0 * acc / n_samples
+    return 4.0 * acc / points.shape[0]
 
 n = 10_000_000
 if NUMBA_AVAILABLE:
@@ -131,10 +141,11 @@ if NUMBA_AVAILABLE:
     # The first time a Numba function is called, it has to compile. This is a one-off cost.
     # We run it once on a small input to "warm it up" before timing.
     print("Warming up Numba (compiling the function)...")
-    monte_carlo_pi_numba(1)
+    points = rng.random((n, 2))  # drawn once, outside the jitted kernel
+    monte_carlo_pi_numba(points[:2])
 
     # Time the compiled Numba version
-    numba_time = timeit.timeit(lambda: monte_carlo_pi_numba(n), number=1)
+    numba_time = timeit.timeit(lambda: monte_carlo_pi_numba(points), number=1)
 
     print(f"Pure Python time: {py_time:.4f}s")
     print(f"Numba time:       {numba_time:.4f}s")
@@ -145,7 +156,10 @@ else:
 
 ### 3. Parallel Computing: Theory and Practice
 
-#### The Limits of Parallelization: Amdahl's Law
+#### The Limits of Parallelization: Amdahl
+
+![Amdahl's law](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/high_performance_python/amdahls_law.png)
+*Figure: Speedup bounds from Amdahl's law for several parallel shares..*'s Law
 Before diving into parallel coding, it's important to understand its theoretical limits. **Amdahl's Law**, formulated by computer architect Gene Amdahl in 1967, specifies the maximum possible speedup from parallelizing a task. Let $P$ be the proportion of a program that can be parallelized (and $1-P$ be the proportion that is inherently serial). The maximum speedup from using $N$ processors is:
 
 $$ \text{Speedup}(N, P) = \frac{1}{(1-P) + \frac{P}{N}} $$ 
@@ -170,40 +184,50 @@ def run_simulation(params):
     sim_id, alpha, beta = params
     result = 0
     # This loop is a placeholder for a more complex calculation.
-    for i in range(1_000_000):
+    for i in range(100_000):  # bounded so the demo stays CI-friendly
         result += np.sin(i * alpha) * np.cos(i * beta)
     return sim_id, result
 
-# The `if __name__ == '__main__':` guard is essential for multiprocessing on some platforms
-# (like Windows and macOS). It prevents worker processes from re-importing and re-executing
-# the script's main code, which would lead to an infinite loop of process creation.
-if __name__ == '__main__':
-    # Create a grid of parameters for our simulation.
-    # Each tuple in the list is a separate, independent task.
-    n_sims = mp.cpu_count() # Run one simulation per available CPU core
-    param_grid = [(i, alpha, beta) for i, (alpha, beta) in enumerate(np.random.rand(n_sims, 2))]
-    print(f"> **Note:** Running a parameter sweep with {len(param_grid)} simulations on {n_sims} cores...")
+# NOTE: We use `concurrent.futures.ProcessPoolExecutor` rather than `multiprocessing.Pool`.
+# `ProcessPoolExecutor` is cross-platform-safe (Linux, macOS, Windows) and works correctly
+# when this cell executes inside Jupyter / nbconvert --execute (no `__main__` module is
+# involved at the cell level, so the `if __name__ == '__main__':` guard that `mp.Pool`
+# requires on Windows would be a no-op here and the worker would re-enter the notebook,
+# deadlocking the run). `ProcessPoolExecutor` uses the `spawn` start method by default
+# on macOS/Windows and falls back to `fork` on Linux, and the `with` block ensures the
+# pool is properly closed afterwards. Each task is still pickled and sent to a worker.
+from concurrent.futures import ProcessPoolExecutor
 
-    # Time the serial execution first for comparison
-    start_serial = time.time()
-    serial_results = [run_simulation(p) for p in param_grid]
-    end_serial = time.time()
-    serial_time = end_serial - start_serial
-    print(f"Serial execution time: {serial_time:.2f}s")
+# Create a grid of parameters for our simulation.
+# Each tuple in the list is a separate, independent task.
+n_sims = max(1, mp.cpu_count())  # Run one simulation per available CPU core
+param_grid = [(i, alpha, beta) for i, (alpha, beta) in enumerate(rng.random((n_sims, 2)))]
+print(f"> **Note:** Running a parameter sweep with {len(param_grid)} simulations on {n_sims} cores...")
 
-    # Now, execute in parallel
-    start_parallel = time.time()
-    # `mp.Pool` creates a pool of worker processes. Using a `with` statement ensures
-    # the pool is properly closed afterwards.
-    with mp.Pool(processes=n_sims) as pool:
-        # `pool.map` is like the built-in `map` function but it distributes the
-        # tasks in `param_grid` across the worker processes.
-        parallel_results = pool.map(run_simulation, param_grid)
-    end_parallel = time.time()
-    parallel_time = end_parallel - start_parallel
-    print(f"Multiprocessing execution time: {parallel_time:.2f}s")
+# Time the serial execution first for comparison
+start_serial = time.time()
+serial_results = [run_simulation(p) for p in param_grid]
+end_serial = time.time()
+serial_time = end_serial - start_serial
+print(f"Serial execution time: {serial_time:.2f}s")
 
+# Now, execute in parallel using ProcessPoolExecutor
+start_parallel = time.time()
+# The `with` statement ensures the pool is properly closed afterwards.
+with ProcessPoolExecutor(max_workers=n_sims) as executor:
+    # `executor.map` distributes the tasks in `param_grid` across the worker
+    # processes. Results come back in submission order, just like the built-in `map`.
+    parallel_results = list(executor.map(run_simulation, param_grid))
+end_parallel = time.time()
+parallel_time = end_parallel - start_parallel
+print(f"Multiprocessing execution time: {parallel_time:.2f}s")
+
+# On a single-core CI runner, parallel may be slightly slower due to spawn overhead;
+# guard the speedup print to avoid divide-by-zero / misleading ratios.
+if parallel_time > 0:
     print(f"> **Note:** Parallel execution provides a **{serial_time / parallel_time:.2f}x** speedup.")
+else:
+    print("> **Note:** Parallel time was below measurement resolution; skipping speedup ratio.")
 ```
 
 #### High-Level Parallelism with Dask
@@ -238,7 +262,7 @@ if CUPY_AVAILABLE:
     print(f"> **Note:** Found compatible GPU: {gpu_name}")
     # Create large random matrices on both CPU (NumPy) and GPU (CuPy)
     size = 4000
-    np_A, np_B = np.random.rand(size, size).astype(np.float32), np.random.rand(size, size).astype(np.float32)
+    np_A, np_B = rng.random(size, size).astype(np.float32), rng.random(size, size).astype(np.float32)
 
     # Transfer data to the GPU
     cp_A, cp_B = cp.asarray(np_A), cp.asarray(np_B)
@@ -280,7 +304,7 @@ def slow_function():
 
 def fast_function():
     """This function is fast and does not contribute much to the total runtime."""
-    pass
+    return None
 
 def main_workflow():
     """The main entry point of our program, calling the other functions."""
@@ -317,6 +341,8 @@ print("> **Note:** The profiler output (see `cumtime` column) clearly shows that
 **2. Reproduce and diagnose (Applied):** Optimize the workload using 1. Introduction: Why and When to Optimize, 2. Just-In-Time (JIT) Compilation with Numba. Report warm-up separately from steady-state timing, use multiple repetitions, and verify numerical equivalence to the baseline.
 
 **3. Robust extension (Challenge):** Scale the workload until the bottleneck changes (compute, memory bandwidth, serialization, transfer, or scheduler overhead). Identify the crossover point and recommend when the optimization should not be used.
+
+**3b. Failure analysis (Challenge):** A heroic rewrite of a function using 2% of runtime leaves wall time unchanged. Diagnose via Amdahl's law (compute the attainable bound), re-profile to find the real hotspot, and report the speedup actually available from fixing it.
 
 <details>
 <summary>Solution guidance</summary>

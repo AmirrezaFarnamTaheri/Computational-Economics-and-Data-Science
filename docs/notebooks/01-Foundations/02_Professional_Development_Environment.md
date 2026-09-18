@@ -28,20 +28,20 @@ plt.rcParams.update(
 
 ## Table of Contents
 
-1. [The Lens: From Disposable Scripts to Durable Scientific Artifacts](#The-Lens:-From-Disposable-Scripts-to-Durable-Scientific-Artifacts)
-2. [The Command-Line Interface (CLI): The Economist's Power Tool](#The-Command-Line-Interface-(CLI):-The-Economist's-Power-Tool)
-3. [Version Control with Git and GitHub: Your Scientific Logbook](#Version-Control-with-Git-and-GitHub:-Your-Scientific-Logbook)
-4. [Environment Management with Conda](#Environment-Management-with-Conda)
-5. [Code Editor and Debugger: Visual Studio Code](#Code-Editor-and-Debugger:-Visual-Studio-Code)
-6. [A Professional Project Structure](#A-Professional-Project-Structure)
-7. [Static Analysis: Automating Code Quality](#Static-Analysis:-Automating-Code-Quality)
-8. [Ensuring Correctness with Automated Testing](#Ensuring-Correctness-with-Automated-Testing)
-9. [Automating Quality with Continuous Integration (CI)](#Automating-Quality-with-Continuous-Integration-(CI))
-10. [Documentation: Communicating Your Work](#Documentation:-Communicating-Your-Work)
-11. [Summary](#Summary)
-12. [Challenge Exercise](#Challenge-Exercise)
+1. [The Lens: From Disposable Scripts to Durable Scientific Artifacts](#the-lens-from-disposable-scripts-to-durable-scientific-artifacts)
+2. [The Command-Line Interface (CLI): The Economist's Power Tool](#the-command-line-interface-cli):-The-Economist's-Power-Tool)
+3. [Version Control with Git and GitHub: Your Scientific Logbook](#version-control-with-git-and-github-your-scientific-logbook)
+4. [Environment Management with Conda](#environment-management-with-conda)
+5. [Code Editor and Debugger: Visual Studio Code](#code-editor-and-debugger-visual-studio-code)
+6. [A Professional Project Structure](#a-professional-project-structure)
+7. [Static Analysis: Automating Code Quality](#static-analysis-automating-code-quality)
+8. [Ensuring Correctness with Automated Testing](#ensuring-correctness-with-automated-testing)
+9. [Automating Quality with Continuous Integration (CI)](#automating-quality-with-continuous-integration-ci))
+10. [Documentation: Communicating Your Work](#documentation-communicating-your-work)
+11. [Summary](#summary)
+12. [Challenge Exercise](#challenge-exercise)
 
-## The Lens: The Lens
+## The Lens: From Disposable Scripts to Durable Scientific Artifacts
 **What problem are we solving?**  
 The central crisis in modern computational research is reproducibility. A "working" script that produces a result on one machine often fails on another due to missing dependencies, unversioned changes, or disorganized file paths. This fragility undermines the scientific credibility of the results. As an economist, how do you ensure your research is not just a temporary output, but a durable, auditable artifact?
 
@@ -105,7 +105,10 @@ This pipeline is a perfect illustration of composability:
 4.  `|`: The filtered lines are piped to the next command.
 5.  `awk -F, '{...}'`: This is a mini-program. `-F,` sets the field separator to a comma. For each line it receives, it adds the value of the second column (`$2`) to a `total` variable and increments a `count` variable. The `END` block is executed after all lines have been processed, printing the final average.
 
-### 2. Version Control with Git and GitHub: Your Scientific Logbook
+### 2. Version Control with Git and GitHub
+
+![Git three states](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/01-Foundations/1.2-git-three-states-new.png)
+*Figure: Working directory, staging area, and repository..*: Your Scientific Logbook
 
 **Version Control** is a system that records changes to a file or set of files over time so that you can recall specific versions later. For a researcher, it is the equivalent of a perfect, indelible lab notebook. **Git** is the world's standard distributed version control system.
 
@@ -127,7 +130,10 @@ This pipeline is a perfect illustration of composability:
 
 - **Branch:** An independent line of development. The main branch, which should always represent a stable, production-ready state, is typically named `main`. New work is always developed in separate branches to avoid destabilizing the main line of the project.
 
-#### The Feature Branch Workflow and Code Review
+#### The Feature Branch Workflow
+
+![Feature branch workflow](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/01-Foundations/1.2-git-feature-branch-workflow-new.png)
+*Figure: Branch, commit, review, and merge..* and Code Review
 
 A disciplined and robust workflow is **feature branching**. All new work—a new feature, a bug fix, an exploratory analysis—is done in a dedicated branch. This isolates development, ensuring the `main` branch always remains in a stable, working state. 
 
@@ -308,7 +314,7 @@ While features like syntax highlighting and intelligent code completion are stan
 Debugging with `print()` statements is a common but deeply inefficient practice. It clutters code with temporary lines, provides only a static snapshot of a variable at one point in time, and requires rerunning the entire script to get more information. A debugger is a far more powerful and systematic tool. It allows you to:
 - **Set Breakpoints:** Pause the execution of your code at any line without modifying the code itself.
 - **Inspect State:** Once paused at a breakpoint, you can inspect the value of every variable in the current scope. You can see the entire contents of a DataFrame or a NumPy array, not just what you chose to print.
-- **Step Through Code:** Execute your code line-by-line (`Step Over`), or dive into the execution of a a function (`Step Into`), or run until you exit the current function (`Step Out`). This allows you to observe how the program's state evolves in real-time.
+- **Step Through Code:** Execute your code line-by-line (`Step Over`), or dive into the execution of a function (`Step Into`), or run until you exit the current function (`Step Out`). This allows you to observe how the program's state evolves in real-time.
 - **Examine the Call Stack:** See the chain of function calls that led to the current point of execution. This is invaluable for understanding how you arrived at a particular state, especially in complex code.
 
 Learning to use a debugger is a methodological leap. It replaces the haphazard guesswork of `print()` statements with a systematic, scientific process of diagnosis. It enables you to understand and fix complex bugs with an efficiency and precision that is simply not possible otherwise.
@@ -494,13 +500,29 @@ The formula for present value (PV) is $PV = \frac{FV}{(1 + r)^n}$, where $FV$ is
 
 ##### Step 1: Examine the Function and its Test
 
-First, let's examine our function, which is saved in `finance_utils.py`, and its corresponding test in `test_finance_utils.py`. The test checks if the function correctly calculates the PV for a known case: the present value of $110 to be received in 2 years with a 10% discount rate is $110 / (1.1)^2 = $90.91.
+This demonstration creates an isolated temporary project rather than changing the repository's `finance_utils.py` or any files you have edited. The test checks the present value of $110 received in two years at a 10% discount rate: $110 / (1.1)^2$, or about $90.91. We run pytest through the notebook kernel's Python interpreter so the test uses the same environment.
 
 ### Step 1: Examining the Python Module and Test File
 
 ```python
-!pygmentize finance_utils.py
-!pygmentize test_finance_utils.py
+from pathlib import Path
+import subprocess
+import sys
+from tempfile import TemporaryDirectory
+
+# Keep the temporary project alive for the red and green phases below.
+tdd_project = TemporaryDirectory(prefix="present-value-tdd-")
+tdd_path = Path(tdd_project.name)
+(tdd_path / "pytest.ini").write_text("[pytest]\n", encoding="utf-8")
+test_code = """import pytest
+from finance_utils import calculate_pv
+
+
+def test_present_value():
+    assert calculate_pv(110, 0.1, 2) == pytest.approx(110 / 1.1**2)
+"""
+(tdd_path / "test_finance_utils.py").write_text(test_code, encoding="utf-8")
+print(test_code)
 ```
 
 ##### Step 2: The Red-Green-Refactor Cycle
@@ -515,37 +537,58 @@ We will now demonstrate this cycle.
 ### Step 2a: The 'Red' Phase (Write a Buggy Function and See the Test Fail)
 
 ```python
-buggy_code = """# finance_utils.py
-def calculate_pv(fv, r, n):
-    # Bug: Incorrect order of operations
+buggy_code = """def calculate_pv(fv, r, n):
+    # Bug: division happens before addition.
     return fv / 1 + r**n
 """
-with open("finance_utils.py", "w") as f:
-    f.write(buggy_code)
+(tdd_path / "finance_utils.py").write_text(buggy_code, encoding="utf-8")
+print(buggy_code)
 ```
 
-> **Note:** Overwrote `finance_utils.py` with a buggy version. Now running pytest...
+The buggy function is written only to the temporary project. The next cell expects pytest to return exit code 1 (a failed assertion); a missing dependency or collection error must not count as a successful red phase.
 
 ```python
-!pytest
+red_result = subprocess.run(
+    [sys.executable, "-X", "utf8", "-B", "-m", "pytest", "-q", "test_finance_utils.py"],
+    cwd=tdd_path,
+    capture_output=True,
+    text=True,
+    encoding="utf-8",
+    timeout=60,
+    check=False,  # The assertion failure is intentional in the red phase.
+)
+print(red_result.stdout)
+if red_result.stderr:
+    print(red_result.stderr)
+assert red_result.returncode == 1, "Expected a failed test, not a setup error."
 ```
 
 ### Step 2b: The 'Green' Phase (Fix the Bug and See the Test Pass)
 
 ```python
-fixed_code = """# finance_utils.py
-def calculate_pv(fv, r, n):
-    # Fix: Correct parentheses
-    return fv / (1 + r)**n
+fixed_code = """def calculate_pv(fv, r, n):
+    return fv / (1 + r) ** n
 """
-with open("finance_utils.py", "w") as f:
-    f.write(fixed_code)
+(tdd_path / "finance_utils.py").write_text(fixed_code, encoding="utf-8")
+print(fixed_code)
 ```
 
-> **Note:** Overwrote `finance_utils.py` with the corrected version. Now running pytest...
+The corrected function discounts the future value by the full compound-interest factor. Pytest must now pass. Both runs disable bytecode writing so the second process reads the new source rather than a cached module.
 
 ```python
-!pytest
+green_result = subprocess.run(
+    [sys.executable, "-X", "utf8", "-B", "-m", "pytest", "-q", "test_finance_utils.py"],
+    cwd=tdd_path,
+    capture_output=True,
+    text=True,
+    encoding="utf-8",
+    timeout=60,
+    check=False,
+)
+print(green_result.stdout)
+if green_result.stderr:
+    print(green_result.stderr)
+assert green_result.returncode == 0, "The corrected present-value test must pass."
 ```
 
 ### 8. Automating Quality with Continuous Integration (CI)
@@ -625,6 +668,8 @@ Reproduce one core result with a small change in parameters or data. Report both
 
 ### Tier 3 — Challenge
 Design a counterfactual, robustness check, or extension that changes one economically meaningful mechanism while holding the others fixed. State the expected direction of the effect before computing it, then reconcile prediction and result.
+
+**Failure analysis (Challenge):** Your notebook runs on your machine but crashes on a colleague's with `ModuleNotFoundError` and different results for the same data. Diagnose the environment mismatch (undeclared dependency, version drift), repair it by pinning versions in `requirements.txt`/`environment.yml`, and add a cell that asserts the critical package versions before the analysis runs.
 
 # Summary
 

@@ -32,12 +32,13 @@ By the end of this notebook, you will be able to:
 
 *   **01-Foundations/12_NumPy.ipynb**: Familiarity with NumPy array creation and broadcasting.
 
+> **Historical Context — Turing and Wilkinson make elimination trustworthy (1948–1961).** Alan Turing's 1948 paper on rounding errors introduced conditioning and analyzed Gaussian elimination; James Wilkinson at NPL then built backward error analysis, explaining why pivoted elimination is reliable. EISPACK and LINPACK (1970s) encoded these results, LAPACK (1992) refactored them for caches — `numpy.linalg` calls their descendants today.
+
 > **Learning path:** This notebook is the entry point for this track; next continue with [`02_Numerical_Preliminaries.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/02-Numerical-Methods/02_Numerical_Preliminaries.ipynb).
 
 ```python
 # === Environment Setup ===
 import time
-import warnings
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -49,8 +50,6 @@ plt.style.use('seaborn-v0_8-whitegrid')
 plt.rcParams.update({'figure.figsize': (10, 6), 'font.size': 12, 'figure.dpi': 120})
 %config InlineBackend.figure_format = 'retina'
 np.set_printoptions(suppress=True, precision=4, linewidth=120)
-# Suppress warnings for cleaner output in notebooks
-
 # Initialize Random Number Generator
 rng = np.random.default_rng(42)
 ```
@@ -66,8 +65,8 @@ rng = np.random.default_rng(42)
   * [Application: Markov Chains and Steady States](#application-markov-chains-and-steady-states)
   * [Special Matrices in Economics](#special-matrices-in-economics)
 * [2. Matrices as Linear Transformations](#2-matrices-as-linear-transformations)
-* [3. Solving Systems of Linear Equations: `Ax = b`](#3-solving-systems-of-linear-equations-ax--b)
-  * [Best Practice: `solve` > `inv`](#best-practice-solve--inv)
+* [3. Solving Systems of Linear Equations: `Ax = b`](#3-solving-systems-of-linear-equations-ax-b)
+  * [Best Practice: `solve` > `inv`](#best-practice-solve-inv)
   * [Application: The Leontief Input-Output Model](#application-the-leontief-input-output-model)
   * [Application: Ordinary Least Squares (OLS)](#application-ordinary-least-squares-ols)
 * [4. Stability and the Condition Number](#4-stability-and-the-condition-number)
@@ -99,7 +98,7 @@ A **subspace** is a subset of a vector space that is itself a vector space. Cruc
 ### Inner Products, Norms, and Angles
 Vector spaces often come with a notion of geometry defined by the **Inner Product** (Dot Product): $x \cdot y = \sum x_i y_i$. This induces:
 *   **Norm (Length):** $||x|| = \sqrt{x \cdot x}$
-*   **Angle:** $\cos \theta = \frac{x \cdot y}{||x|| \cdot ||y||}$. This is directly related to **correlation**. If the angle is $0$, vectors are collinear (perfect correlation). If $90^\circ$, they are orthogonal (uncorrelated).
+*   **Angle:** $\cos \theta = \frac{x \cdot y}{||x|| \cdot ||y||}$. For nonconstant data vectors, Pearson **correlation** is the cosine of the angle between their **mean-centered** versions. Orthogonal raw vectors need not be uncorrelated.
 
 ### The Four Fundamental Subspaces
 
@@ -149,10 +148,10 @@ Certain matrix structures appear repeatedly in economic theory. Recognizing them
 
 1.  **Symmetric Matrices ($A = A^T$):** 
     *   *Where:* Covariance matrices, Hessian matrices (second derivatives of utility/profit functions).
-    *   *Property:* All eigenvalues are real. Eigenvectors are orthogonal.
+    *   *Property:* All eigenvalues are real, and an orthonormal eigenbasis can be chosen. Eigenvectors for distinct eigenvalues are orthogonal.
 
 2.  **Positive Definite Matrices:**
-    *   *Where:* A valid covariance matrix must be positive semi-definite. In optimization, a local minimum requires the Hessian to be positive definite.
+    *   *Where:* A valid covariance matrix must be positive semi-definite. For a twice-differentiable unconstrained objective, a local minimum requires a positive semi-definite Hessian. At a stationary point, positive definiteness is sufficient for a strict local minimum, but not necessary: $f(x)=x^4$ has a strict minimum with $f^{\prime\prime}(0)=0$.
     *   *Definition:* $x^T A x > 0$ for all non-zero vectors $x$.
     *   *Check:* All eigenvalues are positive.
 
@@ -211,11 +210,19 @@ t_inv = time.time() - start
 print(f"`linalg.inv`:   {t_inv:.4f} seconds")
 
 print(f"Speedup: {t_inv / t_solve:.2f}x")
+
+# Accuracy: compare the two answers (both are close here on a well-conditioned
+# random matrix, but inv() carries extra round-off and costs ~2x the flops)
+r_solve = np.linalg.norm(A @ x_solve - b)
+r_inv = np.linalg.norm(A @ x_inv - b)
+print(f"Residual ||Ax-b|| via solve: {r_solve:.3e}")
+print(f"Residual ||Ax-b|| via inv:   {r_inv:.3e}")
+print(f"Max abs difference between the two solutions: {np.max(np.abs(x_solve - x_inv)):.3e}")
 ```
 
 ### Application: The Leontief Input-Output Model
 
-The Leontief model describes an economy where each sector requires inputs from other sectors to produce output. Let $A$ be the **technology matrix** where $A_{ij}$ is the input from sector $i$ required to produce 1 unit of good $j$. Let $d$ be the vector of final demand. The total gross output $x$ required is:
+The Leontief model describes an economy where each sector requires inputs from other sectors to produce output. Let $A$ be the **technology matrix** where $A_{ij}$ is the input from sector $i$ required to produce 1 unit of good $j$. With $n$ sectors, the dimensions are $A \in \mathbb{R}^{n \times n}$ and $x, d \in \mathbb{R}^n$, while $I = I_n$ is the $n \times n$ identity — so $(I - A)$ is square, and the system below has a unique solution whenever it is nonsingular. Let $d$ be the vector of final demand. The total gross output $x$ required is:
 
 $$ x = Ax + d \implies (I - A)x = d $$
 
@@ -284,7 +291,9 @@ print("OLS estimates will be unstable.")
 An **eigenvector** $v$ of $A$ is a vector that doesn't change direction when transformed by $A$; it is only scaled by its **eigenvalue** $\lambda$:
 $$ Av = \lambda v $$
 
-Eigenvalues govern the long-run behavior of dynamic systems $x_{t+1} = Ax_t$. We can decompose the state $x_t$ into a weighted sum of eigenvectors $v_i$: $x_t = c_1 \lambda_1^t v_1 + \dots + c_n \lambda_n^t v_n$.
+Here $A \in \mathbb{R}^{n \times n}$, each eigenvector satisfies $v_i \in \mathbb{C}^n \setminus \{0\}$, and $\lambda_i \in \mathbb{C}$. Eigenvalues govern the long-run behavior of dynamic systems $x_{t+1} = Ax_t$. If $A$ is diagonalizable over $\mathbb{C}$, we can write $A = V \Lambda V^{-1}$ with eigenvector columns $V = [v_1, \dots, v_n]$ and $\Lambda = \mathrm{diag}(\lambda_1, \dots, \lambda_n)$, we get $A^t = V \Lambda^t V^{-1}$, hence
+$$ x_t = A^t x_0 = V \Lambda^t V^{-1} x_0 = \sum_{i=1}^n c_i \lambda_i^{\,t} v_i, \qquad c = V^{-1} x_0 \in \mathbb{C}^n, $$
+a weighted sum of eigenvectors whose coefficients are determined at $t=0$. Real matrices can have complex eigenvectors; conjugate pairs combine to give real trajectories. If $A$ is defective, use Jordan or Schur form instead; the strict spectral-radius stability criterion below still holds.
 *   If all $|\lambda_i| < 1$, the terms $\lambda_i^t \to 0$, so the system is **stable** (converges to steady state).
 *   If any $|\lambda_i| > 1$, that term grows exponentially, making the system **unstable**.
 *   If mixed, it exhibits **saddle-path stability**: only specific initial conditions (where the coefficients $c_i$ for unstable modes are zero) lead to convergence.
@@ -373,10 +382,12 @@ Economic networks (e.g., input-output, social graphs) are often **sparse**: most
 
 ```python
 N = 5000
-# Create a sparse tridiagonal matrix
-data = np.ones(N) * -2
-offsets = [0]
-A_sparse = sparse.dia_matrix((data, offsets), shape=(N, N)).tocsr()
+# Tridiagonal discretization of a 1D Laplacian (e.g., finite-difference Hessian)
+main_diag = -2.0 * np.ones(N)
+off_diag = np.ones(N - 1)
+A_sparse = sparse.diags(
+    diagonals=[off_diag, main_diag, off_diag], offsets=[-1, 0, 1], format="csr"
+)
 
 print(f"Sparse Matrix Memory: {A_sparse.data.nbytes / 1e6:.2f} MB")
 # Dense equivalent would be N*N*8 bytes ~ 200MB
@@ -403,6 +414,8 @@ $$Av = \lambda v$$
 
 $$\begin{bmatrix} x_{t+1} \\ y_{t+1} \end{bmatrix} = \begin{bmatrix} 0.5 & 0.2 \\ 0.2 & 0.5 \end{bmatrix} \begin{bmatrix} x_t \\ y_t \end{bmatrix}$$
 
+**Dimension notes:** (1) Leontief: $A \in \mathbb{R}^{n \times n}$, $x, d \in \mathbb{R}^n$. (2) Condition number: $\kappa(A) \ge 1$ is a dimensionless scalar. (3) Eigenpair: $v \in \mathbb{C}^n \setminus \{0\}$, $\lambda \in \mathbb{C}$. (4) Linear system: state $\in \mathbb{R}^2$, transition matrix $2 \times 2$.
+
 ## Economic Interpretation: Why conditioning is an economic issue
 
 In an estimated equilibrium system, a large condition number means that small sampling, calibration, or rounding errors in moments and coefficients can produce economically large changes in the recovered prices, quantities, or policy coefficients. Decompositions such as QR and SVD are therefore not only numerical conveniences: they diagnose weakly identified directions and distinguish economically meaningful variation from nearly redundant equations.
@@ -415,6 +428,11 @@ In an estimated equilibrium system, a large condition number means that small sa
 *   **Watch the Condition Number:** High $\kappa(A)$ means unreliable results.
 *   **SVD is Powerful:** It reveals the underlying structure and rank of data.
 *   **Go Sparse:** For large networks, sparse matrices are essential.
+
+> **Common Pitfalls in This Lecture**
+>
+> - **Explicit inverses.** `np.linalg.inv(A) @ b` is slower and less accurate than `np.linalg.solve(A, b)`, which factors once and never forms the inverse. Also, `inv` fails outright on singular matrices that `lstsq` would handle gracefully.
+> - **Trusting near-solutions.** A matrix can be technically invertible yet numerically useless: $\kappa(A) \approx 10^{12}$ means you lose ~12 digits of precision. Inspect the condition number before interpreting any solution of an ill-conditioned system.
 
 ## Exercises
 
@@ -429,6 +447,8 @@ A numerically stable way to solve the OLS problem $(X^TX)\beta = X^Ty$ is using 
 ### 3. Challenge: Google's PageRank
 PageRank models the web as a Markov chain. The PageRank vector $v$ is the principal eigenvector of the Google matrix $G$, satisfying $Gv = v$ (eigenvalue $\lambda=1$).
 *   **Task:** Create a random 100x100 transition matrix representing web links. Damping factor $\alpha=0.85$. Use the **Power Iteration** method to find the steady-state vector $v$. Visualize the convergence of the error over iterations.
+
+**Failure analysis (Challenge):** Solving an input-output system with `inv(A) @ b` returns a solution whose residual is large even though $A$ is technically invertible. Diagnose ill-conditioning by computing $\kappa(A)$, repair with `solve`/`lstsq` plus row scaling, and report the residual before and after alongside the digits lost.
 
 ## References & Further Reading
 

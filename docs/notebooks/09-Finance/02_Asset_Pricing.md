@@ -45,20 +45,20 @@ if not PD_READER_AVAILABLE: print("The 'pandas_datareader' library is not instal
 
 ### Table of Contents
 
-1.  [The Unifying Theory: The Stochastic Discount Factor (SDF)](#1.-The-Unifying-Theory:-The-Stochastic-Discount-Factor-(SDF))
-    - [Deriving the SDF from Micro-foundations](#Deriving-the-SDF-from-Micro-foundations)
-2.  [Model 1: The Consumption-Based CAPM (CCAPM)](#2.-Model-1:-The-Consumption-Based-CAPM-(CCAPM))
-    - [The Equity Premium Puzzle and the Hansen-Jagannathan Bound](#The-Equity-Premium-Puzzle-and-the-Hansen-Jagannathan-Bound)
-3.  [Model 2: The Capital Asset Pricing Model (CAPM)](#3.-Model-2:-The-Capital-Asset-Pricing-Model-(CAPM))
-4.  [Model 3: The Fama-French Five-Factor Model](#4.-Model-3:-The-Fama-French-Five-Factor-Model)
-5.  [Testing Asset Pricing Models: Fama-MacBeth Regressions](#5.-Testing-Asset-Pricing-Models:-Fama-MacBeth-Regressions)
-6.  [Unified Case Study](#6.-Unified-Case-Study)
-    - [Data Collection](#Data-Collection)
-    - [Time-Series Regressions (First Pass)](#Time-Series-Regressions-(First-Pass))
-    - [Fama-MacBeth Regressions (Second Pass)](#Fama-MacBeth-Regressions-(Second-Pass))
-    - [Analysis and Interpretation](#Analysis-and-Interpretation)
-7.  [Summary](#7.-Summary)
-8.  [Exercises](#8.-Exercises)
+1.  [The Unifying Theory: The Stochastic Discount Factor (SDF)](#1-the-unifying-theory-the-stochastic-discount-factor-sdf))
+    - [Deriving the SDF from Micro-foundations](#deriving-the-sdf-from-micro-foundations)
+2.  [Model 1: The Consumption-Based CAPM (CCAPM)](#2-model-1-the-consumption-based-capm-ccapm))
+    - [The Equity Premium Puzzle and the Hansen-Jagannathan Bound](#the-equity-premium-puzzle-and-the-hansen-jagannathan-bound)
+3.  [Model 2: The Capital Asset Pricing Model (CAPM)](#3-model-2-the-capital-asset-pricing-model-capm))
+4.  [Model 3: The Fama-French Five-Factor Model](#4-model-3-the-fama-french-five-factor-model)
+5.  [Testing Asset Pricing Models: Fama-MacBeth Regressions](#5-testing-asset-pricing-models-fama-macbeth-regressions)
+6.  [Unified Case Study](#6-unified-case-study)
+    - [Data Collection](#data-collection)
+    - [Time-Series Regressions (First Pass)](#time-series-regressions-first-pass))
+    - [Fama-MacBeth Regressions (Second Pass)](#fama-macbeth-regressions-second-pass))
+    - [Analysis and Interpretation](#analysis-and-interpretation)
+7.  [Summary](#7-summary)
+8.  [Exercises](#8-exercises)
 
 ### 1. The Unifying Theory: The Stochastic Discount Factor (SDF)
 
@@ -97,6 +97,8 @@ Asset pricing is a jungle of acronyms: CAPM, APT, CCAPM, ICAPM. But beneath this
 * **Statistics:** Expected values, covariance, and basic probability.
 * **Learning-path prerequisite:** [`01_Portfolio_Theory.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/09-Finance/01_Portfolio_Theory.ipynb)
 
+> **Historical Context — CAPM 1964, consumption pricing 1979.** Sharpe (1964), Lintner (1965), and Mossin (1966) independently derived the CAPM from Markowitz's variance; Douglas Breeden (1979) recast pricing in marginal utility terms — the SDF viewpoint this notebook uses. The factor-zoo debates that fund empirical asset pricing are arguments with these models.
+
 > **Learning path:** Building on [`01_Portfolio_Theory.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/09-Finance/01_Portfolio_Theory.ipynb); next continue with [`03_Option_Pricing.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/09-Finance/03_Option_Pricing.ipynb).
 
 ### 2. Model 1: The Consumption-Based CAPM (CCAPM)
@@ -104,6 +106,8 @@ Asset pricing is a jungle of acronyms: CAPM, APT, CCAPM, ICAPM. But beneath this
 If we assume power utility, $u(C) = \frac{C^{1-\gamma}}{1-\gamma}$, then $m_{t+1} = \beta (C_{t+1}/C_t)^{-\gamma}$. This gives the **CCAPM**:
 $$ E_t[R_i] - R_f \approx \gamma \cdot \text{Cov}(R_i, \Delta c_{t+1}) $$
 Risk is defined as covariance with consumption growth. This model is theoretically elegant but fails empirically. Consumption is too smooth to explain the volatility of stock returns, leading to the **Equity Premium Puzzle**.
+
+**Dimension notes:** payoffs, prices and the SDF $m_{t+1}$ are scalars; consumption growth $C_{t+1}/C_t$ scalar; the CCAPM pricing relation binds two scalar moments through covariance with $\gamma > 0$ risk aversion.
 
 #### The Equity Premium Puzzle and the Hansen-Jagannathan Bound
 
@@ -151,11 +155,16 @@ def plot_hj_bound():
 plot_hj_bound()
 ```
 
-### 3. Model 2: The Capital Asset Pricing Model (CAPM)
+### 3. Model 2: The Capital Asset Pricing Model
+
+![Fama-MacBeth procedure](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/09-Finance/fama_macbeth_procedure.png)
+*Figure: The two-pass Fama-MacBeth estimation procedure..* (CAPM)
 
 Since consumption data is flawed, finance turned to **Factor Models**. The CAPM assumes the SDF is linear in the market return: $m_{t+1} = a - b R_{m, t+1}$. This implies:
 $$ E[R_i] - R_f = \beta_i (E[R_m] - R_f) $$
 where $\beta_i$ measures sensitivity to the market. The CAPM predicts that market beta is the *only* risk that matters.
+
+**Dimension notes:** market return $R_{m,t+1}$ scalar; SDF affine in it makes $\beta_i$ a scalar regression slope; the CAPM restriction is that intercepts vanish asset-by-asset.
 
 ### 4. Model 3: The Fama-French Five-Factor Model
 
@@ -306,6 +315,13 @@ $$\frac{\sigma(m)}{E[m]} \ge \frac{|E[R_m] - R_f|}{\sigma(R_m)}$$
 
 $$E[R_i] - R_f = \beta_i (E[R_m] - R_f)$$
 
+**Dimension notes:** $p_t$, payoff $x_{t+1}$, SDF $m_{t+1}$ all scalar; excess-return relations hold per asset $i$; factor exposures are scalar coefficients.
+
+> **Common Pitfalls in This Lecture**
+>
+> - **Generated-regressor inference.** Two-pass Fama-MacBeth betas are estimated, not observed; naive second-pass standard errors understate uncertainty. Apply the Shanken correction or estimate everything jointly by GMM before claiming significance.
+> - **Look-ahead in factor construction.** Factors built with full-sample sorts or rebalanced with future information contaminate every test asset. Replicate published factor timing conventions exactly, including lagging characteristics.
+
 ### Three-Tier Practice Ladder
 
 **1. Mechanism and assumptions (Conceptual):** Derive the no-arbitrage, optimality, or risk-pricing relation central to **02 Asset Pricing** and verify that it satisfies at least two economically meaningful limiting cases or bounds.
@@ -313,6 +329,8 @@ $$E[R_i] - R_f = \beta_i (E[R_m] - R_f)$$
 **2. Reproduce and diagnose (Applied):** Reproduce a calculation from 1. The Unifying Theory: The Stochastic Discount Factor (SDF), 2. Model 1: The Consumption-Based CAPM (CCAPM) with transparent inputs. Perturb volatility, discounting, risk aversion, transaction costs, or another key parameter and explain the sensitivity in economic terms.
 
 **3. Robust extension (Challenge):** Construct a stress scenario outside the calibration sample. Compare two valuation/risk methods and explain which discrepancy reflects model risk rather than numerical error.
+
+**3b. Failure analysis (Challenge):** A cross-sectional regression with as many factors as assets prices everything with $R^2 = 1$ — and the 'factors' were chosen on the same data. Diagnose the data-snooping/test-design failure, repair with out-of-sample factor evaluation and proper Shanken/GMM standard errors, and report the honest test.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

@@ -24,18 +24,18 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 ```
 
 ### Table of Contents
-1.  [The Solow-Swan Model of Exogenous Growth](#1.-The-Solow-Swan-Model-of-Exogenous-Growth)
-    *   [1.1 The Fundamental Law of Motion](#1.1-The-Fundamental-Law-of-Motion)
-    *   [1.2 The Golden Rule and Optimal Savings](#1.2-The-Golden-Rule-and-Optimal-Savings)
-2.  [The Ramsey-Cass-Koopmans (RCK) Model of Optimal Growth](#2.-The-Ramsey-Cass-Koopmans-(RCK)-Model-of-Optimal-Growth)
-    *   [2.1 The Hamiltonian and Necessary Conditions](#2.1-The-Hamiltonian-and-Necessary-Conditions)
-    *   [2.2 Phase Diagram Analysis](#2.2-Phase-Diagram-Analysis)
-3.  [The Stochastic RCK Model](#3.-The-Stochastic-RCK-Model)
-    *   [3.1 The Model with Productivity Shocks](#3.1-The-Model-with-Productivity-Shocks)
-    *   [3.2 Solving with Value Function Iteration](#3.2-Solving-with-Value-Function-Iteration)
-4.  [Endogenous Growth: The AK Model](#4.-Endogenous-Growth:-The-AK-Model)
-5.  [Summary](#5.-Summary)
-6.  [Exercises](#6.-Exercises)
+1.  [The Solow-Swan Model of Exogenous Growth](#1-the-solow-swan-model-of-exogenous-growth)
+    *   [1.1 The Fundamental Law of Motion](#11-the-fundamental-law-of-motion)
+    *   [1.2 The Golden Rule and Optimal Savings](#12-the-golden-rule-and-optimal-savings)
+2.  [The Ramsey-Cass-Koopmans (RCK) Model of Optimal Growth](#2-the-ramsey-cass-koopmans-rck)-Model-of-Optimal-Growth)
+    *   [2.1 The Hamiltonian and Necessary Conditions](#21-the-hamiltonian-and-necessary-conditions)
+    *   [2.2 Phase Diagram Analysis](#22-phase-diagram-analysis)
+3.  [The Stochastic RCK Model](#3-the-stochastic-rck-model)
+    *   [3.1 The Model with Productivity Shocks](#31-the-model-with-productivity-shocks)
+    *   [3.2 Solving with Value Function Iteration](#32-solving-with-value-function-iteration)
+4.  [Endogenous Growth: The AK Model](#4-endogenous-growth-the-ak-model)
+5.  [Summary](#5-summary)
+6.  [Exercises](#6-exercises)
 
 ## The Lens: The Long Run
 **What problem are we solving?**
@@ -68,6 +68,8 @@ This notebook explores the mechanics of growth and the transition to the steady 
 *   **Economics:** Production functions, Intertemporal utility maximization.
 * **Learning-path prerequisite:** [`01_Job_Search.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/04-Macro-Models/01_Job_Search.ipynb)
 
+> **Historical Context — Solow 1956/1957.** Robert Solow's 1956 growth model made capital accumulation tractable, and his 1957 growth-accounting paper measured the 'residual' we call total factor productivity — work that earned the 1987 Nobel and still frames every productivity debate.
+
 > **Learning path:** Building on [`01_Job_Search.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/04-Macro-Models/01_Job_Search.ipynb); next continue with [`03A_RBC_Model_Foundations.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/04-Macro-Models/03A_RBC_Model_Foundations.ipynb).
 
 ### 1. The Solow-Swan Model of Exogenous Growth
@@ -75,9 +77,14 @@ This notebook explores the mechanics of growth and the transition to the steady 
 The Solow-Swan model, developed independently by Robert Solow and Trevor Swan in 1956, is the starting point for nearly all modern analyses of economic growth. Solow's work on the model earned him the 1987 Nobel Prize in Economics. Its enduring power lies in its simplicity and the starkness of its central conclusion: that capital accumulation alone, due to diminishing returns, cannot sustain long-run growth in living standards. Instead, sustained per-capita growth must be driven by exogenous technological progress.
 
 #### 1.1 The Fundamental Law of Motion
+
+![Solow diagram](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/04-Macro-Models/solow_diagram.png)
+*Figure: Saving versus break-even investment and the steady state..*
 The model analyzes the economy in terms of quantities per unit of effective labor, $k = K/(AL)$. The central dynamic equation describes the evolution of $k$ as the difference between actual investment and break-even investment:
 $$ \dot{k} = s f(k) - (n + g + \delta)k $$
 where $s$ is the saving rate, $f(k)$ is the production function (e.g., $k^\alpha$), $n$ is population growth, $g$ is technological progress, and $\delta$ is depreciation. The economy reaches a **steady state** ($k^*$) when $\dot{k} = 0$, which occurs where $s f(k^*) = (n + g + \delta)k^*$. Due to diminishing returns to capital, this steady state is globally stable.
+
+**Dimension notes:** $k = K/(AL) \in \mathbb{R}_+$ is capital per effective worker (scalar); $f(k): \mathbb{R}_+ \to \mathbb{R}_+$ output per effective worker; $s, n, g, \delta$ are scalar rates in $[0, 1)$.
 
 #### 1.2 The Golden Rule and Optimal Savings
 The **Golden Rule** level of capital, $k^*_{gold}$, is the level that maximizes steady-state consumption. It occurs where the marginal product of capital equals the effective depreciation rate: $ f'(k^*_{gold}) = n + g + \delta $. For a Cobb-Douglas production function, this corresponds to a saving rate equal to the capital share, $s_{gold} = \alpha$.
@@ -219,7 +226,14 @@ class RCKModel:
 
     def system_dynamics(self, t, z):
         k, c = z
-        if k < 1e-6 or c < 1e-6: return [0,0]
+        # Guard must work for scalars (ODE integrators) AND arrays
+        # (the phase-diagram grid below), hence the ndim branch.
+        if np.ndim(k) == 0:
+            if k < 1e-6 or c < 1e-6:
+                return [0.0, 0.0]
+        else:
+            k = np.maximum(k, 1e-6)
+            c = np.maximum(c, 1e-6)
         k_dot = k**self.alpha - (self.n + self.g + self.delta) * k - c
         c_dot = c / self.theta * (self.alpha * k**(self.alpha - 1) - self.delta - self.rho - self.theta * self.g)
         return [k_dot, c_dot]
@@ -256,7 +270,7 @@ Z_GRID, P_TRANS = np.array([0.95, 1.05]), np.array([[0.9, 0.1], [0.1, 0.9]])
 BETA, ALPHA, DELTA, THETA = 0.96, 0.33, 0.05, 2.0
 
 @njit
-def u(c, theta=THETA): return (c**(1 - theta) - 1) / (1 - theta)
+def u(c, theta=THETA): return np.log(c) if theta == 1 else (c**(1 - theta) - 1) / (1 - theta)
 
 @njit(parallel=True)
 def bellman_stochastic_rck(V, k_grid, z_grid, p_trans, beta, delta, alpha):
@@ -271,7 +285,7 @@ def bellman_stochastic_rck(V, k_grid, z_grid, p_trans, beta, delta, alpha):
         for j in range(len(k_grid)):
             k = k_grid[j]
             max_val, best_k_prime = -1e12, k_grid[0]
-            k_prime_choices = k_grid[k_grid <= z*k**alpha + (1-delta)*k]
+            k_prime_choices = k_grid[k_grid < z*k**alpha + (1-delta)*k]
             for k_prime in k_prime_choices:
                 c = z * k**alpha + (1 - delta) * k - k_prime
                 val = u(c) + beta * np.interp(k_prime, k_grid, ev_interp)
@@ -282,11 +296,14 @@ def bellman_stochastic_rck(V, k_grid, z_grid, p_trans, beta, delta, alpha):
 
 V_init = np.zeros((len(Z_GRID), len(K_GRID)))
 V_star, policy_star = V_init, V_init
-for i in range(200):
+for i in range(1000):
     V_new, policy_new = bellman_stochastic_rck(V_star, K_GRID, Z_GRID, P_TRANS, BETA, DELTA, ALPHA)
-    if np.max(np.abs(V_star - V_new)) < 1e-6:
-        print(f"Converged in {i} iterations."); break
+    error = np.max(np.abs(V_star - V_new))
     V_star, policy_star = V_new, policy_new
+    if error < 1e-6:
+        print(f"Converged in {i+1} iterations."); break
+else:
+    raise RuntimeError(f"Stochastic RCK VFI did not converge: {error:.3e}")
 
 fig, ax = plt.subplots()
 ax.plot(K_GRID, policy_star[0,:], label='Policy (Low Z)')
@@ -302,6 +319,8 @@ The neoclassical models predict that long-run growth in living standards is driv
 The key assumption is that the production function does not have diminishing returns to capital, $Y = AK$. Here, $K$ is interpreted broadly to include physical, human, and knowledge capital. The Euler equation simplifies to:
 $$ \frac{\dot{c}}{c} = \frac{1}{\theta}(A - \delta - \rho) $$
 If the parameters satisfy $A > \delta + \rho$, the economy exhibits a positive, constant growth rate determined *endogenously* by preferences and technology, without any need for an exogenous trend.
+
+**Dimension notes:** $K$ and $c$ are aggregate scalars, $A > 0$ multiplies them away from diminishing returns; growth condition $A > \delta + \rho$ compares scalar rates, and $\theta > 0$ is the CRRA curvature.
 
 ## Key Equations
 
@@ -323,6 +342,13 @@ $$U = \int_0^\infty e^{-(\rho - n)t}\, u\big(c(t)\, e^{gt}\big)\, dt.$$
 
 $$u\big(c e^{gt}\big) = \frac{\big(c e^{gt}\big)^{1-\theta}}{1-\theta} = e^{(1-\theta)gt}\, u(c),$$
 
+**Dimension notes:** $k, c$ are scalars per effective worker; $f: \mathbb{R}_+ \to \mathbb{R}_+$; rates $s, n, g, \delta, \rho \in [0, 1)$, discount factor $\beta = 1/(1+\rho) \in (0,1)$; CRRA parameter $\theta > 0$.
+
+> **Common Pitfalls in This Lecture**
+>
+> - **Levels vs per-worker.** Mixing aggregate $K, Y$ with per-effective-labor $k, y$ in the same equation silently changes steady states. Decide the units of account first ($K/(AL)$ here) and convert every variable before doing comparative statics.
+> - **Ignoring transversality.** Omitting the transversality / no-Ponzi condition admits pathological paths that 'solve' the Euler equations forever. Check candidate paths satisfy TVC, or your numerical solution may converge to nonsense that looks like data.
+
 ### Three-Tier Practice Ladder
 
 **1. Mechanism and assumptions (Conceptual):** State the equilibrium/optimality condition that organizes **02 Neoclassical Growth**. Explain which assumption guarantees existence, uniqueness, or stability, and identify a limiting case where that argument weakens.
@@ -331,6 +357,8 @@ $$u\big(c e^{gt}\big) = \frac{\big(c e^{gt}\big)^{1-\theta}}{1-\theta} = e^{(1-\
 
 **3. Robust extension (Challenge):** Design a policy or shock counterfactual that changes one mechanism at a time. Compare welfare or transition dynamics against the baseline and explain which conclusion is structural versus calibration-specific.
 
+**3b. Failure analysis (Challenge):** The shooting algorithm's trajectory oscillates around the steady state instead of converging — the saddle path is approached from the unstable side. Diagnose the failed initial-condition search, repair with forward-shooting on the stable manifold or reverse shooting from the steady state, and verify convergence from a different $k_0$.
+
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 
 # Summary
@@ -338,7 +366,7 @@ $$u\big(c e^{gt}\big) = \frac{\big(c e^{gt}\big)^{1-\theta}}{1-\theta} = e^{(1-\
 Growth comes from accumulation in the short run, but only from innovation in the long run.
 
 **Key Takeaways:**
-*   **Diminishing Returns:** Capital accumulation cannot sustain growth forever. Eventually, the return on new capital falls to zero (in net terms).
+*   **Diminishing Returns:** Capital accumulation cannot sustain growth forever. Diminishing marginal returns limit capital deepening; the steady-state net return need not be zero (the Ramsey Euler equation pins it to preferences and growth).
 *   **Technology is Key:** Long-run improvements in living standards must come from technological progress (Total Factor Productivity).
 *   **The Golden Rule:** There is an optimal savings rate that maximizes consumption. Saving too much is just as bad as saving too little (Dynamic Inefficiency).
 

@@ -69,6 +69,8 @@ Transformers power GPT, BERT, and virtually all modern NLP. For economists, they
 * **Linear Algebra:** Matrix multiplication and softmax (Module 02).
 * **Learning-path prerequisite:** [`09_LSTMs_and_GRUs.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/07-Machine-Learning/09_LSTMs_and_GRUs.ipynb)
 
+> **Historical Context — Attention is all you need (2017).** Eight Google authors signed Vaswani et al.'s NeurIPS 2017 paper abolishing recurrence for pure self-attention. BERT and the GPT line followed within a year; economists now fine-tune these architectures on FOMC minutes, earnings calls, and legislative text.
+
 > **Learning path:** Building on [`09_LSTMs_and_GRUs.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/07-Machine-Learning/09_LSTMs_and_GRUs.ipynb); next continue with [`11_Autoencoders.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/07-Machine-Learning/11_Autoencoders.ipynb).
 
 <a id='intro'></a>
@@ -276,6 +278,8 @@ ViT demonstrated that the general-purpose Transformer architecture, with its rel
 
 **3. Robust extension (Challenge):** Stress-test the model under temporal, subgroup, or covariate distribution shift. Identify which performance degradation matters for the downstream economic decision and propose one mitigation without using the test set for tuning.
 
+**3b. Failure analysis (Challenge):** Attention maps are presented as 'explanations', but ablations show the model keys on token position, not content. Diagnose the interpretation fallacy and positional leakage, repair with position-ablation tests and order-invariant evaluation, and state what attention weights can and cannot justify.
+
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 
 <a id='exercises'></a>
@@ -318,6 +322,8 @@ $$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)
 **4. Core relation**
 
 $$\text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, ..., \text{head}_h)W^O$$
+
+**Dimension notes:** positions $pos \in \{0, \dots, T-1\}$ and frequency indices $i \in \{0, \dots, d_{model}/2 - 1\}$ build $PE \in \mathbb{R}^{T \times d_{model}}$; attention operates on $Q, K, V \in \mathbb{R}^{T \times d_k}$ with scores $QK' / \sqrt{d_k} \in \mathbb{R}^{T \times T}$.
 
 ### Solutions to Exercises
 

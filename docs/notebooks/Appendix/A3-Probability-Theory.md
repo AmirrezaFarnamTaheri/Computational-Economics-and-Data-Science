@@ -9,9 +9,11 @@
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/Appendix/A3-Probability-Theory.ipynb) [![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main?filepath=Appendix/A3-Probability-Theory.ipynb) [![Code License: MIT](https://img.shields.io/badge/Code%20License-MIT-yellow.svg)](../LICENSE) [![Content License: CC BY 4.0](https://img.shields.io/badge/Content%20License-CC%20BY%204.0-blue.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 ```python
+
 # === Environment Setup ===
 import matplotlib.pyplot as plt
 import numpy as np
+rng = np.random.default_rng(42)  # single reproducible generator
 from IPython.display import Markdown, display
 
 
@@ -72,17 +74,19 @@ Probability theory provides the axiomatic foundation for all of statistics, econ
 * **Set Theory:** Basic operations (union, intersection, complement).
 * **Learning-path prerequisite:** [`A2-Multivariate-Calculus.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/Appendix/A2-Multivariate-Calculus.ipynb)
 
+> **Historical Context — Kolmogorov 1933.** Andrey Kolmogorov's *Grundbegriffe der Wahrscheinlichkeitsrechnung* (1933) rebuilt probability on measure-theoretic axioms, ending three centuries of gambling-mathematics informality. Every expectation and conditional expectation in this appendix is legal because of those thirty pages.
+
 > **Learning path:** Building on [`A2-Multivariate-Calculus.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/Appendix/A2-Multivariate-Calculus.ipynb); next continue with [`A4-Linear-Algebra.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/Appendix/A4-Linear-Algebra.ipynb).
 
 ## Table of Contents
 
-- [3.1 Probability Spaces](#3.1-Probability-Spaces)
-- [3.2 Expectation and Moments](#3.2-Expectation-and-Moments)
-- [3.3 Conditional Expectation](#3.3-Conditional-Expectation)
-- [3.4 Convergence of Random Variables](#3.4-Convergence-of-Random-Variables)
-- [3.5 Common Distributions](#3.5-Common-Distributions)
-- [3.6 Introduction to Martingales](#3.6-Introduction-to-Martingales)
-- [Summary](#Summary)
+- [3.1 Probability Spaces](#31-probability-spaces)
+- [3.2 Expectation and Moments](#32-expectation-and-moments)
+- [3.3 Conditional Expectation](#33-conditional-expectation)
+- [3.4 Convergence of Random Variables](#34-convergence-of-random-variables)
+- [3.5 Common Distributions](#35-common-distributions)
+- [3.6 Introduction to Martingales](#36-introduction-to-martingales)
+- [Summary](#summary)
 
 ## 3.1 Probability Spaces
 
@@ -170,13 +174,12 @@ theorem("Law of Iterated Expectations", "The expected value of the conditional e
 
 ```python
 # Python Demo: Law of Iterated Expectations
-np.random.seed(42)
 n = 10000
-X = np.random.choice([0, 1], p=[0.5, 0.5], size=n)
+X = rng.choice([0, 1], p=[0.5, 0.5], size=n)
 # Y depends on X
 Y = np.zeros(n)
-Y[X==0] = np.random.normal(5, 1, size=np.sum(X==0))
-Y[X==1] = np.random.normal(10, 1, size=np.sum(X==1))
+Y[X==0] = rng.normal(5, 1, size=np.sum(X==0))
+Y[X==1] = rng.normal(10, 1, size=np.sum(X==1))
 
 E_Y = np.mean(Y)
 E_Y_given_X0 = np.mean(Y[X==0])
@@ -205,7 +208,10 @@ The concept of convergence for a sequence of random variables is more nuanced th
 
 **Hierarchy**: Almost sure convergence implies convergence in probability, which in turn implies convergence in distribution. The reverse implications are not generally true.
 
-### 3.4.2 Law of Large Numbers (LLN) and Central Limit Theorem (CLT)
+### 3.4.2 Law of Large Numbers
+
+![CLT convergence](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/Appendix/clt_convergence.png)
+*Figure: Sampling distributions converging to the normal..* (LLN) and Central Limit Theorem (CLT)
 
 ```python
 theorem("Law of Large Numbers (LLN)", "For i.i.d. random variables $X_i$ with mean $\\mu$, the sample mean $\\bar{X}_n = \\frac{1}{n}\\sum_{i=1}^n X_i$ converges in probability to the true mean $\\mu$. The Strong LLN states that this convergence is almost sure.")
@@ -333,6 +339,8 @@ $$
 
 The limit is the characteristic function of $N(0,1)$; Lévy's continuity theorem then yields convergence in distribution. This is the asymptotic bridge behind standard errors and normal approximations, but it is not permission to ignore dependence, heavy tails, clustering, or weak identification.
 
+**Dimension notes:** $X$ is an integrable real random variable; $Z = \mathbb{E}[X \mid \mathcal{G}]$ is a $\mathcal{G}$-measurable scalar random variable defined through integrals over events $A \in \mathcal{G}$; all displayed quantities are scalars or probabilities in $[0, 1]$.
+
 ## Key Equations
 
 These relations are collected from the derivations above as a review map. Their assumptions and derivations remain part of the result; this box is not a substitute for them.
@@ -353,6 +361,13 @@ $$\boxed{\mathbb{E}[\mathbb{E}[X\mid\mathcal{G}]]=\mathbb{E}[X].}$$
 
 $$\mathbb{E}[\bar X_n]=\mu,\qquad \operatorname{Var}(\bar X_n)=\frac{\sigma^2}{n}.$$
 
+**Dimension notes:** probabilities are scalars in $[0,1]$; conditional expectation $Z$ is a scalar-valued random variable; variances and covariances below inherit the same one-dimensional status unless a random vector is stated.
+
+> **Common Pitfalls in This Lecture**
+>
+> - **Confusing $P(A\mid B)$ with $P(B\mid A)$.** The prosecutor's fallacy in probability form: a tiny $P(\text{evidence}\mid \text{innocent})$ says nothing direct about $P(\text{innocent}\mid \text{evidence})$ without priors — Bayes' theorem supplies the reversal.
+> - **Disjoint $\neq$ independent.** Mutually exclusive events (except degenerate zeros) are strongly *dependent*: one occurring forces the other not to. Independence concerns products of probabilities, not overlaps of outcomes.
+
 ## Exercises
 
 **1. Mechanism and assumptions (Conceptual):** Restate one theorem used in **A3 Probability Theory** with every hypothesis explicit. Prove one non-trivial step that is often skipped and explain where that step is used later in the curriculum.
@@ -360,6 +375,8 @@ $$\mathbb{E}[\bar X_n]=\mu,\qquad \operatorname{Var}(\bar X_n)=\frac{\sigma^2}{n
 **2. Reproduce and diagnose (Applied):** Work a concrete example from 3.1 Probability Spaces, 3.1.1 Sample Spaces, Events, and Random Variables by hand and verify it computationally. Show the intermediate algebra, not only the final result.
 
 **3. Robust extension (Challenge):** Remove one hypothesis and construct a counterexample or boundary case. Explain exactly which line of the original proof fails and what weaker conclusion, if any, remains.
+
+**3b. Failure analysis (Challenge):** A screening test with 99% sensitivity and 1% base rate is reported as '99% accurate: positives are 99% likely sick' — the prosecutor's fallacy. Diagnose the swapped conditional, repair with a full Bayes computation, and give the numeric posterior for a concrete base rate.
 
 <details>
 <summary>Solution guidance</summary>

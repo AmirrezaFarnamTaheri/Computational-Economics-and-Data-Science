@@ -12,6 +12,8 @@
 # === Environment Setup ===
 import matplotlib.pyplot as plt
 import numpy as np
+
+rng = np.random.default_rng(42)  # single reproducible generator
 import pandas as pd
 import statsmodels.api as sm
 from IPython.display import Markdown, display
@@ -52,6 +54,8 @@ AR, MA, and ARMA models give a parsimonious way to capture persistence and short
 * **Python:** NumPy/Pandas, plotting, and basic `statsmodels` usage.
 * **Statistics:** White noise, sampling variability, and hypothesis testing.
 * **Learning-path prerequisite:** [`01_Introduction_to_Time_Series.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/08-Time-Series/01_Introduction_to_Time_Series.ipynb)
+
+> **Historical Context — Yule's sunspots 1927, Box-Jenkins 1970.** George Udny Yule invented autoregressions in 1927 to model sunspot cycles, fighting harmonic-analysis orthodoxy. George Box and Gwilym Jenkins's 1970 textbook industrialized identify-estimate-diagnose forecasting — central banks and inventory planners still run its recipes.
 
 > **Learning path:** Building on [`01_Introduction_to_Time_Series.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/08-Time-Series/01_Introduction_to_Time_Series.ipynb); next continue with [`03_ARIMA_and_Forecasting.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/08-Time-Series/03_ARIMA_and_Forecasting.ipynb).
 
@@ -115,7 +119,6 @@ This signature PACF cutoff is the primary tool for identifying the order of an A
 ### Simulating and Estimating an AR(2) Process
 
 ```python
-np.random.seed(42)
 n_samples = 1000
 
 # --- 1. Data Generation ---
@@ -182,7 +185,6 @@ For an MA model to be useful, it must be **invertible**. An MA process is invert
 ### Simulating and Estimating an MA(2) Process
 
 ```python
-np.random.seed(42)
 
 # --- 1. Data Generation ---
 # Define the parameters for the MA(2) process: y_t = e_t + 0.6*e_{t-1} + 0.4*e_{t-2}
@@ -238,7 +240,6 @@ Since both ACF and PACF tail off, identifying the orders $p$ and $q$ can be more
 ### Simulating and Estimating an ARMA(1,1) Process
 
 ```python
-np.random.seed(42)
 
 # --- 1. Data Generation ---
 # The process is y_t = 0.75*y_{t-1} + e_t - 0.25*e_{t-1}
@@ -328,7 +329,6 @@ The goal is to choose the model with the **lowest** AIC or BIC value. The term $
 # --- 1. Data Generation ---
 # We'll use the ARMA(1,1) data we generated earlier. The goal is to see if the
 # information criteria can recover the true (1,1) order.
-np.random.seed(42)
 ar_params = np.array([0.75])
 ma_params = np.array([-0.25])
 y_true_arma = sm.tsa.arma_generate_sample(ar=np.r_[1, -ar_params], ma=np.r_[1, ma_params], nsample=1000)
@@ -384,7 +384,7 @@ try:
 except Exception as e:
     print(f"Could not download data. Error: {e}")
     # Create a dummy series if download fails to allow the notebook to run
-    inflation = pd.Series(np.random.randn(200), index=pd.date_range('2000-01-01', periods=200, freq='M'))
+    inflation = pd.Series(rng.standard_normal(200), index=pd.date_range('2000-01-01', periods=200, freq='ME'))
 
 # --- 1. Identification ---
 ```
@@ -477,6 +477,11 @@ $$\phi(L) y_t = c + \epsilon_t$$
 
 $$y_t = \mu + \epsilon_t + \theta_1 \epsilon_{t-1} + ... + \theta_q \epsilon_{t-q}$$
 
+> **Common Pitfalls in This Lecture**
+>
+> - **ARMA on trending levels.** Fitting ARMA to a non-stationary (unit-root or trending) series manufactures persistent roots and spurious forecasts. Test stationarity (ADF), difference or detrend first, then identify orders.
+> - **Order selection without diagnostics.** Minimizing AIC alone on short samples overfits; the chosen model may also violate causality/invertibility. Check residual whiteness (Ljung-Box) and confirm roots lie outside the unit circle before forecasting.
+
 ### Three-Tier Practice Ladder
 
 **1. Mechanism and assumptions (Conceptual):** For **02 ARMA Models**, identify the stochastic assumptions that make the model estimable and state how stationarity, invertibility, or identification can be checked from the fitted object.
@@ -484,6 +489,8 @@ $$y_t = \mu + \epsilon_t + \theta_1 \epsilon_{t-1} + ... + \theta_q \epsilon_{t-
 **2. Reproduce and diagnose (Applied):** Fit the method covered in 1. Introduction: Modeling Stationary Time Series, 2. Autoregressive (AR) Models to a time-ordered series. Diagnose residual dependence and stability, then evaluate a rolling or expanding-window out-of-sample forecast against a naive baseline.
 
 **3. Robust extension (Challenge):** Alter one structural restriction, lag/order choice, or innovation distribution. Explain how impulse responses, forecasts, or uncertainty change and whether the conclusion survives the alternative specification.
+
+**3b. Failure analysis (Challenge):** AIC selects AR(10) on 100 observations; two roots sit near the unit circle and forecasts drift explosively. Diagnose overfitting plus near-nonstationarity, repair with BIC-parsimony and stationarity-enforcing estimation, and verify the inverted/root locations before forecasting.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

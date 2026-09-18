@@ -14,6 +14,8 @@ import warnings
 
 import matplotlib.pyplot as plt
 import numpy as np
+
+rng = np.random.default_rng(42)  # single reproducible generator
 import pandas as pd
 import scipy.stats as stats
 from arch import arch_model
@@ -34,6 +36,8 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 * [2. The GARCH(1,1) Model](#2-the-garch11-model)
 * [3. Asymmetry: The Leverage Effect](#3-asymmetry-the-leverage-effect)
 * [4. Summary](#4-summary)
+
+> **Historical Context — Engle 1982, Bollerslev 1986.** Rob Engle's ARCH model (Econometrica 1982) captured volatility clustering in UK inflation after noticing big shocks cluster in returns; Tim Bollerslev's GARCH (1986) generalized it into finance's risk-management standard — Value-at-Risk desks run on their insight. Shared 2003 Nobel with Granger.
 
 ## The Lens: The Pulse of Fear
 In classical economics, risk is often treated as a constant parameter. In financial markets, risk breathes. It spikes during crises, sleeps during booms, and clusters in time. If the market crashes today, it is highly likely to be volatile tomorrow. This phenomenon is called **Volatility Clustering**.
@@ -62,6 +66,9 @@ This notebook introduces the Nobel Prize-winning **ARCH** (Autoregressive Condit
 
 ## 1. The Stylized Facts of Financial Returns
 
+![Volatility clustering](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/08-Time-Series/garch_volatility_clustering.png)
+*Figure: Simulated GARCH(1,1) returns and conditional volatility..*
+
 Financial time series exhibit three key properties that break standard Gaussian assumptions:
 1.  **Absence of Autocorrelation:** Returns are hard to predict ($E[r_{t+1}|r_t] \approx 0$).
 2.  **Volatility Clustering:** Squared returns are highly autocorrelated. Large moves follow large moves.
@@ -83,7 +90,6 @@ try:
 
 except FileNotFoundError:
     print("Error: '../data/sp500.csv' not found. Generating synthetic GARCH process.")
-    np.random.seed(42)
     n = 2000
     w = 0.05
     alpha = 0.1
@@ -93,7 +99,7 @@ except FileNotFoundError:
     sigma2[0] = w / (1 - alpha - beta)
     for t in range(1, n):
         sigma2[t] = w + alpha * y[t-1]**2 + beta * sigma2[t-1]
-        y[t] = np.sqrt(sigma2[t]) * np.random.normal()
+        y[t] = np.sqrt(sigma2[t]) * rng.normal()
 
     returns = pd.Series(y, index=pd.date_range('2015-01-01', periods=n, freq='D'))
     returns.name = 'Synthetic Returns'
@@ -138,7 +144,7 @@ The standard GARCH(1,1) specification is:
 Where:
 - $\alpha$ captures the reaction to new shocks (ARCH term).
 - $\beta$ captures the persistence of old volatility (GARCH term).
-- Stationarity requires $\alpha + \beta < 1$.
+- With unit-variance innovations, $\omega>0$, $\alpha,\beta\geq0$, and $\alpha+\beta<1$ give finite unconditional variance $\omega/(1-\alpha-\beta)$. Strict stationarity has a different log-moment condition.
 
 ```python
 # Fit GARCH(1,1)
@@ -153,7 +159,7 @@ cond_vol = res.conditional_volatility
 # Plot
 plt.figure(figsize=(12, 5))
 plt.plot(cond_vol, color='red', linewidth=1)
-plt.title('Estimated Conditional Volatility (Annualized)')
+plt.title('Estimated Daily Conditional Volatility')
 plt.ylabel('Daily Volatility (%)')
 plt.show()
 ```
@@ -177,10 +183,15 @@ print(res_gjr.params)
 
 gamma_val = res_gjr.params.get('gamma[1]', 0)
 if gamma_val > 0:
-    print(f"\n> **Observation:** Gamma is positive ({gamma_val:.4f}). This confirms the leverage effect: negative shocks increase volatility more than positive ones.")
+    print(f"\n> **Observation:** Gamma is positive ({gamma_val:.4f}). The fitted model assigns a larger response to negative shocks; inspect its confidence interval before claiming statistical evidence.")
 else:
-    print("\n> **Observation:** No significant leverage effect detected.")
+    print("\n> **Observation:** The fitted asymmetry coefficient is nonpositive; its sign alone is not a significance test.")
 ```
+
+> **Common Pitfalls in This Lecture**
+>
+> - **GARCH without a mean model.** Fitting GARCH to raw returns leaves predictable mean dynamics in $u_t$, contaminating the variance equation. Specify and estimate the mean equation (often just a constant) jointly, then check standardized residuals for remaining structure.
+> - **Explosive variance constraints.** Without $\omega > 0$ and $\alpha + \beta < 1$, fitted models forecast exploding variance (IGARCH at the boundary). Impose the constraints and inspect persistence $\alpha + \beta$ before projecting volatility paths.
 
 ## Exercises
 
@@ -189,6 +200,8 @@ else:
 **2. Reproduce and diagnose (Applied):** Fit the method covered in 1. The Stylized Facts of Financial Returns, 1.1 Visualizing Fat Tails to a time-ordered series. Diagnose residual dependence and stability, then evaluate a rolling or expanding-window out-of-sample forecast against a naive baseline.
 
 **3. Robust extension (Challenge):** Alter one structural restriction, lag/order choice, or innovation distribution. Explain how impulse responses, forecasts, or uncertainty change and whether the conclusion survives the alternative specification.
+
+**3b. Failure analysis (Challenge):** GARCH fitted to raw returns with a trending mean yields $\alpha + \beta = 1.02$ and explosive volatility forecasts. Diagnose the mean-equation misspecification and the boundary persistence, repair with a proper mean model and constrained estimation, and verify the unconditional variance exists.
 
 <details>
 <summary>Solution guidance</summary>

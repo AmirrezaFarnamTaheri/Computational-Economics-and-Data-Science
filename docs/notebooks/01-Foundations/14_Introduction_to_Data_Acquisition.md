@@ -17,6 +17,7 @@ import warnings
 
 import matplotlib.pyplot as plt
 import numpy as np
+rng = np.random.default_rng(42)  # single reproducible generator
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
@@ -48,21 +49,21 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 ```
 
 ### Table of Contents
-1. [The Lens: Data as Fuel](#The-Lens:-Data-as-Fuel)
-2. [The Language of the Web: HTTP](#The-Language-of-the-Web:-HTTP)
-3. [Accessing Structured Data with APIs](#Accessing-Structured-Data-with-APIs)
-    - [High-Level Convenience vs. Robustness](#High-Level-Convenience-vs.-Robustness)
-    - [Direct API Interaction with `requests`](#Direct-API-Interaction-with-requests)
-4. [Extracting Unstructured Data with Web Scraping](#Extracting-Unstructured-Data-with-Web-Scraping)
-    - [The Ethics of Scraping: `robots.txt`](#The-Ethics-of-Scraping:-robots.txt)
-    - [Scraping Static Sites with `requests` and `BeautifulSoup`](#Scraping-Static-Sites-with-requests-and-BeautifulSoup)
-    - [Advanced Scraping: Dealing with JavaScript](#Advanced-Scraping:-Dealing-with-JavaScript-Rendered-Pages)
-5. [Data Formats: Beyond CSV](#Data-Formats:-Beyond-CSV)
-    - [JSON: The Language of APIs](#JSON:-The-Language-of-APIs)
-    - [Parquet: The Standard for Big Data](#Parquet:-The-Standard-for-Big-Data)
-    - [Handling Large Datasets: Chunking](#Handling-Large-Datasets:-Chunking)
-6. [Summary](#Summary)
-7. [Exercises](#Exercises)
+1. [The Lens: Data as Fuel](#the-lens-data-as-fuel)
+2. [The Language of the Web: HTTP](#the-language-of-the-web-http)
+3. [Accessing Structured Data with APIs](#accessing-structured-data-with-apis)
+    - [High-Level Convenience vs. Robustness](#high-level-convenience-vs-robustness)
+    - [Direct API Interaction with `requests`](#direct-api-interaction-with-requests)
+4. [Extracting Unstructured Data with Web Scraping](#extracting-unstructured-data-with-web-scraping)
+    - [The Ethics of Scraping: `robots.txt`](#the-ethics-of-scraping-robotstxt)
+    - [Scraping Static Sites with `requests` and `BeautifulSoup`](#scraping-static-sites-with-requests-and-beautifulsoup)
+    - [Advanced Scraping: Dealing with JavaScript](#advanced-scraping-dealing-with-javascript-rendered-pages)
+5. [Data Formats: Beyond CSV](#data-formats-beyond-csv)
+    - [JSON: The Language of APIs](#json-the-language-of-apis)
+    - [Parquet: The Standard for Big Data](#parquet-the-standard-for-big-data)
+    - [Handling Large Datasets: Chunking](#handling-large-datasets-chunking)
+6. [Summary](#summary)
+7. [Exercises](#exercises)
 
 ## The Lens: 14-Introduction-to-Data-Acquisition
 Modern empirical economics relies on novel and up-to-the-minute data. The ability to acquire data directly from its source is a crucial skill. This process falls into two categories:
@@ -291,7 +292,7 @@ When a CSV file is larger than your RAM, you cannot load it all at once. Pandas 
 
 ```python
 # Create a dummy large CSV file
-large_df = pd.DataFrame(np.random.randn(10000, 3), columns=['A', 'B', 'C'])
+large_df = pd.DataFrame(rng.standard_normal((10000, 3)), columns=['A', 'B', 'C'])
 large_df.to_csv('large_data.csv', index=False)
 
 print("Reading large file in chunks of 2000 rows:")
@@ -316,6 +317,8 @@ os.remove('large_data.csv')
 **2. Reproduce and diagnose (Applied):** Reproduce an example involving The Language of the Web: HTTP, Accessing Structured Data with APIs, then change one input and explain the result before running the code.
 
 **3. Robust extension (Challenge):** Extend the example to a larger or less convenient case and document the correctness and performance checks needed before trusting the result.
+
+**3b. Failure analysis (Challenge):** A downloaded national-accounts CSV sums text: the `'1,234'` thousands separators made every numeric column `object` dtype, so groupby 'sums' concatenated strings. Diagnose the dtype-inference failure, repair with `thousands=','`/`dtype=` arguments at load time, and assert the expected dtypes immediately after reading.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

@@ -47,10 +47,12 @@ The economy is a deeply interconnected system. A hike in interest rates doesn't 
 * **`01-Foundations/13_Pandas.ipynb`**: Time-indexed data manipulation.
 * **Learning-path prerequisite:** [`03_ARIMA_and_Forecasting.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/08-Time-Series/03_ARIMA_and_Forecasting.ipynb)
 
+> **Historical Context — Sims lets the data speak (1980).** Christopher Sims's 'Macroeconomics and Reality' (Econometrica, 1980) mocked the 'incredible' restrictions of large simultaneous-equations models and proposed VARs with minimal structure. Granger-causality tests rode along; structural interpretation still requires identifying restrictions.
+
 > **Learning path:** Building on [`03_ARIMA_and_Forecasting.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/08-Time-Series/03_ARIMA_and_Forecasting.ipynb); next continue with [`04B_VAR_Identification_and_Structural_Shocks.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/08-Time-Series/04B_VAR_Identification_and_Structural_Shocks.ipynb).
 
 ### Table of Contents
-1. [The Lens: The Web of Macroeconomics](#The-Lens:-The-Web-of-Macroeconomics)
+1. [The Lens: The Web of Macroeconomics](#the-lens-the-web-of-macroeconomics)
 2. [Introduction: From Univariate to Multivariate Time Series](#intro)
 3. [The VAR(p) Model](#var-model)
    - [Estimation and Lag Selection](#estimation)
@@ -76,7 +78,45 @@ Here, the current value of $y_1$ depends on the first lag of both $y_1$ and $y_2
 
 <a id='estimation'></a>
 ### Estimation and Lag Selection
-Since the right-hand-side variables in each equation are all lagged (pre-determined), there are no endogeneity issues, and each equation can be estimated individually using OLS. The main specification choice is the **lag order (p)**. This is almost always chosen by estimating the VAR for a range of different lag lengths and selecting the one that minimizes an information criterion like the AIC or BIC.
+Equation-by-equation OLS is consistent under a correctly specified stable VAR whose innovations are orthogonal to the lagged regressors. Lagging variables alone does not guarantee this orthogonality; omitted dynamics or serially correlated innovations can invalidate it. The main specification choice is the **lag order (p)**. This is almost always chosen by estimating the VAR for a range of different lag lengths and selecting the one that minimizes an information criterion like the AIC or BIC.
+
+<a id='var-lab'></a>
+### 2.1 Code Lab: OLS Estimation of a VAR(1)
+
+Each equation of a VAR(1) is estimated by OLS on the same regressors — the lagged levels. Stacking equations, $Y = B X + E$ where $X_t = [1, y_{1,t}, y_{2,t}]'$, the coefficient matrix is recovered jointly by least squares: $\hat{B} = Y X'(X X')^{-1}$. The lab below simulates a bivariate VAR(1) with **known** coefficients and checks that OLS recovers them.
+
+```python
+import numpy as np
+
+rng = np.random.default_rng(42)
+
+# True DGP: y_t = c + A y_{t-1} + e_t,  A known
+c_true = np.array([0.5, -0.2])
+A_true = np.array([[0.6, 0.1],
+                   [0.0, 0.4]])
+Sigma = np.array([[1.0, 0.3],
+                  [0.3, 1.0]])
+L = np.linalg.cholesky(Sigma)
+
+T = 2000
+y = np.zeros((T, 2))
+for t in range(1, T):
+    y[t] = c_true + A_true @ y[t - 1] + L @ rng.standard_normal(2)
+
+# --- OLS estimation: regress y_t on [1, y_{t-1}] ---
+Y = y[1:]                      # dependent variables, shape (T-1, 2)
+X = np.column_stack([np.ones(T - 1), y[:-1]])   # regressors, shape (T-1, 3)
+B_hat = np.linalg.lstsq(X, Y, rcond=None)[0]    # (3, 2): rows [const, A_11 A_21; ...]
+
+A_hat = B_hat[1:].T            # first row of B is the constant
+c_hat = B_hat[0]
+
+print("true A:\n", A_true, "\nestimated A:\n", np.round(A_hat, 3))
+print("true c:", c_true, " estimated c:", np.round(c_hat, 3))
+assert np.allclose(A_hat, A_true, atol=0.05), "OLS should recover A closely"
+assert np.allclose(c_hat, c_true, atol=0.10)
+print("OLS recovers the true VAR(1) coefficients.")
+```
 
 <a id='granger'></a>
 ## 3. Granger Causality
@@ -87,6 +127,59 @@ A key question in a VAR is whether one variable is useful for forecasting anothe
 
 In the context of our two-variable VAR(1) above, we would test if $y_2$ Granger-causes $y_1$ by performing an F-test on the null hypothesis that the coefficient $\phi_{12,1}$ is zero. If we reject the null, it means that past values of $y_2$ have statistically significant predictive power for $y_1$.
 
+<a id='granger-lab'></a>
+### 3.1 Code Lab: A Granger Causality F-Test by Hand
+
+$y_2$ does **not** Granger-cause $y_1$ if the lags of $y_2$ add no explanatory power in the $y_1$ equation. Test with an F-statistic comparing restricted (own lags only) and unrestricted (both lags) OLS fits:
+
+$$
+F = \frac{(RSS_r - RSS_u)/q}{RSS_u/(T - k_u)} \sim F(q,\, T-k_u).
+$$
+
+```python
+from scipy import stats
+
+# Simulate a system where y2 Granger-causes y1 but NOT vice versa:
+#   y1_t = 0.5 y1_{t-1} + 0.4 y2_{t-1} + e1      <- y2's lag matters
+#   y2_t = 0.7 y2_{t-1} + e2                     <- y1's lag absent
+rng = np.random.default_rng(7)
+T = 1000
+y = np.zeros((T, 2))
+for t in range(1, T):
+    y[t, 0] = 0.5 * y[t - 1, 0] + 0.4 * y[t - 1, 1] + rng.standard_normal()
+    y[t, 1] = 0.7 * y[t - 1, 1] + rng.standard_normal()
+
+def ols_rss(dep, lags):
+    """RSS of regressing dep on a constant plus `lags` lag columns."""
+    X = np.column_stack([np.ones(len(dep))] + lags)
+    b, *_ = np.linalg.lstsq(X, dep, rcond=None)
+    return float(np.sum((dep - X @ b) ** 2)), X.shape[1]
+
+y1, y2 = y[1:, 0], y[:-1, 0]
+lag1_y1, lag1_y2 = y[:-1, 0], y[:-1, 1]
+
+rss_u, k_u = ols_rss(y1, [lag1_y1, lag1_y2])       # unrestricted
+rss_r, k_r = ols_rss(y1, [lag1_y1])                 # restricted (drop y2's lag)
+q = k_u - k_r
+F = ((rss_r - rss_u) / q) / (rss_u / (len(y1) - k_u))
+p_value = stats.f.sf(F, q, len(y1) - k_u)
+print(f"Granger F({q}, {len(y1)-k_u}) = {F:.2f}, p = {p_value:.2e}")
+assert p_value < 0.01, "y2 should strongly Granger-cause y1"
+
+# Reverse direction: the population coefficient is zero, but a finite-sample test can reject.
+rss_u2, k_u2 = ols_rss(y[1:, 1], [y[:-1, 1], y[:-1, 0]])
+rss_r2, k_r2 = ols_rss(y[1:, 1], [y[:-1, 1]])
+F2 = ((rss_r2 - rss_u2) / (k_u2 - k_r2)) / (rss_u2 / (len(y) - 1 - k_u2))
+p2 = stats.f.sf(F2, k_u2 - k_r2, len(y) - 1 - k_u2)
+print(f"Reverse F = {F2:.2f}, p = {p2:.3f}")
+print("Reverse null rejected at 5%:", p2 < 0.05)
+print("A rejection here is a finite-sample false positive, not a change in the simulated DGP.")
+# Verify the calculation, not a guaranteed hypothesis-test outcome.
+from statsmodels.tsa.stattools import grangercausalitytests
+reference = grangercausalitytests(y[:, [1, 0]], maxlag=1)[1][0]["ssr_ftest"]
+assert np.allclose([F2, p2], reference[:2])
+```
+
 ## Exercises
 
 **1. Mechanism and assumptions (Conceptual):** For **04A Vector Autoregression: Estimation and Granger Causality**, identify the stochastic assumptions that make the model estimable and state how stationarity, invertibility, or identification can be checked from the fitted object.
@@ -94,6 +187,8 @@ In the context of our two-variable VAR(1) above, we would test if $y_2$ Granger-
 **2. Reproduce and diagnose (Applied):** Fit the method covered in 1. Introduction: From Univariate to Multivariate Time Series, 2. The VAR(p) Model to a time-ordered series. Diagnose residual dependence and stability, then evaluate a rolling or expanding-window out-of-sample forecast against a naive baseline.
 
 **3. Robust extension (Challenge):** Alter one structural restriction, lag/order choice, or innovation distribution. Explain how impulse responses, forecasts, or uncertainty change and whether the conclusion survives the alternative specification.
+
+**3b. Failure analysis (Challenge):** With 200 lags, every series 'Granger-causes' every other in-sample. Diagnose overfitting and multiple testing, repair with BIC lag selection and out-of-sample predictive checks, and reinterpret which causal claims survive.
 
 <details>
 <summary>Solution guidance</summary>

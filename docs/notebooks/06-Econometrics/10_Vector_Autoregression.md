@@ -30,7 +30,7 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 
 ## Table of Contents
 
-1. [Introduction](#Introduction)
+1. [Introduction](#introduction)
 
 ## The Lens: Everything Depends on Everything
 **What problem are we solving?**
@@ -84,6 +84,8 @@ To identify structural shocks, $\epsilon_t$, which are by definition orthogonal,
 $$ A u_t = B \epsilon_t \implies u_t = A^{-1} B \epsilon_t $$  
 The goal is to find the matrices $A$ and $B$. A common and simple identification scheme is the **Cholesky decomposition**. It imposes a recursive ordering on the variables. The first variable is assumed to be affected only by its own structural shock contemporaneously. The second variable is affected by its own shock and the first shock, and so on. This corresponds to choosing $B=I$ and making $A$ a lower triangular matrix. This is achieved by finding the Cholesky factor of the reduced-form covariance matrix $\Sigma$.
 
+**Dimension notes:** $y_t \in \mathbb{R}^n$; reduced-form innovations $u_t \in \mathbb{R}^n$ with contemporaneous covariance $\Sigma \in \mathbb{R}^{n \times n}$ (not diagonal — hence the identification problem); structural shocks $\epsilon_t \in \mathbb{R}^n$ are recovered through $A u_t = B \epsilon_t$ with $A, B \in \mathbb{R}^{n \times n}$.
+
 ### 4. Code Example: A Monetary Policy VAR
 
 We will estimate a simple VAR for the U.S. economy using quarterly data on GDP growth, inflation, and the federal funds rate. We will then trace out the effects of a monetary policy shock (an unexpected increase in the federal funds rate) using IRFs.
@@ -95,7 +97,7 @@ We will estimate a simple VAR for the U.S. economy using quarterly data on GDP g
 # Load classic macro data from statsmodels
 data = sm.datasets.macrodata.load_pandas().data
 data['year'] = data['year'].astype(int)
-data.index = pd.to_datetime(data['year'].astype(str) + 'Q' + data['quarter'].astype(str))
+data.index = pd.to_datetime(data['year'].astype(str) + 'Q' + data['quarter'].astype(int).astype(str))
 
 # Prepare the data: GDP growth, inflation (from CPI), and the fed funds rate
 df = pd.DataFrame({
@@ -150,6 +152,8 @@ $$y_t = c + \Phi_1 y_{t-1} + \Phi_2 y_{t-2} + ... + \Phi_p y_{t-p} + u_t$$
 
 $$A u_t = B \epsilon_t \implies u_t = A^{-1} B \epsilon_t$$
 
+**Dimension notes:** coefficient matrices $\phi_{\cdot,i} \in \mathbb{R}^{n \times n}$, intercepts $c \in \mathbb{R}^n$, shocks $u_t \in \mathbb{R}^n$; each listed relation is one row of the VAR written componentwise.
+
 ### Three-Tier Practice Ladder
 
 **1. Mechanism and assumptions (Conceptual):** Define the estimand in **10 Vector Autoregression**, list the identifying assumptions, and give a concrete data-generating process that violates one assumption while leaving the others intact.
@@ -157,6 +161,8 @@ $$A u_t = B \epsilon_t \implies u_t = A^{-1} B \epsilon_t$$
 **2. Reproduce and diagnose (Applied):** Implement or reproduce the estimator using the material on 1. The VAR(p) Model, 2. Estimation. Report uncertainty and at least two diagnostics; then compare with an alternative specification that targets the same estimand.
 
 **3. Robust extension (Challenge):** Run a Monte Carlo or sensitivity exercise that varies the most fragile identifying condition. Quantify bias/coverage or the range of estimates and state what evidence would change your substantive conclusion.
+
+**3b. Failure analysis (Challenge):** Cholesky IRFs flip sign when two variables swap order, and an 'instantaneous' response appears at horizon zero for the last-ordered variable. Diagnose the recursive-identification assumption doing the work, repair by justifying the ordering economically or using sign/long-run restrictions, and report both orderings.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

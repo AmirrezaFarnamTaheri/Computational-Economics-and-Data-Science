@@ -31,7 +31,7 @@ Standard economics assumes agents know the true probability distribution of shoc
 
 **Why this method?**
 We use the **Hansen-Sargent** framework, which adds a "minimizing agent" (nature) to the standard Bellman equation. The agent maximizes utility while nature minimizes it by distorting the probability distribution.
-$$ V(x) = \max_a \min_m \{ u(x,a) + \beta E[m V(x')] + \theta \text{Entropy}(m) \} $$
+$$ V(x) = \max_a \min_m \{ u(x,a) + \beta E[m V(x')] + \beta \theta \text{Entropy}(m) \} $$
 This turns a single-agent optimization problem into a zero-sum game against a malevolent nature.
 
 ### Learning Objectives
@@ -50,16 +50,16 @@ This turns a single-agent optimization problem into a zero-sum game against a ma
 > **Learning path:** Building on [`05_Optimal_Stopping_Problems.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/03-Economic-Modeling/05_Optimal_Stopping_Problems.ipynb); next continue with [`07_Structural_Estimation.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/03-Economic-Modeling/07_Structural_Estimation.ipynb).
 
 ## Table of Contents
-1.  [From Risk to Ambiguity](#1.-From-Risk-to-Ambiguity)
-    *   [Knightian Uncertainty](#Knightian-Uncertainty)
-    *   [Axiomatic Foundations: Why Max-Min?](#Axiomatic-Foundations:-Why-Max-Min?)
-2.  [The Hansen-Sargent Robust Control Framework](#2.-The-Hansen-Sargent-Robust-Control-Framework)
-    *   [The Robust Bellman Equation](#The-Robust-Bellman-Equation)
-    *   [The Worst-Case Belief](#The-Worst-Case-Belief)
-3.  [Application: Robust Precautionary Savings](#3.-Application:-Robust-Precautionary-Savings)
-4.  [Alternative: Smooth Ambiguity Aversion (KMM)](#4.-Alternative:-Smooth-Ambiguity-Aversion-(KMM))
-5.  [Summary](#5.-Summary)
-6.  [Exercises](#6.-Exercises)
+1.  [From Risk to Ambiguity](#1-from-risk-to-ambiguity)
+    *   [Knightian Uncertainty](#knightian-uncertainty)
+    *   [Axiomatic Foundations: Why Max-Min?](#axiomatic-foundations-why-max-min)
+2.  [The Hansen-Sargent Robust Control Framework](#2-the-hansen-sargent-robust-control-framework)
+    *   [The Robust Bellman Equation](#the-robust-bellman-equation)
+    *   [The Worst-Case Belief](#the-worst-case-belief)
+3.  [Application: Robust Precautionary Savings](#3-application-robust-precautionary-savings)
+4.  [Alternative: Smooth Ambiguity Aversion (KMM)](#4-alternative-smooth-ambiguity-aversion-kmm))
+5.  [Summary](#5-summary)
+6.  [Exercises](#6-exercises)
 
 ### 1. From Risk to Ambiguity
 
@@ -79,7 +79,7 @@ The core idea is to frame the agent's problem as a two-player game against a mal
 #### The Robust Bellman Equation
 Let the agent have a baseline belief about the shock density, $\phi_0(w)$. They fear the true density $\phi(w)$ might be different. The set of alternative models is constrained by the **relative entropy**, $R(\phi || \phi_0) = \int \phi(w) \ln(\frac{\phi(w)}{\phi_0(w)}) dw$, which measures the statistical "distance" between the two distributions. The robust Bellman equation is a constrained optimization problem:
 $$ V(s) = \max_{a} \min_{\phi} \left\{ r(s, a) + \beta \left( \int V(s') \phi(w) dw \right) \right\} \quad \text{s.t.} \quad R(\phi || \phi_0) \le \eta $$
-This can be solved using a Lagrange multiplier $\theta$ and converted into an unconstrained saddle-point problem. Solving the inner minimization problem (nature's problem) leads to a more tractable form known as the **recursive entropy Bellman equation**:
+For multiplier preferences, we penalize nature by $\beta\theta R(\phi||\phi_0)$, with $\theta>0$, and require $\phi$ to integrate to one. A fixed multiplier and a fixed statewise entropy bound are distinct specifications; the corresponding bound generally depends on the state and continuation value. Solving the inner minimization problem (nature's problem) leads to a more tractable form known as the **recursive entropy Bellman equation**:
 $$ V(s) = \max_{a} \left\{ r(s, a) - \beta \theta \ln E_{\phi_0}[e^{-V(s')/\theta}] \right\} $$ 
 The parameter $\theta$ is the **robustness parameter**. A small $\theta$ means the agent is highly ambiguity-averse. As $\theta \to \infty$, the agent becomes ambiguity-neutral, and we recover the standard Bellman equation.
 
@@ -98,10 +98,14 @@ W0, R, BETA, GAMMA = 100, 1.02, 0.96, 2.0
 Y_H, Y_L, P0_H = 15.0, 5.0, 0.5
 
 @njit
-def u(c, gamma=GAMMA): return (c**(1 - gamma)) / (1 - gamma)
+def u(c, gamma=GAMMA): return np.log(c) if gamma == 1 else (c**(1 - gamma)) / (1 - gamma)
 
 def solve_savings_problem(theta=np.inf):
     """Solves for optimal c0 given a robustness parameter theta."""
+    from scipy.special import logsumexp
+
+    if not (theta > 0):
+        raise ValueError("theta must be positive (or np.inf for expected utility).")
     def objective(c0):
         # Payoffs in the two states tomorrow
         c1_H = R * (W0 - c0) + Y_H
@@ -115,8 +119,8 @@ def solve_savings_problem(theta=np.inf):
         else: # Robust case
             # Use the risk-sensitive operator
             p_baseline = np.array([P0_H, 1 - P0_H])
-            distorted_factors = p_baseline * np.exp(u_outcomes / theta) # Note: V = u, so -V/theta -> u/theta for max problem
-            risk_sensitive_EV = theta * np.log(np.sum(distorted_factors))
+            # Nature tilts toward LOW utility; logsumexp avoids overflow.
+            risk_sensitive_EV = -theta * logsumexp(-u_outcomes / theta, b=p_baseline)
             return -(u(c0) + BETA * risk_sensitive_EV)
 
     res = minimize_scalar(objective, bounds=(0.1, W0-0.1), method='bounded')
@@ -134,7 +138,7 @@ print("> **Note:** The robust agent consumes less (saves more) than the standard
 ```
 
 ### 4. Alternative: Smooth Ambiguity Aversion (KMM)
-The Hansen-Sargent model has a "kink" in the utility function at the reference model, which can sometimes lead to counter-intuitive behavior. An influential alternative is the **smooth ambiguity aversion** model of **Klibanoff, Marinacci, and Mukerji (2005)**.
+The entropy-penalized Hansen-Sargent operator is smooth for positive $\theta$ and finite continuation values; an unpenalized minimum over models can instead be nonsmooth. A distinct specification is the **smooth ambiguity aversion** model of **Klibanoff, Marinacci, and Mukerji (2005)**.
 
 The KMM model separates the agent's attitude towards risk from their attitude towards ambiguity. The agent has a utility function $u$ over consumption (capturing risk aversion) and a separate increasing and concave function $\phi$ over expected utilities, which captures ambiguity aversion. The agent evaluates a choice by:
 $$ V_{KMM} = E_\mu [\phi(E_p[u(c)])] $$
@@ -146,7 +150,7 @@ These relations are collected from the derivations above as a review map. Their 
 
 **1. Core relation**
 
-$$V(x) = \max_a \min_m \{ u(x,a) + \beta E[m V(x')] + \theta \text{Entropy}(m) \}$$
+$$V(x) = \max_a \min_m \{ u(x,a) + \beta E[m V(x')] + \beta \theta \text{Entropy}(m) \}$$
 
 **2. Core relation**
 
@@ -167,6 +171,8 @@ $$p_{wc}(i) = \frac{p_0(i) \exp(-V_i / \theta)}{\sum_j p_0(j) \exp(-V_j / \theta
 **2. Reproduce and diagnose (Applied):** Reproduce one quantitative result from the sections on 1. From Risk to Ambiguity, Knightian Uncertainty. Change one economically meaningful parameter over a defensible grid, report the policy/value/equilibrium response, and verify convergence with a residual or tighter tolerance.
 
 **3. Robust extension (Challenge):** Design a policy or shock counterfactual that changes one mechanism at a time. Compare welfare or transition dynamics against the baseline and explain which conclusion is structural versus calibration-specific.
+
+**3b. Failure analysis (Challenge):** A tiny change in the ambiguity radius flips the robust policy, and the detection error probabilities sit near 0.5 — the 'robust' rule can barely be distinguished from the approximating model. Diagnose the misscaled ambiguity set, recalibrate the radius via detection error probabilities, and re-examine the policy recommendation.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

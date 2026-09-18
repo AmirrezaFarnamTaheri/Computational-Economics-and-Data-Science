@@ -10,6 +10,7 @@
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/01-Foundations/10_Advanced_Functions.ipynb) [![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main?filepath=01-Foundations/10_Advanced_Functions.ipynb) [![Code License: MIT](https://img.shields.io/badge/Code%20License-MIT-yellow.svg)](../LICENSE) [![Content License: CC BY 4.0](https://img.shields.io/badge/Content%20License-CC%20BY%204.0-blue.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 ```python
+
 # --- Global Notebook Setup ---
 import math
 import operator
@@ -19,6 +20,7 @@ from typing import Any, Callable, Dict, List
 
 import matplotlib.pyplot as plt
 import numpy as np
+rng = np.random.default_rng(42)  # single reproducible generator
 import pandas as pd
 from scipy.optimize import minimize_scalar
 
@@ -38,20 +40,20 @@ plt.rcParams.update(
 ```
 
 ### Table of Contents
-1. [The Lens: Functions as First-Class Citizens](#The-Lens:-Functions-as-First-Class-Citizens)
-2. [Higher-Order Functions: The Strategy Pattern](#Higher-Order-Functions:-The-Strategy-Pattern)
-3. [Anonymous `lambda` Functions and `operator`](#Anonymous-lambda-Functions-and-the-operator-Module)
-4. [Closures and the `nonlocal` Keyword](#Closures-and-the-nonlocal-Keyword)
-5. [Callable Classes: An Object-Oriented Alternative](#Callable-Classes:-An-Object-Oriented-Alternative-to-Closures)
-6. [Decorators: Syntactic Sugar for Function Wrapping](#Decorators:-Syntactic-Sugar-for-Function-Wrapping)
-    - [Memoization from Scratch](#Memoization-from-Scratch)
-    - [`@lru_cache`: Memoization for Dynamic Programming](#@lru_cache:-A-Powerful-Built-in-Decorator-for-Dynamic-Programming)
-7. [Generic Functions with Single Dispatch](#Generic-Functions-with-Single-Dispatch)
-8. [Freezing Arguments with `functools.partial`](#functools.partial:-Freezing-Function-Arguments)
-9. [Aggregating Sequences with `functools.reduce`](#functools.reduce:-Aggregating-Sequences)
-10. [Summary](#Summary)
-11. [Exercises](#Exercises)
-12. [Challenge Exercise: A Pluggable Event System](#Challenge-Exercise:-A-Pluggable-Event-System-for-Simulations)
+1. [The Lens: Functions as First-Class Citizens](#the-lens-functions-as-first-class-citizens)
+2. [Higher-Order Functions: The Strategy Pattern](#higher-order-functions-the-strategy-pattern)
+3. [Anonymous `lambda` Functions and `operator`](#anonymous-lambda-functions-and-the-operator-module)
+4. [Closures and the `nonlocal` Keyword](#closures-and-the-nonlocal-keyword)
+5. [Callable Classes: An Object-Oriented Alternative](#callable-classes-an-object-oriented-alternative-to-closures)
+6. [Decorators: Syntactic Sugar for Function Wrapping](#decorators-syntactic-sugar-for-function-wrapping)
+    - [Memoization from Scratch](#memoization-from-scratch)
+    - [`@lru_cache`: Memoization for Dynamic Programming](#lru_cache-a-powerful-built-in-decorator-for-dynamic-programming)
+7. [Generic Functions with Single Dispatch](#generic-functions-with-single-dispatch)
+8. [Freezing Arguments with `functools.partial`](#functoolspartial-freezing-function-arguments)
+9. [Aggregating Sequences with `functools.reduce`](#functoolsreduce-aggregating-sequences)
+10. [Summary](#summary)
+11. [Exercises](#exercises)
+12. [Challenge Exercise: A Pluggable Event System](#challenge-exercise-a-pluggable-event-system-for-simulations)
 
 ## The Lens: 10-Advanced-Functions
 In Python, functions are **first-class objects**. This is a core design principle with profound implications for how we structure code. It means that a function can be treated like any other piece of data: it can be assigned to a variable, passed as an argument to another function, returned as a result from a function, and stored in data structures like lists or dictionaries. This paradigm elevates functions from mere executable blocks to versatile tools for abstraction and composition.
@@ -382,32 +384,28 @@ def summarize(data: Any) -> str:
     """The base/default implementation for our generic function."""
     return f"Unstructured data of type {type(data).__name__}"
 
-
 @summarize.register(dict)
 def _(data: dict) -> str:
     """A specialized implementation for dictionaries."""
     keys = ", ".join(data.keys())
     return f"A dictionary with {len(data)} keys: {keys}"
 
-
 @summarize.register(pd.DataFrame)
 def _(data: pd.DataFrame) -> str:
     """A specialized implementation for pandas DataFrames."""
     return f"A DataFrame with shape {data.shape} and columns: {list(data.columns)}"
-
 
 @summarize.register(np.ndarray)
 def _(data: np.ndarray) -> str:
     """A specialized implementation for NumPy arrays."""
     return f"A NumPy array with shape {data.shape}, dtype {data.dtype}, and mean {data.mean():.2f}"
 
-
 print("Calling the generic function with different types:")
 print(f"\n--- Summarizing an integer ---\n{summarize(123)}")
 print(f"\n--- Summarizing a dictionary ---\n{summarize({'a': 1, 'b': [2, 3]})}")
 df = pd.DataFrame({"price": [1, 2], "volume": [100, 200]})
 print(f"\n--- Summarizing a DataFrame ---\n{summarize(df)}")
-arr = np.random.rand(10, 3)
+arr = rng.random((10, 3))
 print(f"\n--- Summarizing a NumPy array ---\n{summarize(arr)}")
 ```
 
@@ -430,10 +428,9 @@ def log_likelihood(mu: float, data: np.ndarray, sigma: float) -> float:
     )
     return -log_lik  # Return negative for minimization
 
-
 # Generate some sample data
 true_mu, true_sigma = 5.0, 2.0
-sample_data = np.random.normal(loc=true_mu, scale=true_sigma, size=1000)
+sample_data = rng.normal(loc=true_mu, scale=true_sigma, size=1000)
 
 print(
     f"We want to find the Maximum Likelihood Estimate for 'mu', assuming sigma={true_sigma} is known."
@@ -480,6 +477,11 @@ print(f"Total gross return (product): {total_gross_return:.4f}")
 print(f"Total net return: {(total_gross_return - 1):.2%}")
 ```
 
+> **Common Pitfalls in This Lecture**
+>
+> - **Late binding in closures.** Closures capture *variables*, not values: `[lambda: i for i in range(3)]` yields three functions that all return `2`. Bind early with a default argument (`lambda i=i: i`) or `functools.partial`.
+> - **Decorators erasing metadata.** A decorator that returns a wrapper function replaces `__name__` and the docstring with the wrapper's, breaking debugging and docs. Apply `@functools.wraps(func)` to the wrapper — always.
+
 ### Three-Tier Practice Ladder
 
 **1. Mechanism and assumptions (Conceptual):** Explain the central computational idea in **10-Advanced-Functions** and connect it to one explicit economic object or research workflow.
@@ -487,6 +489,8 @@ print(f"Total net return: {(total_gross_return - 1):.2%}")
 **2. Reproduce and diagnose (Applied):** Reproduce an example involving Higher-Order Functions: The Strategy Pattern, Anonymous `lambda` Functions and the `operator` Module, then change one input and explain the result before running the code.
 
 **3. Robust extension (Challenge):** Extend the example to a larger or less convenient case and document the correctness and performance checks needed before trusting the result.
+
+**3b. Failure analysis (Challenge):** A timing decorator reports every function as named 'wrapper', and a list of penalty lambdas `[lambda: p for p in penalties]` all fire with the last penalty. Diagnose the missing `functools.wraps` and the late-binding closure, fix both, and verify by introspection (`__name__`, docstring) and by evaluating each lambda.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

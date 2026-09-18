@@ -9,9 +9,11 @@
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/06-Econometrics/03_Causal_Inference.ipynb) [![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main?filepath=06-Econometrics/03_Causal_Inference.ipynb) [![Code License: MIT](https://img.shields.io/badge/Code%20License-MIT-yellow.svg)](../LICENSE) [![Content License: CC BY 4.0](https://img.shields.io/badge/Content%20License-CC%20BY%204.0-blue.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 ```python
+
 # === Environment Setup ===
 import matplotlib.pyplot as plt
 import numpy as np
+rng = np.random.default_rng(42)  # single reproducible generator
 import pandas as pd
 import seaborn as sns
 import statsmodels.formula.api as smf
@@ -39,13 +41,15 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 
 ## Table of Contents
 
-1. [The Lens: Correlation is not Causation](#The-Lens:-Correlation-is-not-Causation)
-2. [The Potential Outcomes Framework](#1.-The-Potential-Outcomes-Framework)
-3. [Directed Acyclic Graphs (DAGs) and Causal Identification](#2.-Directed-Acyclic-Graphs-(DAGs)-and-Causal-Identification)
-4. [Matching Methods: Controlling for Observables](#3.-Matching-Methods:-Controlling-for-Observables)
-5. [A Bridge to Quasi-Experiments: The Local Average Treatment Effect (LATE)](#4.-A-Bridge-to-Quasi-Experiments:-The-Local-Average-Treatment-Effect-(LATE))
-6. [Exercises](#5.-Exercises)
-7. [Summary](#Summary)
+1. [The Lens: Correlation is not Causation](#the-lens-correlation-is-not-causation)
+2. [The Potential Outcomes Framework](#1-the-potential-outcomes-framework)
+3. [Directed Acyclic Graphs (DAGs) and Causal Identification](#2-directed-acyclic-graphs-dags)-and-Causal-Identification)
+4. [Matching Methods: Controlling for Observables](#3-matching-methods-controlling-for-observables)
+5. [A Bridge to Quasi-Experiments: The Local Average Treatment Effect (LATE)](#4-a-bridge-to-quasi-experiments-the-local-average-treatment-effect-late))
+6. [Exercises](#5-exercises)
+7. [Summary](#summary)
+
+> **Historical Context — Rubin 1974, Pearl 1995, Nobel 2021.** Donald Rubin carried Jerzy Neyman's 1923 potential-outcomes idea into observational studies; Judea Pearl's do-calculus gave DAG-based identification its formal teeth. The 2021 Nobel honored Card, Angrist, and Imbens for natural experiments — the credibility revolution this notebook teaches.
 
 ## The Lens: Correlation is not Causation
 **What problem are we solving?**
@@ -87,6 +91,8 @@ The **individual causal effect** is $\tau_i = Y_i(1) - Y_i(0)$. We can never obs
 A naive comparison of the average outcomes for the treated and untreated groups decomposes into:
 $$ E[Y|D=1] - E[Y|D=0] = \underbrace{E[Y(1) - Y(0) | D=1]}_{\text{ATT}} + \underbrace{E[Y(0) | D=1] - E[Y(0) | D=0]}_{\text{Selection Bias}} $$ 
 The entire goal of causal inference methods is to find a way to eliminate the **selection bias** term. The gold standard is **random assignment**, which by design forces the selection bias to zero.
+
+**Dimension notes:** potential outcomes $Y_i(1), Y_i(0) \in \mathbb{R}$ are scalars, one per unit; treatment status $D_i \in \{0,1\}$; all estimands below (ATE, ATT) are scalar population functionals built from these primitives.
 
 ### 2. Directed Acyclic Graphs (DAGs) and Causal Identification
 Developed by computer scientist and philosopher Judea Pearl (for which he won the Turing Award, the "Nobel Prize of computing"), Directed Acyclic Graphs (DAGs) are a powerful tool for visualizing causal assumptions and identifying sources of bias. They provide a formal graphical language for causal reasoning.
@@ -171,6 +177,8 @@ Now marginalize over every variable except $Y$ and $Z$ (sum/integrate them out),
 
 **Why this matters for the rest of the notebook.** The adjustment formula is exactly what Propensity Score Matching (below) estimates: matching on $Z$ (or its summary, the propensity score) is a way of computing $\sum_z P(y \mid d, z) P(z)$ from a finite sample. The do-calculus perspective is what tells us matching is *justified* — precisely when $Z$ satisfies the backdoor criterion — and precisely why matching on a *collider* or a *mediator* would be the wrong move, however tempting it looks as "just another control variable."
 
+**Dimension notes:** nodes of the DAG are random variables (scalars here), edges encode direct causal links; a conditioning set $Z$ is a collection of nodes, and every d-separation rule concerns paths between two chosen nodes while holding the rest fixed.
+
 ### 3. Matching Methods: Controlling for Observables
 When randomization is not possible, but we believe we have observed all important confounding variables ($Z$), we can use **matching methods**. The core assumption is **Conditional Independence**: $(Y(0), Y(1)) \perp D | Z$. The goal is to create a control group that is as similar as possible to the treated group on all observables $Z$.
 
@@ -235,6 +243,13 @@ $$P(y \mid do(d)) \;=\; \sum_{z} P(y \mid d, z)\, P(z).$$
 
 $$P(v_1, \ldots, v_n \mid do(d)) = \prod_{i \,:\, v_i \neq d} P(v_i \mid \text{parents}(v_i))\Big|_{D=d}.$$
 
+**Dimension notes:** everything is scalar: outcomes $Y$, treatment indicator $D \in \{0,1\}$; expectations are population means over units, so each decomposition term is a real number.
+
+> **Common Pitfalls in This Lecture**
+>
+> - **Collider control.** Conditioning on a common consequence ($A \to C \leftarrow B$) *induces* correlation between unrelated causes — the table-tennis example from the lecture. Choose controls from the DAG, not from whatever raises $R^2$.
+> - **Specification fishing.** Trying forty control sets and reporting the significant one invalidates inference: standard errors assume one specification. Pre-commit to a primary spec, treat the rest as robustness, and correct for multiple testing when screening many outcomes.
+
 ### Three-Tier Practice Ladder
 
 **1. Mechanism and assumptions (Conceptual):** Define the estimand in **03 Causal Inference**, list the identifying assumptions, and give a concrete data-generating process that violates one assumption while leaving the others intact.
@@ -242,6 +257,8 @@ $$P(v_1, \ldots, v_n \mid do(d)) = \prod_{i \,:\, v_i \neq d} P(v_i \mid \text{p
 **2. Reproduce and diagnose (Applied):** Implement or reproduce the estimator using the material on 1. The Potential Outcomes Framework, 2. Directed Acyclic Graphs (DAGs) and Causal Identification. Report uncertainty and at least two diagnostics; then compare with an alternative specification that targets the same estimand.
 
 **3. Robust extension (Challenge):** Run a Monte Carlo or sensitivity exercise that varies the most fragile identifying condition. Quantify bias/coverage or the range of estimates and state what evidence would change your substantive conclusion.
+
+**3b. Failure analysis (Challenge):** Controlling for a post-treatment variable (e.g., college completion when estimating the effect of family income on child outcomes) shrinks the estimate toward zero, and the write-up calls it a 'more precise model'. Diagnose the bad-control/collider problem with a DAG, repair by dropping the post-treatment control, and verify with a simulation where the true effect is known.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 
@@ -275,7 +292,7 @@ class CausalModel:
 
     def generate_data(self, ate=2.0):
         # Confounder
-        self.C = np.random.normal(0, 1, self.n)
+        self.C = rng.normal(0, 1, self.n)
 
         # Propensity Score (Probability of Treatment)
         # P(T=1|C) = sigmoid(C)
@@ -283,12 +300,12 @@ class CausalModel:
         propensity = 1 / (1 + np.exp(-z))
 
         # Treatment Assignment
-        self.T = np.random.binomial(1, propensity)
+        self.T = rng.binomial(1, propensity)
 
         # Potential Outcomes
         # Y0 = C + error
         # Y1 = Y0 + ATE
-        self.Y0 = self.C + np.random.normal(0, 0.5, self.n)
+        self.Y0 = self.C + rng.normal(0, 0.5, self.n)
         self.Y1 = self.Y0 + ate
 
         # Observed Outcome

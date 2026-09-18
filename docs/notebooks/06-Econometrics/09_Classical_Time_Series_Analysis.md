@@ -49,7 +49,7 @@ Classical time series analysis provides a statistical framework for modeling ser
 
 ## Table of Contents
 
-1. [Introduction](#Introduction)
+1. [Introduction](#introduction)
 
 ## The Lens: The Arrow of Time
 **What problem are we solving?**
@@ -112,10 +112,15 @@ check_stationarity(cpi.diff().dropna(), 'CPI First Difference (Inflation)')
 ```
 
 #### 1.2 The Wold Decomposition and ARMA Models
+
+![Box-Jenkins methodology](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/08-Time-Series/box_jenkins_flowchart.png)
+*Figure: The Box-Jenkins identify-estimate-diagnose loop..*
 The **Wold Decomposition Theorem** is the theoretical foundation for time series analysis. It states that any covariance-stationary time series can be represented as the sum of a deterministic component and a stochastic component that is an infinite-order moving average of past white-noise error terms: $y_t = \mu + \sum_{j=0}^\infty \psi_j \epsilon_{t-j}$.
 
 This is a profound result. It tells us that we can approximate any stationary process with a moving average model. If the polynomial in the lag operator can be represented as a ratio of two finite-order polynomials, we arrive at the parsimonious **ARMA(p,q)** model:
 $$ \underbrace{y_t - \sum_{i=1}^p \phi_i y_{t-i}}_{AR(p) \text{ part}} = \underbrace{\epsilon_t + \sum_{j=1}^q \theta_j \epsilon_{t-j}}_{MA(q) \text{ part}} $$
+
+**Dimension notes:** $y_t \in \mathbb{R}$ is a scalar series with mean $\mu$; innovations $\epsilon_t$ are white noise (scalar, uncorrelated, constant variance); the Wold coefficients $\psi_j$ form a square-summable scalar sequence ($\sum_j \psi_j^2 < \infty$).
 
 ### 2. Univariate Models: The Box-Jenkins Methodology
 The **Box-Jenkins methodology** is a systematic process for applying ARIMA(p,d,q) models:
@@ -231,8 +236,9 @@ if PD_READER_AVAILABLE:
     try:
         sp500 = web.DataReader('^GSPC', 'yahoo', '2000-01-01', '2023-12-31')
         returns = 100 * sp500['Adj Close'].pct_change().dropna()
-    except Exception:
-        pass
+    except Exception as exc:
+        print(f"Yahoo data download unavailable: {exc}")
+        returns = pd.Series(dtype=float)
 ```
 
 > **Note:** S&P 500 data loaded successfully.
@@ -275,6 +281,8 @@ The **Autoregressive Conditional Heteroskedasticity (ARCH)** model, introduced b
 $$ \sigma_t^2 = \omega + \sum_{i=1}^q \alpha_i u_{t-i}^2 $$ 
 The **Generalized ARCH (GARCH)** model provides a more parsimonious solution. The GARCH(1,1) model is:
 $$ \sigma_t^2 = \omega + \alpha_1 u_{t-1}^2 + \beta_1 \sigma_{t-1}^2 $$
+
+**Dimension notes:** residuals $u_t$ and conditional variances $\sigma_t^2 \ge 0$ are scalars; parameters: intercept $\omega > 0$ and nonnegative ARCH/GARCH coefficients with persistence $\sum_i \alpha_i + \sum_j \beta_j < 1$ for covariance stationarity.
 
 ### Fitting a GARCH(1,1) Model
 
@@ -359,6 +367,8 @@ $$\sigma_t^2 = \omega + \alpha_1 u_{t-1}^2 + \beta_1 \sigma_{t-1}^2$$
 
 $$\sigma_t^2 = \omega + \alpha_1 u_{t-1}^2 + \gamma_1 I_{t-1} u_{t-1}^2 + \beta_1 \sigma_{t-1}^2$$
 
+**Dimension notes:** $y_t$ and $\epsilon_t$ are scalars throughout; an ARMA$(p, q)$ carries $p$ AR coefficients $\phi_i$ and $q$ MA coefficients $\theta_j$, all scalar, plus the innovation variance.
+
 ## Exercises
 
 **1. Mechanism and assumptions (Conceptual):** Define the estimand in **09 Classical Time Series Analysis**, list the identifying assumptions, and give a concrete data-generating process that violates one assumption while leaving the others intact.
@@ -366,6 +376,8 @@ $$\sigma_t^2 = \omega + \alpha_1 u_{t-1}^2 + \gamma_1 I_{t-1} u_{t-1}^2 + \beta_
 **2. Reproduce and diagnose (Applied):** Implement or reproduce the estimator using the material on 1. Theoretical Foundations of Time Series, 1.1 Stationarity. Report uncertainty and at least two diagnostics; then compare with an alternative specification that targets the same estimand.
 
 **3. Robust extension (Challenge):** Run a Monte Carlo or sensitivity exercise that varies the most fragile identifying condition. Quantify bias/coverage or the range of estimates and state what evidence would change your substantive conclusion.
+
+**3b. Failure analysis (Challenge):** An AR(4) on trending GDP fits beautifully in-sample but forecasts diverge linearly. Diagnose the nonstationarity (spurious persistence), repair by differencing/detrending with a formal ADF check, and compare out-of-sample forecasts from the stationary specification.
 
 <details>
 <summary>Solution guidance</summary>

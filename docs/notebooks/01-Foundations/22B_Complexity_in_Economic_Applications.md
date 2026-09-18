@@ -55,11 +55,11 @@ Complexity analysis helps us anticipate bottlenecks, choose appropriate approxim
 > **Learning path:** Building on [`22A_Computational_Complexity_Foundations.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/01-Foundations/22A_Computational_Complexity_Foundations.ipynb); next continue with [`23_Profiling_and_Performance.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/01-Foundations/23_Profiling_and_Performance.ipynb).
 
 ### Table of Contents
-1. [The Lens: When Models Become Intractable](#The-Lens:-When-Models-Become-Intractable)
-2. [The Curse of Dimensionality](#The-Curse-of-Dimensionality)
-3. [Complexity in Economic Applications](#Complexity-in-Economic-Applications)
-4. [Summary](#Summary)
-5. [Exercises](#Exercises)
+1. [The Lens: When Models Become Intractable](#the-lens-when-models-become-intractable)
+2. [The Curse of Dimensionality](#the-curse-of-dimensionality)
+3. [Complexity in Economic Applications](#complexity-in-economic-applications)
+4. [Summary](#summary)
+5. [Exercises](#exercises)
 
 ### The Curse of Dimensionality
 
@@ -87,6 +87,8 @@ As discussed, grid-based solutions to DP problems suffer from the curse of dimen
 **2. Reproduce and diagnose (Applied):** Reproduce an example involving The Curse of Dimensionality, Complexity in Economic Applications, then change one input and explain the result before running the code.
 
 **3. Robust extension (Challenge):** Extend the example to a larger or less convenient case and document the correctness and performance checks needed before trusting the result.
+
+**3b. Failure analysis (Challenge):** An agent-economy simulation grows super-exponentially and overflows after 40 periods. Diagnose the in-place update that compounds an already-updated variable within the same loop, fix the update order, and compare the corrected trajectory with the buggy one to quantify how the bug distorted dynamics.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

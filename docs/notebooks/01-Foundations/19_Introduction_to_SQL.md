@@ -38,15 +38,15 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 ```
 
 ### Table of Contents
-1. [The Lens: SQL as the Lingua Franca of Data](#The-Lens:-SQL-as-the-Lingua-Franca-of-Data)
-2. [The Relational Model: Tables, Keys, and Relationships](#The-Relational-Model:-Tables,-Keys,-and-Relationships)
-3. [Setting Up: SQLite and Python](#Setting-Up:-SQLite-and-Python)
-4. [Basic Querying: `SELECT` and `WHERE`](#Basic-Querying:-SELECT-and-WHERE)
-5. [Aggregating Data: `GROUP BY` and `HAVING`](#Aggregating-Data:-GROUP-BY-and-HAVING)
-6. [Combining Tables: The Art of the `JOIN`](#Combining-Tables:-The-Art-of-the-JOIN)
-7. [Advanced SQL: Subqueries and Window Functions](#Advanced-SQL:-Subqueries-and-Window-Functions)
-8. [Summary](#Summary)
-9. [Exercises](#Exercises)
+1. [The Lens: SQL as the Lingua Franca of Data](#the-lens-sql-as-the-lingua-franca-of-data)
+2. [The Relational Model: Tables, Keys, and Relationships](#the-relational-model-tables-keys-and-relationships)
+3. [Setting Up: SQLite and Python](#setting-up-sqlite-and-python)
+4. [Basic Querying: `SELECT` and `WHERE`](#basic-querying-select-and-where)
+5. [Aggregating Data: `GROUP BY` and `HAVING`](#aggregating-data-group-by-and-having)
+6. [Combining Tables: The Art of the `JOIN`](#combining-tables-the-art-of-the-join)
+7. [Advanced SQL: Subqueries and Window Functions](#advanced-sql-subqueries-and-window-functions)
+8. [Summary](#summary)
+9. [Exercises](#exercises)
 
 ## The Lens: 19-Introduction-to-SQL
 While Pandas is powerful for analysis, data rarely originates in a CSV file. In the real world, especially in policy institutions, banks, and tech firms, data lives in **Relational Database Management Systems (RDBMS)**. 
@@ -216,6 +216,101 @@ WHERE gdp_trillions > 10;
 ```
 While SQLite supports CTEs, their power is most evident in complex queries involving multiple stages of transformation.
 
+```python
+# --- CTE demo: filter the gdp table through a named subquery ---
+# The markdown above shows a 2021-only CTE filtering for large economies.
+# Here we run it against the in-memory `gdp` table from the setup cell,
+# then a more useful two-stage CTE that pre-aggregates per-country GDP
+# before joining with `countries` to attach continent names.
+
+query = """
+WITH RecentGDP AS (
+    SELECT country_code, gdp_trillions
+    FROM gdp
+    WHERE year = 2021
+)
+SELECT *
+FROM RecentGDP
+WHERE gdp_trillions > 10;
+"""
+
+result = pd.read_sql(query, conn)
+display(result)
+
+# --- Two-stage CTE: pre-aggregate, then join with metadata ---
+query = """
+WITH CountryAvg AS (
+    SELECT country_code, AVG(gdp_trillions) AS avg_gdp
+    FROM gdp
+    GROUP BY country_code
+)
+SELECT c.continent, ROUND(AVG(ca.avg_gdp), 2) AS continent_avg_gdp
+FROM CountryAvg ca
+JOIN countries c ON ca.country_code = c.country_code
+GROUP BY c.continent
+ORDER BY continent_avg_gdp DESC;
+"""
+
+result = pd.read_sql(query, conn)
+display(result)
+```
+
+### Writing Safe Queries: Injection and Parameterized Statements
+
+A classic security disaster is building a query with a raw string interpolation of user input. Imagine a login query assembled as
+
+```python
+query = f"SELECT * FROM users WHERE name = '{user_input}'"
+```
+
+If `user_input` is `x' OR '1'='1`, the executed statement becomes `SELECT * FROM users WHERE name = 'x' OR '1'='1'` — the WHERE clause is now always true and every row is returned. This is a **SQL injection attack**, and it is entirely preventable: never interpolate values into SQL text. Pass them as *parameters* and let the driver bind them safely.
+
+```python
+import sqlite3
+
+conn = sqlite3.connect(":memory:")
+cur = conn.cursor()
+cur.execute("CREATE TABLE users (name TEXT, country TEXT)")
+cur.executemany("INSERT INTO users VALUES (?, ?)",
+                [("alice", "US"), ("bob", "DE"), ("carol", None)])
+
+# --- The WRONG way: interpolating input into the query string ---
+user_input = "x' OR '1'='1"
+vulnerable = "SELECT * FROM users WHERE name = '%s'" % user_input
+print("Vulnerable query:", vulnerable)
+print("Rows returned:", len(cur.execute(vulnerable).fetchall()),
+      "(every row!)")
+
+# --- The RIGHT way: parameterized query ---
+safe = "SELECT * FROM users WHERE name = ?"
+row = cur.execute(safe, (user_input,)).fetchall()
+print("Parameterized query:", safe)
+print("Rows returned:", len(row), "(the injected text is treated as data)")
+```
+
+### `NULL`: Three-Valued Logic in Practice
+
+`NULL` means *unknown*, not zero or an empty string. Two consequences bite every analyst eventually:
+
+1. **Comparisons with `NULL` yield `NULL`, not true or false** — so `WHERE x = NULL` matches nothing. Use `IS NULL` / `IS NOT NULL`.
+2. **Aggregates skip `NULL`s**: `COUNT(*)` counts rows, `COUNT(col)` counts only non-null values — dividing one by the other is how you measure missingness.
+
+```python
+# NULL semantics demo on the users table
+print("COUNT(*)   =", cur.execute("SELECT COUNT(*) FROM users").fetchone()[0])
+print("COUNT(country) =",
+      cur.execute("SELECT COUNT(country) FROM users").fetchone()[0],
+      "-> carol's missing country is not counted")
+
+# '= NULL' matches nothing; 'IS NULL' does
+print("rows with country = NULL:",
+      cur.execute("SELECT COUNT(*) FROM users WHERE country = NULL").fetchone()[0])
+print("rows with country IS NULL:",
+      cur.execute("SELECT COUNT(*) FROM users WHERE country IS NULL").fetchone()[0])
+
+conn.close()
+```
+
 ### Three-Tier Practice Ladder
 
 **1. Mechanism and assumptions (Conceptual):** Explain the central computational idea in **19-Introduction-to-SQL** and connect it to one explicit economic object or research workflow.
@@ -223,6 +318,8 @@ While SQLite supports CTEs, their power is most evident in complex queries invol
 **2. Reproduce and diagnose (Applied):** Reproduce an example involving The Relational Model: Tables, Keys, and Relationships, Setting Up: SQLite and Python, then change one input and explain the result before running the code.
 
 **3. Robust extension (Challenge):** Extend the example to a larger or less convenient case and document the correctness and performance checks needed before trusting the result.
+
+**3b. Failure analysis (Challenge):** A `SUM(sales)` over an orders-customers join reports triple the true revenue, and a `LEFT JOIN` plus a `WHERE right.col IS NOT NULL` filter silently behaves as an inner join. Diagnose the one-to-many fan-out and the filter placement, repair with pre-aggregation (or `DISTINCT`) and moved join conditions, and verify with row-count reconciliation.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

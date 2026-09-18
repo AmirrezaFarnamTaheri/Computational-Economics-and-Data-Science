@@ -59,6 +59,8 @@ $$\hat\tau = \left(\bar Y^{tr}_{post}-\omega'\bar Y^{co}_{post}\right)
 
 If uniform weights are used, this collapses toward ordinary DiD. If pre-treatment trajectories are highly informative, the learned weights make the counterfactual more local to the treated path.
 
+**Dimension notes:** balanced panel $Y_{it}$ over $N$ units and $T$ periods; unit weights $\omega \in \Delta_{N_0 - 1}$ over the $N_0$ controls, time weights $\lambda \in \Delta_{T_0 - 1}$ over the $T_0$ pre-periods; $\hat{\tau}$ is a scalar.
+
 <a id="unit-time-balancing"></a>
 ## 2. Unit and Time Balancing
 
@@ -73,6 +75,8 @@ $$\min_{\lambda\ge0,\;\mathbf{1}'\lambda=1}
 \|Y_{co,pre}\lambda-\bar Y_{co,post}\|_2^2+\zeta_\lambda\|\lambda\|_2^2.$$
 
 The ridge terms prevent a near-perfect but fragile match from concentrating all weight on one unit or date.
+
+**Dimension notes:** $Y_{co,pre} \in \mathbb{R}^{T_0 \times N_0}$ is the pre-period control block, $\bar{Y}_{tr,pre} \in \mathbb{R}^{T_0}$ the treated unit's pre-period path; $\omega \in \Delta_{N_0-1}$ and $\lambda \in \Delta_{T_0-1}$ sit on simplices, and the ridge penalties $\zeta_\omega, \zeta_\lambda > 0$ are scalars.
 
 ```python
 def simplex_ridge(A, b, ridge=1e-3):
@@ -201,6 +205,8 @@ $$\min_{\lambda\ge0,\;\mathbf{1}'\lambda=1} \|Y_{co,pre}\lambda-\bar Y_{co,post}
 
 $$Y_{it}(0)=\alpha_i+\gamma_t+L_{it}+\varepsilon_{it},$$
 
+**Dimension notes:** weights $\omega \in \Delta_{N_0-1}$ and $\lambda \in \Delta_{T_0-1}$; every barred quantity is a conformable vector of period or unit averages; $\hat{\tau}$ is scalar.
+
 ## Exercises
 
 **1. Weight geometry (Conceptual):** Explain the roles of the simplex constraint and ridge penalty. What does a single control receiving weight one tell you about overlap and extrapolation risk?
@@ -208,6 +214,8 @@ $$Y_{it}(0)=\alpha_i+\gamma_t+L_{it}+\varepsilon_{it},$$
 **2. Selection strength (Applied):** Change the rule that selects treated units from random assignment to progressively stronger selection on the latent loading. Compare classical DiD and SDID-style error over at least 100 simulated panels.
 
 **3. Low-rank counterfactual (Challenge):** Implement a rank-$k$ factor completion using only untreated observations. Choose rank using pre-treatment validation, estimate the treated-post counterfactual, and compare its bias with the weighting estimator.
+
+**Failure analysis (Challenge):** SDID places all unit weight on one control, pre-fit is perfect, but placebo gaps are huge. Diagnose overfitting with too-small ridge penalties, repair with the recommended $\zeta$ regularization and unit-time balancing checks, and report placebo-based standard errors.
 
 ## Economic Interpretation: Balancing units and time
 

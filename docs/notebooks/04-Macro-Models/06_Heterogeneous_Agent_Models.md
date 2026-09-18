@@ -52,19 +52,21 @@ We need to understand how inequality affects the macroeconomy and vice-versa.
 *   **Economics:** Consumption-Savings problem, General Equilibrium.
 * **Learning-path prerequisite:** [`05_New_Keynesian_Models.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/04-Macro-Models/05_New_Keynesian_Models.ipynb)
 
+> **Historical Context — From Aiyagari to HANK (1994–2018).** Rao Aiyagari's 1994 QJE paper gave incomplete-markets heterogeneity its canonical model; Krusell and Smith (1998) made it computable; Kaplan, Moll, and Violante's 2018 AER HANK model — solved with the sequence-space methods previewed here — became central banks' workhorse for stimulus-design questions.
+
 > **Learning path:** Building on [`05_New_Keynesian_Models.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/04-Macro-Models/05_New_Keynesian_Models.ipynb); next continue with [`07_Endogenous_Growth.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/04-Macro-Models/07_Endogenous_Growth.ipynb).
 
 ## Table of Contents
-1.  [Introduction: The HANK Revolution](#1.-Introduction:-The-HANK-Revolution)
-2.  [The Canonical HANK Model Environment](#2.-The-Canonical-HANK-Model-Environment)
-3.  [Solving for the Stationary General Equilibrium](#3.-Solving-for-the-Stationary-General-Equilibrium)
-    *   [The Aiyagari Model as the HANK Backbone](#The-Aiyagari-Model-as-the-HANK-Backbone)
-    *   [The Full GE Solution Algorithm](#The-Full-GE-Solution-Algorithm)
-4.  [Policy Transmission in HANK Models](#4.-Policy-Transmission-in-HANK-Models)
-    *   [The Importance of the MPC Distribution](#The-Importance-of-the-MPC-Distribution)
-    *   [The Indirect Effects of Monetary Policy](#The-Indirect-Effects-of-Monetary-Policy)
-5.  [Summary](#5.-Summary)
-6.  [Exercises](#6.-Exercises)
+1.  [Introduction: The HANK Revolution](#1-introduction-the-hank-revolution)
+2.  [The Canonical HANK Model Environment](#2-the-canonical-hank-model-environment)
+3.  [Solving for the Stationary General Equilibrium](#3-solving-for-the-stationary-general-equilibrium)
+    *   [The Aiyagari Model as the HANK Backbone](#the-aiyagari-model-as-the-hank-backbone)
+    *   [The Full GE Solution Algorithm](#the-full-ge-solution-algorithm)
+4.  [Policy Transmission in HANK Models](#4-policy-transmission-in-hank-models)
+    *   [The Importance of the MPC Distribution](#the-importance-of-the-mpc-distribution)
+    *   [The Indirect Effects of Monetary Policy](#the-indirect-effects-of-monetary-policy)
+5.  [Summary](#5-summary)
+6.  [Exercises](#6-exercises)
 
 ### 1. Introduction: The HANK Revolution
 For decades, macroeconomic modeling was dominated by the **Representative Agent (RA)** paradigm, which assumed a single, infinitely-lived household could capture the aggregate behavior of the economy. While tractable, this approach ignored the vast heterogeneity in income, wealth, and consumption behavior that is a defining feature of modern economies. Landmark work by Bewley (1986), Aiyagari (1994), and Krusell & Smith (1998) introduced **incomplete markets** and **idiosyncratic risk** into general equilibrium models, showing how these ingredients could generate realistic, stationary wealth distributions through precautionary savings.
@@ -90,6 +92,9 @@ A full HANK model is a complex machine with many moving parts. Here we outline t
 
 ### 3. Solving for the Stationary General Equilibrium
 
+![Aiyagari algorithm](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/04-Macro-Models/aiyagari_algorithm_flowchart.png)
+*Figure: Solution algorithm for the Aiyagari-style heterogeneous-agent model..*
+
 #### The Aiyagari Model as the HANK Backbone
 The core of the HANK model is a general equilibrium Aiyagari model. Solving for the stationary equilibrium requires finding the market-clearing real interest rate $r$.
 
@@ -109,9 +114,19 @@ class AiyagariSolver:
             self.P = np.array([[0.8, 0.1, 0.1], [0.1, 0.8, 0.1], [0.1, 0.1, 0.8]])
         else:
             self.y_vals, self.P = np.array(y_vals), np.array(P)
-        self.u = lambda c: (c**(1 - self.sigma) - 1) / (1 - self.sigma)
+        self.u = lambda c: np.log(c) if self.sigma == 1 else (c**(1 - self.sigma) - 1) / (1 - self.sigma)
+        # Stationary labor efficiency converts K/L demand to aggregate K.
+        income_dist = np.full(len(self.y_vals), 1/len(self.y_vals))
+        for _ in range(10000):
+            updated = income_dist @ self.P
+            if np.max(np.abs(updated-income_dist)) < 1e-12:
+                break
+            income_dist = updated
+        self.labor = float(updated @ self.y_vals)
 
     def solve_household_problem(self, r):
+        capital_labor = (self.alpha/(r+self.delta))**(1/(1-self.alpha))
+        wage = (1-self.alpha)*capital_labor**self.alpha
         V = np.zeros((len(self.y_vals), len(self.a_vals)))
         policy_idx = np.zeros_like(V, dtype=np.int32)
         for i in range(1500):
@@ -119,9 +134,9 @@ class AiyagariSolver:
             EV = self.P @ V
             for y_idx, y in enumerate(self.y_vals):
                 # c[i, j] is consumption with a_t = a_vals[i] and a_{t+1} = a_vals[j]
-                c = (1 + r) * self.a_vals[:, np.newaxis] + y - self.a_vals[np.newaxis, :]
-                c = np.maximum(c, 1e-9)
-                value_matrix = self.u(c) + self.beta * EV[y_idx, :]
+                c = (1 + r) * self.a_vals[:, np.newaxis] + wage * y - self.a_vals[np.newaxis, :]
+                feasible = c > 0
+                value_matrix = np.where(feasible, self.u(np.maximum(c, 1e-9)) + self.beta * EV[y_idx, :], -np.inf)
 
                 # For each a (row i), we maximize over choices a' (columns j)
                 V[y_idx, :], policy_idx[y_idx, :] = np.max(value_matrix, axis=1), np.argmax(value_matrix, axis=1)
@@ -143,13 +158,14 @@ class AiyagariSolver:
         return (dist_flat / dist_flat.sum()).reshape(n_y, n_a)
 
     def solve_ge(self):
-        asset_supply = lambda r: (self.alpha / (r + self.delta))**(1 / (1 - self.alpha))
+        capital_demand = lambda r: self.labor * (self.alpha / (r + self.delta))**(1 / (1 - self.alpha))
         def excess_demand(r):
             policy_idx, _ = self.solve_household_problem(r)
             dist = self.get_stationary_distribution(policy_idx)
-            asset_demand = np.sum(dist * self.a_vals)
-            return asset_demand - asset_supply(r)
+            asset_supply = np.sum(dist * self.a_vals)
+            return asset_supply - capital_demand(r)
         r_star = bisect(excess_demand, -self.delta + 0.001, 1/self.beta - 1 - 0.001)
+        self.market_clearing_residual = float(excess_demand(r_star))
         return r_star
 
 print("Aiyagari general equilibrium solver class defined.")
@@ -168,7 +184,9 @@ Solving a HANK model involves finding a fixed point in the mapping from prices t
 aiyagari_solver = AiyagariSolver()
 print("> **Note:** Solving for the general equilibrium... (this may take a moment)")
 r_star = aiyagari_solver.solve_ge()
-print(f"> **Note:** Found market-clearing interest rate r* = {r_star:.4f}")
+print(f"Candidate equilibrium interest rate r* = {r_star:.4f}; capital-market residual = {aiyagari_solver.market_clearing_residual:.3e}")
+# Discrete policy grids can make asset supply discontinuous. A tight interest-rate
+# bracket alone is not proof of market clearing; inspect this quantity and refine the grid.
 
 # --- Analyze the resulting distribution ---
 policy_star_idx, _ = aiyagari_solver.solve_household_problem(r_star)
@@ -206,9 +224,11 @@ Around steady state, a small shock sequence obeys
 
 $$dY \approx J\,dX.$$
 
-The computational gain comes from reusing household response objects and exploiting the lower-triangular time structure. General equilibrium then becomes a system of linear equations in sequence space. This does not make heterogeneity disappear: the household Jacobian summarizes how the entire stationary distribution and policy rules respond to prices. The practical diagnostic is to verify that a finite-difference impulse converges to the Jacobian prediction as the shock size shrinks.
+The computational gain comes from reusing household response objects and exploiting time-shift structure in household response calculations. Anticipated future prices can affect current choices, so general household Jacobians need not be lower triangular. Only the unanticipated, backward-looking toy response below imposes that restriction. General equilibrium then becomes a system of linear equations in sequence space. This does not make heterogeneity disappear: the household Jacobian summarizes how the entire stationary distribution and policy rules respond to prices. The practical diagnostic is to verify that a finite-difference impulse converges to the Jacobian prediction as the shock size shrinks.
 
 The miniature experiment below isolates the aggregation logic using a heterogeneous marginal-propensity-to-consume (MPC) distribution. It is not a full HANK solver; it is a bridge to the Auclert-Bardóczy-Rognlie-Straub algorithm and makes the sequence-space object explicit before introducing implementation complexity.
+
+**Dimension notes:** input and output paths $X = (X_0, X_1, \dots)$, $Y$ are sequences of scalars truncated at horizon $T$; the sequence-space Jacobian $J \in \mathbb{R}^{T \times T}$ collects $\partial Y_t / \partial X_s$; shocks and responses are vectors in $\mathbb{R}^T$, and GE adds linear systems of the same size.
 
 ```python
 # Stylized sequence-space consumption Jacobian from heterogeneous MPCs
@@ -227,6 +247,11 @@ assert np.allclose(J, np.tril(J))
 print(f"aggregate impact MPC = {aggregate_mpc:.3f}; cumulative response = {consumption_response.sum():.4f}")
 ```
 
+> **Common Pitfalls in This Lecture**
+>
+> - **Borrowing-constraint bleed-through.** Interpolating the policy function slightly below the borrowing limit $a_{min}$ extrapolates consumption into impossible territory. Clamp states to the grid and treat $a_{min}$ exactly (fixed point at the boundary).
+> - **Distribution dynamics forgotten.** A price vector clears markets only given the stationary distribution; skipping the transition-law iteration (or updating prices before distributions converge) solves the wrong general equilibrium. Alternate to fixed point in *both* objects.
+
 ### Three-Tier Practice Ladder
 
 **1. Mechanism and assumptions (Conceptual):** State the equilibrium/optimality condition that organizes **06 Heterogeneous Agent Models**. Explain which assumption guarantees existence, uniqueness, or stability, and identify a limiting case where that argument weakens.
@@ -234,6 +259,8 @@ print(f"aggregate impact MPC = {aggregate_mpc:.3f}; cumulative response = {consu
 **2. Reproduce and diagnose (Applied):** Reproduce one quantitative result from the sections on 1. Introduction: The HANK Revolution, 2. The Canonical HANK Model Environment. Change one economically meaningful parameter over a defensible grid, report the policy/value/equilibrium response, and verify convergence with a residual or tighter tolerance.
 
 **3. Robust extension (Challenge):** Design a policy or shock counterfactual that changes one mechanism at a time. Compare welfare or transition dynamics against the baseline and explain which conclusion is structural versus calibration-specific.
+
+**3b. Failure analysis (Challenge):** The stationary distribution has mass at the borrowing constraint, but evaluating the consumption policy slightly below $a_{min}$ produces `NaN`s that poison the histogram. Diagnose the boundary extrapolation, repair with clamped interpolation and an exact fixed point at the constraint, and verify the distribution integrates to one with no NaN bins.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

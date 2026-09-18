@@ -35,19 +35,19 @@ warnings.filterwarnings('ignore', category=FutureWarning)
 ```
 
 ### Table of Contents
-1.  [The Structural Approach and the Lucas Critique](#1.-The-Structural-Approach-and-the-Lucas-Critique)
-2.  [Dynamic Discrete Choice (DDC) Models](#2.-Dynamic-Discrete-Choice-(DDC)-Models)
-    *   [2.1 The Value Function and Choice Probabilities](#2.1-The-Value-Function-and-Choice-Probabilities)
-    *   [2.2 Identification](#2.2-Identification)
-3.  [Estimation Algorithms](#3.-Estimation-Algorithms)
-    *   [3.1 The Nested Fixed Point (NFXP) Algorithm](#3.1-The-Nested-Fixed-Point-(NFXP)-Algorithm)
-    *   [3.2 Two-Step Estimators (Hotz-Miller / CCP)](#3.2-Two-Step-Estimators-(Hotz-Miller-/-CCP))
-    *   [3.3 MPEC: Constrained Optimization](#3.3-MPEC:-Constrained-Optimization)
-4.  [Code Lab: Estimating a Bus Engine Replacement Model](#4.-Code-Lab:-Estimating-a-Bus-Engine-Replacement-Model)
-    *   [4.1 The NFXP Implementation](#4.1-The-NFXP-Implementation)
-    *   [4.2 Counterfactuals: The Power of Structural Models](#4.2-Counterfactuals:-The-Power-of-Structural-Models)
-5.  [Summary](#5.-Summary)
-6.  [Exercises](#6.-Exercises)
+1.  [The Structural Approach and the Lucas Critique](#1-the-structural-approach-and-the-lucas-critique)
+2.  [Dynamic Discrete Choice (DDC) Models](#2-dynamic-discrete-choice-ddc)-Models)
+    *   [2.1 The Value Function and Choice Probabilities](#21-the-value-function-and-choice-probabilities)
+    *   [2.2 Identification](#22-identification)
+3.  [Estimation Algorithms](#3-estimation-algorithms)
+    *   [3.1 The Nested Fixed Point (NFXP) Algorithm](#31-the-nested-fixed-point-nfxp)-Algorithm)
+    *   [3.2 Two-Step Estimators (Hotz-Miller / CCP)](#32-two-step-estimators-hotz-miller-ccp))
+    *   [3.3 MPEC: Constrained Optimization](#33-mpec-constrained-optimization)
+4.  [Code Lab: Estimating a Bus Engine Replacement Model](#4-code-lab-estimating-a-bus-engine-replacement-model)
+    *   [4.1 The NFXP Implementation](#41-the-nfxp-implementation)
+    *   [4.2 Counterfactuals: The Power of Structural Models](#42-counterfactuals-the-power-of-structural-models)
+5.  [Summary](#5-summary)
+6.  [Exercises](#6-exercises)
 
 ## The Lens: Inferring the Unobservable
 **What problem are we solving?**
@@ -72,11 +72,11 @@ We focus on **Dynamic Discrete Choice (DDC)** models, where agents make forward-
 > **Learning path:** Building on [`06_Robust_Control.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/03-Economic-Modeling/06_Robust_Control.ipynb); this notebook closes the current track.
 
 ### 1. The Structural Approach and the Lucas Critique
-This chapter introduces **structural estimation**, an approach that ly integrates economic theory with empirical data. It stands in contrast to **reduced-form** methods (like OLS or IV), which estimate statistical relationships without fully modeling the underlying behavior that generated them.
+This chapter introduces **structural estimation**, an approach that integrates economic theory with empirical data. It stands in contrast to **reduced-form** methods (like OLS or IV), which estimate statistical relationships without fully modeling the underlying behavior that generated them.
 
 The foundational motivation is the **Lucas Critique**. Robert Lucas Jr. argued that reduced-form relationships are fundamentally unreliable for evaluating future policy changes, because rational, forward-looking agents will change their behavior and expectations in response to a new policy, rendering the old statistical relationships obsolete. The classic example is the Phillips Curve, which appeared to offer a stable trade-off between inflation and unemployment, but broke down when central banks tried to exploit it.
 
-The solution, according to Lucas, is to estimate the **"" structural parameters** that govern behavior but are invariant to policy changes—parameters of preferences (like risk aversion), technology (like production costs), and constraints. A structural model, by estimating this underlying economic engine, allows us to simulate how optimizing agents *would* behave under entirely new policy regimes. It allows us to ask not just "what happened?" but also "what if?"
+The solution, according to Lucas, is to estimate the **structural parameters** that govern behavior but are invariant to policy changes—parameters of preferences (like risk aversion), technology (like production costs), and constraints. A structural model, by estimating this underlying economic engine, allows us to simulate how optimizing agents *would* behave under entirely new policy regimes. It allows us to ask not just "what happened?" but also "what if?"
 
 ### 2. Dynamic Discrete Choice (DDC) Models
 A workhorse of modern structural analysis is the **Dynamic Discrete Choice (DDC)** model. These models analyze situations where forward-looking agents make a sequence of choices from a discrete set over time, and where today's choices affect tomorrow's state. The pioneering work is John Rust's (1987) analysis of Harold Zurcher, the superintendent of maintenance for the Madison, Wisconsin bus company, who had to decide each month whether to replace a bus engine.
@@ -91,10 +91,10 @@ If we assume the shocks $\epsilon_i$ follow a **Type-I Extreme Value (Gumbel)** 
 $$ P(i | s_t, \theta) = \frac{\exp(v(s_t, i, \theta))}{\sum_{j \in A} \exp(v(s_t, j, \theta))} $$
 2.  The *ex-ante* value function $V(s_t, \theta) = E_\epsilon[\max_i \{v(s_t, i, \theta) + \epsilon_i\}]$ has a closed-form solution known as the **log-sum-exp** formula:
 $$ V(s_t, \theta) = \ln \left( \sum_{j \in A} \exp(v(s_t, j, \theta)) \right) + C $$
-where C is Euler's constant. This gives us a tractable Bellman equation to solve for the value function.
+where C is Euler's constant for standard Gumbel shocks. The code uses mean-zero Gumbel shocks, absorbing this common additive constant into the normalization. Choice probabilities are unchanged.
 
 #### 2.2 Identification
-**Identification** is the question of whether it is theoretically possible to uniquely recover the structural parameters from the observed data. In DDC models, identification comes from how the model predicts that choices will change as the state variables change. For example, we identify cost parameters by observing how the probability of an action (e.g., replacement) changes as a cost-relevant state variable (e.g., mileage) increases. We identify the discount factor $\beta$ by observing how much a change in the *expected future value* of a choice affects an agent's *current* choice.
+**Identification** is the question of whether it is theoretically possible to uniquely recover the structural parameters from the observed data. In DDC models, identification comes from how the model predicts that choices will change as the state variables change. For example, we identify cost parameters by observing how the probability of an action (e.g., replacement) changes as a cost-relevant state variable (e.g., mileage) increases. Identifying $\beta$ separately from flow utilities generally requires additional restrictions or excluded variables that shift future payoffs. Current choices alone need not identify discounting; the code fixes $\beta$ rather than estimating it.
 
 ### 3. Estimation Algorithms
 The goal is to find the parameter vector $\theta$ that maximizes the log-likelihood of the observed data:
@@ -138,17 +138,19 @@ class RustNFXPSolver:
         u_replace = -theta_R * np.ones(self.n_states)
         return u_maintain, u_replace
 
-    def solve_dp_problem(self, params):
+    def solve_dp_problem(self, params, tol=1e-8, max_iter=5000):
         u_maintain, u_replace = self._get_flow_utilities(params)
         EV = np.zeros(self.n_states)
-        for i in range(250):
+        for i in range(max_iter):
             EV_maintain_next = self.transitions['maintain'] @ EV
             EV_replace_next = self.transitions['replace'] @ EV
-            V_new = np.log(np.exp(u_maintain + self.beta * EV_maintain_next) +
-                           np.exp(u_replace + self.beta * EV_replace_next))
-            if np.max(np.abs(EV - V_new)) < 1e-8: break
+            V_new = np.logaddexp(u_maintain + self.beta * EV_maintain_next,
+                                 u_replace + self.beta * EV_replace_next)
+            error = np.max(np.abs(EV - V_new))
             EV = V_new
-        return EV
+            if error < tol:
+                return EV
+        raise RuntimeError(f"Inner Bellman solve did not converge: residual update {error:.3e}")
 
     def _log_likelihood(self, params, data_choices, data_states):
         if params[0] < 0 or params[1] < 0: return 1e12
@@ -156,9 +158,11 @@ class RustNFXPSolver:
         u_maintain, u_replace = self._get_flow_utilities(params)
         v_maintain = u_maintain + self.beta * (self.transitions['maintain'] @ EV)
         v_replace = u_replace + self.beta * (self.transitions['replace'] @ EV)
-        prob_maintain = np.exp(v_maintain) / (np.exp(v_maintain) + np.exp(v_replace))
-        p_chosen = np.where(data_choices == 0, prob_maintain[data_states], 1 - prob_maintain[data_states])
-        return -np.sum(np.log(np.maximum(p_chosen, 1e-12)))
+        log_denom = np.logaddexp(v_maintain, v_replace)
+        log_chosen = np.where(data_choices == 0,
+                              (v_maintain - log_denom)[data_states],
+                              (v_replace - log_denom)[data_states])
+        return -np.sum(log_chosen)
 
     def estimate(self, data_choices, data_states, initial_guess):
         print(f"Starting NFXP estimation from guess: {initial_guess}")
@@ -170,7 +174,10 @@ class RustNFXPSolver:
 # === Main Execution ===
 N_STATES = 50; DISCOUNT_FACTOR = 0.95
 # Transitions: if maintain, age increases by 1. if replace, age resets to 0.
-T_MAINTAIN = np.roll(np.eye(N_STATES), 1, axis=1); T_MAINTAIN[-1, -1] = 1; T_MAINTAIN[-1, -2] = 0
+T_MAINTAIN = np.roll(np.eye(N_STATES), 1, axis=1)
+T_MAINTAIN[-1, :] = 0
+T_MAINTAIN[-1, -1] = 1
+assert np.allclose(T_MAINTAIN.sum(axis=1), 1.0)
 T_REPLACE = np.zeros((N_STATES, N_STATES)); T_REPLACE[:, 0] = 1
 transitions = {'maintain': T_MAINTAIN, 'replace': T_REPLACE}
 
@@ -180,7 +187,7 @@ EV_true = solver.solve_dp_problem(TRUE_PARAMS)
 u_m_true, u_r_true = solver._get_flow_utilities(TRUE_PARAMS)
 v_m_true = u_m_true + DISCOUNT_FACTOR * (T_MAINTAIN @ EV_true)
 v_r_true = u_r_true + DISCOUNT_FACTOR * (T_REPLACE @ EV_true)
-prob_maintain_true = np.exp(v_m_true) / (np.exp(v_m_true) + np.exp(v_r_true))
+prob_maintain_true = np.exp(v_m_true - np.logaddexp(v_m_true, v_r_true))
 
 sim_states = rng.integers(0, N_STATES, 500)
 sim_choices = (rng.random(500) > prob_maintain_true[sim_states]).astype(int)
@@ -199,7 +206,7 @@ EV_hat = solver.solve_dp_problem(mle_result.x)
 u_m_hat, u_r_hat = solver._get_flow_utilities(mle_result.x)
 v_m_hat = u_m_hat + solver.beta * (solver.transitions['maintain'] @ EV_hat)
 v_r_hat = u_r_hat + solver.beta * (solver.transitions['replace'] @ EV_hat)
-prob_replace_hat = 1 - (np.exp(v_m_hat) / (np.exp(v_m_hat) + np.exp(v_r_hat)))
+prob_replace_hat = np.exp(v_r_hat - np.logaddexp(v_m_hat, v_r_hat))
 
 subsidy = 0.20
 params_cf = [theta_R_hat * (1 - subsidy), theta_M_hat]
@@ -207,7 +214,7 @@ EV_cf = solver.solve_dp_problem(params_cf)
 u_m_cf, u_r_cf = solver._get_flow_utilities(params_cf)
 v_m_cf = u_m_cf + solver.beta * (solver.transitions['maintain'] @ EV_cf)
 v_r_cf = u_r_cf + solver.beta * (solver.transitions['replace'] @ EV_cf)
-prob_replace_cf = 1 - (np.exp(v_m_cf) / (np.exp(v_m_cf) + np.exp(v_r_cf)))
+prob_replace_cf = np.exp(v_r_cf - np.logaddexp(v_m_cf, v_r_cf))
 
 fig, ax = plt.subplots()
 ax.plot(solver.states, prob_replace_hat, '-o', ms=5, label='Original Estimated Policy')
@@ -244,6 +251,8 @@ $$\mathcal{L}(\theta) = \sum_{n=1}^N \sum_{t=1}^{T_n} \ln P(a_{nt} | s_{nt}, \th
 
 **3. Robust extension (Challenge):** Design a policy or shock counterfactual that changes one mechanism at a time. Compare welfare or transition dynamics against the baseline and explain which conclusion is structural versus calibration-specific.
 
+**3b. Failure analysis (Challenge):** A two-step structural estimator reports confidence intervals that look too tight, and the first-stage nuisance parameters were themselves estimated. Diagnose the generated-regressor problem, repair with the delta method or a bootstrap over both steps, and compare the corrected interval widths.
+
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 
 # Summary
@@ -251,9 +260,9 @@ $$\mathcal{L}(\theta) = \sum_{n=1}^N \sum_{t=1}^{T_n} \ln P(a_{nt} | s_{nt}, \th
 Structural estimation recovers the "deep" parameters of preferences and technology.
 
 **Key Takeaways:**
-*   **Policy Counterfactuals:** Only structural models can predict the effects of policies that have never been tried before (e.g., a merger between two specific firms).
+*   **Policy Counterfactuals:** Structural models can predict outcomes under untried policies when their behavioral and policy-invariance assumptions remain credible.
 *   **Computational Burden:** Structural estimation involves nested loops: an outer optimization loop for parameters and an inner fixed-point loop for the model solution.
-*   **The Lucas Critique:** By estimating parameters that are invariant to policy (like utility functions), we avoid the pitfalls of reduced-form correlations.
+*   **The Lucas Critique:** Policy invariance is a maintained assumption about preferences and technology, not a property guaranteed by estimation.
 
 ## 6. Exercises
 

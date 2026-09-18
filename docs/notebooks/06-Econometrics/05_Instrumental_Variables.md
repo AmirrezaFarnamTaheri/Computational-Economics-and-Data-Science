@@ -9,11 +9,14 @@
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/06-Econometrics/05_Instrumental_Variables.ipynb) [![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main?filepath=06-Econometrics/05_Instrumental_Variables.ipynb) [![Code License: MIT](https://img.shields.io/badge/Code%20License-MIT-yellow.svg)](../LICENSE) [![Content License: CC BY 4.0](https://img.shields.io/badge/Content%20License-CC%20BY%204.0-blue.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 ```python
+
 # === Environment Setup ===
 import ipywidgets as widgets
 import matplotlib.pyplot as plt
 import numpy as np
+rng = np.random.default_rng(42)  # single reproducible generator
 import pandas as pd
+import seaborn as sns
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
 from IPython.display import Markdown, display
@@ -62,7 +65,7 @@ plt.show()
 
 ## Table of Contents
 
-1. [Introduction](#Introduction)
+1. [Introduction](#introduction)
 
 ## The Lens: Breaking the Endogeneity Loop
 **What problem are we solving?**
@@ -104,6 +107,8 @@ Because $\hat{D}$ is, by construction, a linear combination of the exogenous var
 
 **Important Note:** While this two-stage procedure is intuitive, one should **never run it manually**. The standard errors from the second-stage OLS are incorrect because they fail to account for the uncertainty in estimating the first stage. Always use specialized software (like `linearmodels` or `Stata`) that computes the correct 2SLS variance-covariance matrix.
 
+**Dimension notes:** canonical case: $Y_i, D_i \in \mathbb{R}$ scalars with $D$ endogenous; instruments $Z \in \mathbb{R}^r$, controls $X \in \mathbb{R}^{\ell}$; each stage regresses an $n$-vector on a conformable design matrix, and identification needs at least as many instruments as endogenous regressors (an order condition); the excluded instruments must also have full conditional first-stage rank.
+
 ### 2. Heterogeneous Effects and the LATE Framework
 A crucial insight from Imbens and Angrist (1994) is that when the treatment effect is heterogeneous, IV does not recover the Average Treatment Effect (ATE). Instead, it recovers the **Local Average Treatment Effect (LATE)**.
 
@@ -113,8 +118,10 @@ We can divide the population into four groups based on their potential response 
 3.  **Never-Takers:** People who never take the treatment, regardless of the instrument.
 4.  **Defiers:** People who do the opposite of what the instrument encourages. A key assumption for the LATE interpretation is that there are no defiers (**monotonicity**).
 
-The IV estimator identifies the average treatment effect *only for the group of compliers*:
+For a binary treatment and instrument, under independence, exclusion, a nonzero first stage, monotonicity, and no interference, the Wald IV estimator identifies the average treatment effect *only for the group of compliers*:
 $$ \beta_{IV} \xrightarrow{p} E[Y(1) - Y(0) | \text{i is a complier}] = \text{LATE} $$
+
+**Dimension notes:** with binary instrument $Z \in \{0,1\}$ and treatment $D \in \{0,1\}$, the four compliance types partition the population into probabilities summing to one; LATE is a single scalar — the average $Y_i(1)-Y_i(0)$ among compliers.
 
 ### Case Study: Angrist and Krueger (1991) Returns to Education
 
@@ -135,7 +142,7 @@ else:
     display(Markdown(f'> **Note:** The OLS estimate suggests a return of {ols_model.params["school"]*100:.1f}%. The IV estimate is {iv_model.params["school"]*100:.1f}%. The LATE interpretation suggests this is the return to schooling for the \'compliers\' - those whose schooling was affected by their birth quarter.'))
 ```
 
-> **Note:** Loaded Angrist and Krueger (1991) dataset.
+> **Note:** The cell above reports whether the optional dataset was loaded; the synthetic examples do not depend on it.
 
 ### 3. Weak Instruments
 A critical problem in applied IV is the presence of **weak instruments**. If the instrument is only weakly correlated with the endogenous variable, the IV estimator has poor finite-sample properties:
@@ -147,17 +154,17 @@ A critical problem in applied IV is the presence of **weak instruments**. If the
 ### Interactive: The Weak Instrument Problem
 
 ```python
-def run_weak_iv_sim(instrument_strength=0.1, n_sims=1000):
+def run_weak_iv_sim(instrument_strength=0.1, n_sims=50):
     true_beta = 0.8; ols_estimates, iv_estimates, f_stats = [], [], []
     for _ in range(n_sims):
-        n = 200; ability = np.random.normal(0, 1, n); instrument = np.random.normal(0, 1, n)
-        education = instrument_strength * instrument + 1.2 * ability + np.random.normal(0, 1, n)
-        log_wage = true_beta * education + 1.0 * ability + np.random.normal(0, 1, n)
+        n = 200; ability = rng.normal(0, 1, n); instrument = rng.normal(0, 1, n)
+        education = instrument_strength * instrument + 1.2 * ability + rng.normal(0, 1, n)
+        log_wage = true_beta * education + 1.0 * ability + rng.normal(0, 1, n)
         df = pd.DataFrame({'log_wage':log_wage, 'educ':education, 'instr':instrument})
         ols = smf.ols('log_wage ~ educ', data=df).fit()
         iv = IV2SLS.from_formula('log_wage ~ 1 + [educ ~ instr]', df).fit()
         ols_estimates.append(ols.params['educ']); iv_estimates.append(iv.params['educ'])
-        f_stats.append(iv.first_stage.f.stat)
+        f_stats.append(smf.ols('educ ~ instr', data=df).fit().fvalue)
 
     plt.figure(figsize=(12, 6))
     sns.kdeplot(ols_estimates, label=f'OLS Estimates (Mean={np.mean(ols_estimates):.2f})', fill=True)
@@ -167,7 +174,7 @@ def run_weak_iv_sim(instrument_strength=0.1, n_sims=1000):
     plt.show()
     display(Markdown(f'> **Note:** With instrument strength = {instrument_strength}, the average First-Stage F-statistic is {np.mean(f_stats):.1f}.'))
 
-widgets.interact(run_weak_iv_sim, instrument_strength=widgets.FloatSlider(min=0.0, max=0.5, step=0.02, value=0.1));
+widgets.interact(run_weak_iv_sim, instrument_strength=widgets.FloatSlider(min=0.0, max=0.5, step=0.02, value=0.1, continuous_update=False), n_sims=widgets.fixed(50));
 ```
 
 ```python
@@ -181,14 +188,16 @@ class TwoStageLeastSquares:
 
     def fit(self, y, X, Z):
         # Add intercept
-        X = sm.add_constant(X)
-        Z = sm.add_constant(Z)
+        X = np.asarray(sm.add_constant(X), dtype=float)
+        Z = np.asarray(sm.add_constant(Z), dtype=float)
 
         # First Stage: Regress X on Z
         # X_hat = Z(Z'Z)^-1 Z'X
-        self.first_stage_model = sm.OLS(X, Z).fit()
-        X_hat = self.first_stage_model.predict(Z)
-        self.first_stage_params = self.first_stage_model.params
+        # Teaching case: all nonconstant X columns are endogenous and Z
+        # contains the excluded instruments plus an intercept (no controls).
+        self.first_stage_params = np.linalg.lstsq(Z, X, rcond=None)[0]
+        X_hat = Z @ self.first_stage_params
+        self.first_stage_models = [sm.OLS(X[:, j], Z).fit() for j in range(1, X.shape[1])]
 
         # Second Stage: Regress y on X_hat
         # beta_2sls = (X_hat' X_hat)^-1 X_hat' y
@@ -199,25 +208,26 @@ class TwoStageLeastSquares:
         residuals = y - self.second_stage_model.predict(X)
         sigma2 = (residuals.T @ residuals) / (len(y) - X.shape[1])
         # Var(beta) = sigma2 * (X' Pz X)^-1 where Pz is projection matrix of Z
-        # Approximated by second stage covariance but corrected for sigma2
-        self.se = self.second_stage_model.bse # Simplification for demonstration
+        # Homoskedastic covariance, with structural rather than fitted-X residuals.
+        self.vcov = sigma2 * np.linalg.inv(X_hat.T @ X_hat)
+        self.se = np.sqrt(np.diag(self.vcov))
 
         return self
 
     def summary(self):
         print("--- 2SLS Estimation Results ---")
-        print("First Stage F-stat:", self.first_stage_model.fvalue)
-        if self.first_stage_model.fvalue < 10:
-            print("Warning: Weak Instruments (F < 10)")
+        for j, model in enumerate(self.first_stage_models, start=1):
+            print(f"First-stage F-stat for regressor {j}: {model.fvalue:.4f}")
+            if model.fvalue < 10:
+                print("Warning: Weak instruments (F < 10 is a heuristic)")
         print("\nSecond Stage Coefficients:")
         print(self.second_stage_params)
 
 # Generate Data with Endogeneity
-np.random.seed(42)
 n = 500
-z = np.random.normal(0, 1, n) # Instrument
-u = np.random.normal(0, 1, n) # Structural Error
-v = 0.5 * u + np.random.normal(0, 1, n) # Endogeneity channel
+z = rng.normal(0, 1, n) # Instrument
+u = rng.normal(0, 1, n) # Structural Error
+v = 0.5 * u + rng.normal(0, 1, n) # Endogeneity channel
 x = 0.5 * z + v # Endogenous regressor
 y = 1 + 2 * x + u
 
@@ -229,7 +239,7 @@ print(f"Biased OLS Estimate of beta (True=2.0): {ols_biased.params[1]:.4f}")
 iv_model = TwoStageLeastSquares()
 iv_model.fit(y, pd.DataFrame(x, columns=['x']), pd.DataFrame(z, columns=['z']))
 iv_model.summary()
-print(f"2SLS Estimate of beta: {iv_model.second_stage_params[0]:.4f}")
+print(f"2SLS Estimate of beta: {iv_model.second_stage_params[1]:.4f}")
 ```
 
 ### 4. The Control Function Approach
@@ -242,6 +252,8 @@ An alternative to 2SLS is the **control function** approach. Instead of purging 
     $$ Y = \beta_0 + \beta_1 D + \delta \hat{v} + \epsilon $$ 
 
 In this regression, the coefficient $\beta_1$ is a consistent estimate of the causal effect. The coefficient $\delta$ on the residual is an estimate of $\rho$, and a t-test on it is a **test for endogeneity**.
+
+**Dimension notes:** first stage $D = \Pi Z + v$: with one endogenous regressor the residual $\hat{v}_i \in \mathbb{R}$ enters the second stage as exactly one added scalar control; with $m$ endogenous variables you add $m$ residual controls.
 
 ### Control Function Example and Endogeneity Test
 
@@ -257,9 +269,9 @@ if ak91_df is not None:
     print(control_fn_model.summary().tables[1])
 ```
 
-> **Note:** The coefficient on 'school' is the control function estimate of the causal effect. The coefficient on 'resid' is statistically insignificant, suggesting we cannot reject the null hypothesis that schooling is exogenous in this specification.
+> **Interpretation:** Inspect the estimated coefficient and p-value on `resid` before drawing an inference. Failure to reject exogeneity does not establish it, particularly with weak instruments.
 
-> **Note:** Dataset not available.
+> **Note:** When the optional dataset is unavailable, the control-function case study is skipped.
 
 ## Key Equations
 
@@ -281,6 +293,13 @@ $$\beta_{IV} \xrightarrow{p} E[Y(1) - Y(0) | \text{i is a complier}] = \text{LAT
 
 $$Y = \beta_0 + \beta_1 D + \delta \hat{v} + \epsilon$$
 
+**Dimension notes:** $D, Y$ scalars; instruments $Z \in \mathbb{R}^r$ and controls $X \in \mathbb{R}^{\ell}$; first-stage coefficients $(\pi_0, \pi_1, \pi_2)$ and second-stage $(\beta_0, \beta_1, \beta_2)$ conform to those dimensions.
+
+> **Common Pitfalls in This Lecture**
+>
+> - **Weak instruments.** With first-stage $F$ below roughly 10, 2SLS is biased toward OLS and confidence intervals are misleadingly narrow. Report first-stage strength, use weak-IV-robust inference (Anderson-Rubin), or find a stronger instrument.
+> - **LATE scope creep.** IV identifies the local average treatment effect for *compliers*, not the population ATE. Extrapolating a court-order instrument's LATE to voluntary-takers changes the question being answered — state the population every time.
+
 ### Three-Tier Practice Ladder
 
 **1. Mechanism and assumptions (Conceptual):** Define the estimand in **05 Instrumental Variables**, list the identifying assumptions, and give a concrete data-generating process that violates one assumption while leaving the others intact.
@@ -288,6 +307,8 @@ $$Y = \beta_0 + \beta_1 D + \delta \hat{v} + \epsilon$$
 **2. Reproduce and diagnose (Applied):** Implement or reproduce the estimator using the material on 1. The IV Estimator: Two-Stage Least Squares (2SLS), 2. Heterogeneous Effects and the LATE Framework. Report uncertainty and at least two diagnostics; then compare with an alternative specification that targets the same estimand.
 
 **3. Robust extension (Challenge):** Run a Monte Carlo or sensitivity exercise that varies the most fragile identifying condition. Quantify bias/coverage or the range of estimates and state what evidence would change your substantive conclusion.
+
+**3b. Failure analysis (Challenge):** The 2SLS estimate is three times the OLS estimate, and the first-stage $F$ is 4. Diagnose weak instruments (bias toward OLS, unreliable CIs), repair with weak-IV-robust (Anderson-Rubin) inference and a stronger instrument or design discussion, and state the LATE population actually identified.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

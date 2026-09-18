@@ -76,6 +76,8 @@ $$ L(\theta | \mathbf{y}) = \prod_{i=1}^n f(y_i; \theta) $$
 We maximize the **Log-Likelihood** $\mathcal{L}(\theta)$ because sums are easier to differentiate than products:
 $$ \mathcal{L}(\theta) = \ln L(\theta) = \sum_{i=1}^n \ln f(y_i; \theta) $$
 
+**Dimension notes:** the data vector is $\mathbf{y} = (y_1, \dots, y_n)$ with scalar observations $y_i \in \mathbb{R}$ drawn iid from $f(y; \theta)$; the parameter lives in $\theta \in \Theta \subseteq \mathbb{R}^p$; both $L(\theta \mid \mathbf{y})$ and the log-likelihood $\mathcal{L}(\theta)$ are scalar-valued functions on $\Theta$.
+
 ### Example: MLE for a Bernoulli Process (Coin Flip)
 
 Suppose we flip a coin 10 times and get 8 heads. What is the probability $p$ of heads?
@@ -110,6 +112,11 @@ ax.set_ylim(-30, -4)
 ax.legend(); plt.show()
 ```
 
+> **Common Pitfalls in This Lecture**
+>
+> - **Likelihood underflow.** Multiplying hundreds of densities underflows to exactly `0.0` in floating point. Maximize the log-likelihood (sum of logs) — same argmax, numerically sane. This is why every serious routine works in logs.
+> - **Boundary 'optima'.** MLE need not exist in the interior: variance parameters can drift to zero, mixture weights to degeneracy. A flat or boundary optimum defeats gradient checks; inspect gradients and parameter bounds rather than trusting the reported maximum.
+
 ## Exercises
 
 **1. Mechanism and assumptions (Conceptual):** Define the estimand in **02A Maximum Likelihood: Principles and Geometry**, list the identifying assumptions, and give a concrete data-generating process that violates one assumption while leaving the others intact.
@@ -117,6 +124,8 @@ ax.legend(); plt.show()
 **2. Reproduce and diagnose (Applied):** Implement or reproduce the estimator using the material on Implementation Note, 1. Introduction: The Principle of Maximum Likelihood. Report uncertainty and at least two diagnostics; then compare with an alternative specification that targets the same estimand.
 
 **3. Robust extension (Challenge):** Run a Monte Carlo or sensitivity exercise that varies the most fragile identifying condition. Quantify bias/coverage or the range of estimates and state what evidence would change your substantive conclusion.
+
+**3b. Failure analysis (Challenge):** The probit log-likelihood is nearly flat in one coefficient's direction and its standard error is enormous. Diagnose quasi-complete separation (a regressor almost perfectly predicting the outcome), repair with penalized MLE or dropping/combining categories, and show the flatness with a profile likelihood slice.
 
 <details>
 <summary>Solution guidance</summary>

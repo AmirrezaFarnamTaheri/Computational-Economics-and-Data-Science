@@ -23,6 +23,8 @@ This notebook builds a deliberately simplified **DICE-inspired** model rather th
 - `../02-Numerical-Methods/05_Optimization.ipynb`: constrained nonlinear optimization.
 - `03_Network_Economics.ipynb`: dynamic externalities and propagation intuition.
 
+> **Historical Context — Nordhaus builds DICE (1992).** William Nordhaus's Dynamic Integrated Climate-Economy model (Science, 1992) coupled a Ramsey growth model to a carbon cycle, giving the social cost of carbon its first computable home — decades before carbon pricing entered law. The 2018 Nobel recognized the synthesis.
+
 > **Learning path:** Building on [`03_Network_Economics.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/10-Specialized-Models/03_Network_Economics.ipynb); this notebook closes the current track.
 
 ## Table of Contents
@@ -258,6 +260,8 @@ $$T_{t+1}=\phi_TT_t+\xi_T\frac{\log(M_t/M_{pre})}{\log 2}.$$
 **2. Damage curvature (Applied):** Re-optimize the ramp for `damage_quad` from 0.001 to 0.008. Plot initial abatement, long-run abatement, peak temperature, and the marginal-damage proxy.
 
 **3. Climate block (Challenge):** Replace the one-box carbon/temperature system with two carbon reservoirs and two thermal boxes. Calibrate only from explicitly cited sources, then compare policy conclusions with the pedagogical one-box model.
+
+**Failure analysis (Challenge):** The computed social cost of carbon is negative in one scenario and the carbon-cycle stocks do not conserve emissions. Diagnose the sign error in damages and the missing mass-balance check, repair both, and verify conservation plus a plausible positive SCC range.
 
 ## Economic Interpretation: The carbon price is an intertemporal shadow value
 

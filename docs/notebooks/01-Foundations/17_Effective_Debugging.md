@@ -40,17 +40,17 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 ```
 
 ### Table of Contents
-1. [The Lens: Debugging as a Scientific Process](#The-Lens:-Debugging-as-a-Scientific-Process)
-2. [The Case Study: A Buggy Asset Pricing Simulation](#The-Case-Study:-A-Buggy-Asset-Pricing-Simulation)
-3. [Step 1: Observe and Characterize the Failure](#Step-1:-Observe-and-Characterize-the-Failure-(The-Traceback))
-4. [Step 2: Formulate a Hypothesis and Experiment](#Step-2:-Formulate-a-Hypothesis-and-Experiment)
-5. [Step 3: Observe a New Failure (The Silent Bug)](#Step-3:-Observe-a-New-Failure-(The-Silent-Bug))
-6. [Step 4: Deeper Investigation (The Interactive Debugger)](#Step-4:-Deeper-Investigation-(The-Interactive-Debugger))
-7. [Step 5: Proactive Debugging: Assertions and Logging](#Step-5:-Proactive-Debugging:-Assertions-and-Logging)
-8. [Profiling for Performance](#Profiling-for-Performance)
-9. [Professional Code, Part II: Testing with Pytest](#Professional-Code,-Part-II:-Testing-with-Pytest)
-10. [Summary](#Summary)
-11. [Exercises](#Exercises)
+1. [The Lens: Debugging as a Scientific Process](#the-lens-debugging-as-a-scientific-process)
+2. [The Case Study: A Buggy Asset Pricing Simulation](#the-case-study-a-buggy-asset-pricing-simulation)
+3. [Step 1: Observe and Characterize the Failure](#step-1-observe-and-characterize-the-failure-the-traceback))
+4. [Step 2: Formulate a Hypothesis and Experiment](#step-2-formulate-a-hypothesis-and-experiment)
+5. [Step 3: Observe a New Failure (The Silent Bug)](#step-3-observe-a-new-failure-the-silent-bug))
+6. [Step 4: Deeper Investigation (The Interactive Debugger)](#step-4-deeper-investigation-the-interactive-debugger))
+7. [Step 5: Proactive Debugging: Assertions and Logging](#step-5-proactive-debugging-assertions-and-logging)
+8. [Profiling for Performance](#profiling-for-performance)
+9. [Professional Code, Part II: Testing with Pytest](#professional-code-part-ii-testing-with-pytest)
+10. [Summary](#summary)
+11. [Exercises](#exercises)
 
 ## The Lens: 17-Effective-Debugging
 An unspoken truth of computational work is that you will spend far more time debugging your code than writing it. A bug is simply a difference between what you *think* your code is doing and what it is *actually* doing. Therefore, **debugging is the process of closing that gap in understanding.** It is not a haphazard process of randomly changing things; it is a systematic, scientific investigation into the behavior of a program.
@@ -96,7 +96,7 @@ def simulate_asset_price_buggy(p0, mu, sigma, T, dt, seed=None):
     # Bug 1: Off-by-one error in loop range
     for t in range(n_steps):
         # Bug 2: Incorrect random sampling (should be -1 or 1)
-        z = rng.standard_normal(1)
+        z = rng.standard_normal()
         # Bug 3: Incorrect formula for price update
         price_path[t + 1] = price_path[t] * (mu * dt + sigma * z * np.sqrt(dt))
 
@@ -135,7 +135,7 @@ def simulate_asset_price_v2(p0, mu, sigma, T, dt, seed=None):
 
     # Fix 1: Corrected loop range
     for t in range(n_steps - 1):
-        z = rng.standard_normal(1)
+        z = rng.standard_normal()
         # The formula is still wrong!
         price_path[t + 1] = price_path[t] * (mu * dt + sigma * z * np.sqrt(dt))
 
@@ -178,7 +178,7 @@ def simulate_asset_price_v3(p0, mu, sigma, T, dt, seed=None):
     price_path[0] = p0
 
     for t in range(n_steps - 1):
-        z = rng.standard_normal(1)
+        z = rng.standard_normal()
         # Fix 2: Corrected the formula to include the '1 + ...' term.
         price_path[t + 1] = price_path[t] * (1 + mu * dt + sigma * z * np.sqrt(dt))
 
@@ -410,6 +410,8 @@ print("Optimizer test passed!")
 **2. Reproduce and diagnose (Applied):** Reproduce an example involving The Case Study: A Buggy Asset Pricing Simulation, Step 1: Observe and Characterize the Failure (The Traceback), then change one input and explain the result before running the code.
 
 **3. Robust extension (Challenge):** Extend the example to a larger or less convenient case and document the correctness and performance checks needed before trusting the result.
+
+**3b. Failure analysis (Challenge):** A utility returns wrong values only for negative inputs, and the first debugging attempt sprinkles `print` everywhere without a hypothesis. Practice failure analysis properly: reproduce with the minimal failing input, use the debugger to step to the divergence point, isolate the faulty line, fix the root cause, and add the input as a regression test.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

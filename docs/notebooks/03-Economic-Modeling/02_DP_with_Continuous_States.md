@@ -29,16 +29,16 @@ np.set_printoptions(suppress=True, linewidth=120, precision=6)
 ```
 
 ### Table of Contents
-1.  [The Method of Function Approximation](#1.-The-Method-of-Function-Approximation)
-    *   [1.1 Projection Methods](#1.1-Projection-Methods)
-    *   [1.2 Basis Functions: Why Chebyshev?](#1.2-Basis-Functions:-Why-Chebyshev?)
-2.  [Solving the Stochastic Growth Model](#2.-Solving-the-Stochastic-Growth-Model)
-    *   [2.1 Method 1: VFI on Coefficients](#2.1-Method-1:-VFI-on-Coefficients)
-    *   [2.2 Method 2: Iterating on the Euler Equation Residuals](#2.2-Method-2:-Iterating-on-the-Euler-Equation-Residuals)
-    *   [2.3 Method 3: The Endogenous Grid Method (EGM)](#2.3-Method-3:-The-Endogenous-Grid-Method-(EGM))
-3.  [Performance Comparison](#3.-Performance-Comparison)
-4.  [Summary](#4.-Summary)
-5.  [Exercises](#5.-Exercises)
+1.  [The Method of Function Approximation](#1-the-method-of-function-approximation)
+    *   [1.1 Projection Methods](#11-projection-methods)
+    *   [1.2 Basis Functions: Why Chebyshev?](#12-basis-functions-why-chebyshev)
+2.  [Solving the Stochastic Growth Model](#2-solving-the-stochastic-growth-model)
+    *   [2.1 Method 1: VFI on Coefficients](#21-method-1-vfi-on-coefficients)
+    *   [2.2 Method 2: Iterating on the Euler Equation Residuals](#22-method-2-iterating-on-the-euler-equation-residuals)
+    *   [2.3 Method 3: The Endogenous Grid Method (EGM)](#23-method-3-the-endogenous-grid-method-egm))
+3.  [Performance Comparison](#3-performance-comparison)
+4.  [Summary](#4-summary)
+5.  [Exercises](#5-exercises)
 
 ## The Lens: Approximating the Continuum
 **What problem are we solving?**
@@ -85,6 +85,9 @@ While we could use standard monomials ($1, x, x^2, ...$) as our basis functions,
 > The Runge phenomenon, named after the German mathematician Carl Runge, describes the problem of oscillation at the edges of an interval when using polynomial interpolation with high-degree polynomials and equally spaced nodes. As the degree of the polynomial increases, the approximation can become worse, with large oscillations near the endpoints. Chebyshev nodes, which are more densely clustered near the endpoints of the interval, are specifically chosen to mitigate this problem, ensuring a more stable and accurate approximation.
 
 ### 2. Solving the Stochastic Growth Model
+
+![Optimal consumption policy](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/02-Numerical-Methods/optimal_consumption_policy.png)
+*Figure: Optimal consumption policy from the continuous-state DP solution..*
 We return to the stochastic growth model. The state is $(a, y)$ and the Bellman equation is:
 $$ V(a, y) = \max_{0 < a' \le (1+r)a+y} \left\{ u((1+r)a+y-a') + \beta E[V(a', y')|y] \right\} $$
 The corresponding Euler equation is:
@@ -129,8 +132,13 @@ def tauchen(rho, sigma_e, n, m):
         for j in range(n):
             z_j_low = z_grid[j] - step
             z_j_high = z_grid[j] + step
-            P[i, j] = norm_cdf_numba((z_j_high - rho * z_grid[i]) / sigma_e) - \
-                      norm_cdf_numba((z_j_low - rho * z_grid[i]) / sigma_e)
+            if j == 0:
+                P[i, j] = norm_cdf_numba((z_j_high - rho * z_grid[i]) / sigma_e)
+            elif j == n - 1:
+                P[i, j] = 1.0 - norm_cdf_numba((z_j_low - rho * z_grid[i]) / sigma_e)
+            else:
+                P[i, j] = norm_cdf_numba((z_j_high - rho * z_grid[i]) / sigma_e) - \
+                          norm_cdf_numba((z_j_low - rho * z_grid[i]) / sigma_e)
     return z_grid, P
 
 Z_GRID, P_TRANS = tauchen(rho=PARAMS['RHO_Y'], sigma_e=PARAMS['SIGMA_Y'], n=PARAMS['N_Y_STATES'], m=3)
@@ -154,19 +162,19 @@ def solve_vfi_chebyshev(params, y_states, p_trans, a_nodes, tol=1e-6, max_iter=1
         V_approx_funcs = [chebyshev.Chebyshev(theta, domain=[a_min, params['A_MAX']]) for theta in theta_guess]
         EV = np.array([p_trans[i, :] @ np.array([V(a_nodes) for V in V_approx_funcs]) for i in range(n_y_states)])
 
-        V_target_at_nodes = np.empty((n_y_states, n_degree))
+        V_target_at_nodes = np.empty((n_y_states, len(a_nodes)))
         for i in range(n_y_states):
             ev_interp = lambda a_prime: np.interp(a_prime, a_nodes, EV[i, :])
-            for j in range(n_degree):
+            for j in range(len(a_nodes)):
                 a, y = a_nodes[j], y_states[i]
                 def objective(a_prime):
                     c = (1 + r) * a + y - a_prime
                     if c <= 0: return 1e12
-                    return -(u(c) + beta * ev_interp(a_prime))
-                res = minimize_scalar(objective, bounds=(a_min, (1 + r) * a + y - 1e-6), method='bounded')
+                    return -((u(c, params['GAMMA']) if 'GAMMA' in params else u(c)) + beta * ev_interp(a_prime))
+                res = minimize_scalar(objective, bounds=(a_min, min(params['A_MAX'], (1 + r) * a + y - 1e-6)), method='bounded')
                 V_target_at_nodes[i, j] = -res.fun
 
-        theta_new = np.array([chebyshev.chebfit(a_nodes, V_target_at_nodes[i, :], deg=n_degree-1) for i in range(n_y_states)])
+        theta_new = np.array([chebyshev.Chebyshev.fit(a_nodes, V_target_at_nodes[i, :], deg=n_degree - 1, domain=[a_min, params['A_MAX']]).coef for i in range(n_y_states)])
         if np.max(np.abs(theta_new - theta_guess)) < tol: break
         theta_guess = theta_new
     return theta_new
@@ -185,26 +193,70 @@ A more accurate approach is to iterate on the policy function, finding the coeff
 5. Repeat until the coefficients converge.
 
 ```python
+from scipy.optimize import brentq
+
+
 def solve_euler_residuals(params, y_states, p_trans, a_nodes, tol=1e-7, max_iter=500):
-    """Solves the growth model by iterating on the Euler equation residuals."""
+    """Solves the growth model by time iteration on the Euler equation.
+
+    Time iteration: given the current policy c_k(a, y), solve each grid
+    point's Euler equation u'(c) = beta*(1+r)*E[u'(c(a', y'))] for today's
+    consumption c (a one-dimensional root-find, with
+    a' = (1+r)*a + y - c), then refit the policy. This is a
+    policy update with a polynomial projection; global convergence is not
+    guaranteed. Check feasibility and residuals away from the fitting nodes.
+    """
     beta, r, a_min, n_degree, n_y_states = params['BETA'], params['R_INTEREST'], params['A_MIN'], params['N_DEGREE'], params['N_Y_STATES']
-    policy_coeffs = np.zeros((n_y_states, n_degree))
 
-    for i in range(max_iter):
-        policy_funcs = [chebyshev.Chebyshev(theta, domain=[a_min, params['A_MAX']]) for theta in policy_coeffs]
-        c_prime = np.array([p(a_nodes) for p in policy_funcs])
-        marginal_u_prime = u_prime(c_prime)
+    marginal = (lambda c: c**(-params['GAMMA'])) if 'GAMMA' in params else u_prime
 
-        E_u_prime = p_trans @ marginal_u_prime
-        c_target_at_nodes = u_prime_inv(beta * (1 + r) * E_u_prime)
+    def policy_funcs(coeffs):
+        return [chebyshev.Chebyshev(theta, domain=[a_min, params['A_MAX']]) for theta in coeffs]
 
-        new_policy_coeffs = np.array([chebyshev.chebfit(a_nodes, c_target_at_nodes[i, :], deg=n_degree-1) for i in range(n_y_states)])
+    # Warm start: 'consume all cash on hand' is feasible and avoids u'(0).
+    policy_coeffs = np.array(
+        [
+            chebyshev.Chebyshev.fit(
+                a_nodes, (1 + r) * a_nodes + y_states[i] - a_min, deg=n_degree - 1,
+                domain=[a_min, params['A_MAX']],
+            ).coef
+            for i in range(n_y_states)
+        ]
+    )
 
-        if np.max(np.abs(new_policy_coeffs - policy_coeffs)) < tol: break
-        policy_coeffs = new_policy_coeffs
-    return new_policy_coeffs
+    for _ in range(max_iter):
+        funcs = policy_funcs(policy_coeffs)
+        new_coeffs = np.empty_like(policy_coeffs)
+        for i, y in enumerate(y_states):
+            c_stars = []
+            for a in a_nodes:
+                cash = (1 + r) * a + y
 
-print("Euler Residual Iteration solver defined.")
+                def euler_gap(c):
+                    a_prime = np.clip(cash - c, a_min, params['A_MAX'])
+                    c_next = np.array([fk(a_prime) for fk in funcs])
+                    c_next = np.clip(c_next, np.maximum(1e-9, (1+r)*a_prime + y_states - params['A_MAX']),
+                                     (1+r)*a_prime + y_states - a_min)
+                    return marginal(c) - beta * (1 + r) * (p_trans[i] @ marginal(c_next))
+
+                c_lo, c_hi = max(1e-9, cash - params['A_MAX']), cash - a_min
+                if euler_gap(c_lo) <= 0.0:
+                    c_star = c_lo  # constraint binds: save everything
+                elif euler_gap(c_hi) >= 0.0:
+                    c_star = c_hi  # corner: consume everything
+                else:
+                    c_star = brentq(euler_gap, c_lo, c_hi, xtol=1e-10)
+                c_stars.append(c_star)
+            new_coeffs[i] = chebyshev.Chebyshev.fit(
+                a_nodes, c_stars, deg=n_degree - 1, domain=[a_min, params['A_MAX']]
+            ).coef
+        diff = np.max(np.abs(new_coeffs - policy_coeffs))
+        policy_coeffs = new_coeffs
+        if diff < tol:
+            break
+    return policy_coeffs
+
+print("Euler (time iteration) solver defined.")
 ```
 
 #### 2.3 Method 3: The Endogenous Grid Method (EGM)
@@ -248,50 +300,34 @@ By replacing the costly maximization step with an analytical inversion of the Eu
 ##### Implementing EGM for a Consumption-Savings Model
 
 ```python
-@njit(parallel=True)
+@njit
 def egm_solver(R_INTEREST, BETA, GAMMA, y_states, p_trans, a_grid, tol=1e-7, max_iter=1000):
-    """Solves the growth model with EGM for a persistent income process."""
-    # Unpack params
+    """Consumption c(a,y), on BEGINNING-OF-PERIOD assets like the other solvers."""
     R = 1 + R_INTEREST
-    beta = BETA
-    gamma = GAMMA
-    n_y = len(y_states)
-    n_a = len(a_grid)
-
-    # Utility functions
-    def u_prime(c):
-        return c**(-gamma)
-    def inv_u_prime(x):
-        return x**(-1/gamma)
-
-    # Initial guess for policy: consume current assets
-    policy = np.zeros((n_y, n_a))
-    for i in range(n_y):
-         policy[i, :] = a_grid
-
-    for i in range(max_iter):
-        policy_old = policy.copy()
-
-        # c_prime[j,k] is consumption next period if next state is y_j and savings are a_k
-        c_prime = np.empty((n_y, n_a))
-        for j in range(n_y):
-            w_prime = R * a_grid + y_states[j]
-            c_prime[j, :] = np.interp(w_prime, a_grid, policy_old[j, :])
-
-        marg_u_prime = u_prime(c_prime)
-        E_u_prime = p_trans @ marg_u_prime
-        c_target = inv_u_prime(beta * R * E_u_prime)
-        w_endog = a_grid + c_target
-
+    n_y, n_a = len(y_states), len(a_grid)
+    a_min, a_max = a_grid[0], a_grid[-1]
+    cash = R * a_grid[None, :] + y_states[:, None]
+    policy = cash - a_min
+    for iteration in range(max_iter):
+        # Tomorrow's state is a', not cash-on-hand R*a'+y'.
+        expected_mu = p_trans @ (policy ** (-GAMMA))
+        c_target = (BETA * R * expected_mu) ** (-1.0 / GAMMA)
+        a_endog = (c_target + a_grid[None, :] - y_states[:, None]) / R
         policy_new = np.empty_like(policy)
         for j in prange(n_y):
-            policy_new[j, :] = np.interp(a_grid, w_endog[j, :], c_target[j, :])
-            policy_new[j, :] = np.minimum(policy_new[j, :], a_grid)
-
-        if np.max(np.abs(policy_new - policy_old)) < tol:
-            return policy_new
+            policy_new[j] = np.interp(a_grid, a_endog[j], c_target[j])
+            for k in range(n_a):
+                if a_grid[k] < a_endog[j, 0]:
+                    policy_new[j, k] = cash[j, k] - a_min
+                elif a_grid[k] > a_endog[j, -1]:
+                    policy_new[j, k] = cash[j, k] - a_max
+                policy_new[j, k] = min(cash[j,k] - a_min,
+                                        max(max(1e-9, cash[j,k] - a_max), policy_new[j,k]))
+        error = np.max(np.abs(policy_new - policy))
         policy = policy_new
-    return policy
+        if error < tol:
+            return policy
+    raise RuntimeError("EGM did not converge; increase max_iter or inspect the grid.")
 ```
 
 ### 3. Performance Comparison and Visualization
@@ -318,25 +354,41 @@ policy_egm = egm_solver(PARAMS['R_INTEREST'], PARAMS['BETA'], PARAMS['GAMMA'], Y
 egm_time = time.time() - start_time
 print(f"EGM took {egm_time:.4f} seconds.")
 
-print("> **Note:** EGM is typically orders of magnitude faster because it avoids the costly optimization step inside the main loop.")
+print("> **Note:** These are end-to-end timings, including any first-call JIT compilation. Warm the solvers and compare residuals before drawing speed conclusions.")
 ```
 
 #### Visualizing the Policy Functions
-Let's compare the consumption policy functions produced by the different methods for the highest and lowest income states. They should be virtually identical, demonstrating that all three methods converge to the same solution, but at very different speeds.
+Let's compare the consumption policy functions produced by the different methods for the highest and lowest income states. All curves must represent consumption at the same beginning-of-period assets and income. Agreement is an accuracy diagnostic, not an assumption: polynomial projection, grid resolution, and binding constraints can produce differences. Check budget feasibility and Euler inequalities at constrained points before comparing speed.
 
 ```python
 ### Policy Function Visualization
 a_fine_grid = np.linspace(PARAMS['A_MIN'], PARAMS['A_MAX'], 200)
 
 # Create Chebyshev function objects from the solved coefficients
-policy_vfi = [chebyshev.Chebyshev(theta, domain=[PARAMS['A_MIN'], PARAMS['A_MAX']]) for theta in theta_vfi]
+value_vfi = [chebyshev.Chebyshev(theta, domain=[PARAMS['A_MIN'], PARAMS['A_MAX']]) for theta in theta_vfi]
+
+# VFI returns VALUE coefficients, not consumption coefficients. Recover the
+# greedy consumption policy using the same continuation approximation.
+def recover_vfi_consumption(params, y_states, p_trans, a_nodes, theta, assets):
+    values = np.array([chebyshev.Chebyshev(th, domain=[params['A_MIN'], params['A_MAX']])(a_nodes) for th in theta])
+    expected = p_trans @ values
+    consumption = np.empty((len(y_states), len(assets)))
+    for j, y in enumerate(y_states):
+        for k, a in enumerate(assets):
+            cash = (1 + params['R_INTEREST']) * a + y
+            result = minimize_scalar(lambda ap: -(u(cash-ap, params['GAMMA']) + params['BETA']*np.interp(ap, a_nodes, expected[j])),
+                                     bounds=(params['A_MIN'], min(params['A_MAX'], cash-1e-6)), method='bounded')
+            consumption[j,k] = cash - result.x
+    return consumption
+
+consumption_vfi = recover_vfi_consumption(PARAMS, Y_STATES, P_TRANS, A_NODES, theta_vfi, a_fine_grid)
 policy_euler = [chebyshev.Chebyshev(theta, domain=[PARAMS['A_MIN'], PARAMS['A_MAX']]) for theta in theta_euler]
 policy_egm_interp = [interp1d(A_GRID, pol, bounds_error=False, fill_value="extrapolate") for pol in policy_egm]
 
 fig, axes = plt.subplots(1, 2, figsize=(16, 6), sharey=True)
 
 # Low income state (y_0)
-axes[0].plot(a_fine_grid, policy_vfi[0](a_fine_grid), label='VFI', linestyle='--')
+axes[0].plot(a_fine_grid, consumption_vfi[0], label='VFI', linestyle='--')
 axes[0].plot(a_fine_grid, policy_euler[0](a_fine_grid), label='Euler Iteration', linestyle=':')
 axes[0].plot(a_fine_grid, policy_egm[0], label='EGM (Grid)', linestyle='-')
 axes[0].set_title(f'Consumption Policy: Low Income State (y={Y_STATES[0]:.2f})')
@@ -345,7 +397,7 @@ axes[0].set_ylabel('Consumption (c)')
 axes[0].legend()
 
 # High income state (y_N-1)
-axes[1].plot(a_fine_grid, policy_vfi[-1](a_fine_grid), label='VFI', linestyle='--')
+axes[1].plot(a_fine_grid, consumption_vfi[-1], label='VFI', linestyle='--')
 axes[1].plot(a_fine_grid, policy_euler[-1](a_fine_grid), label='Euler Iteration', linestyle=':')
 axes[1].plot(a_fine_grid, policy_egm[-1], label='EGM (Grid)', linestyle='-')
 axes[1].set_title(f'Consumption Policy: High Income State (y={Y_STATES[-1]:.2f})')
@@ -377,6 +429,11 @@ $$u'(c(a,y)) = \beta (1+r) E[u'(c(a',y'))|y]$$
 
 $$V(w) = \max_{c} \left\{ u(c) + \beta V(w') \right\}$$
 
+> **Common Pitfalls in This Lecture**
+>
+> - **Equispaced fitting.** Fitting high-degree polynomials on evenly spaced nodes triggers Runge oscillation near the boundaries — exactly where consumption policies matter. Use Chebyshev nodes/orthogonal polynomials as the lecture prescribes.
+> - **Accuracy on the solution grid.** Checking Euler equation residuals only at the same nodes used for fitting hides interpolation error *between* nodes, where it is largest. Evaluate residuals on a finer, offset grid before declaring the solution accurate.
+
 ### Three-Tier Practice Ladder
 
 **1. Mechanism and assumptions (Conceptual):** State the equilibrium/optimality condition that organizes **02 DP with Continuous States**. Explain which assumption guarantees existence, uniqueness, or stability, and identify a limiting case where that argument weakens.
@@ -384,6 +441,8 @@ $$V(w) = \max_{c} \left\{ u(c) + \beta V(w') \right\}$$
 **2. Reproduce and diagnose (Applied):** Reproduce one quantitative result from the sections on 1. The Method of Function Approximation, 1.1 Projection Methods. Change one economically meaningful parameter over a defensible grid, report the policy/value/equilibrium response, and verify convergence with a residual or tighter tolerance.
 
 **3. Robust extension (Challenge):** Design a policy or shock counterfactual that changes one mechanism at a time. Compare welfare or transition dynamics against the baseline and explain which conclusion is structural versus calibration-specific.
+
+**3b. Failure analysis (Challenge):** The fitted value polynomial oscillates near the boundaries and the implied consumption turns negative there. Diagnose equispaced fitting (Runge) plus extrapolation beyond the state space, repair with Chebyshev nodes and clamped interpolation, and check residuals on nodes *between* the fit points.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 
@@ -400,7 +459,7 @@ Continuous state spaces require us to blend optimization with approximation.
 
 1.  **Accuracy vs. Degree:** Re-solve the stochastic growth model using the Euler Equation method with different degrees for the Chebyshev polynomial (e.g., N=10, 20, 30). How does the maximum absolute Euler equation residual (evaluated on a fine grid) change as you increase the degree? Plot the maximum residual for each degree.
 
-2.  **Log-Utility:** The log-utility function, $u(c) = \ln(c)$, is the special case of CRRA where `γ=1`. Modify the EGM solver to work with log utility (you will need to change `u_prime` and `u_prime_inv`). How does the policy function change?
+2.  **Log-Utility:** The log-utility function, $u(c) = \ln(c)$, is the special case of CRRA where `γ=1`. Set `GAMMA=1`; the marginal utility and its inverse already cover log utility. How does the policy function change?
 
 3.  **The Role of Interest Rates:** Using the EGM solver, resolve the model for a higher interest rate (`R_INTEREST = 0.05`) and a lower one (`R_INTEREST = 0.01`). Plot the three policy functions (for the low, medium, and high interest rates) for the high-income state. How does the interest rate affect savings behavior? Explain the income and substitution effects at play.
 

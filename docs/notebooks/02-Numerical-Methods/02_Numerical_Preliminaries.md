@@ -13,7 +13,7 @@ Economic theory deals with continuous variables: prices, quantities, probabiliti
 
 **Why this method?**  
 Understanding the limitations of the machine is the first step in computational economics.
-*   **Machine Epsilon:** The smallest difference the computer can distinguish.
+*   **Machine Epsilon:** The gap between 1.0 and the next representable float — a measure of relative precision (absolute spacing grows with magnitude).
 *   **Round-off Error:** The error introduced by finite precision.
 *   **Truncation Error:** The error introduced by approximating an infinite process (like a limit) with a finite one.
 
@@ -88,7 +88,11 @@ A standard 64-bit float (`float64` in NumPy) consists of:
 2.  **Exponent (11 bits):** Magnitude range.
 3.  **Mantissa (52 bits):** Precision (significant digits).
 
-Value = $(-1)^{\text{sign}} \times (1 + \text{mantissa}) \times 2^{\text{exponent} - 1023}$
+For a normal finite value with stored exponent $1 \le e \le 2046$ and stored 52-bit fraction integer $m$,
+
+$$x=(-1)^s(1+m/2^{52})2^{e-1023}.$$
+
+The code below prints $m$ as an integer, not the fraction $m/2^{52}$. Exponent $e=0$ encodes zeros and subnormals (no implicit leading 1); $e=2047$ encodes infinities and NaNs.
 
 **Consequence:** Numbers like `0.1` cannot be represented exactly in binary, leading to `0.1 + 0.2 != 0.3`.
 
@@ -119,8 +123,8 @@ print(f"Mantissa: {m}")
 ### 1.3 Special Values: Infinity and NaN
 
 The IEEE 754 standard reserves specific bit patterns for non-real results:
-*   **Infinity (`inf`):** Result of overflow (e.g., `1.0/0.0` or `exp(1000)`).
-*   **Not a Number (`nan`):** Result of undefined operations (e.g., `0.0/0.0` or `inf - inf`). 
+*   **Infinity (`inf`):** Can result from NumPy overflow (`np.exp(1000.0)`) or nonzero division by zero (`np.divide(1.0, 0.0)`), normally with a runtime warning. Python scalar `1.0 / 0.0` instead raises `ZeroDivisionError`.
+*   **Not a Number (`nan`):** Results from invalid NumPy operations such as `np.divide(0.0, 0.0)` or `np.inf - np.inf`. Python scalar `0.0 / 0.0` raises `ZeroDivisionError`. 
     *   *Warning:* `nan != nan`. Always use `np.isnan()` to check.
 
 ```python
@@ -188,7 +192,8 @@ print(f"Naive Var:       {var_naive:.4f} (Often completely wrong or negative!)")
 ```python
 # Demonstrating Catastrophic Cancellation in Quadratic Formula
 # Equation: ax^2 + bx + c = 0. Roots: (-b +/- sqrt(b^2 - 4ac)) / 2a
-# If b^2 approx 4ac, the square root is close to b.
+# If b^2 >> |4ac|, then sqrt(b^2 - 4ac) ~ b, so (-b + sqrt(...))
+# subtracts two nearly equal numbers and most digits are lost.
 a = 1.0
 b = 1.0e8
 c = 1.0
@@ -201,7 +206,7 @@ root_stable = -2*c / (b + np.sqrt(b**2 - 4*a*c))
 
 print(f"Naive Root:  {root_naive}")
 print(f"Stable Root: {root_stable}")
-print("Notice the loss of precision in the naive method!")
+print(f"Relative error of the naive root: {abs(root_naive - root_stable) / abs(root_stable):.1%}")
 ```
 
 ```python
@@ -210,22 +215,30 @@ print("Notice the loss of precision in the naive method!")
 price_A = 100000.000000001
 price_B = 100000.000000000
 
-# In standard 64-bit float (approx 15-17 decimal digits of precision)
+# Each input near 1e5 carries ~16 significant digits but has an
+# absolute rounding uncertainty of about half an ulp (~7e-12).
+# Their tiny difference inherits that same absolute uncertainty,
+# so only about two of its digits are trustworthy.
 diff = price_A - price_B
 print(f"Difference: {diff}")
-print("The result has only 1 significant digit of precision left! The other 15 were lost in the subtraction.")
+print("Most digits were lost in the subtraction: the inputs are each uncertain by ~1e-11, so this ~1e-9 difference keeps only ~2 reliable significant digits.")
 ```
 
 ### Kahan Summation Algorithm
-When summing many numbers (like computing the mean of a large dataset), small errors accumulate. Kahan summation uses a separate variable to track the "compensation" for lost low-order bits.
+When summing many numbers (like computing the mean of a large dataset), rounding errors accumulate: naive left-to-right addition has a worst-case error that grows linearly with the number of terms $n$. Kahan summation keeps a separate *compensation* variable that captures the low-order bits lost at each addition and feeds them back into the next one:
 
-$$ \text{sum} = (\text{sum} + \text{input}) + \text{correction} $$
+```python
+y = x - c           # adjust the input by the prior compensation
+t = s + y           # rounded sum
+c = (t - s) - y     # recovers exactly the bits that rounding just discarded
+s = t
+```
 
-This effectively carries precision into the next step.
+This shrinks the accumulated error from $O(n\,\epsilon_{mach})$ to roughly $O(\epsilon_{mach})$, independent of $n$. In practice, prefer battle-tested implementations: `math.fsum` returns the correctly rounded sum, and NumPy's `np.sum` tames error growth via pairwise (blocked) summation.
 
 ## 4. Arbitrary-Precision Arithmetic
 
-For finance (where every penny counts) or high-precision math, standard floats are insufficient. Python's `decimal` module mimics human arithmetic.
+For finance (where every penny counts) or high-precision math, standard floats are insufficient. Python's `decimal` module represents finite decimal inputs exactly when constructed from strings; operations still round to the active context precision. For example, `Decimal('1') / Decimal('3')` is not exact. Set precision and rounding rules explicitly for the calculation.
 
 ```python
 val_float = 0.1 + 0.1 + 0.1 - 0.3
@@ -264,7 +277,7 @@ Some operations are expensive occasionally but cheap on average.
 ## Summary
 
 **Key Takeaways:**
-*   **Floats are approximations:** Always use `np.isclose`, never `==`.
+*   **Floats are approximations:** Use `np.isclose` with problem-appropriate tolerances for approximate numerical results; exact equality is still appropriate when exact identity is intended.
 *   **Conditioning Matters:** A stable algorithm cannot fix an ill-conditioned problem.
 *   **Avoid Cancellation:** Rewrite formulas (like variance or the quadratic formula) to avoid subtracting nearly equal numbers.
 *   **Know the Cost:** Be aware of the Big-O complexity of your operations, especially inside loops.
@@ -315,6 +328,8 @@ The standard quadratic formula $\frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$ is unstable 
 
 ### 3. Challenge: Financial Precision
 Calculate the value of a $1 investment at 5% interest compounded annually for 100 years. Compare `float` vs `Decimal`. At what year do they diverge by more than 1 cent?
+
+**Failure analysis (Challenge):** Summing mixed-magnitude returns in different orders can change the computed total. Reproduce this with `[1e16, 1.0, -1e16]` and `[1e16, -1e16, 1.0]` using an explicit left-to-right loop (`total = 0.0;` then `total += value` for each element; exact total: 1). Do not use built-in `sum` as the naive baseline: recent Python versions use a more accurate floating-point summation algorithm. Diagnose the non-associativity of floating-point addition, repair with `math.fsum` or pairwise summation, and bound the worst-case error of the naive left-to-right sum.
 
 ## References & Further Reading
 

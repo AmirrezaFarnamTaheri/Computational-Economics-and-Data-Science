@@ -40,7 +40,7 @@ IMAGE_DIR.mkdir(parents=True, exist_ok=True)
 
 ## Table of Contents
 
-1. [Introduction](#Introduction)
+1. [Introduction](#introduction)
 
 ## The Lens: From Notebooks to Publications
 **What problem are we solving?**
@@ -284,6 +284,8 @@ jobs:
 **2. Reproduce and diagnose (Applied):** Work a concrete example from 1. The Quarto Workflow: A Quick Start, Step 1: Install Quarto by hand and verify it computationally. Show the intermediate algebra, not only the final result.
 
 **3. Robust extension (Challenge):** Remove one hypothesis and construct a counterexample or boundary case. Explain exactly which line of the original proof fails and what weaker conclusion, if any, remains.
+
+**3b. Failure analysis (Challenge):** A collaborator's `quarto render` fails on a missing LaTeX engine, and two figures resolve on your machine only. Diagnose the undeclared engine dependency and absolute paths, repair with a self-contained project (bundled assets, documented engine requirement), and verify on a fresh clone.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

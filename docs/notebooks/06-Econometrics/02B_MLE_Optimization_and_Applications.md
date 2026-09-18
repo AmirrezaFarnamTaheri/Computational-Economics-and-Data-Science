@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import statsmodels.api as sm
-from IPython.display import display
+from IPython.display import Markdown, display
 from scipy.optimize import minimize
 from scipy.stats import norm
 
@@ -49,7 +49,7 @@ Numerical optimizers and reusable likelihood classes let us estimate complex mod
 > **Learning path:** Building on [`02A_MLE_Principles_and_Geometry.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/06-Econometrics/02A_MLE_Principles_and_Geometry.ipynb); next continue with [`03_Causal_Inference.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/06-Econometrics/03_Causal_Inference.ipynb).
 
 ### Table of Contents
-1. [The Lens: Solving MLE in Practice](#The-Lens:-Solving-MLE-in-Practice)
+1. [The Lens: Solving MLE in Practice](#the-lens-solving-mle-in-practice)
 2. [Numerical Optimization and Implementation](#numerical)
 3. [A Reusable `MLEstimator` Class](#mle-class)
 4. [Application: Probit Model for Binary Choice](#probit)
@@ -70,6 +70,8 @@ where $\Phi$ is the standard normal CDF.
 
 The log-likelihood contribution for observation $i$ is:
 $$ \mathcal{L}_i(\beta) = y_i \ln \Phi(X_i\beta) + (1-y_i) \ln (1-\Phi(X_i\beta)) $$
+
+**Dimension notes:** per observation, covariates $X_i \in \mathbb{R}^k$ and latent index $y_i^* = X_i'\beta + \epsilon_i$ scalar with $\beta \in \mathbb{R}^k$; observed outcome $y_i \in \{0, 1\}$; each log-likelihood contribution $\mathcal{L}_i(\beta)$ is a scalar, and the full objective sums over the $n$ observations.
 
 <a id='mle-class'></a>
 ### A Reusable `MLEstimator` Class
@@ -131,13 +133,16 @@ class MLEstimator:
             return -self.loglike(params, self.data)
 
         # Use the BFGS algorithm to find the minimum of the negative log-likelihood
-        # BFGS approximates the Hessian, which we invert to get variance
+        # BFGS supplies an approximate inverse Hessian of the negative log-likelihood
         res = minimize(objective, start_params, method="BFGS", options={"disp": False})
 
-        # Store results
+        if not res.success or not np.isfinite(res.fun) or not np.all(np.isfinite(res.x)):
+            raise RuntimeError(f"MLE optimization failed: {res.message}")
+
+        # Store results only after successful convergence.
         self.mle_params = res.x
-        # The inverse of the Hessian matrix is a consistent estimator of the
-        # variance-covariance matrix of the parameters.
+        # This optimizer approximation is illustrative, not a robust covariance.
+        # Compare with observed-information SEs from specialist software.
         self.vcov = res.hess_inv
         self.std_errs = np.sqrt(np.diag(self.vcov))
         self.loglike_val = -res.fun
@@ -206,22 +211,14 @@ latent_y = X @ true_beta + rng.normal(size=N)
 y = (latent_y > 0).astype(int)
 
 # 2. Define Log-Likelihood for Probit
-def neg_loglike_probit(beta, data):
+def loglike_probit(beta, data):
     y, X = data['y'], data['X']
-    # Linear predictor
-    z = X @ beta
-    # Probability (CDF)
-    p = norm.cdf(z)
-    # Clip probabilities to avoid log(0) errors
-    p = np.clip(p, 1e-10, 1 - 1e-10)
-
-    # Log-likelihood
-    ll = np.sum(y * np.log(p) + (1 - y) * np.log(1 - p))
-    return -ll # Minimize negative LL
+    # log Phi(z) for successes; log Phi(-z) for failures, stable in the tails.
+    return np.sum(norm.logcdf((2 * y - 1) * (X @ beta)))
 
 # 3. Estimate
 data_probit = {'y': y, 'X': X}
-mle_probit = MLEstimator(neg_loglike_probit, data_probit, param_names=['Const', 'Beta1', 'Beta2'])
+mle_probit = MLEstimator(loglike_probit, data_probit, param_names=['Const', 'Beta1', 'Beta2'])
 mle_probit.fit(start_params=[0, 0, 0])
 
 print("Estimated Probit Model (Manual MLE):")
@@ -236,18 +233,20 @@ Let's compare our manual implementation with the professional `statsmodels` libr
 sm_model = sm.Probit(y, X)
 sm_results = sm_model.fit(disp=0)
 print(sm_results.summary())
+np.testing.assert_allclose(mle_probit.mle_params, sm_results.params, atol=1e-6)
+np.testing.assert_allclose(mle_probit.loglike_val, sm_results.llf, atol=1e-8)
 ```
 
 ## 5. Hypothesis Testing: The Holy Trinity
 
-We can visualize the three classical tests (Wald, LR, LM) on the log-likelihood surface. We will test the hypothesis $H_0: \beta_1 = 0$.
+The figure shows a fixed-intercept slice of the log-likelihood and the restriction $H_0: \beta_1 = 0$. It does not calculate Wald, likelihood-ratio, or score tests. A likelihood-ratio test requires re-estimating all unrestricted nuisance parameters under the null; a fixed-intercept slice is not a profile likelihood.
 
 ```python
 fig, ax = plt.subplots(figsize=(12, 8))
 
 # Create grid for Beta1 vs Beta2 (holding Const fixed at MLE)
 b_const = mle_probit.mle_params[0]
-b1_vals = np.linspace(0.5, 1.9, 50)
+b1_vals = np.linspace(-0.1, 1.9, 50)
 b2_vals = np.linspace(-1.5, -0.1, 50)
 B1, B2 = np.meshgrid(b1_vals, b2_vals)
 LL = np.zeros_like(B1)
@@ -255,8 +254,7 @@ LL = np.zeros_like(B1)
 for i in range(50):
     for j in range(50):
         # Calculate LL at this point
-        # Note: neg_loglike returns POSITIVE cost, so LL is negative of that
-        LL[i, j] = -neg_loglike_probit([b_const, B1[i, j], B2[i, j]], data_probit)
+        LL[i, j] = loglike_probit([b_const, B1[i, j], B2[i, j]], data_probit)
 
 # Contour plot
 cs = ax.contour(B1, B2, LL, levels=20, cmap='viridis')
@@ -265,8 +263,7 @@ ax.clabel(cs, inline=1, fontsize=10)
 # Mark MLE
 ax.plot(mle_probit.mle_params[1], mle_probit.mle_params[2], 'r*', ms=15, label='Unrestricted MLE')
 
-# Mark Restricted MLE (where Beta1 = 0)
-# We'd normally estimate this formally, but for viz we assume it lies on the axis
+# Mark the null restriction, not a restricted MLE
 ax.axvline(0, color='k', linestyle='--', label=r'Restriction $\beta_1=0$')
 
 ax.set_title(r'Log-Likelihood Surface: $\mathcal{L}(\beta_1, \beta_2)$')
@@ -284,6 +281,8 @@ plt.show()
 
 **3. Robust extension (Challenge):** Run a Monte Carlo or sensitivity exercise that varies the most fragile identifying condition. Quantify bias/coverage or the range of estimates and state what evidence would change your substantive conclusion.
 
+**3b. Failure analysis (Challenge):** The optimizer 'converges' with gradient norm $10^{-2}$, and the numeric Hessian at the solution is not negative definite. Diagnose false convergence (tolerances, scaling, analytic vs numeric derivatives), repair with tighter criteria and supplied gradients, and verify by restarting from the reported optimum.
+
 <details>
 <summary>Solution guidance</summary>
 
@@ -295,8 +294,8 @@ A strong solution states assumptions before computation, includes an independent
 
 1.  **Likelihood Principle**: We estimate parameters by finding the values that maximize the probability of observing the data we actually saw.
 2.  **Implementation**: We built a `MLEstimator` class that uses `scipy.optimize` to minimize the negative log-likelihood.
-3.  **Flexibility**: This same class solved a Normal distribution estimation and a Probit regression. It can be applied to *any* model where you can write down the log-likelihood (e.g., Poisson, Tobit, GARCH).
-4.  **Properties**: MLE is consistent, asymptotically normal, and efficient, making it the default choice for most econometric models.
+3.  **Flexibility**: The class estimates the Probit example here. Other likelihoods may need parameter bounds, different optimizers, and model-specific convergence checks.
+4.  **Properties**: Under identification, correct specification, and suitable regularity conditions, MLE is consistent, asymptotically normal, and efficient. Boundary parameters and separation can invalidate this approximation.
 
 ## References & Further Reading
 

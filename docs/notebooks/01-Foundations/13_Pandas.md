@@ -37,19 +37,19 @@ pd.options.display.float_format = "{:,.2f}".format
 ```
 
 ### Table of Contents
-1. [The Lens: Tabular Data and the Relational Model](#The-Lens:-Tabular-Data-and-the-Relational-Model)
-2. [The Pandas Data Model: `Series`, `DataFrame`, and `Index`](#The-Pandas-Data-Model:-Series,-DataFrame,-and-Index)
-3. [Loading and Inspecting Data](#Loading-and-Inspecting-Data)
-4. [Data Selection and Indexing: `.loc` is King](#Data-Selection-and-Indexing:-.loc,-.iloc,-and-[])
-5. [Grouping and Aggregating: Split-Apply-Combine](#Grouping-and-Aggregating-Data)
-6. [Merging and Joining Datasets](#Merging-and-Joining-Datasets)
-7. [Reshaping Data: Pivoting and Stacking](#Reshaping-Data:-stack,-unstack,-and-pivot_table)
-8. [Time Series Analysis](#Time-Series-Analysis)
-9. [Writing Clean and Performant Pandas Code](#Writing-Clean-and-Performant-Pandas-Code)
-    - [Method Chaining and `.pipe()`](#Method-Chaining-and-.pipe())
-    - [Memory Savings with Categorical Data](#Using-Categorical-Data-for-Memory-and-Performance)
-10. [Summary](#Summary)
-11. [Exercises](#Exercises)
+1. [The Lens: Tabular Data and the Relational Model](#the-lens-tabular-data-and-the-relational-model)
+2. [The Pandas Data Model: `Series`, `DataFrame`, and `Index`](#the-pandas-data-model-series-dataframe-and-index)
+3. [Loading and Inspecting Data](#loading-and-inspecting-data)
+4. [Data Selection and Indexing: `.loc` is King](#data-selection-and-indexing-loc-iloc-and)
+5. [Grouping and Aggregating: Split-Apply-Combine](#grouping-and-aggregating-data)
+6. [Merging and Joining Datasets](#merging-and-joining-datasets)
+7. [Reshaping Data: Pivoting and Stacking](#reshaping-data-stack-unstack-and-pivot_table)
+8. [Time Series Analysis](#time-series-analysis)
+9. [Writing Clean and Performant Pandas Code](#writing-clean-and-performant-pandas-code)
+    - [Method Chaining and `.pipe()`](#method-chaining-and-pipe))
+    - [Memory Savings with Categorical Data](#using-categorical-data-for-memory-and-performance)
+10. [Summary](#summary)
+11. [Exercises](#exercises)
 
 ## The Lens: 13-Pandas
 While NumPy provides the engine for high-performance numerical computing, it lacks features for handling labeled, heterogeneous data—the kind of messy, real-world data ubiquitous in economics. **Pandas** is the library that solves this problem. It provides two primary data structures, the `Series` (1D) and the `DataFrame` (2D), which are built on NumPy but add meaningful labels for rows and columns. 
@@ -300,7 +300,7 @@ Pandas has first-class support for time series data, built around the `DatetimeI
 
 ```python
 rng = np.random.default_rng(42)
-dates = pd.date_range(start="2000-01-01", periods=240, freq="M")
+dates = pd.date_range(start="2000-01-01", periods=240, freq="ME")
 
 # Simulating Real GDP (trend + cycle) and CPI (trend + noise)
 trend = np.linspace(10, 15, len(dates))
@@ -316,7 +316,7 @@ print("Slicing a time series with date strings (The Great Recession period):")
 display(macro_data["2008-01":"2009-06"].head())
 
 print("\nResampling monthly data to annual averages:")
-annual_data = macro_data.resample("A").mean()
+annual_data = macro_data.resample("YE").mean()
 display(annual_data.head())
 
 print("\nCalculating Inflation and GDP Growth (Year-over-Year):")
@@ -381,6 +381,11 @@ print(f"  Memory usage as categorical: {mem_categorical / 1024:.2f} KB")
 print(f"\nMemory savings: {(1 - mem_categorical / mem_object):.1%}")
 ```
 
+> **Common Pitfalls in This Lecture**
+>
+> - **Chained assignment.** `df[df.a > 0]['b'] = 0` may write to a temporary copy and vanish, at best raising `SettingWithCopyWarning`. Route every write through a single `.loc[mask, 'b'] = 0` call.
+> - **Silent dtype promotion.** Insert one `NaN` into an `int64` column and pandas upcasts it to `float64`, changing formatting, merge behavior and memory. Use nullable dtypes (`Int64`) or explicit `astype` after cleaning.
+
 ### Three-Tier Practice Ladder
 
 **1. Mechanism and assumptions (Conceptual):** Explain the central computational idea in **13-Pandas** and connect it to one explicit economic object or research workflow.
@@ -388,6 +393,8 @@ print(f"\nMemory savings: {(1 - mem_categorical / mem_object):.1%}")
 **2. Reproduce and diagnose (Applied):** Reproduce an example involving The Pandas Data Model: `Series`, `DataFrame`, and `Index`, Advanced Topic: Index Alignment and NaN Propagation, then change one input and explain the result before running the code.
 
 **3. Robust extension (Challenge):** Extend the example to a larger or less convenient case and document the correctness and performance checks needed before trusting the result.
+
+**3b. Failure analysis (Challenge):** A chained-assignment `df[df.sector == 'FIN']['toxic'] = 1` leaves the frame unchanged, and a later `merge` doubles the row count. Diagnose the copy-versus-view trap and the many-to-many key duplication, repair with a single `.loc` call and a key-uniqueness assertion, and verify with before/after row counts.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

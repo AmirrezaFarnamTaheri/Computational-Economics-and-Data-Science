@@ -54,7 +54,7 @@ if not ECONML_AVAILABLE: display(Markdown("> **Note:** The 'econml' library is n
 
 ## Table of Contents
 
-1. [Introduction](#Introduction)
+1. [Introduction](#introduction)
 
 ## The Lens: When Prediction Meets Causation
 **What problem are we solving?**
@@ -384,6 +384,8 @@ if DOUBLEML_AVAILABLE:
 
 **3. Robust extension (Challenge):** Stress-test the model under temporal, subgroup, or covariate distribution shift. Identify which performance degradation matters for the downstream economic decision and propose one mitigation without using the test set for tuning.
 
+**3b. Failure analysis (Challenge):** CATE estimates are negative for every subgroup even though the ATE is positive, and propensity scores pile up at 0 and 1. Diagnose the positivity violation and the naive meta-learner, repair with overlap trimming and doubly-robust estimation, and show the propensity distribution before and after trimming.
+
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 
 <a id='exercises'></a>
@@ -395,7 +397,7 @@ if DOUBLEML_AVAILABLE:
 
 3.  **Policy Targeting with CATEs:** The Causal Forest results show significant heterogeneity. Imagine you are a policymaker who has a limited budget to roll out a new job training program (the treatment). The program is only cost-effective if its causal effect on wages is greater than 1.1. How might you use the CATE estimates to design a more effective and targeted policy intervention compared to just using the Average Treatment Effect (ATE)? What specific subgroup would you target?
 
-4.  **DML with Different Learners:** The beauty of DML is that the nuisance models can be any supervised ML algorithm. Modify the `dml_from_scratch` function to use a different learner, such as `sklearn.ensemble.RandomForestRegressor`, instead of `LassoCV`. Does it still recover the true effect in the simulation? How might the performance of a Random Forest vs. LASSO differ in a real-world dataset where the true functional forms of the nuisance functions are unknown and potentially highly non-linear?
+4.  **DML with Different Learners:** The beauty of DML is that the nuisance models can be any supervised ML algorithm. Modify the DML estimation code from Section 5 to use a different first-stage learner for the nuisance functions, such as `sklearn.ensemble.RandomForestRegressor`, instead of the linear model. Does it still recover the true effect in the simulation? How might the performance of a Random Forest vs. LASSO differ in a real-world dataset where the true functional forms of the nuisance functions are unknown and potentially highly non-linear?
 
 5.  **"Honest" Causal Forests:** A key innovation proposed by Athey and Imbens is the concept of an "honest" tree or forest. This involves splitting the data sample for each tree: one subsample is used to determine the split points (the structure of the tree), and another, independent subsample is used to estimate the treatment effects within the resulting leaves. Research and explain why this "honesty" is important for obtaining unbiased CATE estimates. What problem is it designed to prevent?
 
@@ -458,7 +460,7 @@ The ATE might be positive but small, suggesting the program is not cost-effectiv
 ---
 
 **4. DML with Different Learners:**
-Yes, using a `RandomForestRegressor` in the `dml_from_scratch` function should still recover the true effect, because the DML framework is designed to be robust to the choice of ML learner. In a real-world dataset, the choice would matter more. If the true nuisance functions $g(X)$ and $m(X)$ are sparse and approximately linear, LASSO would likely perform very well. If the true functions are highly non-linear and involve complex interactions between features, a Random Forest would likely produce better predictions for the nuisance functions, leading to a more precise final estimate of the causal effect.
+Yes, using a `RandomForestRegressor` for the nuisance models should still recover the true effect, because the DML framework is designed to be robust to the choice of ML learner. In a real-world dataset, the choice would matter more. If the true nuisance functions $g(X)$ and $m(X)$ are sparse and approximately linear, LASSO would likely perform very well. If the true functions are highly non-linear and involve complex interactions between features, a Random Forest would likely produce better predictions for the nuisance functions, leading to a more precise final estimate of the causal effect.
 
 ---
 

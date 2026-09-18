@@ -37,19 +37,19 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 ```
 
 ### Table of Contents
-1. [The Lens: SciPy as the Scientific Toolkit](#The-Lens:-SciPy-as-the-Scientific-Toolkit)
-2. [The SciPy Ecosystem](#The-SciPy-Ecosystem)
-3. [Optimization with `scipy.optimize`](#Optimization-with-scipy.optimize)
-    - [Unconstrained Minimization](#Unconstrained-Minimization)
-    - [Root Finding](#Root-Finding)
-    - [Constrained Optimization](#Constrained-Optimization)
-    - [Advanced Topic: The Intuition Behind Newton's Method](#Advanced-Topic:-The-Intuition-Behind-Newton's-Method)
-4. [Linear Algebra with `scipy.linalg`](#Linear-Algebra-with-scipy.linalg)
-5. [Interpolation with `scipy.interpolate`](#Interpolation-with-scipy.interpolate)
-6. [Integration with `scipy.integrate`](#Integration-with-scipy.integrate)
-7. [Statistics with `scipy.stats`](#Statistics-with-scipy.stats)
-8. [Summary](#Summary)
-9. [Exercises](#Exercises)
+1. [The Lens: SciPy as the Scientific Toolkit](#the-lens-scipy-as-the-scientific-toolkit)
+2. [The SciPy Ecosystem](#the-scipy-ecosystem)
+3. [Optimization with `scipy.optimize`](#optimization-with-scipyoptimize)
+    - [Unconstrained Minimization](#unconstrained-minimization)
+    - [Root Finding](#root-finding)
+    - [Constrained Optimization](#constrained-optimization)
+    - [Advanced Topic: The Intuition Behind Newton's Method](#advanced-topic-the-intuition-behind-newtons-method)
+4. [Linear Algebra with `scipy.linalg`](#linear-algebra-with-scipylinalg)
+5. [Interpolation with `scipy.interpolate`](#interpolation-with-scipyinterpolate)
+6. [Integration with `scipy.integrate`](#integration-with-scipyintegrate)
+7. [Statistics with `scipy.stats`](#statistics-with-scipystats)
+8. [Summary](#summary)
+9. [Exercises](#exercises)
 
 ## The Lens: 20-Introduction-to-SciPy
 While NumPy provides the foundational array structure for high-performance computing, it is relatively low-level. It gives you the bricks, but **SciPy** (Scientific Python) gives you the tools to build the house. 
@@ -256,6 +256,8 @@ else:
 **2. Reproduce and diagnose (Applied):** Reproduce an example involving The SciPy Ecosystem, Optimization with `scipy.optimize`, then change one input and explain the result before running the code.
 
 **3. Robust extension (Challenge):** Extend the example to a larger or less convenient case and document the correctness and performance checks needed before trusting the result.
+
+**3b. Failure analysis (Challenge):** `minimize` reports success but lands on a visibly suboptimal point of a bimodal objective, and `curve_fit` diverges for one starting value. Diagnose local-optimum sensitivity and poor initialization, fix with multi-start plus bounds (or a convex reformulation), and validate against a coarse grid search of the objective.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

@@ -52,24 +52,24 @@ plt.rcParams.update(
 ```
 
 ### Table of Contents
-1. [How to Approach This Course: A Pedagogical Philosophy](#How-to-Approach-This-Course:-A-Pedagogical-Philosophy)
-2. [What is Computational Economics?](#What-is-Computational-Economics?)
-    - [The Theoretical Guarantee: The Contraction Mapping Theorem](#The-Theoretical-Guarantee:-The-Contraction-Mapping-Theorem)
-    - [An Economic Example: The Cobweb Model](#An-Economic-Example:-The-Cobweb-Model)
-3. [The Modeler's Trilemma: Realism, Generality, and Precision](#The-Modeler's-Trilemma:-Realism,-Generality,-and-Precision)
-4. [The Pre-Computational Era: The Dawn of Systemic Economic Thought](#The-Pre-Computational-Era:-The-Dawn-of-Systemic-Economic-Thought)
-5. [The Twin Catalysts of the Modern Era: Formalism and War](#The-Twin-Catalysts-of-the-Modern-Era:-Formalism-and-War)
-6. [The Four Revolutions of Computational Economics](#The-Four-Revolutions-of-Computational-Economics)
-    - [The First Revolution: Econometrics and the Mainframe (c. 1940s-1970s)](#The-First-Revolution:-Econometrics-and-the-Mainframe-(c.-1940s-1970s))
-    - [The Second Revolution: The PC and the Credibility Revolution (c. 1980-2000)](#The-Second-Revolution:-The-PC-and-the-Credibility-Revolution-(c.-1980-2000))
-    - [The Third Revolution: Computation as a Laboratory (c. 2000-Present)](#The-Third-Revolution:-Computation-as-a-Laboratory-(c.-2000-Present))
-    - [The (Emerging) Fourth Revolution: AI as a Modeling Partner](#The-(Emerging)-Fourth-Revolution:-AI-as-a-Modeling-Partner)
-7. [Why Python for Computational Economics?](#Why-Python-for-Computational-Economics?)
-8. [A Roadmap for This Course](#A-Roadmap-for-This-Course)
-9. [Core Tools and Professional Norms](#Core-Tools-and-Professional-Norms)
-10. [Summary & Key Takeaways](#Summary-&-Key-Takeaways)
-11. [Exercises](#Exercises)
-12. [Curated References and Further Reading](#Curated-References-and-Further-Reading)
+1. [How to Approach This Course: A Pedagogical Philosophy](#how-to-approach-this-course-a-pedagogical-philosophy)
+2. [What is Computational Economics?](#what-is-computational-economics)
+    - [The Theoretical Guarantee: The Contraction Mapping Theorem](#the-theoretical-guarantee-the-contraction-mapping-theorem)
+    - [An Economic Example: The Cobweb Model](#an-economic-example-the-cobweb-model)
+3. [The Modeler's Trilemma: Realism, Generality, and Precision](#the-modelers-trilemma-realism-generality-and-precision)
+4. [The Pre-Computational Era: The Dawn of Systemic Economic Thought](#the-pre-computational-era-the-dawn-of-systemic-economic-thought)
+5. [The Twin Catalysts of the Modern Era: Formalism and War](#the-twin-catalysts-of-the-modern-era-formalism-and-war)
+6. [The Four Revolutions of Computational Economics](#the-four-revolutions-of-computational-economics)
+    - [The First Revolution: Econometrics and the Mainframe (c. 1940s-1970s)](#the-first-revolution-econometrics-and-the-mainframe-c-1940s-1970s))
+    - [The Second Revolution: The PC and the Credibility Revolution (c. 1980-2000)](#the-second-revolution-the-pc-and-the-credibility-revolution-c-1980-2000))
+    - [The Third Revolution: Computation as a Laboratory (c. 2000-Present)](#the-third-revolution-computation-as-a-laboratory-c-2000-present))
+    - [The (Emerging) Fourth Revolution: AI as a Modeling Partner](#the-emerging)-Fourth-Revolution:-AI-as-a-Modeling-Partner)
+7. [Why Python for Computational Economics?](#why-python-for-computational-economics)
+8. [A Roadmap for This Course](#a-roadmap-for-this-course)
+9. [Core Tools and Professional Norms](#core-tools-and-professional-norms)
+10. [Summary & Key Takeaways](#summary-key-takeaways)
+11. [Exercises](#exercises)
+12. [Curated References and Further Reading](#curated-references-and-further-reading)
 
 # Introduction
 
@@ -99,7 +99,7 @@ A more formal, graduate-level definition frames computational economics as the s
 
 $$ x = T(x; \theta) $$
 
-Here, $x$ is the endogenous object we want to solve for (e.g., a function, a vector of prices), and $\theta$ represents the model's parameters (e.g., preferences, technology). The intellectual exercise of modeling is to define the space $X$ and the operator $T$ such that this fixed point equation meaningfully represents an economic equilibrium.
+Here, $x$ is the endogenous object we want to solve for (e.g., a function, a vector of prices), and $\theta$ represents the model's parameters (e.g., preferences, technology). Concretely: a price system lives in $p \in \mathbb{R}^n$, a value function in $v: S \to \mathbb{R}$, and $T$ must map each such object back into the same space. The intellectual exercise of modeling is to define the space $X$ and the operator $T$ such that this fixed point equation meaningfully represents an economic equilibrium.
 
 ### Step-by-Step Iteration Example
 Consider a simple operator $T(x) = \sqrt{x}$. We want to find the fixed point $x = \sqrt{x}$.
@@ -148,6 +148,23 @@ This theorem is the workhorse of modern dynamic programming. In that context, th
 
 The Contraction Mapping Theorem thus provides the theoretical justification for a huge range of computational methods used to solve dynamic economic models. It connects the abstract mathematical structure of the model to a practical, implementable algorithm with a guarantee of success.
 
+**Proof sketch (why the theorem holds).** The argument is short and uses nothing beyond the contraction inequality and completeness.
+
+1.  **Iterate the contraction.** Applying $d(Tx, Ty) \le \beta\, d(x, y)$ repeatedly gives, by induction on $m$:
+    $$ d(T^m x, T^m y) \le \beta^m\, d(x, y) \quad \text{for all } m \ge 0. $$
+2.  **Every orbit is Cauchy.** Fix $x_0 \in X$ and let $x_m = T^m(x_0)$. Because $x_{j+1} = T(x_j) = T^j(x_1)$, Step 1 gives $d(x_j, x_{j+1}) \le \beta^j\, d(x_0, x_1)$. Telescoping with the triangle inequality, for any $k > m$:
+    $$ d(x_m, x_k) \;\le\; \sum_{j=m}^{k-1} d(x_j, x_{j+1}) \;\le\; d(x_0, x_1) \sum_{j=m}^{k-1} \beta^j \;\le\; \frac{\beta^m}{1 - \beta}\, d(x_0, x_1). $$
+    Since $\beta < 1$, the right side tends to $0$ as $m \to \infty$, so $(x_m)$ is Cauchy.
+3.  **Completeness supplies the limit.** $(X, d)$ is complete, so $x_m \to x^*$ for some $x^* \in X$.
+4.  **The limit is a fixed point.** Contractions are continuous (they obey a Lipschitz bound with constant $\beta$), so
+    $$ d(Tx^*, x^*) \;\le\; d(Tx^*, Tx_m) + d(x_{m+1}, x^*) \;\le\; \beta\, d(x^*, x_m) + d(x_{m+1}, x^*) \;\longrightarrow\; 0, $$
+    which forces $Tx^* = x^*$.
+5.  **Uniqueness.** If $x^*$ and $y^*$ were two distinct fixed points:
+    $$ d(x^*, y^*) = d(Tx^*, Ty^*) \le \beta\, d(x^*, y^*) \implies (1 - \beta)\, d(x^*, y^*) \le 0, $$
+    impossible unless $d(x^*, y^*) = 0$, because $\beta < 1$.
+
+Step 2 is where completeness earns its keep: a Cauchy sequence needs a limit *inside the space* (rational sequences can converge to $\sqrt{2} \notin \mathbb{Q}$). In applications, $(X, d)$ is typically either $\mathbb{R}^n$ with the Euclidean metric or a space of bounded functions $v: S \to \mathbb{R}$ with the sup metric $d(v, w) = \sup_{s \in S} |v(s) - w(s)|$.
+
 #### An Economic Example: The Cobweb Model
 
 To make this tangible, consider the **cobweb model**, a classic dynamic model of supply and demand. It's particularly useful for illustrating fixed points in an economic context. The model's key assumption is that there is a **time lag** in production. For example, farmers must decide how much to plant *before* they know the market price at harvest time. Their planting decisions are based on the price they *expect* to receive. A simple assumption is that they have **adaptive expectations**: they expect this year's price to be the same as last year's price.
@@ -156,6 +173,8 @@ The model is defined by three equations:
 1.  **Demand:** The quantity demanded today depends on today's price: $Q_t^D = a - b P_t$
 2.  **Supply:** The quantity supplied today depends on *last year's* price: $Q_t^S = c + d P_{t-1}$
 3.  **Market Clearing:** In equilibrium, quantity supplied equals quantity demanded: $Q_t^D = Q_t^S$
+
+All model objects here are scalars: $Q_t^D, Q_t^S, P_t \in \mathbb{R}$, with parameters $a, b, c, d > 0$.
 
 By substituting the supply and demand equations into the market clearing condition, we can find the law of motion for prices:
 $$ a - b P_t = c + d P_{t-1} \implies P_t = \frac{a-c}{b} - \frac{d}{b} P_{t-1} $$
@@ -166,8 +185,25 @@ The equilibrium price $P^*$ is the fixed point that solves $P^* = T(P^*)$. We ca
 
 A key question for any dynamic model is whether this equilibrium is **stable**. That is, if the system starts away from the fixed point, does it converge towards it? The answer depends on the parameters of the model. The price dynamics are given by the linear difference equation:
 $$ P_t = \left(-\frac{d}{b}\right) P_{t-1} + \frac{a-c}{b} $$
-This is a standard form, and its stability is determined by the coefficient on the lagged variable. The system will converge to the fixed point if and only if the absolute value of this coefficient is less than 1:
-$$ \left| -\frac{d}{b} \right| < 1 \implies \frac{d}{b} < 1 $$
+All quantities are scalars: $P_t \in \mathbb{R}$ with $a, b, c, d > 0$. Rather than asserting stability, we derive it line by line. Let $\rho = -\frac{d}{b}$ denote the coefficient on the lagged price, so the law of motion reads $P_t = \rho\,P_{t-1} + \frac{a-c}{b}$.
+
+**Step 1 — Locate the fixed point.** Set $P_t = P_{t-1} = P^*$:
+$$ P^* = \rho P^* + \frac{a-c}{b} \implies (1 - \rho)\,P^* = \frac{a-c}{b} \implies P^* = \frac{a-c}{b+d}, $$
+where the last step uses $1 - \rho = 1 + \frac{d}{b} = \frac{b+d}{b}$.
+
+**Step 2 — Switch to deviations.** Subtract the fixed-point identity $P^* = \rho P^* + \frac{a-c}{b}$ from the law of motion; the constant cancels:
+$$ P_t - P^* = \rho\,(P_{t-1} - P^*). $$
+
+**Step 3 — Unroll the recursion.** Applying the deviation equation repeatedly,
+$$ P_1 - P^* = \rho\,(P_0 - P^*), \qquad P_2 - P^* = \rho\,(P_1 - P^*) = \rho^2\,(P_0 - P^*), $$
+and by induction on $t$:
+$$ P_t - P^* = \rho^{\,t}\,(P_0 - P^*) \quad \text{for all } t \ge 0. $$
+
+**Step 4 — Read off the stability condition.** Convergence is now purely a statement about powers of the scalar $\rho$:
+- If $|\rho| < 1$ — i.e. $\frac{d}{b} < 1$ — then $\rho^{\,t} \to 0$ geometrically, so $P_t \to P^*$ from **any** starting price $P_0$.
+- If $|\rho| > 1$ — i.e. $\frac{d}{b} > 1$ — then $|\rho^{\,t}| \to \infty$: deviations grow without bound.
+- If $|\rho| = 1$ — i.e. $\frac{d}{b} = 1$ — then $|\rho^{\,t}| = 1$ forever: prices cycle around $P^*$ at constant amplitude, never settling.
+
 In economic terms, this means the price will converge to a stable equilibrium if the slope of the demand curve (`b`) is steeper than the slope of the supply curve (`d`). If the supply curve is steeper ($d/b > 1$), the price fluctuations will become larger and larger, and the system will be unstable. If the slopes are exactly equal ($d/b=1$), the price will oscillate around the equilibrium in a stable cycle without ever converging.
 
 ```python
@@ -368,7 +404,7 @@ The paradigmatic achievement of this era was the **Klein-Goldberger model (1955)
 
 Wassily Leontief, a Russian-American economist, was awarded the Nobel Prize in 1973 for his development of **input-output analysis**. Inspired by Quesnay's *Tableau*, Leontief created a quantitative framework for analyzing the interdependence of industries. The core of his model is an **input-output table**, a matrix $A$ where each entry $A_{ij}$ represents the amount of industry $i$'s output needed to produce one unit of industry $j$'s output. 
 
-Let $x$ be the vector of gross outputs for each industry, and $d$ be the vector of final demand. The fundamental relationship is that total output must equal intermediate demand plus final demand: 
+Let $x$ be the vector of gross outputs for each industry, and $d$ be the vector of final demand. For an economy with $n$ industries, $A \in \mathbb{R}^{n \times n}$ and $x, d \in \mathbb{R}^n$, so $(I - A)$ is $n \times n$. The fundamental relationship is that total output must equal intermediate demand plus final demand: 
 $$ x = Ax + d $$
 To find the output $x$ required to satisfy a given final demand $d$, we solve the system:
 $$ (I - A)x = d \implies x = (I - A)^{-1} d $$
@@ -454,35 +490,35 @@ We will simulate two different policy regimes:
 The Lucas Critique in this context says that an econometrician who estimates the MPC using data *only* from Regime 1 will make systematically wrong predictions if they try to use that model to evaluate the effects of the stimulus policy in Regime 2. The parameter itself changes when the policy regime changes.
 
 ```python
-# Set seed for reproducibility of random data
-np.random.seed(42)
+# Reproducible random data via NumPy's modern Generator API
+rng = np.random.default_rng(42)
 n_obs = 100  # Number of observations (e.g., time periods)
 
 # --- Regime 1: Stable Income Process ---
 # This represents a policy regime where income changes are persistent (e.g., career progression).
 # Rational agents expect income changes to be mostly permanent.
 # We model this as a random walk, where each period's income builds on the last.
-permanent_income_shocks = np.random.randn(
+permanent_income_shocks = rng.standard_normal(
     n_obs
 ).cumsum()  # Cumulative sum creates persistence
 income_regime1 = 100 + permanent_income_shocks
 # In this world, the true Marginal Propensity to Consume (MPC) out of current income is high (0.8)
 # because a change in current income signals a change in permanent income.
 consumption_regime1 = (
-    20 + 0.8 * income_regime1 + np.random.randn(n_obs)
+    20 + 0.8 * income_regime1 + rng.standard_normal(n_obs)
 )  # Add some random noise
 
 # --- Regime 2: Transitory Income Process ---
 # A new policy regime is introduced (e.g., one-off stimulus checks).
 # Income shocks are now purely temporary and have no bearing on future income.
 transitory_income_shocks = (
-    np.random.randn(n_obs) * 5
+    rng.standard_normal(n_obs) * 5
 )  # Shocks are larger but not persistent
 income_regime2 = 100 + transitory_income_shocks
 # In this world, the true MPC is very low (0.1) because rational agents will save
 # most of the temporary windfall rather than consume it.
 consumption_regime2 = (
-    20 + 0.1 * income_regime2 + np.random.randn(n_obs)
+    20 + 0.1 * income_regime2 + rng.standard_normal(n_obs)
 )  # Add some random noise
 
 # --- The Econometrician's Mistake ---
@@ -668,6 +704,8 @@ As we move forward, we will build on these foundational ideas. We will start by 
 1.  **Conceptual:** In your own words, explain the difference between finding a fixed point analytically versus computationally. Why might we prefer one over the other?
 2.  **Applied:** In the Cobweb model code above, modify the `step` function to include a "supply shock"—a random term added to the supply equation $Q_t^S = c + d P_{t-1} + \epsilon_t$, where $\epsilon_t \sim N(0, 1)$. Run the simulation again. How does this noise affect the convergence in the stable case? Does it prevent convergence?
 3.  **Challenge:** Read about the **bisection method** for finding roots of equations (where $f(x)=0$). Implement a simple Python function `my_bisection(f, a, b, tol)` that finds a root of function `f` between `a` and `b` with tolerance `tol`. Use it to find the square root of 2 (by finding the root of $f(x) = x^2 - 2$).
+
+**Failure analysis (Challenge):** A classmate iterates the cobweb map with $b=1, d=1.2$ and reports the code is 'broken' because prices diverge to infinity. Diagnose the failure using the stability derivation ($d/b > 1$ here), verify by plotting amplitude growth against $|{-d/b}|^t$, and state the exact parameter condition the code should check before iterating.
 
 ### Curated References and Further Reading
 

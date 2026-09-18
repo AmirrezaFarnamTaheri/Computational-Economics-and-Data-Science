@@ -60,8 +60,8 @@ Log-linearization and the QZ (generalized Schur) decomposition provide a stable,
 > **Learning path:** Building on [`03A_RBC_Model_Foundations.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/04-Macro-Models/03A_RBC_Model_Foundations.ipynb); next continue with [`03C_RBC_Dynamics_and_Surprise_Shocks.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/04-Macro-Models/03C_RBC_Dynamics_and_Surprise_Shocks.ipynb).
 
 # Table of Contents
-* [The Lens: Solving and Simulating RBC Dynamics](#The-Lens:-Solving-and-Simulating-RBC-Dynamics)
-* [1. Solving the Model: Log-Linearization and QZ Decomposition](#1-solving-the-model:-log-linearization-and-qz-decomposition)
+* [The Lens: Solving and Simulating RBC Dynamics](#the-lens-solving-and-simulating-rbc-dynamics)
+* [1. Solving the Model: Log-Linearization and QZ Decomposition](#1-solving-the-model-log-linearization-and-qz-decomposition)
 * [Summary](#summary)
 
 ## 1. Solving the Model: Log-Linearization and QZ Decomposition
@@ -228,6 +228,8 @@ display(rbc.ss.to_frame().T)
 **2. Reproduce and diagnose (Applied):** Reproduce one quantitative result from the sections on 1. Solving the Model: Log-Linearization and QZ Decomposition, Implementation Roadmap. Change one economically meaningful parameter over a defensible grid, report the policy/value/equilibrium response, and verify convergence with a residual or tighter tolerance.
 
 **3. Robust extension (Challenge):** Design a policy or shock counterfactual that changes one mechanism at a time. Compare welfare or transition dynamics against the baseline and explain which conclusion is structural versus calibration-specific.
+
+**3b. Failure analysis (Challenge):** Simulated output volatility is three times the data's — because model moments were computed on raw levels while the data moments were HP-filtered. Diagnose the transformation mismatch, repair by applying identical filtering to both, and report the moment comparison table under both treatments.
 
 <details>
 <summary>Solution guidance</summary>

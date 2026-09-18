@@ -38,12 +38,12 @@ By the end of this notebook, you will be able to:
 
 *   **02-Numerical-Methods/03_Numerical_Differentiation.ipynb**: Newton's method relies on derivatives.
 
+> **Historical Context — Newton 1669, Raphson 1690.** Isaac Newton described the iterative root method in manuscripts of 1669–1671 (solving a cubic near zero), and Joseph Raphson simplified it algebraically in 1690 — hence hyphenation that credits both. Thomas Simpson generalized it to higher dimensions in 1740; Brent's 1973 hybrid finally made it safe for production use.
+
 > **Learning path:** Building on [`03_Numerical_Differentiation.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/02-Numerical-Methods/03_Numerical_Differentiation.ipynb); next continue with [`05_Optimization.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/02-Numerical-Methods/05_Optimization.ipynb).
 
 ```python
 # === Environment Setup ===
-import warnings
-
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.optimize import brentq, newton
@@ -57,7 +57,7 @@ np.set_printoptions(suppress=True, precision=4, linewidth=120)
 
 ## Interactive Lab: Market-Clearing Root
 
-Use the demand intercept to shift the market and watch the numerical root move. The point is not the widget itself: it makes the mapping from $f(p)=Q_d(p)-Q_s(p)$ to an equilibrium price visible.
+Use the demand intercept to shift the market and watch the equilibrium price move. The point is not the widget itself: it makes the mapping from $f(p)=Q_d(p)-Q_s(p)$ to an equilibrium price visible.
 
 ```python
 try:
@@ -127,7 +127,7 @@ def anderson_acceleration(g, x0, m=5, tol=1e-6, max_iter=100):
 
     for k in range(max_iter):
         if np.linalg.norm(res) < tol:
-            return float(x) if x.size == 1 else x, k
+            return x.item() if x.size == 1 else x, k
 
         X_hist.append(x.copy())
         F_hist.append(res.copy())
@@ -150,10 +150,11 @@ def anderson_acceleration(g, x0, m=5, tol=1e-6, max_iter=100):
         g_x = np.atleast_1d(g(x))
         res = g_x - x
 
-    return float(x) if x.size == 1 else x, max_iter
+    return x.item() if x.size == 1 else x, max_iter
 
-# Note: scipy.optimize.fixed_point uses Anderson mixing by default via del2 acceleration
-print("Anderson Acceleration is standard in solvers like scipy.optimize.root(method='krylov') for large systems.")
+# Note: scipy.optimize.fixed_point accelerates iteration with Aitken's
+# delta-squared method ('del2') by default - not Anderson mixing.
+print("SciPy provides Anderson mixing via scipy.optimize.root(method='anderson'); method='krylov' uses a different Newton-Krylov algorithm.")
 ```
 
 ## 1. Fixed-Point Theory
@@ -172,11 +173,14 @@ For $x_{t+1} = g(x_t)$, we can visualize the path by drawing a line from $(x_t, 
 
 ## 2. Root-Finding Algorithms
 
+![Root-finding convergence](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/02-Numerical-Methods/rootfinding_convergence.png)
+*Figure: Convergence behavior of bracketing and open methods..*
+
 Any fixed point problem $x = g(x)$ can be rewritten as a root finding problem $f(x) = x - g(x) = 0$.
 
 ### 2.1 Bisection (Bracketing)
 
-If $f$ is continuous on $[a, b]$ with $f(a) < 0$ and $f(b) > 0$, the Intermediate Value Theorem guarantees a root in $(a, b)$. Bisection hunts it down by repeatedly halving the bracket:
+If $f$ is continuous on $[a, b]$ with $f(a) < 0$ and $f(b) > 0$, the Intermediate Value Theorem guarantees a root in $(a, b)$. Everything here is scalar: $f: \mathbb{R} \to \mathbb{R}$ continuous, bracket endpoints and iterates all in $\mathbb{R}$. Bisection hunts it down by repeatedly halving the bracket:
 
 1.  Check the midpoint $m = (a+b)/2$.
 2.  If $f(m) > 0$, the root is in $[a, m]$. Else it is in $[m, b]$.
@@ -260,6 +264,9 @@ For fixed-point problems $x = g(x)$, simple iteration can be slow. **Anderson Ac
 
 ### Verbatim Walkthrough: Visualizing Newton's Failure
 
+![Newton basins](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/02-Numerical-Methods/newton_basins.png)
+*Figure: Basins of attraction for the roots of a polynomial..*
+
 Newton's method is fast but fragile. If the function has a flat spot (derivative near zero), it sends the next guess to infinity. If it has cycles, it oscillates forever.
 
 Let's visualize the "Basins of Attraction" for $z^3 - 1 = 0$ in the complex plane. Each color represents which of the 3 roots the method converges to. The boundary is fractal!
@@ -299,7 +306,7 @@ newton_fractal()
 
 ### 2.3 Brent's Method (The Best of Both)
 
-Bisection is safe but slow; Newton and the secant method are fast but can escape the bracket or diverge. **Brent's method** (Brent, 1973) is the industrial-strength hybrid that keeps the guarantee of one and the speed of the others. `scipy.optimize.brentq` implements it, and it is the right default for any scalar root-finding problem.
+Bisection is safe but slow; Newton and the secant method are fast but can escape the bracket or diverge. **Brent's method** (Brent, 1973) is the industrial-strength hybrid that keeps the guarantee of one and the speed of the others. `scipy.optimize.brentq` implements it, and it is the right default for any scalar root-finding problem. All quantities here are scalars: $f: \mathbb{R} \to \mathbb{R}$ continuous on the bracket $[a, b] \subset \mathbb{R}$ with $f(a)\,f(b) < 0$.
 
 **How the hybridization actually works.** Brent maintains a sign-changing bracket $[a, b]$ at all times (like bisection) and, at each iteration, chooses among three candidate steps, from most to least ambitious:
 
@@ -399,7 +406,9 @@ Finding roots for systems $F(x)=0$ is hard. If your initial guess is far off, Ne
 
 **The Idea:** Start with an easy problem $G(x)=0$ (where you know the solution) and slowly transform it into the hard problem $F(x)=0$.
 
-$$ H(x, t) = (1-t)G(x) + tF(x) $$
+$$ H(x, t) = (1-t)G(x) + tF(x), \qquad F, G: \mathbb{R}^n \to \mathbb{R}^n, \;\; t \in [0, 1], $$
+
+so each $H(\cdot, t)$ is an $n$-equation system, and the solution path $x(t) \in \mathbb{R}^n$ is traced from the known root $x(0)$ of $G$ to a root $x(1)$ of $F$.
 
 1.  Start at $t=0$ with known solution $x_0$.
 2.  Increase $t$ slightly (e.g., $t=0.1$). Use $x_0$ as guess to solve $H(x, 0.1)=0$.
@@ -451,24 +460,33 @@ $$n \;\ge\; \log_2\!\left(\frac{b - a}{\varepsilon}\right) - 1.$$
 
 $$x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}$$
 
+**Dimension notes:** everything is scalar: $f: \mathbb{R} \to \mathbb{R}$, bracket $[a, b] \subset \mathbb{R}$, iterate $x_n \in \mathbb{R}$, tolerance $\varepsilon > 0$, and $n$ counts iterations.
+
 ## Summary
 
 **Key Takeaways:**
 *   **Everything is a Root:** Equilibrium, steady states, and arbitrage conditions are all $f(x)=0$.
 *   **Scalar? Use Brent:** `brentq` is the default choice for 1D problems.
-*   **Vector? Use Newton:** For systems, use `scipy.optimize.root` (which uses Newton-Krylov methods).
+*   **Vector? Use Newton:** For systems, use `scipy.optimize.root` (Powell hybrid by default; `method='krylov'`, i.e. Newton-Krylov, for large sparse problems).
 *   **Fails? Use Homotopy:** If Newton diverges, try path-following from an easier problem.
+
+> **Common Pitfalls in This Lecture**
+>
+> - **Newton without a net.** Newton-Raphson diverges when $f'$ is near zero, oscillates on flat regions, and has no bracket to fall back on. Guard the derivative, cap iterations, or prefer `scipy.optimize.brentq`, which requires only a sign change $f(a)f(b) < 0$.
+> - **False convergence.** A solver returning quickly does not mean it found a root: check the residual $|f(x^*)|$ against your tolerance and confirm which tolerance you set (`xtol` on $x$ differs from `rtol`). Report the residual alongside the root.
 
 ## Exercises
 
 ### 1. Conceptual: Aitken's Acceleration
-Fixed point iteration converges linearly. Aitken's $\Delta^2$ method accelerates this to quadratic. Research the formula and explain *why* it works (hint: it estimates the geometric decay of the error).
+Fixed point iteration converges linearly. Aitken's $\Delta^2$ method exploits three consecutive iterates to estimate the geometric decay of the error and jump ahead, often dramatically speeding up a linearly convergent sequence. Research the formula, explain *why* it works, and show that applying it systematically every few steps (Steffensen's method) recovers quadratic convergence near a simple fixed point.
 
 ### 2. Applied: Implicit Yield Curve
 Write a function `get_yield(price, coupon, face, T)` that handles an array of bonds. Use a loop with `brentq` to calculate the yield curve for a set of maturities: $T=[1, 2, 5, 10, 30]$. Plot the result.
 
 ### 3. Challenge: Multi-Market Equilibrium
 Extend the CES code to 3 goods. You will now have two relative prices ($p_1, p_2$) to solve for. Use `scipy.optimize.root` to solve the system of 2 excess demand equations.
+
+**Failure analysis (Challenge):** Newton's method diverges on $f(x) = x^{1/3}$ (unbounded derivative) and cycles on a flat region, while plain bisection needs 60 iterations to meet tolerance. Diagnose the violated assumptions of each method, repair with a bracketed hybrid (`brentq`), and state the sign-change precondition your wrapper should enforce.
 
 ## References & Further Reading
 

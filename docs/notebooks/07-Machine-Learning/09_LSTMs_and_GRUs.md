@@ -72,7 +72,7 @@ LSTMs are the workhorse for economic sequence tasks: forecasting financial volat
 
 ### Prerequisites
 * **RNNs:** Vanilla RNN architecture and the vanishing gradient problem (Module 07 - RNNs).
-* **Python:** PyTorch sequential model building.
+* **Python:** TensorFlow/Keras sequential model building.
 * **Learning-path prerequisite:** [`08_Recurrent_Neural_Networks.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/07-Machine-Learning/08_Recurrent_Neural_Networks.ipynb)
 
 > **Learning path:** Building on [`08_Recurrent_Neural_Networks.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/07-Machine-Learning/08_Recurrent_Neural_Networks.ipynb); next continue with [`10_Transformers.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/07-Machine-Learning/10_Transformers.ipynb).
@@ -116,6 +116,8 @@ Each gate is a sigmoid activation function, $\sigma(\cdot)$, which outputs a val
     $$ o_t = \sigma(W_o [\mathbf{h}_{t-1}, \mathbf{x}_t] + b_o) $$ 
     $$ h_t = o_t \odot \tanh(c_t) $$
 
+**Dimension notes:** with hidden size $h$ and input dim $d$: gate vectors $f_t, i_t, o_t \in (0,1)^h$ (elementwise sigmoid), candidate $\tilde{c}_t \in \mathbb{R}^h$, cell state $c_t \in \mathbb{R}^h$; weights $W_f, W_i, W_o, W_c \in \mathbb{R}^{h \times (h+d)}$ act on $[\mathbf{h}_{t-1}, \mathbf{x}_t] \in \mathbb{R}^{h+d}$.
+
 <a id='gru'></a>
 ## 3. Gated Recurrent Unit (GRU)
 
@@ -138,6 +140,8 @@ The GRU's two gates are:
     $$ h_t = (1 - z_t) \odot h_{t-1} + z_t \odot \tilde{h}_t $$
 
 While LSTMs are more expressive, GRUs have fewer parameters, train faster, and often perform just as well on many tasks, especially with smaller datasets.
+
+**Dimension notes:** GRU keeps a single state $\mathbf{h}_t \in \mathbb{R}^h$; update/reset gates $z_t, r_t \in (0,1)^h$; candidate $\hat{\mathbf{h}}_t \in \mathbb{R}^h$; all gate weights map $\mathbb{R}^{h+d} \to \mathbb{R}^h$ as in the LSTM, minus the separate cell state.
 
 <a id='practical'></a>
 ## 4. Practical Considerations for Training
@@ -183,8 +187,8 @@ try:
     X_test_pad = pad_sequences(X_test_seq, maxlen=50, padding='post', truncating='post')
 
     # 3. Build and train the LSTM model
-except Exception:
-    pass
+except Exception as exc:
+    print(f"Optional LSTM demonstration skipped: {exc}")
 ```
 
 > **Note:** Building and training a robust sentiment classification model with LSTMs.
@@ -235,15 +239,17 @@ unrate = web.DataReader('UNRATE', 'fred', start_date, end_date)
 
 # Calculate growth rates and combine data
 gdp_growth = gdp.pct_change(4).dropna() * 100 # YoY growth
-inflation = cpi.pct_change(12).dropna() * 100 # YoY inflation
+inflation = (cpi.pct_change(12, fill_method=None) * 100).resample('QS').mean().dropna() # Quarterly mean of monthly YoY inflation
 unrate_q = unrate.resample('QS').mean() # Convert to quarterly
 
 macro_data = pd.concat([gdp_growth, inflation, unrate_q], axis=1, join='inner').dropna()
 macro_data.columns = ['GDP_Growth', 'Inflation', 'Unemployment']
 
 # --- Prepare data for LSTM ---
-scaler = StandardScaler()
-data_scaled = scaler.fit_transform(macro_data)
+# Split raw dates before fitting preprocessing or constructing overlapping targets.
+train_end = int(len(macro_data) * 0.8)
+scaler = StandardScaler().fit(macro_data.iloc[:train_end])
+data_scaled = scaler.transform(macro_data)
 
 def create_sequences(data, n_past, n_future):
     X, y = [], []
@@ -256,10 +262,12 @@ n_past = 8 # Use past 8 quarters
 n_future = 4 # Predict next 4 quarters
 X, y = create_sequences(data_scaled, n_past, n_future)
 
-# Train/test split
-split = int(len(X) * 0.8)
-X_train, X_test = X[:split], X[split:]
-y_train, y_test = y[:split], y[split:]
+# Purge windows whose multi-quarter targets straddle the cutoff.
+train_stop = train_end - n_past - n_future + 1
+test_start = train_end - n_past
+X_train, X_test = X[:train_stop], X[test_start:]
+y_train, y_test = y[:train_stop], y[test_start:]
+assert train_stop > 0 and len(X_test) > 0
 
 # --- Build and Train LSTM Model ---
 ```
@@ -273,9 +281,10 @@ macro_model = keras.models.Sequential([
     keras.layers.Dense(n_future)
 ])
 macro_model.compile(optimizer='adam', loss='mse')
-history_macro = macro_model.fit(X_train, y_train, epochs=50, validation_data=(X_test, y_test), verbose=0)
+history_macro = macro_model.fit(X_train, y_train, epochs=50, shuffle=False, verbose=0)
 
-display(Markdown(f'> **Note:** Training complete. Final validation loss (MSE): {history_macro.history['val_loss'][-1]:.4f}'))
+test_mse = macro_model.evaluate(X_test, y_test, verbose=0)
+display(Markdown(f'> **Note:** Held-out MSE (standardized GDP growth): {test_mse:.4f}'))
 ```
 
 > **Note:** Skipping macro example: 'pandas_datareader' is not installed. You can install it with 'pip install pandas_datareader'.
@@ -342,6 +351,8 @@ custom_lstm_model.summary()
 
 **3. Robust extension (Challenge):** Stress-test the model under temporal, subgroup, or covariate distribution shift. Identify which performance degradation matters for the downstream economic decision and propose one mitigation without using the test set for tuning.
 
+**3b. Failure analysis (Challenge):** The LSTM's forecasts lag the series by exactly one step — it learned persistence — yet the loss curve looked fine. Diagnose the naive-baseline trap, repair by differencing/adding informative features and comparing against the persistence benchmark explicitly, and report skill relative to that baseline.
+
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 
 <a id='exercises'></a>
@@ -384,6 +395,8 @@ $$\tilde{c}_t = \tanh(W_c [\mathbf{h}_{t-1}, \mathbf{x}_t] + b_c)$$
 
 $$c_t = f_t \odot c_{t-1} + i_t \odot \tilde{c}_t$$
 
+**Dimension notes:** every symbol above is an $h$-vector (gates via elementwise sigmoid) or a conformable $h \times (h+d)$ weight matrix; $c_t, \mathbf{h}_t \in \mathbb{R}^h$; predictions add an output projection.
+
 ### Solutions to Exercises
 
 ---
@@ -395,7 +408,7 @@ The key difference is that the LSTM has a separate cell state ($c_t$) that acts 
 
 **2. The Forget Gate:**
 - **Stuck at 1:** If $f_t=1$ always, the LSTM would never forget anything. The cell state $c_t$ would become an ever-growing sum of all past inputs. This would make it unable to adapt to new information or forget irrelevant past context, and the cell state values could grow uncontrollably.
-- **Stuck at 0:** If $f_t=0$ always, the LSTM would have no memory of the past. The cell state update would become $c_t = i_t \odot \tilde{c}_t$, meaning it would only depend on the current input. The network would degenerate into a stateless feedforward network, unable to learn any temporal dependencies.
+- **Stuck at 0:** The direct cell-state carry path disappears: $c_t = i_t \odot \tilde{c}_t$. The network is still recurrent because the gates and candidate depend on $h_{t-1}$; it does not become a stateless feedforward network.
 
 ---
 

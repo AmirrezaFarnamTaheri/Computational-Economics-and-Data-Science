@@ -75,8 +75,12 @@ We model the lifecycle explicitly.
 #### The Household's Problem and the Law of Motion
 The economy is populated by a series of overlapping generations who live for two periods (young and old). The young supply labor, consume, and save. The old do not work and consume their savings. The household's problem is to choose consumption in both periods ($c_1, c_2$) to maximize lifetime utility $U = u(c_1) + \beta u(c_2)$ subject to their budget constraints.
 
-This leads to a saving function $s_t = s(w_t, r_{t+1})$. The aggregate capital stock in $t+1$ is the total saving of the young in period $t$: $K_{t+1} = N_t s_t$. In per-worker terms, this gives the law of motion for capital per worker: $k_{t+1} = s(w_t, r_{t+1}) / (1+n)$. With competitive markets, factor prices equal marginal products, so $w_t = w(k_t)$ and $r_{t+1} = r(k_{t+1})$. This yields an implicit difference equation for capital:
+For CRRA utility, let $R=1+r_{t+1}$ and use $c_1=w_t-s_t$, $c_2=Rs_t$. The Euler equation gives $(w_t-s_t)^{-\sigma}=\beta R^{1-\sigma}s_t^{-\sigma}$, hence
+$$s_t=\frac{w_t}{1+\beta^{-1/\sigma}R^{(\sigma-1)/\sigma}}.$$
+For log utility ($\sigma=1$), saving is $\beta w_t/(1+\beta)$, independent of the interest rate. This leads to a saving function $s_t = s(w_t, r_{t+1})$. The aggregate capital stock in $t+1$ is the total saving of the young in period $t$: $K_{t+1} = N_t s_t$. In per-worker terms, this gives the law of motion for capital per worker: $k_{t+1} = s(w_t, r_{t+1}) / (1+n)$. With competitive markets, factor prices equal marginal products, so $w_t = w(k_t)$ and $r_{t+1} = r(k_{t+1})$. This yields an implicit difference equation for capital:
 $$ k_{t+1}(1+n) = s(w(k_t), r(k_{t+1})) $$
+
+**Dimension notes:** two-period lives: young/old consumption $c_1, c_2$ and saving $s_t$ are scalars; cohort size grows at rate $n$, so $k_{t+1} = s(w_t, r_{t+1})/(1+n)$ maps scalar to scalar; $\beta \in (0,1)$.
 
 ```python
 # ### Solving the General OLG Model
@@ -101,7 +105,9 @@ class GeneralOLGModel:
     def _law_of_motion_implicit(self, k_next, k_t):
         w_t = self.wage_f(k_t); r_next = self.interest_f(k_next)
         saving_lhs = k_next * (1 + self.n)
-        saving_rhs = w_t / (1 + (self.beta * (1 + r_next))**(-1/self.sigma))
+        gross_return = 1 + r_next  # no depreciation in this two-period example
+        saving_rhs = w_t / (1 + self.beta**(-1/self.sigma) *
+                            gross_return**((self.sigma - 1)/self.sigma))
         return saving_lhs - saving_rhs
 
     def _solve_steady_state(self): return brentq(lambda k: self._law_of_motion_implicit(k, k), 0.1, 50)
@@ -148,7 +154,10 @@ The two-period model is a powerful theoretical tool, but for quantitative work, 
 # SIGMA_LC: Coefficient of relative risk aversion
 # R_LC: Risk-free interest rate
 # A_GRID_LC: Grid of possible asset holdings
-J = 80
+START_AGE = 18
+END_AGE = 80
+J = END_AGE - START_AGE + 1
+AGES = np.arange(START_AGE, END_AGE + 1)
 J_R = 65
 BETA_LC = 0.96
 SIGMA_LC = 2.0
@@ -163,7 +172,8 @@ def u_lc(c):
 def earnings_profile(age):
     if age < J_R: return 2 * (age - 18) - 0.02 * (age - 18)**2 + 20
     else: return 0 # No income in retirement
-Y_PROFILE = np.array([earnings_profile(j) for j in range(J)])
+Y_PROFILE = np.array([earnings_profile(age) for age in AGES])
+assert np.all(Y_PROFILE >= 0)
 
 # --- Solve via Backward Induction ---
 V = np.zeros((J, len(A_GRID_LC)))
@@ -185,7 +195,7 @@ for j in range(J - 2, -1, -1):
             def objective(c):
                 a_next = budget - c
                 return -(u_lc(c) + BETA_LC * V_next_interp(a_next))
-            res = minimize_scalar(objective, bounds=(1e-6, budget), method='bounded')
+            res = minimize_scalar(objective, bounds=(max(1e-6, budget - A_GRID_LC[-1]), budget), method='bounded')
             V[j, i] = -res.fun
             C_policy[j, i] = res.x
 
@@ -193,7 +203,7 @@ print("> **Note:** Solved the multi-period life-cycle model.")
 
 fig = plt.figure(figsize=(14, 10))
 ax = fig.add_subplot(111, projection='3d')
-X, Y = np.meshgrid(A_GRID_LC, np.arange(J))
+X, Y = np.meshgrid(A_GRID_LC, AGES)
 ax.plot_surface(X, Y, C_policy, cmap='viridis')
 ax.set_title('Life-Cycle Consumption Policy c(age, assets)')
 ax.set_xlabel('Assets'); ax.set_ylabel('Age'); ax.set_zlabel('Consumption')
@@ -218,6 +228,8 @@ Despite the complexity, these models are the primary tool for analyzing the long
 **2. Reproduce and diagnose (Applied):** Reproduce one quantitative result from the sections on 1. The Diamond (1965) Two-Period OLG Model, The Household's Problem and the Law of Motion. Change one economically meaningful parameter over a defensible grid, report the policy/value/equilibrium response, and verify convergence with a residual or tighter tolerance.
 
 **3. Robust extension (Challenge):** Design a policy or shock counterfactual that changes one mechanism at a time. Compare welfare or transition dynamics against the baseline and explain which conclusion is structural versus calibration-specific.
+
+**3b. Failure analysis (Challenge):** For high $\beta$ the young's savings function implies negative capital next period — the extrapolated savings rule left the grid. Diagnose the out-of-range evaluation of $s(w_t, r_{t+1})$, repair by clamping to the grid and extending the wage/interest grids, and verify two-period budget feasibility along the transition.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

@@ -91,6 +91,17 @@ A Variational Autoencoder (VAE), introduced by Diederik P. Kingma and Max Wellin
 
 The encoder doesn't output a single vector; instead, it outputs two vectors: a vector of means ($\mu$) and a vector of standard deviations ($\sigma$). These parameters define a Gaussian distribution in the latent space. To generate a latent vector, we then **sample** from this distribution. This stochasticity is the key to the VAE's generative power.
 
+Formally, the model is trained by maximizing the **evidence lower bound (ELBO)** on the log-likelihood $\log p_\theta(x)$:
+
+$$
+\mathcal{L}_{\text{ELBO}}(\theta, \phi; x) = \underbrace{\mathbb{E}_{q_\phi(z|x)}[\log p_\theta(x|z)]}_{\text{reconstruction}}
+- \underbrace{D_{KL}\big(q_\phi(z|x)\,\|\,p(z)\big)}_{\text{regularization}},
+$$
+
+where $q_\phi(z|x)$ is the encoder's approximate posterior and $p(z) = \mathcal{N}(0, I)$ the prior. The first term rewards faithful reconstructions; the KL term keeps the learned posterior close to the prior so the latent space remains smooth and samplable. In practice we minimize the negative ELBO, which is exactly the loss used in the code lab below.
+
+**Dimension notes:** data space $\mathbb{R}^{D}$ (flattened images), latent space $\mathbb{R}^{d_z}$ with $d_z \ll D$; encoder emits $\mu, \log \mathrm{var} \in \mathbb{R}^{d_z}$ per sample; decoder maps back $\mathbb{R}^{d_z} \to \mathbb{R}^{D}$; the evidence lower bound is a scalar.
+
 ```python
 display(Image(filename='../images/07-Machine-Learning/VAE_architecture.png'))
 ```
@@ -101,6 +112,8 @@ display(Image(filename='../images/07-Machine-Learning/VAE_architecture.png'))
 A challenge in training VAEs is that backpropagation cannot flow through a random sampling node. To solve this, VAEs use the **reparameterization trick**. Instead of sampling directly from $N(\mu, \sigma)$, we sample a random noise vector $\epsilon$ from a standard normal distribution $N(0, 1)$ and then compute the latent vector $z$ as:
 $$ z = \mu + \sigma \odot \epsilon $$
 This way, the random part of the process is external to the network, and the gradients can flow back through the $\mu$ and $\sigma$ vectors to train the encoder.
+
+**Dimension notes:** noise $\boldsymbol{\epsilon} \sim \mathcal{N}(\mathbf{0}, I_{d_z}) \in \mathbb{R}^{d_z}$; reparameterized sample $\mathbf{z} = \mu + \sigma \odot \boldsymbol{\epsilon} \in \mathbb{R}^{d_z}$ keeps gradients flowing through the (now deterministic) path.
 
 <a id='code-vae'></a>
 ### 2.3 Code Lab: VAE for MNIST Generation
@@ -229,6 +242,17 @@ display(Image(filename='../images/07-Machine-Learning/gan_architecture.png'))
 - The **Generator** is trained to *minimize* the discriminator's ability to tell the difference. Its loss is high when the discriminator correctly identifies its output as fake.
 
 Over time, this adversarial process leads to a dynamic equilibrium where the generator produces increasingly realistic images to fool the ever-improving discriminator.
+
+This adversarial game is captured by the minimax objective
+
+$$
+\min_G \max_D \; \mathbb{E}_{x \sim p_{\text{data}}}[\log D(x)] 
++ \mathbb{E}_{z \sim p_z}[\log (1 - D(G(z)))].
+$$
+
+The discriminator $D$ ascends this quantity by assigning large logits to real data and small ones to generated samples; the generator $G$ descends it by making $D(G(z))$ closer to $1$. At the theoretical optimum, $G$ reproduces the data distribution exactly and $D(x) = \tfrac{1}{2}$ everywhere.
+
+**Dimension notes:** generator $G: \mathbb{R}^{d_z} \to \mathbb{R}^{D}$ maps noise to samples; discriminator $D: \mathbb{R}^{D} \to (0,1)$ scores realness; the minimax objective is a scalar expectation over batches.
 
 <a id='code-gan'></a>
 ### 3.3 Code Lab: Simple GAN for MNIST Generation
@@ -365,6 +389,8 @@ display(Image(filename='../images/07-Machine-Learning/dbn_architecture.png'))
 
 **3. Robust extension (Challenge):** Stress-test the model under temporal, subgroup, or covariate distribution shift. Identify which performance degradation matters for the downstream economic decision and propose one mitigation without using the test set for tuning.
 
+**3b. Failure analysis (Challenge):** The GAN's discriminator wins immediately, generator loss variance collapses, and every generated sample looks identical. Diagnose mode collapse from the imbalanced minimax game, repair with non-saturating loss, architectural balancing, and mini-batch diversity checks, then measure sample diversity.
+
 <details>
 <summary>Solution guidance</summary>
 
@@ -382,3 +408,6 @@ Generative models represent a major frontier in machine learning. VAEs and GANs 
 - Hastie, T., Tibshirani, R. & Friedman, J. (2009). *The Elements of Statistical Learning* (2nd ed.). Springer.
 - James, G., Witten, D., Hastie, T., Tibshirani, R. & Taylor, J. (2023). *An Introduction to Statistical Learning with Applications in Python*. Springer.
 - Goodfellow, I., Bengio, Y. & Courville, A. (2016). *Deep Learning*. MIT Press.
+- Kingma, D. P. & Welling, M. (2013). *Auto-Encoding Variational Bayes*. arXiv:1312.6114.
+- Goodfellow, I., Pouget-Abadie, J., Mirza, M., Xu, B., Warde-Farley, D., Ozair, S., Courville, A. & Bengio, Y. (2014). *Generative Adversarial Nets*. NeurIPS 27.
+- Hinton, G. E., Osindero, S. & Teh, Y.-W. (2006). *A Fast Learning Algorithm for Deep Belief Nets*. Neural Computation, 18(7), 1527–1554.

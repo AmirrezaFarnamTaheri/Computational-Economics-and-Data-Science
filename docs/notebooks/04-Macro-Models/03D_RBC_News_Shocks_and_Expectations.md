@@ -49,7 +49,7 @@ News shocks require extending the RBC state space to capture anticipated future 
 ### Learning Objectives
 * **Model** anticipated technology shocks with expanded state variables.
 * **Compare** surprise and news shocks to interpret expectation-driven dynamics.
-* **Explain** the investment-led boom mechanism from news shocks.
+* **Explain** why this separable-preference RBC model fails to generate a broad boom on news alone.
 
 ### Prerequisites
 * **`04-Macro-Models/03C_RBC_Dynamics_and_Surprise_Shocks.ipynb`**: Surprise shock dynamics.
@@ -59,9 +59,9 @@ News shocks require extending the RBC state space to capture anticipated future 
 > **Learning path:** Building on [`03C_RBC_Dynamics_and_Surprise_Shocks.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/04-Macro-Models/03C_RBC_Dynamics_and_Surprise_Shocks.ipynb); next continue with [`04_OLG_Models.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/04-Macro-Models/04_OLG_Models.ipynb).
 
 # Table of Contents
-* [The Lens: Expectations and News Shocks](#The-Lens:-Expectations-and-News-Shocks)
+* [The Lens: Expectations and News Shocks](#the-lens-expectations-and-news-shocks)
 * [1. News Shock Dynamics](#1-news-shock-dynamics)
-* [Interpretation: The Investment-Led Boom](#interpretation:-the-investment-led-boom)
+* [Interpretation: Anticipation Without a General Boom](#interpretation-anticipation-without-a-general-boom)
 * [Summary](#summary)
 
 ```python
@@ -210,13 +210,15 @@ class RBCNewsModel(RBCModel):
         AA[3, 3] = 1; BB[3, 4] = 1
         AA[4, 4] = 1; BB[4, 5] = 1
         AA[5, 5] = 1; BB[5, 6] = 1
-        AA[6, 6] = 1 # n4_{t+1} = 0 (persistent)
+        AA[6, 6] = 1 # n4_{t+1} = 0 absent further news
 
         self.subs = {'L_a': L_a, 'L_k': L_k, 'L_c': L_c,
                      'y_a': y_a, 'y_k': y_k, 'y_c': y_c,
                      'r_a': r_a, 'r_k': r_k, 'r_c': r_c}
 
-        return solve_qz(AA, BB, n_states)
+        # Klein requires [states; controls], not c in the state block.
+        order = [0, 1, 3, 4, 5, 6, 2]  # [k, a, n1, n2, n3, n4, c]
+        return solve_qz(AA[:, order], BB[:, order], n_states)
 
 
 # --- Simulation Logic ---
@@ -292,14 +294,11 @@ def simulate_rbc_scenarios(model_base, model_news, T=40):
 simulate_rbc_scenarios(rbc, RBCNewsModel())
 ```
 
-### Interpretation: The Investment-Led Boom
+### Interpretation: Anticipation Without a General Boom
 
-Notice the striking difference in the "News" simulation:
+At the announcement date, productivity and installed capital are unchanged. Positive news raises consumption through the wealth effect. With the separable preferences used here, the labor-supply equation therefore gives $l_0=-\sigma c_0/(\phi+\alpha)<0$. Output falls on impact, and the resource constraint implies lower investment as well.
 
-1.  **Consumption:** Rises *immediately* upon hearing the news, even though productivity hasn't changed yet. Agents feel wealthier.
-2.  **Labor & Investment:** Also rise immediately. Why? To smooth consumption, agents want to save for the future. But they also want to consume more now. To achieve both, they work harder today to build up capital so that when the productivity boom hits, they have a large capital stock to take advantage of it.
-
-This **co-movement** of C, I, and L in response to news is a key success of the model.
+This baseline does **not** generate simultaneous increases in consumption, labor, and investment before productivity arrives. Its failure to produce that co-movement is an economic restriction, not a plotting error. Check the timing separately: news enters $n_4$ at date zero, reaches productivity at date four, and affects forward-looking consumption immediately.
 
 ## Exercises
 
@@ -308,6 +307,8 @@ This **co-movement** of C, I, and L in response to news is a key success of the 
 **2. Reproduce and diagnose (Applied):** Reproduce one quantitative result from the sections on 1. News Shock Dynamics, Interpretation: The Investment-Led Boom. Change one economically meaningful parameter over a defensible grid, report the policy/value/equilibrium response, and verify convergence with a residual or tighter tolerance.
 
 **3. Robust extension (Challenge):** Design a policy or shock counterfactual that changes one mechanism at a time. Compare welfare or transition dynamics against the baseline and explain which conclusion is structural versus calibration-specific.
+
+**3b. Failure analysis (Challenge):** A four-period-ahead news experiment moves productivity at date zero. Check the ordering of states supplied to QZ and the news pipeline. Verify that productivity remains unchanged through date three, rises at date four, and consumption may respond immediately because the announcement is already known.
 
 <details>
 <summary>Solution guidance</summary>
@@ -322,7 +323,7 @@ In this chapter, we have:
 
 1.  **Formalized** the RBC model as a dynamic system of optimizing agents.
 2.  **Solved** the model using modern methods (QZ decomposition), handling the complex issue of state variable transformation automatically.
-3.  **Discovered** that the model can generate realistic "investment-led booms" through news shocks, a feature that pure surprise-shock models lack.
+3.  **Diagnosed** the baseline model's news-shock limitation: consumption rises on announcement, while labor and investment fall before productivity improves.
 
 The RBC model remains the foundation of modern macro. Even as we add frictions (sticky prices, financial constraints) to build New Keynesian models, the core transmission mechanism—intertemporal substitution and capital accumulation—remains identical to what we built here.
 

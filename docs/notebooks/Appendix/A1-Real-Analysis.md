@@ -71,17 +71,19 @@ Real Analysis is the bedrock of modern economic theory. Concepts like compactnes
 * **Calculus:** Limits, continuity, and sequences.
 * **Mathematical maturity:** Comfort with formal proofs and abstract reasoning.
 
+> **Historical Context — Banach 1922, Blackwell 1965.** Stefan Banach proved the contraction principle in his 1922 doctoral thesis; forty-three years later David Blackwell's discounting lemma gave economists a one-line proof that Bellman operators contract. The fixed-point guarantee behind value function iteration is exactly this result.
+
 > **Learning path:** This notebook is the entry point for this track; next continue with [`A2-Multivariate-Calculus.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/Appendix/A2-Multivariate-Calculus.ipynb).
 
 ## Table of Contents
 
-- [1.1 The Real Number System](#1.1-The-Real-Number-System)
-- [1.2 Sequences and Limits](#1.2-Sequences-and-Limits)
-- [1.3 Continuity and Limits of Functions](#1.3-Continuity-and-Limits-of-Functions)
-- [1.4 Compactness](#1.4-Compactness)
-- [1.5 Convexity](#1.5-Convexity)
-- [1.6 Mean Value Theorem and Taylor Series](#1.6-Mean-Value-Theorem-and-Taylor-Series)
-- [Summary](#Summary)
+- [1.1 The Real Number System](#11-the-real-number-system)
+- [1.2 Sequences and Limits](#12-sequences-and-limits)
+- [1.3 Continuity and Limits of Functions](#13-continuity-and-limits-of-functions)
+- [1.4 Compactness](#14-compactness)
+- [1.5 Convexity](#15-convexity)
+- [1.6 Mean Value Theorem and Taylor Series](#16-mean-value-theorem-and-taylor-series)
+- [Summary](#summary)
 
 ## 1.1 The Real Number System
 
@@ -262,7 +264,7 @@ Rearranging, $(1 - \beta)\, d(x^*, y^*) \le 0$. Since $\beta < 1$ makes $(1-\bet
 1. **Monotonicity:** $v \le w$ (pointwise) $\implies Tv \le Tw$, and
 2. **Discounting:** $T(v + a) \le Tv + \beta a$ for every constant $a \ge 0$, with $\beta \in [0,1)$,
 
-then $T$ is a contraction of modulus $\beta$. The Bellman operator satisfies both almost trivially — monotonicity because a higher continuation value cannot lower the maximized objective, and discounting because adding a constant $a$ to the value function adds exactly $\beta a$ inside the expectation. This is the route Module 03 actually takes.
+then $T$ is a contraction of modulus $\beta$. The Bellman operator satisfies both by direct verification — monotonicity because a higher continuation value cannot lower the maximized objective, and discounting because adding a constant $a$ to the value function adds exactly $\beta a$ inside the expectation. This is the route Module 03 actually takes.
 
 ```python
 course_connection(
@@ -477,6 +479,8 @@ Choosing any $c$ strictly between these two numbers gives $p \cdot a > c > p \cd
 
 > **Why convexity is not negotiable.** Step 3 is the only place convexity is used, and it is decisive: it guarantees the *entire segment* from $z^*$ to $z$ lies in $C$, which is what licenses the perturbation argument. If $C$ were non-convex — imagine a crescent-shaped set with the origin nestled in its concavity — the closest point still exists, but moving toward another point of the set may leave $C$ entirely, the inequality $\|z_\lambda\| \ge \|z^*\|$ no longer holds for points in the set, and no hyperplane separates. This is precisely the failure that breaks the **Second Welfare Theorem** with non-convex preferences (see `05-Micro-Models/02_General_Equilibrium.ipynb`): the supporting price system that would decentralize an efficient allocation simply does not exist.
 
+**Dimension notes:** $A, B$ are subsets of one normed space (here $\mathbb{R}^n$ with the Euclidean distance); the separating hyperplane has normal vector $p \in \mathbb{R}^n$ and offset $c \in \mathbb{R}$; all distances are scalars.
+
 The theorem is illustrated below. Two disjoint convex sets, A and B, can be perfectly separated by a line (or a hyperplane in higher dimensions). The vector $p$ is normal (perpendicular) to this hyperplane.
 
 ![Separating Hyperplane Theorem](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/png/separating_hyperplane_theorem.png)
@@ -562,6 +566,8 @@ $$d(x_m, x_n) \;\le\; \sum_{k=n}^{m-1} d(x_{k+1}, x_k) \;\le\; \sum_{k=n}^{m-1} 
 
 $$T(x^*) = T\Big(\lim_{n\to\infty} x_n\Big) = \lim_{n\to\infty} T(x_n) = \lim_{n\to\infty} x_{n+1} = x^*,$$
 
+**Dimension notes:** $(X, d)$ metric space with contraction modulus $\beta \in [0, 1)$; iterates and fixed point $x^* \in X$; in the normed case distances are induced by the norm and the Neumann series $\sum \beta^k$ is a scalar bound.
+
 ## Exercises
 
 **1. Mechanism and assumptions (Conceptual):** Restate one theorem used in **A1 Real Analysis Essentials** with every hypothesis explicit. Prove one non-trivial step that is often skipped and explain where that step is used later in the curriculum.
@@ -569,6 +575,8 @@ $$T(x^*) = T\Big(\lim_{n\to\infty} x_n\Big) = \lim_{n\to\infty} T(x_n) = \lim_{n
 **2. Reproduce and diagnose (Applied):** Work a concrete example from 1.1 The Real Number System, 1.1.1 Completeness and Supremum by hand and verify it computationally. Show the intermediate algebra, not only the final result.
 
 **3. Robust extension (Challenge):** Remove one hypothesis and construct a counterexample or boundary case. Explain exactly which line of the original proof fails and what weaker conclusion, if any, remains.
+
+**3b. Failure analysis (Challenge):** A proof 'establishes' $d(Tx,Ty) \le \beta^2 d(x,y)$ implies $\beta \ge 1$ — using the triangle inequality with an illegitimate equality step. Diagnose the faulty step, repair the argument, and construct an explicit counterexample to the misstated claim.
 
 <details>
 <summary>Solution guidance</summary>

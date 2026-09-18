@@ -10,6 +10,11 @@
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/01-Foundations/23_Profiling_and_Performance.ipynb) [![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main?filepath=01-Foundations/23_Profiling_and_Performance.ipynb) [![Code License: MIT](https://img.shields.io/badge/Code%20License-MIT-yellow.svg)](../LICENSE) [![Content License: CC BY 4.0](https://img.shields.io/badge/Content%20License-CC%20BY%204.0-blue.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 ```python
+import numpy as np
+
+
+rng = np.random.default_rng(42)  # single reproducible generator
+
 # --- Global Notebook Setup ---
 import warnings
 
@@ -35,15 +40,15 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 ```
 
 ### Table of Contents
-1. [The Lens: From Correctness to Speed](#The-Lens:-From-Correctness-to-Speed)
-2. [Case Study: A Buffer-Stock Savings Model Simulation](#Case-Study:-A-Buffer-Stock-Savings-Model-Simulation)
-3. [Benchmarking with `%timeit`](#Quick-Benchmarking-with-%timeit)
-4. [Function-Level Profiling with `cProfile`](#Function-Level-Profiling-with-cProfile)
-5. [Line-by-Line Profiling with `line_profiler`](#Line-by-Line-Profiling-with-line_profiler)
-6. [Optimization with Numba](#Optimization-with-Numba)
-7. [Profiling a Slow Simulation](#Profiling-a-Slow-Simulation)
-8. [Summary](#Summary)
-9. [Exercises](#Exercises)
+1. [The Lens: From Correctness to Speed](#the-lens-from-correctness-to-speed)
+2. [Case Study: A Buffer-Stock Savings Model Simulation](#case-study-a-buffer-stock-savings-model-simulation)
+3. [Benchmarking with `%timeit`](#quick-benchmarking-with-timeit)
+4. [Function-Level Profiling with `cProfile`](#function-level-profiling-with-cprofile)
+5. [Line-by-Line Profiling with `line_profiler`](#line-by-line-profiling-with-line_profiler)
+6. [Optimization with Numba](#optimization-with-numba)
+7. [Profiling a Slow Simulation](#profiling-a-slow-simulation)
+8. [Summary](#summary)
+9. [Exercises](#exercises)
 
 ## The Lens: 23-Profiling-and-Performance
 Once your code is correct and well-tested, the next frontier is often performance. In computational economics, models can take hours or even days to run. The ability to identify and eliminate performance **bottlenecks** is a critical skill. **Profiling** is the systematic process of measuring the resource usage of your code—how much time it spends on each line or in each function—to find these bottlenecks.
@@ -81,7 +86,7 @@ def simulate_buffer_stock(
     log_y = np.zeros((T, n_sim))
 
     for t in range(T - 1):
-        log_y[t + 1, :] = rho * log_y[t, :] + sigma * np.random.randn(n_sim)
+        log_y[t + 1, :] = rho * log_y[t, :] + sigma * rng.standard_normal(n_sim)
         y = y_bar * np.exp(log_y[t + 1, :])
         c = c_bar * wealth[t, :] + y
         wealth[t + 1, :] = (1 + r) * (wealth[t, :] - c) + y
@@ -120,16 +125,23 @@ except ImportError:
 The profiling results clearly show that the bottleneck is the `for` loop. A common and powerful way to accelerate such loops in numerical Python is to use **Numba**, a just-in-time (JIT) compiler. By simply adding the `@njit` decorator, Numba will compile the function to highly efficient machine code.
 
 ```python
+# Shocks are drawn OUTSIDE the jitted kernel with a seeded Generator and
+# passed in: reproducible, and no legacy global RNG inside @njit.
+rng_shocks = np.random.default_rng(42)
+SHOCKS = rng_shocks.standard_normal((500 - 1, 1000))  # (T - 1, n_sim)
+
+
 @njit
 def simulate_buffer_stock_numba(
-    n_sim=1000, T=500, r=0.01, sigma=0.1, rho=0.9, y_bar=1.0, c_bar=0.9
+    shocks, r=0.01, sigma=0.1, rho=0.9, y_bar=1.0, c_bar=0.9
 ):
     """Numba-optimized version of the simulation."""
+    T, n_sim = shocks.shape[0] + 1, shocks.shape[1]
     wealth = np.zeros((T, n_sim))
     log_y = np.zeros((T, n_sim))
 
     for t in range(T - 1):
-        log_y[t + 1, :] = rho * log_y[t, :] + sigma * np.random.randn(n_sim)
+        log_y[t + 1, :] = rho * log_y[t, :] + sigma * shocks[t, :]
         y = y_bar * np.exp(log_y[t + 1, :])
         c = c_bar * wealth[t, :] + y
         wealth[t + 1, :] = (1 + r) * (wealth[t, :] - c) + y
@@ -137,9 +149,9 @@ def simulate_buffer_stock_numba(
 
 
 # Run once to compile
-_ = simulate_buffer_stock_numba()
+_ = simulate_buffer_stock_numba(SHOCKS)
 print("Benchmarking the Numba-Optimized Version:")
-%timeit simulate_buffer_stock_numba()
+%timeit simulate_buffer_stock_numba(SHOCKS)
 print(
     "The Numba version is typically orders of magnitude faster, demonstrating the power of JIT compilation for numerical loops."
 )
@@ -166,6 +178,8 @@ Using `%lprun`, we would see the inner loop consuming 90% of runtime. The soluti
 **2. Reproduce and diagnose (Applied):** Reproduce an example involving Case Study: A Buffer-Stock Savings Model Simulation, Quick Benchmarking with `%timeit`, then change one input and explain the result before running the code.
 
 **3. Robust extension (Challenge):** Extend the example to a larger or less convenient case and document the correctness and performance checks needed before trusting the result.
+
+**3b. Failure analysis (Challenge):** A heroic rewrite of a function that profiling showed using 2% of runtime leaves total wall time unchanged. Diagnose the misread profile (cumulative vs self time), re-target the true hotspot, and re-profile to confirm the speedup — stating Amdahl's bound on what any further micro-optimization could achieve.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

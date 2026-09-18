@@ -12,8 +12,10 @@
 # === Environment Setup ===
 import matplotlib.pyplot as plt
 import numpy as np
+rng = np.random.default_rng(42)  # single reproducible generator
 import pandas as pd
 import statsmodels.formula.api as smf
+from scipy.optimize import minimize
 from IPython.display import Markdown, display
 
 # --- Configuration ---
@@ -23,13 +25,11 @@ plt.rcParams.update({'font.size': 14, 'figure.figsize': (12, 8), 'figure.dpi': 1
                      'xtick.labelsize': 'small', 'ytick.labelsize': 'small'})
 %config InlineBackend.figure_format = 'retina'
 np.set_printoptions(suppress=True, linewidth=120, precision=4)
-
-# --- Utility Functions ---
 ```
 
 ## Table of Contents
 
-1. [Introduction](#Introduction)
+1. [Introduction](#introduction)
 
 ## The Lens: Parallel Worlds
 **What problem are we solving?**
@@ -59,9 +59,17 @@ The key assumption is **Parallel Trends**: in the absence of treatment, the trea
 * **Python:** `statsmodels`, Pandas groupby, and Matplotlib.
 * **Learning-path prerequisite:** [`07_Synthetic_Control_Methods.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/06-Econometrics/07_Synthetic_Control_Methods.ipynb)
 
+> **Historical Context — Card-Krueger
+
+![Angrist and Imbens](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/01-Foundations/1.1-angrist-imbens.jpg)
+*Figure: Joshua Angrist and Guido Imbens, Nobel 2021 for methodological advances in causal analysis..* 1994.** David Card and Alan Krueger surveyed fast-food restaurants when New Jersey raised its minimum wage in 1992, finding no job loss and igniting the credibility revolution (Card's half of the 2021 Nobel). The staggered-adoption estimators in section 3 exist precisely because their TWFE successors proved fragile.
+
 > **Learning path:** Building on [`07_Synthetic_Control_Methods.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/06-Econometrics/07_Synthetic_Control_Methods.ipynb); next continue with [`09_Classical_Time_Series_Analysis.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/06-Econometrics/09_Classical_Time_Series_Analysis.ipynb).
 
 ## 1. The DiD Estimator and the Parallel Trends Assumption
+
+![DiD parallel trends](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/06-Econometrics/did_parallel_trends.png)
+*Figure: Parallel trends and the difference-in-differences contrast..*
 
 The DiD estimate is the simple difference in the average change over time between the treatment and control groups:
 $$ \hat{\delta}_{DiD} = (E[Y_{T, post}] - E[Y_{T, pre}]) - (E[Y_{C, post}] - E[Y_{C, pre}]) $$ 
@@ -77,6 +85,8 @@ Adding and subtracting the unobserved counterfactual $E[Y_i(0)_{post} | T]$ give
 $$ = \underbrace{(E[Y_i(1)_{post} | T] - E[Y_i(0)_{post} | T])}_{\text{ATT}} + \underbrace{(E[Y_i(0)_{post} | T] - E[Y_i(0)_{pre} | T])}_{\text{Counterfactual Trend for Treated}} $$ 
 The parallel trends assumption allows us to substitute the *observed* trend from the control group for the unobserved counterfactual trend for the treated group. Rearranging gives the DiD estimator:
 $$ \text{ATT} = (E[Y_{T, post}] - E[Y_{T, pre}]) - (E[Y_{C, post}] - E[Y_{C, pre}]) $$
+
+**Dimension notes:** group membership (treated/control) and period (pre/post) are indicators in $\{0,1\}$; outcomes $Y$ are scalars; the DiD contrast $\hat{\delta}_{DiD}$ and its potential-outcomes counterpart ATT are scalar functionals.
 
 ## 2. Estimation: The Two-Way Fixed Effects (TWFE) Model
 
@@ -226,6 +236,8 @@ $$E[Y_{T, post}] - E[Y_{T, pre}] = E[Y_i(1)_{post} | T] - E[Y_i(0)_{pre} | T]$$
 
 $$= \underbrace{(E[Y_i(1)_{post} | T] - E[Y_i(0)_{post} | T])}_{\text{ATT}} + \underbrace{(E[Y_i(0)_{post} | T] - E[Y_i(0)_{pre} | T])}_{\text{Counterfactual Trend for Treated}}$$
 
+**Dimension notes:** all terms are scalar expectations over units and time; parallel trends equates two scalar counterfactual changes, and the estimator differences them.
+
 ## 4. Honest Parallel-Trends Sensitivity: What If Pre-Trends Are Only Approximately Informative?
 
 Modern staggered-adoption estimators repair contamination from already-treated comparison groups, but they do not make the **parallel-trends assumption** testable after treatment. Rambachan and Roth (2023) therefore ask a different question: how large could post-treatment deviations from the counterfactual trend be before the conclusion changes?
@@ -240,6 +252,11 @@ A disciplined DiD workflow should therefore report (1) an estimator valid for th
 
 **References:** Rambachan & Roth (2023); Callaway & Sant'Anna (2021); Sun & Abraham (2021).
 
+> **Common Pitfalls in This Lecture**
+>
+> - **Staggered TWFE contamination.** With staggered adoption and heterogeneous effects, two-way fixed effects uses already-treated units as controls, potentially reversing signs (Goodman-Bacon decomposition). Use Callaway-Sant'Anna or Sun-Abraham estimators for staggered designs.
+> - **Pre-trends as proof.** Flat pre-trends are consistent with parallel trends but do not prove it — they miss confounders that switch on exactly at treatment. Treat pre-trend tests as necessary, not sufficient, and corroborate with placebos.
+
 ## Exercises
 
 **1. Mechanism and assumptions (Conceptual):** Define the estimand in **08 Difference in Differences**, list the identifying assumptions, and give a concrete data-generating process that violates one assumption while leaving the others intact.
@@ -247,6 +264,8 @@ A disciplined DiD workflow should therefore report (1) an estimator valid for th
 **2. Reproduce and diagnose (Applied):** Implement or reproduce the estimator using the material on 1. The DiD Estimator and the Parallel Trends Assumption, 1.1 Formal Derivation with Potential Outcomes. Report uncertainty and at least two diagnostics; then compare with an alternative specification that targets the same estimand.
 
 **3. Robust extension (Challenge):** Run a Monte Carlo or sensitivity exercise that varies the most fragile identifying condition. Quantify bias/coverage or the range of estimates and state what evidence would change your substantive conclusion.
+
+**3b. Failure analysis (Challenge):** The TWFE estimate is negative while the event-study plot is clearly positive — staggered adoption with heterogeneous effects. Diagnose the forbidden comparisons (already-treated as controls), repair with Callaway-Sant'Anna or Sun-Abraham estimators, and confirm with the Goodman-Bacon decomposition.
 
 <details>
 <summary>Solution guidance</summary>
@@ -275,7 +294,7 @@ n_units = 100
 data = []
 for unit in range(n_units):
     treatment_group = 1 if unit < 50 else 0
-    unit_effect = np.random.normal(0, 1)
+    unit_effect = rng.normal(0, 1)
 
     for year in years:
         # Time Trend (Common to all)
@@ -285,7 +304,7 @@ for unit in range(n_units):
         post = 1 if year >= 2015 else 0
         te = 2.0 if (treatment_group == 1 and post == 1) else 0
 
-        y = unit_effect + time_trend + te + np.random.normal(0, 0.2)
+        y = unit_effect + time_trend + te + rng.normal(0, 0.2)
         data.append({'unit': unit, 'year': year, 'treated': treatment_group, 'y': y, 'post': post})
 
 df_did = pd.DataFrame(data)

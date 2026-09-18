@@ -9,6 +9,8 @@
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/09-Finance/01_Portfolio_Theory.ipynb) [![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main?filepath=09-Finance/01_Portfolio_Theory.ipynb) [![Code License: MIT](https://img.shields.io/badge/Code%20License-MIT-yellow.svg)](../LICENSE) [![Content License: CC BY 4.0](https://img.shields.io/badge/Content%20License-CC%20BY%204.0-blue.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 ```python
+rng = np.random.default_rng(42)  # single reproducible generator
+
 # === Environment Setup ===
 import warnings
 
@@ -48,6 +50,8 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 * [3. The Black-Litterman Model](#3-the-black-litterman-model)
 * [4. Summary](#4-summary)
 * [Summary](#summary)
+
+> **Historical Context — Markowitz 1952.** Harry Markowitz's 'Portfolio Selection' (Journal of Finance, 1952) recast investing as an optimization over means and covariances rather than rules of thumb — diversification became a theorem. The 1990 Nobel followed; every efficient frontier plotted below descends from that paper.
 
 ## The Lens: The Mathematics of Not Putting All Your Eggs in One Basket
 Investing is a trade-off. We want high returns, but we hate losing money. For centuries, "diversification" was folk wisdom. In 1952, **Harry Markowitz** turned it into a science. He showed that the risk of a portfolio is not just the average risk of its stocks, but depends crucially on how they move *together* (covariance).
@@ -92,7 +96,6 @@ try:
     # Synthetic Stock Returns correlated with factors for stability
     # In a real user scenario, this would be '../data/stock_returns.csv'
     # We generate it here to ensure the notebook is self-contained given the sandbox constraints
-    np.random.seed(42)
     dates = ff_factors.index
     n_obs = len(dates)
     tickers = ['AAPL', 'MSFT', 'AMZN', 'JPM', 'XOM']
@@ -108,7 +111,7 @@ try:
 
     returns_dict = {}
     for tick, b in betas.items():
-        noise = np.random.normal(0, 0.02, n_obs)
+        noise = rng.normal(0, 0.02, n_obs)
         # R_i = Rf + Beta * Factors + Alpha + Noise
         r_i = ff_factors['RF'] + b[0]*ff_factors['Mkt-RF'] + b[1]*ff_factors['SMB'] + b[2]*ff_factors['HML'] + noise
         returns_dict[tick] = r_i
@@ -122,8 +125,8 @@ except FileNotFoundError:
     print("Error: '../data/fama_french_5_factors.csv' not found. Please run download_data.py.")
     # Fallback to completely random data to prevent crash
     dates = pd.date_range('2010-01-01', periods=1000, freq='D')
-    asset_returns = pd.DataFrame(np.random.normal(0, 0.01, (1000, 5)), index=dates, columns=['AAPL', 'MSFT', 'AMZN', 'JPM', 'XOM'])
-    ff_factors = pd.DataFrame(np.random.normal(0, 0.01, (1000, 4)), index=dates, columns=['Mkt-RF', 'SMB', 'HML', 'RF'])
+    asset_returns = pd.DataFrame(rng.normal(0, 0.01, (1000, 5)), index=dates, columns=['AAPL', 'MSFT', 'AMZN', 'JPM', 'XOM'])
+    ff_factors = pd.DataFrame(rng.normal(0, 0.01, (1000, 4)), index=dates, columns=['Mkt-RF', 'SMB', 'HML', 'RF'])
     market_returns = ff_factors['Mkt-RF'] + ff_factors['RF']
 
 display(asset_returns.head())
@@ -156,12 +159,17 @@ if PYPFOPT_AVAILABLE:
 
 ## 2. Testing the CAPM and Fama-French Models
 
+![CML versus SML](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/09-Finance/cml_sml_distinction.png)
+*Figure: How the capital market line differs from the security market line..*
+
 The CAPM predicts that a stock's excess return is solely determined by its market beta:
 $$ E[R_i] - R_f = \alpha_i + \beta_i(E[R_m] - R_f) $$
 If the CAPM holds, $\alpha_i$ should be zero.
 
 The Fama-French model adds Size (SMB) and Value (HML) factors:
 $$ E[R_i] - R_f = \alpha_i + \beta_{mkt} MKT + \beta_{smb} SMB + \beta_{hml} HML $$
+
+**Dimension notes:** excess returns $E[R_i] - R_f$ scalars; factor loadings $(\beta_i, s_i, h_i)$ scalar regression coefficients on factor returns SMB, HML, $E[R_m] - R_f$; $\alpha_i$ is the scalar pricing error tested against zero.
 
 ```python
 # Prepare Regression Data
@@ -262,6 +270,13 @@ $$E[R_i] - R_f = \alpha_i + \beta_{mkt} MKT + \beta_{smb} SMB + \beta_{hml} HML$
 
 $$\hat\Sigma_{LW}=\alpha F+(1-\alpha)S,$$
 
+**Dimension notes:** returns, betas and alphas are scalars; factor premia enter as scalar regressors; test statistics compare scalar estimates to their standard errors.
+
+> **Common Pitfalls in This Lecture**
+>
+> - **Error-maximizing weights.** Mean-variance optimizers eat estimation error: sampling noise in means produces extreme 'optimal' portfolios that fail out of sample. Constrain weights, shorten the horizon to reduce mean noise, or shrink covariances (Ledoit-Wolf).
+> - **Annualization slips.** Scaling monthly Sharpe ratios requires multiplying the *mean* by 12 but the *volatility* by $\sqrt{12}$; mixing these inflates ratios ~40%. Align frequency of returns, risk-free rate and scaling exponents.
+
 ## Exercises
 
 **1. Mechanism and assumptions (Conceptual):** Derive the no-arbitrage, optimality, or risk-pricing relation central to **01 Portfolio Theory** and verify that it satisfies at least two economically meaningful limiting cases or bounds.
@@ -269,6 +284,8 @@ $$\hat\Sigma_{LW}=\alpha F+(1-\alpha)S,$$
 **2. Reproduce and diagnose (Applied):** Reproduce a calculation from 1. Mean-Variance Optimization, 1.1 Data Loading with transparent inputs. Perturb volatility, discounting, risk aversion, transaction costs, or another key parameter and explain the sensitivity in economic terms.
 
 **3. Robust extension (Challenge):** Construct a stress scenario outside the calibration sample. Compare two valuation/risk methods and explain which discrepancy reflects model risk rather than numerical error.
+
+**3b. Failure analysis (Challenge):** The unconstrained mean-variance optimizer allocates 400% to one asset and the out-of-sample Sharpe is negative. Diagnose estimation-error maximization, repair with weight constraints and covariance shrinkage (Ledoit-Wolf), and evaluate walk-forward rather than in-sample.
 
 <details>
 <summary>Solution guidance</summary>
@@ -288,7 +305,6 @@ A strong solution states assumptions before computation, includes an independent
 import scipy.optimize as sco
 
 # Synthetic Asset Returns (3 Assets)
-np.random.seed(42)
 n_obs = 1000
 returns = np.random.multivariate_normal(
     mean=[0.10, 0.12, 0.15],
@@ -309,7 +325,7 @@ def portfolio_return(weights):
 p_ret = []
 p_vol = []
 for _ in range(5000):
-    weights = np.random.random(num_assets)
+    weights = rng.random(num_assets)
     weights /= np.sum(weights)
     p_ret.append(portfolio_return(weights))
     p_vol.append(portfolio_volatility(weights))

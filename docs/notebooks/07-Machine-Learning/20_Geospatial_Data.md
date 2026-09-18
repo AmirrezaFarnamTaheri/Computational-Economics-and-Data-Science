@@ -44,7 +44,7 @@ Geospatial data adds a location dimension to economic analysis. In practice, thi
 
 ## Table of Contents
 
-1. [Introduction](#Introduction)
+1. [Introduction](#introduction)
 
 ## The Lens: Geography as Data
 **What problem are we solving?**
@@ -276,6 +276,8 @@ if PYSAL_AVAILABLE:
 **2. Reproduce and diagnose (Applied):** Build a leakage-safe validation experiment using 1. Core Concepts of Geospatial Data, 1.1 Vector Data and `shapely` Geometries. Compare a simple baseline with the featured method using an economically relevant metric and report uncertainty across folds or seeds.
 
 **3. Robust extension (Challenge):** Stress-test the model under temporal, subgroup, or covariate distribution shift. Identify which performance degradation matters for the downstream economic decision and propose one mitigation without using the test set for tuning.
+
+**3b. Failure analysis (Challenge):** A spatial join matches every district to the wrong region, and computed distances are absurd — degrees were treated as meters. Diagnose the CRS mismatch, repair by reprojecting to a planar CRS before distance/join operations, and validate against a handful of known distances.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

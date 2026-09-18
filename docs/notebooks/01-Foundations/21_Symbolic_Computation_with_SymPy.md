@@ -36,20 +36,20 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 ```
 
 ### Table of Contents
-1. [The Lens: Symbolic vs. Numerical Computation](#The-Lens:-Symbolic-vs.-Numerical-Computation)
-2. [Core Concepts: Symbols and Expressions](#Core-Concepts:-Symbols-and-Expressions)
-3. [Symbolic Calculus](#Symbolic-Calculus)
-    - [Differentiation](#Differentiation)
-    - [Integration](#Integration)
-    - [Limits](#Limits)
-4. [Solving Equations](#Solving-Equations)
-    - [Algebraic Equations](#Algebraic-Equations)
-    - [Systems of Equations](#Systems-of-Equations)
-    - [Deriving the Euler Equation](#Deriving-the-Euler-Equation)
-5. [Application: Consumer Utility Maximization](#Application:-Consumer-Utility-Maximization)
-6. [From Symbols to Numbers: `lambdify`](#From-Symbols-to-Numbers:-lambdify)
-7. [Summary](#Summary)
-8. [Exercises](#Exercises)
+1. [The Lens: Symbolic vs. Numerical Computation](#the-lens-symbolic-vs-numerical-computation)
+2. [Core Concepts: Symbols and Expressions](#core-concepts-symbols-and-expressions)
+3. [Symbolic Calculus](#symbolic-calculus)
+    - [Differentiation](#differentiation)
+    - [Integration](#integration)
+    - [Limits](#limits)
+4. [Solving Equations](#solving-equations)
+    - [Algebraic Equations](#algebraic-equations)
+    - [Systems of Equations](#systems-of-equations)
+    - [Deriving the Euler Equation](#deriving-the-euler-equation)
+5. [Application: Consumer Utility Maximization](#application-consumer-utility-maximization)
+6. [From Symbols to Numbers: `lambdify`](#from-symbols-to-numbers-lambdify)
+7. [Summary](#summary)
+8. [Exercises](#exercises)
 
 ## The Lens: 21-Symbolic-Computation-with-SymPy
 So far, we have focused on **numerical computation**: using arrays of numbers to approximate solutions. While powerful, this approach has limitations. It gives you an answer for *specific* parameter values, but it doesn't tell you the general relationship. It can tell you that "if price is 5, demand is 10", but not "demand is inversely proportional to price squared".
@@ -247,6 +247,8 @@ plt.show()
 **2. Reproduce and diagnose (Applied):** Reproduce an example involving Core Concepts: Symbols and Expressions, Symbolic Calculus, then change one input and explain the result before running the code.
 
 **3. Robust extension (Challenge):** Extend the example to a larger or less convenient case and document the correctness and performance checks needed before trusting the result.
+
+**3b. Failure analysis (Challenge):** `solve` returns an empty list for an equation that clearly has solutions, and a symbolic integral takes minutes. Diagnose the missing symbol assumptions (e.g., positivity) that block branch selection, fix with `Symbol(..., positive=True)` and targeted simplification, then `lambdify` the result and time the numeric evaluation.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

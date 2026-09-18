@@ -70,6 +70,8 @@ This notebook implements the computational search for the price vector that bala
 *   **Economics:** Supply and Demand, Zero Profit conditions, Market Clearing.
 * **Learning-path prerequisite:** [`01_Consumer_and_Producer_Theory.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/05-Micro-Models/01_Consumer_and_Producer_Theory.ipynb)
 
+> **Historical Context — Arrow-Debreu 1954.** Kenneth Arrow and Gérard Debreu proved competitive equilibrium existence in Econometrica (1954), wielding Kakutani's fixed-point theorem against Walras's 1874 equations. Arrow took the 1972 Nobel, Debreu the 1983 — between them they formalized what 'the invisible hand' means.
+
 > **Learning path:** Building on [`01_Consumer_and_Producer_Theory.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/05-Micro-Models/01_Consumer_and_Producer_Theory.ipynb); next continue with [`03_Game_Theory_and_Auctions.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/05-Micro-Models/03_Game_Theory_and_Auctions.ipynb).
 
 ## 1. Theoretical Foundations: Exchange, Efficiency, and Existence
@@ -578,6 +580,8 @@ $$y_A(x_A) \;=\; \frac{k_B\, \bar{y}\, x_A}{k_A(\bar{x} - x_A) + k_B\, x_A}.$$
 **2. Reproduce and diagnose (Applied):** Construct a small numerical example using 1. Theoretical Foundations: Exchange, Efficiency, and Existence, 1.1 The Edgeworth Box and the Contract Curve. Verify feasibility and optimality/equilibrium conditions numerically rather than relying only on the solver status.
 
 **3. Robust extension (Challenge):** Relax one substantive assumption—information, convexity, symmetry, commitment, or market completeness—and predict how equilibrium or welfare changes before computing the extension.
+
+**3b. Failure analysis (Challenge):** The Walrasian auctioneer clears every market but one, and that market's excess demand diverges. Diagnose the sign/indexing bug in one excess-demand function (and check Walras's Law: the excess demands must sum to zero), repair, and verify market clearing to tolerance with the law holding exactly.
 
 <details>
 <summary>Solution guidance</summary>

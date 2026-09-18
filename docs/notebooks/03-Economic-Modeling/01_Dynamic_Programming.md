@@ -45,15 +45,17 @@ except ImportError:
 
 ## Table of Contents
 
-1.  [The Lens: The Recursive Structure of Choice](#The-Lens:-The-Recursive-Structure-of-Choice)
-2.  [The Principle of Optimality: A Cake Eating Problem](#The-Principle-of-Optimality:-A-Cake-Eating-Problem)
-3.  [The Bellman Equation for Infinite Horizon Problems](#The-Bellman-Equation-for-Infinite-Horizon-Problems)
-4.  [A Canonical Model: The Stochastic Growth Model](#A-Canonical-Model:-The-Stochastic-Growth-Model)
-5.  [Numerical Solution Algorithms](#Numerical-Solution-Algorithms)
-6.  [Analysis of the Solution](#Analysis-of-the-Solution)
-7.  [Simulating the Stationary Distribution](#Simulating-the-Stationary-Distribution)
-8.  [Summary](#Summary)
-9.  [Exercises](#Exercises)
+1.  [The Lens: The Recursive Structure of Choice](#the-lens-the-recursive-structure-of-choice)
+2.  [The Principle of Optimality: A Cake Eating Problem](#the-principle-of-optimality-a-cake-eating-problem)
+3.  [The Bellman Equation for Infinite Horizon Problems](#the-bellman-equation-for-infinite-horizon-problems)
+4.  [A Canonical Model: The Stochastic Growth Model](#a-canonical-model-the-stochastic-growth-model)
+5.  [Numerical Solution Algorithms](#numerical-solution-algorithms)
+6.  [Analysis of the Solution](#analysis-of-the-solution)
+7.  [Simulating the Stationary Distribution](#simulating-the-stationary-distribution)
+8.  [Summary](#summary)
+9.  [Exercises](#exercises)
+
+> **Historical Context — Bellman names dynamic programming (1950s).** Working at RAND, Richard Bellman coined the name 'dynamic programming' to hide the mathematics from Defense Secretary Charles Wilson ('the word research bothered him'), as he later recounted in his autobiography. His 1957 book stated the principle of optimality used in every value function iteration below.
 
 ## The Lens: The Recursive Structure of Choice
 **What problem are we solving?**
@@ -61,7 +63,7 @@ Most economic decisions are not one-off events; they are sequences of choices ma
 To optimize a sequence of decisions, we must account for how today's choice affects tomorrow's possibilities. This is the realm of **Dynamic Programming**.
 
 **Why this method?**
-Solving an infinite-horizon problem directly (choosing an infinite sequence of actions) is mathematically impossible. Dynamic Programming breaks this impossible problem into two manageable parts:
+Directly optimizing an infinite sequence is often computationally impractical. Dynamic programming exploits recursive structure to separate two parts:
 1.  **Current Reward:** What do I get today?
 2.  **Continuation Value:** What is the value of the state I leave for tomorrow?
 The **Bellman Equation** formalizes this recursive logic:
@@ -116,10 +118,16 @@ for t in range(T - 1, -1, -1):
         def objective(c): # Minimize negative utility
             x_next = x - c
             # We use linear interpolation to find the value of the next state, which may not be on the grid.
-            v_next_interp = np.interp(x_next, X_GRID, V_next)
+            if x_next <= 0:
+                return np.inf
+            # Log utility implies V_t(x)=A_t+B_t log(x). Extend this
+            # analytical boundary form instead of inventing cake below X_GRID[0].
+            log_x = np.log(X_GRID)
+            slope = (V_next[1] - V_next[0]) / (log_x[1] - log_x[0])
+            v_next_interp = V_next[0] + slope * (np.log(x_next) - log_x[0])
             return -(u_log(c) + BETA_CE * v_next_interp)
         # We use a bounded scalar minimizer to find the optimal consumption.
-        res = minimize_scalar(objective, bounds=(1e-6, x), method='bounded')
+        res = minimize_scalar(objective, bounds=(1e-12, x), method='bounded', options={'xatol': 1e-12})
         V_storage[t, i] = -res.fun
         C_storage[t, i] = res.x
 
@@ -185,20 +193,19 @@ Uniqueness also follows from a different, purely topological route: §2.1 below 
 **Stochastic extension.** With a stochastic transition $s' \sim Q(\cdot \mid s, a)$, replace $V^*(m(s,a))$ by $\mathbb{E}[V^*(s') \mid s, a]$ and payoffs by their expectations. The decomposition step goes through verbatim by the **law of iterated expectations** — the expected payoff of a plan splits into today's reward plus $\beta$ times the conditional expectation of the continuation value — and both inequalities are preserved under expectations. (Formally one also needs the plan's actions to be measurable functions of observed histories; for the finite-state chains we compute with in this notebook, this is automatic.)
 
 #### 2.1 The Bellman Operator and Contraction Mappings
-The **Bellman Operator**, $T$, takes a candidate value function $v$ and returns a new function $Tv$:
-$$ (Tv)(s) = \max_{a \in \Gamma(s)} \{ u(s, a) + \beta E[v(s')] \} $$
-A solution to the Bellman equation is a **fixed point** of this operator, i.e., $TV = V$. If $\beta < 1$ and the utility function is bounded, the Bellman operator is a **contraction mapping** on the space of bounded continuous functions. This is because applying the operator shrinks the distance between any two functions $v_1$ and $v_2$ under the sup-norm:
-$$ ||Tv_1 - Tv_2||_\infty = \sup_s |(Tv_1)(s) - (Tv_2)(s)| \le \beta \sup_s |v_1(s) - v_2(s)| = \beta ||v_1 - v_2||_\infty $$
-**Unpacking the Derivation:**
-1.  Let $a_1(s)$ be the optimal action for a given state $s$ when the value function is $v_1$. Then $(Tv_1)(s) = u(s, a_1(s)) + \beta E[v_1(s')]$.
-2.  Since $a_1(s)$ is optimal for $v_1$, it must be at least as good as any other action, including $a_2(s)$, the optimal action for $v_2$. So, $(Tv_1)(s) \ge u(s, a_2(s)) + \beta E[v_1(s')]$.
-3.  By definition, $(Tv_2)(s) = u(s, a_2(s)) + \beta E[v_2(s')]$.
-4.  Subtracting the expressions in (3) from (2) gives: $(Tv_1)(s) - (Tv_2)(s) \ge \beta E[v_1(s') - v_2(s')]$.
-5.  By a symmetric argument, we can show that $(Tv_2)(s) - (Tv_1)(s) \ge \beta E[v_2(s') - v_1(s')]$.
-6.  Combining these two inequalities, we get $|(Tv_1)(s) - (Tv_2)(s)| \le \beta |E[v_1(s') - v_2(s')]| \le \beta E[|v_1(s') - v_2(s')|]$.
-7.  Taking the supremum over all states $s$, we arrive at the contraction mapping property: $||Tv_1 - Tv_2||_\infty \le \beta ||v_1 - v_2||_\infty$.
+The Bellman operator maps a candidate value function $v$ to
+$$(Tv)(s)=\sup_{a\in\Gamma(s)}\{u(s,a)+\beta\mathbb E[v(s')\mid s,a]\}.$$
+Assume nonempty feasible sets, bounded rewards, a probability transition kernel, and $0<\beta<1$. On bounded functions, the sup norm gives a complete space and $T$ is a contraction. Preserving continuity requires additional continuity and compactness assumptions; bounded rewards alone do not establish that property.
 
-The **Contraction Mapping Theorem** then guarantees that $T$ has a unique fixed point $V^*$, and for any initial guess $v_0$, the sequence $v_{k+1} = T v_k$ will converge to $V^*$. This justifies **Value Function Iteration (VFI)**.
+For any fixed state-action pair,
+$$\left|\beta\mathbb E[v_1(s')-v_2(s')\mid s,a]\right|\le\beta\|v_1-v_2\|_\infty.$$
+Use $|\sup_a f(a)-\sup_a g(a)|\le\sup_a|f(a)-g(a)|$, then take the supremum over states:
+$$\|Tv_1-Tv_2\|_\infty\le\beta\|v_1-v_2\|_\infty.$$
+The action in the conditional expectation must remain fixed while applying this bound. Expectations under two different maximizing actions cannot be treated as the same expectation.
+
+The contraction theorem gives a unique bounded fixed point $V^*$ and convergence of VFI from any bounded initial guess. A computable error certificate is
+$$\|v-V^*\|_\infty\le\frac{\|Tv-v\|_\infty}{1-\beta}.$$
+The finite-grid model below has bounded feasible rewards. Log/CRRA utility on an unrestricted continuous consumption domain needs separate boundary and existence arguments.
 
 #### 2.2 The State-Action Value Function (Q-Function)
 An alternative representation, central to reinforcement learning, is the **state-action value function**, or **Q-function**. It represents the value of being in state $s$ and taking action $a$:
@@ -232,8 +239,15 @@ def tauchen(rho, sigma_u, m=3, n=7):
         for j in range(n):
             z_j_low = z_grid[j] - step/2
             z_j_high = z_grid[j] + step/2
-            P[i, j] = norm_cdf_numba((z_j_high - rho * z_grid[i]) / sigma_u) - \
-                      norm_cdf_numba((z_j_low - rho * z_grid[i]) / sigma_u)
+            if j == 0:
+                # First interval extends to -infinity so rows sum to exactly 1.
+                P[i, j] = norm_cdf_numba((z_j_high - rho * z_grid[i]) / sigma_u)
+            elif j == n - 1:
+                # Last interval extends to +infinity.
+                P[i, j] = 1.0 - norm_cdf_numba((z_j_low - rho * z_grid[i]) / sigma_u)
+            else:
+                P[i, j] = norm_cdf_numba((z_j_high - rho * z_grid[i]) / sigma_u) - \
+                          norm_cdf_numba((z_j_low - rho * z_grid[i]) / sigma_u)
     return z_grid, P
 
 rho_y, sigma_y = 0.95, 0.1
@@ -263,7 +277,7 @@ n_y = len(sgm_params['y_states'])
 # --- 2. Create Reward and Transition Matrices ---
 @njit
 def u_crra(c, gamma):
-    return (c**(1 - gamma)) / (1 - gamma)
+    return np.log(c) if gamma == 1 else (c**(1 - gamma)) / (1 - gamma)
 
 R = np.full((n_a, n_y, n_a), -1e10)
 for i in range(n_a):
@@ -283,6 +297,9 @@ print("Built R and Q matrices for the stochastic growth model.")
 ```
 
 ### 4. Numerical Solution Algorithms
+
+![VFI convergence](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/03-Economic-Modeling/vfi_convergence.png)
+*Figure: Value function iteration converging on the cake-eating problem..*
 For pedagogical clarity, we now implement the core solution algorithms directly in the notebook, using Numba's `@njit` decorator to ensure high performance.
 
 #### 4.1 Value Function Iteration (VFI)
@@ -325,9 +342,12 @@ def value_function_iteration(R, Q, beta, tol=1e-6, max_iter=1000):
                 q_s = R[s_i, s_j, :] + beta * E_V[:, s_j]
                 V_new[s_i, s_j] = np.max(q_s)
 
-        if np.max(np.abs(V - V_new)) < tol:
-            break
+        diff = np.max(np.abs(V - V_new))
         V = V_new
+        if diff < tol:
+            # Update V BEFORE returning, so the result is the converged
+            # function rather than the second-to-last iterate.
+            break
         history.append(V.flatten())
     return V, history
 
@@ -395,7 +415,7 @@ Howard's PFI is a more practical variant that avoids the costly matrix inversion
 
 ```python
 @njit
-def howard_policy_iteration(R, Q, beta, m=20, max_iter=200):
+def howard_policy_iteration(R, Q, beta, m=20, max_iter=200, tol=1e-6):
     """Solves a discrete DP model using Howard's Policy Iteration.
     
     This is a faster variant of PFI that approximates the policy evaluation
@@ -433,12 +453,14 @@ def howard_policy_iteration(R, Q, beta, m=20, max_iter=200):
         # Policy Improvement
         E_V = V @ P_trans.T
         policy_new = np.empty_like(policy)
+        residual = 0.0
         for s_i in range(n_a):
             for s_j in range(n_y):
                 q_s = R[s_i, s_j, :] + beta * E_V[:, s_j]
                 policy_new[s_i, s_j] = np.argmax(q_s)
+                residual = max(residual, abs(np.max(q_s) - V[s_i, s_j]))
 
-        if np.array_equal(policy, policy_new):
+        if np.array_equal(policy, policy_new) and residual < tol:
             break
         policy = policy_new
     return V, policy
@@ -477,10 +499,9 @@ for s_i in range(n_a):
 ```
 
 ##### 5.1 The Value and Policy Functions
-- **Value Function:** $V(a,y)$ is increasing and concave in assets $a$, reflecting diminishing marginal utility.
-- **Policy Function:** $\sigma(a,y)$ shows the optimal level of assets to hold next period. We can see the effect of **precautionary savings**: an agent saves more when their current income is lower to buffer against future bad shocks.
-> **Economic Intuition: Precautionary Savings**
-> The upward shift in the policy function for the low-income state is a classic example of precautionary savings. When faced with the possibility of a persistent low-income state, agents increase their savings to build a buffer against future negative shocks. This desire to self-insure against uninsurable income risk is a key driver of wealth accumulation in this class of models. The strength of the precautionary savings motive is determined by the curvature of the utility function (i.e., the coefficient of relative risk aversion) and the persistence of the income process.
+The value function increases with assets. The saving policy $a'(a,y)$ reflects available resources, patience, and income risk. At fixed assets, a lower income realization need not raise saving: households often draw down their buffer to smooth consumption.
+
+Precautionary saving is a comparison across **risk environments**, holding resources and expected income comparable, not the difference between the low- and high-income policy curves. For CRRA preferences, positive prudence ($u'''(c)>0$) supports the precautionary motive. Borrowing limits and income persistence also shape the quantitative response.
 
 ### Analyzing the Solution
 
@@ -537,8 +558,16 @@ After solving for the optimal policy, a key economic question is what the long-r
 ### Simulating the Stationary Asset Distribution
 
 ```python
+# Seeding makes the simulated path reproducible: the uniforms are drawn
+# OUTSIDE the jitted kernel with a Generator and passed in (numba nopython
+# mode cannot capture Generator objects from the enclosing scope).
+rng_sim = np.random.default_rng(42)
+SIM_UNIFORMS = rng_sim.random((500, 5000))  # (t_steps, n_agents)
+
+
 @njit
-def simulate_asset_distribution(policy_indices, P_trans, a_grid, n_agents=5000, t_steps=500):
+def simulate_asset_distribution(policy_indices, P_trans, a_grid, uniforms):
+    t_steps, n_agents = uniforms.shape
     a_indices = np.zeros(n_agents, dtype=np.int32)
     y_indices = np.zeros(n_agents, dtype=np.int32)
 
@@ -552,12 +581,16 @@ def simulate_asset_distribution(policy_indices, P_trans, a_grid, n_agents=5000, 
         # Update income based on Markov chain
         new_y_indices = np.empty_like(y_indices)
         for i in range(n_agents):
-            new_y_indices[i] = np.searchsorted(np.cumsum(P_trans[y_indices[i], :]), np.random.rand())
+            new_y_indices[i] = np.searchsorted(
+                np.cumsum(P_trans[y_indices[i], :]), uniforms[t, i]
+            )
         y_indices = new_y_indices
 
     return a_grid[a_indices]
 
-final_assets = simulate_asset_distribution(policy_indices_vfi, P_TRANS, sgm_params['a_grid'])
+final_assets = simulate_asset_distribution(
+    policy_indices_vfi, P_TRANS, sgm_params['a_grid'], SIM_UNIFORMS
+)
 
 plt.figure(figsize=(10, 6))
 plt.hist(final_assets, bins=50, density=True)
@@ -586,6 +619,11 @@ $$V(s) = \max_{a \in \Gamma(s)} \{ u(s, a) + \beta E[V(s')] \}$$
 
 $$W(s, \pi) \;=\; \sum_{t=0}^{\infty} \beta^t\, u(s_t, a_t), \qquad s_0 = s,$$
 
+> **Common Pitfalls in This Lecture**
+>
+> - **Premature VFI stopping.** A value update is not a value-error bound without the factor $1/(1-\beta)$. Near-tied actions can switch while values barely move. Report the Bellman residual and policy sensitivity; an unchanged policy alone does not certify convergence of approximate policy evaluation.
+> - **Extrapolating off-grid.** Interpolated policy rules are valid only inside the grid. Evaluating $k'$ slightly outside the capital grid can imply negative consumption and crash the Bellman step; clamp states to the grid or extend it.
+
 ### Three-Tier Practice Ladder
 
 **1. Mechanism and assumptions (Conceptual):** State the equilibrium/optimality condition that organizes **01 Dynamic Programming**. Explain which assumption guarantees existence, uniqueness, or stability, and identify a limiting case where that argument weakens.
@@ -593,6 +631,8 @@ $$W(s, \pi) \;=\; \sum_{t=0}^{\infty} \beta^t\, u(s_t, a_t), \qquad s_0 = s,$$
 **2. Reproduce and diagnose (Applied):** Reproduce one quantitative result from the sections on Interactive Lab: Discounting and Continuation Value, 1. The Principle of Optimality: A Cake Eating Problem. Change one economically meaningful parameter over a defensible grid, report the policy/value/equilibrium response, and verify convergence with a residual or tighter tolerance.
 
 **3. Robust extension (Challenge):** Design a policy or shock counterfactual that changes one mechanism at a time. Compare welfare or transition dynamics against the baseline and explain which conclusion is structural versus calibration-specific.
+
+**3b. Failure analysis (Challenge):** VFI stopped when $\|V_{m+1}-V_m\| < 10^{-4}$, yet the policy keeps changing for many more iterations and decisions near the grid edges are infeasible. Diagnose the premature stopping criterion and the off-grid extrapolation, repair by enforcing feasible controls and checking the Bellman residual, then assess policy sensitivity on a refined grid. Clamping the next state after optimization changes the budget and is not a feasibility repair.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

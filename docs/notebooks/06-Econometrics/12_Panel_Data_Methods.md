@@ -9,9 +9,11 @@
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/06-Econometrics/12_Panel_Data_Methods.ipynb) [![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main?filepath=06-Econometrics/12_Panel_Data_Methods.ipynb) [![Code License: MIT](https://img.shields.io/badge/Code%20License-MIT-yellow.svg)](../LICENSE) [![Content License: CC BY 4.0](https://img.shields.io/badge/Content%20License-CC%20BY%204.0-blue.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 ```python
+
 # === Environment Setup ===
 import matplotlib.pyplot as plt
 import numpy as np
+rng = np.random.default_rng(42)  # single reproducible generator
 import pandas as pd
 import seaborn as sns
 import statsmodels.api as sm
@@ -33,7 +35,7 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 
 ## Table of Contents
 
-1. [Introduction](#Introduction)
+1. [Introduction](#introduction)
 
 ## The Lens: Tracking Individuals Over Time
 **What problem are we solving?**
@@ -87,6 +89,8 @@ The fixed effect $c_i$ is eliminated. We can now run OLS on this transformed dat
 
 The major drawback of this method is that it cannot estimate the effect of any time-invariant variables (like gender, race, or a firm's industry), as they are completely wiped out by the demeaning process.
 
+**Dimension notes:** panel of $N$ units observed $T$ periods: $y_{it} \in \mathbb{R}$ scalar, regressors $\mathbf{x}_{it} \in \mathbb{R}^k$, unit effects $c_i \in \mathbb{R}$; the within (fixed effects) transformation demeans each unit's $T$ observations, sweeping $c_i$ out.
+
 ### 2.1 The Within Estimator, Derived
 
 The demeaning argument above shows that the within transformation *eliminates* $c_i$. It does not yet tell us what the resulting estimator **is**, why it coincides with running a regression on $N$ individual dummy variables, or how to compute correct standard errors. We derive all three now, because each has a practical consequence that bites in applied work.
@@ -139,7 +143,7 @@ Here the equivalence *breaks*, and it is a live source of wrong standard errors.
 
 $$ \hat{\sigma}^2_u \;=\; \frac{1}{NT - N - K} \sum_{i}\sum_{t} \hat{\tilde{u}}_{it}^{\,2}, $$
 
-with $NT - N - K$ degrees of freedom, **not** $NT - K$. Demeaning by hand and then calling a generic OLS routine understates the variance by the factor $(NT-K)/(NT-N-K)$ — which for $N$ large relative to $T$ is severe (with $T=4$, roughly a 33% understatement of $\hat\sigma^2$). This is why the code below uses `linearmodels`' `PanelOLS` rather than demeaning manually and calling `statsmodels.OLS`.
+with $NT - N - K$ degrees of freedom, **not** $NT - K$. Demeaning by hand and then calling a generic OLS routine understates the variance by the factor $(NT-K)/(NT-N-K)$ — which for $N$ large relative to $T$ is severe (with $T=4$, roughly a 25% understatement of $\hat\sigma^2$). This is why the code below uses `linearmodels`' `PanelOLS` rather than demeaning manually and calling `statsmodels.OLS`.
 
 A related point: the within residuals are serially correlated within individuals under most realistic error structures, so inference should use **cluster-robust standard errors clustered at the individual level** (`cov_type='clustered', cluster_entity=True`). The default i.i.d. errors are almost never defensible in panel work.
 
@@ -162,23 +166,10 @@ The parameter $\theta \in [0,1]$ makes the whole family transparent:
 ### Loading and Preparing Panel Data
 
 ```python
-# Load a classic panel dataset on investment from the linearmodels package
-try:
-    from linearmodels.datasets import grunfeld
-    data = grunfeld.load()
-    df = data.copy()
-    display(Markdown('> **Note:** Grunfeld investment dataset loaded.'))
-except ImportError:
-    display(Markdown('> **Note:** Could not load Grunfeld dataset. Creating dummy data.'))
-    firms = [f"Firm_{i}" for i in range(10)]
-    years = range(1935, 1955)
-    index = pd.MultiIndex.from_product([firms, years], names=['firm', 'year'])
-    dummy_data = {
-        'invest': np.random.rand(len(index)) * 100,
-        'value': np.random.rand(len(index)) * 1000,
-        'capital': np.random.rand(len(index)) * 500
-    }
-    df = pd.DataFrame(dummy_data, index=index)
+# The real Grunfeld data ship with statsmodels; no download or synthetic substitution.
+df = sm.datasets.grunfeld.load_pandas().data.copy()
+df['year'] = df['year'].astype(int)
+display(Markdown('> **Note:** Bundled Grunfeld investment dataset loaded.'))
 
 # For use with linearmodels, we need to set a MultiIndex of (entity, time)
 df_lm = df.set_index(['firm', 'year'])
@@ -257,9 +248,10 @@ The test statistic is based on the difference between the FE and RE coefficient 
 ### Hausman Test: FE vs. RE
 
 ```python
+from scipy.stats import chi2
 
 def hausman_test(fe, re):
-    """Performs the Hausman test for fixed vs. random effects."""
+    """Classical Hausman test; requires efficient RE under the iid null."""
     # Get coefficients and covariance matrices, dropping the constant
     b_fe = fe.params.drop('const')
     b_re = re.params.drop('const')
@@ -269,16 +261,21 @@ def hausman_test(fe, re):
     # The formula for the test statistic
     b_diff = b_fe - b_re
     # The variance of the difference is Var(b_fe) - Var(b_re)
-    cov_diff_inv = np.linalg.inv(cov_fe - cov_re)
-
-    stat = b_diff.T @ cov_diff_inv @ b_diff
+    cov_diff = cov_fe - cov_re
+    if np.linalg.eigvalsh(cov_diff).min() <= 0:
+        raise ValueError("Hausman covariance difference is not positive definite; do not interpret a chi-square p-value.")
+    stat = b_diff.T @ np.linalg.solve(cov_diff, b_diff)
     dof = len(b_diff)
-    pval = 1.0 - sm.distributions.chi2.cdf(stat, dof)
+    pval = chi2.sf(stat, dof)
 
     return stat, dof, pval
 
-# Perform the test using the one-way FE model
-stat, dof, pval = hausman_test(fe_model, re_model)
+# The covariance-difference identity is not valid for arbitrary clustered vcovs.
+# Keep clustered estimates above for reporting; fit separate iid models solely
+# to illustrate the classical test and its stronger error assumptions.
+fe_classical = PanelOLS(dependent, exog, entity_effects=True).fit(cov_type='unadjusted')
+re_classical = RandomEffects(dependent, exog).fit(cov_type='unadjusted')
+stat, dof, pval = hausman_test(fe_classical, re_classical)
 
 print("--- Hausman Test Results ---")
 print(f"Chi-squared statistic: {stat:.4f}")
@@ -287,7 +284,8 @@ print(f"p-value:               {pval:.4f}")
 ```
 
 ```python
-display(Markdown(f"> **Note:** The p-value ({pval:.4f}) is very small, so we strongly reject the null hypothesis. This suggests that the unobserved firm-specific effects are correlated with the regressors ('value' and 'capital'), making the Random Effects estimates inconsistent. The Fixed Effects model is the more appropriate choice for this dataset."))
+decision = "reject" if pval < 0.05 else "do not reject"
+display(Markdown(f"> **Classical Hausman diagnostic:** p = {pval:.4f}; {decision} the RE null at 5%. This calculation assumes the classical covariance model. Non-rejection is not proof that firm effects are exogenous; a robust correlated-random-effects/Mundlak test is preferable when those error assumptions fail."))
 ```
 
 ## 5. Dynamic Panel Data: The Problem of Nickell Bias
@@ -305,46 +303,23 @@ The **Arellano-Bond (1991) estimator** provides a solution using the Generalized
     However, $\Delta y_{i,t-1} = y_{i,t-1} - y_{i,t-2}$ is still correlated with the new error term $\Delta u_{it} = u_{it} - u_{i,t-1}$ because $y_{i,t-1}$ depends on $u_{i,t-1}$.
 2.  **Instrument the Endogenous Variable:** The crucial insight is to use *lagged levels* of the variables as instruments for the first-differenced equation. For the equation at time $t$, the variable $y_{i,t-2}$ is correlated with the endogenous regressor $\Delta y_{i,t-1}$ but is **not** correlated with the error term $\Delta u_{it}$ (assuming the original errors $u_{it}$ are not serially correlated). We can also use $y_{i,t-3}$, $y_{i,t-4}$, etc., as additional valid instruments. This creates a set of moment conditions that can be used to form a GMM estimator.
 
+**Dimension notes:** after differencing, the estimating equation is in scalars and $k$-vectors of differences; instruments are lagged *levels* $y_{i,t-2}, y_{i,t-3}, \dots$ — their count grows with $T$, so moment conditions outnumber parameters ($r > k$) and GMM applies.
+
 ### 5.2 System GMM: Improving Efficiency
 A drawback of the Difference GMM is that lagged levels can be weak instruments for first differences if the variables are highly persistent (close to a random walk). **System GMM** (Arellano & Bover, 1995; Blundell & Bond, 1998) improves efficiency by adding a second set of equations to the system: the original equations in *levels*. For these level equations, it uses *lagged differences* as instruments. This combination of the differenced equations (instrumented by levels) and the level equations (instrumented by differences) constitutes the System GMM estimator, which is now the standard in applied work.
 
 ### System GMM for Dynamic Panel Data
 
 ```python
-try:
-    from linearmodels.panel import PanelGMM
-    # Simulate data for a dynamic panel model
-    rng = np.random.default_rng(123)
-    n_ind, n_time = 500, 10
-    alpha_true = 0.6; beta_true = 1.5
-    individual_effects = rng.normal(size=n_ind)
-    y = np.zeros((n_ind, n_time)); x = rng.normal(size=(n_ind, n_time))
-    for t in range(1, n_time):
-        y[:, t] = alpha_true * y[:, t-1] + beta_true * x[:, t] + individual_effects + rng.normal(size=n_ind)
-
-    # Reshape into a pandas DataFrame
-    df_dyn = pd.DataFrame({'y': y.flatten(), 'x': x.flatten(),
-                           'entity': np.repeat(np.arange(n_ind), n_time),
-                           'time': np.tile(np.arange(n_time), n_ind)})
-    df_dyn = df_dyn.set_index(['entity', 'time'])
-    df_dyn['y_lag'] = df_dyn.groupby(level=0)['y'].shift(1)
-    df_dyn.dropna(inplace=True)
-
-    # --- Estimate using System GMM ---
-    # We specify the model and use .fit() with the appropriate options.
-    # By default, PanelGMM uses a two-step estimator.
-    model_gmm = PanelGMM.from_formula('y ~ 1 + y_lag + x', data=df_dyn)
-    res_gmm = model_gmm.fit()
-
-    display(Markdown(f'> **Note:** System GMM Results (True α={alpha_true}, β={beta_true})'))
-    display(res_gmm)
-except Exception:
-    pass
+# linearmodels.panel does not provide a PanelGMM/System-GMM estimator.
+# A dynamic-panel fit needs an explicit instrument matrix and moment conditions;
+# a formula with a lagged outcome is not sufficient to specify System GMM.
+print("System GMM is a conceptual extension here; no numerical fit is claimed.")
 ```
 
-> **Note:** The estimates for y_lag and x are very close to the true parameters, demonstrating the estimator's consistency. The Sargan statistic tests the validity of the overidentifying restrictions. A high p-value (like the one here) means we do not reject the null hypothesis that the instruments are valid, which is a good sign.
+> **Exercise, not an executed result:** Implement a dynamic-panel estimator with explicitly dated lag instruments. Difference GMM and System GMM impose different moment restrictions; the latter also needs restrictions on initial conditions. Report instrument count, serial-correlation diagnostics, and overidentification tests. Parameter proximity in one simulation is not a proof of consistency.
 
-> **Note:** linearmodels not installed. Skipping GMM example.
+> **Scope:** The FE and RE examples above run with `linearmodels`; this notebook does not implement System GMM.
 
 ## Key Equations
 
@@ -366,6 +341,13 @@ $$(y_{it} - \bar{y}_i) = (\mathbf{x}_{it} - \bar{\mathbf{x}}_i)'\beta + (u_{it} 
 
 $$Q \;=\; I_T \;-\; \frac{1}{T}\, \iota_T \iota_T',$$
 
+**Dimension notes:** $y_{it} \in \mathbb{R}$, $\mathbf{x}_{it} \in \mathbb{R}^k$, $c_i \in \mathbb{R}$; unit means $\bar{y}_i, \bar{\mathbf{x}}_i$ inherit these dimensions and the within estimator works on deviations from them.
+
+> **Common Pitfalls in This Lecture**
+>
+> - **FE discards the question.** Fixed effects sweep out everything time-invariant — including the coefficients on gender, geography or institutions you may care about. If the question lives in between variation, random effects or correlated RE (Mundlak) belong in the comparison set.
+> - **Nickell bias.** A lagged dependent variable in a fixed-effects panel biases the coefficient by order $1/T$ — severe in the short panels typical of economics. Use Arellano-Bond difference GMM or system GMM rather than naive within estimates.
+
 ### Three-Tier Practice Ladder
 
 **1. Mechanism and assumptions (Conceptual):** Define the estimand in **12 Panel Data Methods**, list the identifying assumptions, and give a concrete data-generating process that violates one assumption while leaving the others intact.
@@ -373,6 +355,8 @@ $$Q \;=\; I_T \;-\; \frac{1}{T}\, \iota_T \iota_T',$$
 **2. Reproduce and diagnose (Applied):** Implement or reproduce the estimator using the material on 1. The Panel Data Model, 2. The Fixed Effects (FE) Estimator. Report uncertainty and at least two diagnostics; then compare with an alternative specification that targets the same estimand.
 
 **3. Robust extension (Challenge):** Run a Monte Carlo or sensitivity exercise that varies the most fragile identifying condition. Quantify bias/coverage or the range of estimates and state what evidence would change your substantive conclusion.
+
+**3b. Failure analysis (Challenge):** A time-invariant policy variable vanishes from the FE specification, the RE estimate differs wildly, and a Hausman test rejects RE. Diagnose the correlation-with-effects problem, repair with FE (or Mundlak/CRE to recover the between variation), and state precisely which parameter each estimator identifies.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

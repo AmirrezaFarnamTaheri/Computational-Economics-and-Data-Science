@@ -107,6 +107,8 @@ The **first principal component** ($Z_1$) is the linear combination of the featu
 $$ \max_{\phi_{11},...,\phi_{p1}} \left\{ \frac{1}{n} \sum_{i=1}^n \left( \sum_{j=1}^p \phi_{j1} x_{ij} \right)^2 \right\} \quad \text{subject to} \quad \sum_{j=1}^p \phi_{j1}^2 = 1 $$
 The **second principal component** ($Z_2$) is the linear combination with the second-highest variance, subject to being uncorrelated with (orthogonal to) the first principal component. This process continues until $p$ components are found. The solution to this optimization problem is found via the eigendecomposition of the covariance matrix.
 
+**Dimension notes:** data matrix $X \in \mathbb{R}^{n \times p}$ ($n$ observations, $p$ features); each loading vector $\phi_m \in \mathbb{R}^p$ with $\|\phi_m\|_2 = 1$, giving components $Z_m = X \phi_m \in \mathbb{R}^n$; PCA keeps $k \le p$ of them.
+
 <a id='svd'></a>
 ### 2.2 The Connection to Singular Value Decomposition (SVD)
 
@@ -351,7 +353,7 @@ plt.show()
 display(Markdown(f"> **Note:** The first principal component (the market factor) explains {explained_variance[0]:.2%} of the total variance in the returns of these 10 stocks. The first 3 components explain {cumulative_variance[2]:.2%}."))
 
 # 5. Interpret the first factor's loadings
-pc1_loadings = pd.Series(pca_finance.components_[0], index=tickers)
+pc1_loadings = pd.Series(pca_finance.components_[0], index=returns.columns)
 ```
 
 > **Note:** Loadings on the First Principal Component:
@@ -409,6 +411,8 @@ plt.show()
 
 **3. Robust extension (Challenge):** Stress-test the model under temporal, subgroup, or covariate distribution shift. Identify which performance degradation matters for the downstream economic decision and propose one mitigation without using the test set for tuning.
 
+**3b. Failure analysis (Challenge):** k-means clusters track one variable's units (dollars vs shares) and PCA's first component is dominated by scale, not correlation structure. Diagnose the missing standardization, repair by scaling before PCA/k-means, and re-interpret the loadings and cluster profiles.
+
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 
 <a id='exercises'></a>
@@ -442,7 +446,7 @@ When you visualize the first principal component, you see a blurry, composite im
 ---
 
 **2. Choosing the Number of Components:**
-You would first fit PCA to the full dataset (`PCA().fit(X_digits)`) and then plot the `cumulative_explained_variance`. You would find that you need approximately 21 principal components to explain 95% of the variance. This means you can reduce the dimensionality from 64 to 21 (a >65% reduction) while still retaining almost all of the signal.
+You would first fit PCA to the full dataset (`PCA().fit(X_digits)`) and then plot the `cumulative_explained_variance`. On this dataset you need roughly 29-30 principal components to explain 95% of the variance (read the exact crossing point off your plot). This means you can reduce the dimensionality from 64 to about 30 (a >50% reduction) while still retaining almost all of the signal.
 
 ---
 

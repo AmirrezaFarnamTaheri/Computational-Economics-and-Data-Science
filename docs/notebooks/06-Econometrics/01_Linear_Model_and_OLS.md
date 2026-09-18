@@ -9,9 +9,11 @@
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/06-Econometrics/01_Linear_Model_and_OLS.ipynb) [![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main?filepath=06-Econometrics/01_Linear_Model_and_OLS.ipynb) [![Code License: MIT](https://img.shields.io/badge/Code%20License-MIT-yellow.svg)](../LICENSE) [![Content License: CC BY 4.0](https://img.shields.io/badge/Content%20License-CC%20BY%204.0-blue.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 ```python
+
 # === Environment Setup ===
 import matplotlib.pyplot as plt
 import numpy as np
+rng = np.random.default_rng(42)  # single reproducible generator
 import pandas as pd
 import seaborn as sns
 import statsmodels.api as sm
@@ -29,20 +31,20 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 ```
 
 ### Table of Contents
-1.  [The Theory of Ordinary Least Squares (OLS)](#1.-The-Theory-of-Ordinary-Least-Squares)
-    *   [1.1 Geometric Interpretation](#1.1-The-Geometric-Interpretation-of-OLS)
-    *   [1.2 Finite-Sample Properties (Gauss-Markov)](#1.2-Finite-Sample-Properties-(Gauss-Markov))
-    *   [1.3 Asymptotic Properties](#1.3-Asymptotic-Properties)
-2.  [The Frisch-Waugh-Lovell Theorem](#2.-The-Frisch-Waugh-Lovell-Theorem)
-3.  [Model Diagnostics](#3.-Model-Diagnostics)
-    *   [3.1 Heteroskedasticity](#3.1-Heteroskedasticity)
-    *   [3.2 Multicollinearity](#3.2-Multicollinearity)
-4.  [Advanced Topics](#4.-Advanced-Topics)
-    *   [4.1 Generalized Least Squares (GLS)](#4.1-Generalized-Least-Squares-(GLS))
-    *   [4.2 Regularization for High-Dimensional Models](#4.2-Regularization-for-High-Dimensional-Models)
-    *   [4.3 Bayesian Linear Regression with Gibbs Sampling](#4.3-Bayesian-Linear-Regression-with-Gibbs-Sampling)
-5.  [Summary](#5.-Summary)
-6.  [Exercises](#6.-Exercises)
+1.  [The Theory of Ordinary Least Squares (OLS)](#1-the-theory-of-ordinary-least-squares)
+    *   [1.1 Geometric Interpretation](#11-the-geometric-interpretation-of-ols)
+    *   [1.2 Finite-Sample Properties (Gauss-Markov)](#12-finite-sample-properties-gauss-markov))
+    *   [1.3 Asymptotic Properties](#13-asymptotic-properties)
+2.  [The Frisch-Waugh-Lovell Theorem](#2-the-frisch-waugh-lovell-theorem)
+3.  [Model Diagnostics](#3-model-diagnostics)
+    *   [3.1 Heteroskedasticity](#31-heteroskedasticity)
+    *   [3.2 Multicollinearity](#32-multicollinearity)
+4.  [Advanced Topics](#4-advanced-topics)
+    *   [4.1 Generalized Least Squares (GLS)](#41-generalized-least-squares-gls))
+    *   [4.2 Regularization for High-Dimensional Models](#42-regularization-for-high-dimensional-models)
+    *   [4.3 Bayesian Linear Regression with Gibbs Sampling](#43-bayesian-linear-regression-with-gibbs-sampling)
+5.  [Summary](#5-summary)
+6.  [Exercises](#6-exercises)
 
 ## The Lens: The Cornerstone of Econometrics
 **What problem are we solving?**
@@ -67,11 +69,18 @@ The **Linear Regression Model** is the starting point for answering these questi
 * **Statistics:** Mean, variance, hypothesis testing, and the Normal distribution.
 * **Python:** NumPy arrays, Pandas DataFrames, and basic Matplotlib.
 
+> **Historical Context — Legendre 1805, Frisch-Waugh 1933.** Adrien-Marie Legendre published least squares in 1805; Carl Friedrich Gauss claimed he had used it since 1795, igniting statistics' first priority dispute. Ragnar Frisch and Frederick Waugh (1933, completed by Lovell 1963) proved partialling-out — the theorem hiding inside every fixed-effects and debiased regression.
+
 > **Learning path:** This notebook is the entry point for this track; next continue with [`02A_MLE_Principles_and_Geometry.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/06-Econometrics/02A_MLE_Principles_and_Geometry.ipynb).
 
 ### 1. The Theory of Ordinary Least Squares
+
+![OLS projection](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/06-Econometrics/ols_projection_geometry.png)
+*Figure: OLS as the orthogonal projection of y onto col(X)..*
 The linear model is $\mathbf{y} = \mathbf{X}\beta + \mathbf{u}$. The OLS estimator $\hat{\beta}$ minimizes the Sum of Squared Residuals (SSR) and is given by:
 $$ \hat{\beta}_{OLS} = (\mathbf{X}'\mathbf{X})^{-1} \mathbf{X}'\mathbf{y} $$
+
+**Dimension notes:** $\mathbf{y}, \mathbf{u} \in \mathbb{R}^n$ ($n$ observations); $\mathbf{X} \in \mathbb{R}^{n \times k}$ ($k$ regressors, including the constant); $\beta \in \mathbb{R}^k$; the SSR maps $\mathbb{R}^k \to \mathbb{R}$ and is minimized subject to $\mathrm{rank}(\mathbf{X}) = k$, which makes $\mathbf{X}'\mathbf{X}$ invertible.
 
 #### 1.1 The Geometric Interpretation of OLS
 OLS has a powerful geometric interpretation. The vector of fitted values, $\hat{\mathbf{y}} = \mathbf{X}\hat{\beta}$, is the **orthogonal projection** of the actual data vector $\mathbf{y}$ onto the **column space of X**. The vector of residuals, $\hat{\mathbf{u}} = \mathbf{y} - \hat{\mathbf{y}}$, is the component of $\mathbf{y}$ that is orthogonal to this space. The normal equations, $\mathbf{X}'\hat{\mathbf{u}} = 0$, are the formal statement of this orthogonality.
@@ -84,9 +93,9 @@ from IPython.display import Image
 
 # Generate synthetic data
 n_viz = 50
-x1_viz = np.random.uniform(0, 10, n_viz)
-x2_viz = np.random.uniform(0, 10, n_viz)
-y_viz = 2 + 0.5 * x1_viz + 1.5 * x2_viz + np.random.normal(0, 2, n_viz)
+x1_viz = rng.uniform(0, 10, n_viz)
+x2_viz = rng.uniform(0, 10, n_viz)
+y_viz = 2 + 0.5 * x1_viz + 1.5 * x2_viz + rng.normal(0, 2, n_viz)
 
 # Fit model
 X_viz = pd.DataFrame({'const': 1, 'x1': x1_viz, 'x2': x2_viz})
@@ -141,11 +150,10 @@ This process, sometimes called **"partialling out"**, has profound implications.
 # --- Numerical Proof of Frisch-Waugh-Lovell Theorem ---
 
 # Generate data
-np.random.seed(42)
 n = 100
-x2 = np.random.normal(0, 1, n)
-x3 = np.random.normal(0, 1, n)
-y = 1 + 2*x2 + 3*x3 + np.random.normal(0, 1, n)
+x2 = rng.normal(0, 1, n)
+x3 = rng.normal(0, 1, n)
+y = 1 + 2*x2 + 3*x3 + rng.normal(0, 1, n)
 
 # 1. Full Regression
 X = pd.DataFrame({'const': 1, 'x2': x2, 'x3': x3})
@@ -179,8 +187,8 @@ print("> **Note:** The coefficients are identical (within floating point precisi
 from statsmodels.stats.diagnostic import het_breuschpagan
 
 # Generate heteroskedastic data
-X_het = pd.DataFrame({'const': 1, 'x': np.random.uniform(0, 10, 100)})
-u = np.random.normal(0, 1 + 0.5 * X_het['x'], 100) # Variance increases with x
+X_het = pd.DataFrame({'const': 1, 'x': rng.uniform(0, 10, 100)})
+u = rng.normal(0, 1 + 0.5 * X_het['x'], 100) # Variance increases with x
 y_het = 1 + 2 * X_het['x'] + u
 
 model_het = sm.OLS(y_het, X_het).fit()
@@ -215,8 +223,8 @@ plt.show()
 # --- Checking for Multicollinearity (VIF) ---
 
 # Generate collinear data
-x1 = np.random.normal(0, 1, 100)
-x2 = 2 * x1 + np.random.normal(0, 0.1, 100) # Highly correlated with x1
+x1 = rng.normal(0, 1, 100)
+x2 = 2 * x1 + rng.normal(0, 0.1, 100) # Highly correlated with x1
 X_col = pd.DataFrame({'const': 1, 'x1': x1, 'x2': x2})
 
 vif_data = pd.DataFrame()
@@ -368,10 +376,10 @@ class BayesianLinearRegression:
 print("Running Gibbs Sampler...")
 # Use simple data for clarity
 n_bayes, k_bayes = 100, 3
-X_bayes = np.random.normal(0, 1, (n_bayes, k_bayes))
+X_bayes = rng.normal(0, 1, (n_bayes, k_bayes))
 X_bayes = np.hstack([np.ones((n_bayes, 1)), X_bayes]) # Add constant
 true_beta_bayes = np.array([1.0, 2.0, -1.0, 0.5])
-y_bayes = X_bayes @ true_beta_bayes + np.random.normal(0, 1, n_bayes)
+y_bayes = X_bayes @ true_beta_bayes + rng.normal(0, 1, n_bayes)
 
 bayes_model = BayesianLinearRegression(n_iter=5000, burn_in=1000)
 bayes_model.fit(X_bayes, y_bayes)
@@ -381,6 +389,11 @@ print(f"True Betas: {true_beta_bayes}")
 print(f"Estimated Betas (Posterior Mean): {bayes_model.beta_samples.mean(axis=0)}")
 ```
 
+> **Common Pitfalls in This Lecture**
+>
+> - **Omitted variable bias.** Leaving out a variable correlated with both $\mathbf{x}$ and $\mathbf{y}$ biases every remaining coefficient — direction given by the classic covariance formula. Conversely, controlling for colliders/post-treatment variables creates bias where none existed. Draw the causal graph first.
+> - **Multicollinearity panic.** High pairwise correlations inflate variances (high VIF) but do not bias coefficients. Mechanically dropping 'redundant' controls can induce omitted-variable bias; address multicollinearity only when it blocks inference you actually need.
+
 ### Three-Tier Practice Ladder
 
 **1. Mechanism and assumptions (Conceptual):** Define the estimand in **01 Linear Model and OLS**, list the identifying assumptions, and give a concrete data-generating process that violates one assumption while leaving the others intact.
@@ -388,6 +401,8 @@ print(f"Estimated Betas (Posterior Mean): {bayes_model.beta_samples.mean(axis=0)
 **2. Reproduce and diagnose (Applied):** Implement or reproduce the estimator using the material on 1. The Theory of Ordinary Least Squares, 1.1 The Geometric Interpretation of OLS. Report uncertainty and at least two diagnostics; then compare with an alternative specification that targets the same estimand.
 
 **3. Robust extension (Challenge):** Run a Monte Carlo or sensitivity exercise that varies the most fragile identifying condition. Quantify bias/coverage or the range of estimates and state what evidence would change your substantive conclusion.
+
+**3b. Failure analysis (Challenge):** An in-sample $R^2 = 0.99$ with every coefficient insignificant, and out-of-sample predictions are terrible. Diagnose the multicollinearity/overfitting combination (VIFs, effective rank), repair with regularization or variable selection justified by design, and report train versus test performance honestly.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

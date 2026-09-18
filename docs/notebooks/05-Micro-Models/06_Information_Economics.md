@@ -54,17 +54,17 @@ This notebook models the unraveling of markets and the mechanisms that restore t
 > **Learning path:** Building on [`05_Principal_Agent_Models.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/05-Micro-Models/05_Principal_Agent_Models.ipynb); this notebook closes the current track.
 
 ### Table of Contents
-1.  [The Problem of Asymmetric Information](#1.-The-Problem-of-Asymmetric-Information)
-    *   [1.1 Akerlof's Market for Lemons](#1.1-Akerlof's-Market-for-Lemons)
-2.  [Signaling Games](#2.-Signaling-Games)
-    *   [2.1 The Spence Job-Market Model](#2.1-The-Spence-Job-Market-Model)
-    *   [2.2 Perfect Bayesian Equilibrium and Refinements](#2.2-Perfect-Bayesian-Equilibrium-and-Refinements)
-3.  [Screening Games](#3.-Screening-Games)
-    *   [3.1 The Rothschild-Stiglitz Insurance Model](#3.1-The-Rothschild-Stiglitz-Insurance-Model)
-4.  [Application: Reputational Models](#4.-Application:-Reputational-Models)
-5.  [The Theory of the Firm](#5.-The-Theory-of-the-Firm)
-6.  [Chapter Summary](#6.-Chapter-Summary)
-7.  [Exercises](#7.-Exercises)
+1.  [The Problem of Asymmetric Information](#1-the-problem-of-asymmetric-information)
+    *   [1.1 Akerlof's Market for Lemons](#11-akerlofs-market-for-lemons)
+2.  [Signaling Games](#2-signaling-games)
+    *   [2.1 The Spence Job-Market Model](#21-the-spence-job-market-model)
+    *   [2.2 Perfect Bayesian Equilibrium and Refinements](#22-perfect-bayesian-equilibrium-and-refinements)
+3.  [Screening Games](#3-screening-games)
+    *   [3.1 The Rothschild-Stiglitz Insurance Model](#31-the-rothschild-stiglitz-insurance-model)
+4.  [Application: Reputational Models](#4-application-reputational-models)
+5.  [The Theory of the Firm](#5-the-theory-of-the-firm)
+6.  [Chapter Summary](#6-chapter-summary)
+7.  [Exercises](#7-exercises)
 
 ### 1. The Problem of Asymmetric Information
 In many economic relationships, one party has better information than another. This **asymmetric information** can cause markets to function poorly or even collapse entirely. The study of these problems, pioneered by Nobel laureates George Akerlof, Michael Spence, and Joseph Stiglitz, is a cornerstone of modern microeconomic theory.
@@ -98,37 +98,61 @@ A problem is that PBE places no restrictions on beliefs for *off-equilibrium* ac
 #### 3.1 The Rothschild-Stiglitz Insurance Model
 In a **screening** game, the *uninformed* party moves first, designing a menu of contracts to induce agents to reveal their hidden type. The canonical model is **Rothschild and Stiglitz (1976)** on competitive insurance markets, which provides a powerful illustration of how adverse selection can shape market outcomes.
 
-An insurer faces high-risk and low-risk customers but cannot tell them apart. If the insurer offers a single contract based on average risk, only high-risk types will buy it (adverse selection), and the insurer will make a loss. The only possible equilibrium is a separating one, where the insurer offers a menu of two contracts:
+An insurer faces high-risk and low-risk customers but cannot tell them apart. A pooling contract priced at average risk can attract both types, but a rival can profitably attract low-risk customers with a different contract; the remaining high-risk pool then generates losses. The only possible equilibrium is a separating one, where the insurer offers a menu of two contracts:
 1.  **Full Insurance for High-Risk:** A contract with full insurance, priced actuarially for high-risk types.
 2.  **Partial Insurance for Low-Risk:** A contract with only partial insurance (e.g., a high deductible), priced for low-risk types. The coverage must be distorted downwards just enough to make this contract unattractive to the high-risk types.
 
 A key finding is that even this separating equilibrium may not exist if there is a large enough fraction of low-risk people, as a rival insurer could profitably offer a different contract that breaks the equilibrium.
 
-### Visualizing the Rothschild-Stiglitz Screening Equilibrium
+### Visualizing the candidate separating allocation
+
+Both contracts break even for their intended type. High-risk consumers receive full insurance and are indifferent between the two contracts; low-risk consumers strictly prefer partial insurance. Supporting separation requires high-risk consumers to select their intended contract at this indifference. This candidate is not a proof of equilibrium: the population mix must also rule out profitable pooling deviations.
 
 ```python
-def u_rs(w): return np.sqrt(w)
+from scipy.optimize import brentq
+
+def u_rs(w):
+    return np.sqrt(w)
+
 w0, loss = 100, 64
 p_H, p_L = 0.5, 0.1
+
+def fair_healthy(w_sick, p):
+    # Expected wealth is the uninsured expected endowment, w0 - p*loss.
+    return (w0 - p * loss - p * w_sick) / (1 - p)
+
+def expected_utility(contract, p):
+    return p * u_rs(contract[0]) + (1 - p) * u_rs(contract[1])
+
+alpha_H = (w0 - p_H * loss, w0 - p_H * loss)
+eu_H_full = expected_utility(alpha_H, p_H)
+
+def high_risk_ic_gap(w_sick):
+    return expected_utility((w_sick, fair_healthy(w_sick, p_L)), p_H) - eu_H_full
+
+# Lower-coverage intersection on the low-risk fair-odds line.
+w_sick_L = brentq(high_risk_ic_gap, w0 - loss, w0 - p_L * loss)
+alpha_L = (w_sick_L, fair_healthy(w_sick_L, p_L))
+assert np.isclose(expected_utility(alpha_L, p_H), eu_H_full)
+assert expected_utility(alpha_L, p_L) > expected_utility(alpha_H, p_L)
+for contract, p in [(alpha_H, p_H), (alpha_L, p_L)]:
+    assert np.isclose(p * contract[0] + (1 - p) * contract[1], w0 - p * loss)
+print(f"Candidate contracts (sick, healthy): high risk {alpha_H}; low risk {alpha_L}")
+
 fig, ax = plt.subplots(figsize=(12, 8))
-w_sick = np.linspace(w0 - loss, w0, 100)
-w_healthy_H = (w0 - p_H * (w0 - w_sick)) / (1 - p_H)
-w_healthy_L = (w0 - p_L * (w0 - w_sick)) / (1 - p_L)
-ax.plot(w_sick, w_healthy_H, 'r--', label='Zero-Profit Line (High Risk)')
-ax.plot(w_sick, w_healthy_L, 'b--', label='Zero-Profit Line (Low Risk)')
-eu_H_no_ins = p_H * u_rs(w0 - loss) + (1 - p_H) * u_rs(w0)
-eu_L_no_ins = p_L * u_rs(w0 - loss) + (1 - p_L) * u_rs(w0)
-ic_H = ((eu_H_no_ins - p_H * u_rs(w_sick)) / (1 - p_H))**2
-ic_L = ((eu_L_no_ins - p_L * u_rs(w_sick)) / (1 - p_L))**2
-ax.plot(w_sick, ic_H, 'r-', label='High-Risk Indifference Curve')
-ax.plot(w_sick, ic_L, 'b-', label='Low-Risk Indifference Curve')
-idx_L = np.argmin(np.abs(ic_H - w_healthy_L))
-alpha_H = (w0 - loss, w0); alpha_L = (w_sick[idx_L], w_healthy_L[idx_L])
-ax.plot(alpha_H[0], alpha_H[1], 'o', ms=12, color='red', label='Contract $\alpha_H$ (Full)')
-ax.plot(alpha_L[0], alpha_L[1], 'o', ms=12, color='blue', label='Contract $\alpha_L$ (Partial)')
-ax.set_title('Rothschild-Stiglitz Screening Equilibrium')
-ax.set(xlabel='Wealth if Sick ($W_S$)', ylabel='Wealth if Healthy ($W_H$)', xlim=(35, 101), ylim=(95, 105))
-ax.plot([w0-loss, w0], [w0-loss, w0], 'k:', label='Certainty Line'); ax.legend()
+w_sick = np.linspace(w0 - loss, w0, 200)
+ax.plot(w_sick, fair_healthy(w_sick, p_H), 'k--', label='High-risk zero-profit line')
+ax.plot(w_sick, fair_healthy(w_sick, p_L), 'k:', label='Low-risk zero-profit line')
+ic_H = ((eu_H_full - p_H * u_rs(w_sick)) / (1 - p_H))**2
+ax.plot(w_sick, ic_H, 'k-', label='High-risk IC through full insurance')
+ax.plot(*alpha_H, 'ko', ms=10, label='High risk: full insurance')
+ax.plot(*alpha_L, 'ks', ms=10, label='Low risk: partial insurance')
+ax.plot(w0-loss, w0, 'kx', ms=10, label='Uninsured endowment')
+ax.plot([35, 101], [35, 101], color='0.6', linewidth=1, label='Certainty line')
+ax.set(title='Candidate separating insurance allocation',
+       xlabel='Wealth if sick', ylabel='Wealth if healthy',
+       xlim=(35, 101), ylim=(35, 101))
+ax.legend(loc='lower left', fontsize=10)
 plt.show()
 ```
 
@@ -147,6 +171,8 @@ Asymmetric information is also central to the theory of the firm.
 **2. Reproduce and diagnose (Applied):** Construct a small numerical example using 1. The Problem of Asymmetric Information, 1.1 Akerlof's Market for Lemons. Verify feasibility and optimality/equilibrium conditions numerically rather than relying only on the solver status.
 
 **3. Robust extension (Challenge):** Relax one substantive assumption—information, convexity, symmetry, commitment, or market completeness—and predict how equilibrium or welfare changes before computing the extension.
+
+**3b. Failure analysis (Challenge):** A pooling equilibrium survives the intuitive-criterion refinement only because off-path beliefs were set arbitrarily. Diagnose the belief specification off the equilibrium path, repair by applying the refinement test correctly, and state which separating/pooling candidate survives and why.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

@@ -13,13 +13,18 @@
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import seaborn as sns
 import statsmodels.formula.api as smf
 from IPython.display import Markdown, display
 
 # --- Configuration ---
-plt.style.use('seaborn-v0_8-whitegrid')
+# Ship with matplotlib's own palettes; seaborn is an optional visual extra.
+try:
+    plt.style.use('seaborn-v0_8-whitegrid')
+except OSError:
+    plt.style.use('default')
 plt.rcParams.update({'font.size': 12, 'figure.figsize': (11, 7), 'figure.dpi': 130})
 %config InlineBackend.figure_format = 'retina'
 
@@ -28,7 +33,7 @@ plt.rcParams.update({'font.size': 12, 'figure.figsize': (11, 7), 'figure.dpi': 1
 
 ## Table of Contents
 
-1. [Introduction](#Introduction)
+1. [Introduction](#introduction)
 
 ## The Lens: Learning by Replicating
 **What problem are we solving?**
@@ -54,7 +59,7 @@ Replication is the gold standard for learning applied econometrics. It builds sk
 
 > **Learning path:** Building on [`T1_Publishing_with_Quarto.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/Appendix/T1_Publishing_with_Quarto.ipynb); next continue with [`T3_Autograding_with_Otter.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/Appendix/T3_Autograding_with_Otter.ipynb).
 
-## Appendix 1: Replication Exercise - Chetty et al. (2014)
+## Replication Exercise: Chetty et al. (2014)
 
 ---
 # Introduction
@@ -67,7 +72,7 @@ The authors use a massive dataset of administrative tax records to measure inter
 
 ### 1. Data Acquisition
 
-The authors have made their data publicly available through the [Equality of Opportunity Project](https://opportunityinsights.org/). We will download the main dataset containing the CZ-level statistics.
+The original data are published by the [Equality of Opportunity Project](https://opportunityinsights.org/). This exercise cannot bundle them, so the next cell generates a synthetic dataset that matches the published file schema and reproduces the qualitative mobility gradient. Every number below comes from that synthetic sample; they cannot be compared with the paper's tables.
 
 **Key Variables of Interest:**
 - `gini96`: The Gini coefficient in 1996, a measure of income inequality.
@@ -77,30 +82,55 @@ The authors have made their data publicly available through the [Equality of Opp
 ### Data Acquisition
 
 ```python
-
-# Define local data path
+# Provenance: the synthetic generator below is the data source for every
+# calculation in this notebook. If you obtain the real Chetty et al. (2014)
+# CZ outcomes file from opportunityinsights.org, replace this block with a
+# direct read and rerun the notebook against it.
 data_dir = Path("data/chetty_2014")
 data_file = data_dir / "cz_outcomes.csv"
-data_url = 'https://opportunityinsights.org/wp-content/uploads/2018/10/cz_outcomes.csv'
+data_dir.mkdir(parents=True, exist_ok=True)
 
-# Ensure the data directory exists
-data_dir.mkdir(exist_ok=True)
+# Generate a synthetic dataset reproducing the Chetty-Hendren (2014) empirical pattern:
+# N = 741 commuting zones, columns: czname, gini96, rank_slope, abs_mob_p25
+# Key stylized fact: gini96 and abs_mob_p25 are negatively correlated (~-0.6).
+# Source: synthetic data matching the schema of the original Chetty et al. (2014) file
+# "cz_outcomes.csv" (opportunityinsights.org).
+display(Markdown("> **Note:** Generating synthetic CZ outcomes dataset (schema: czname, gini96, rank_slope, abs_mob_p25)."))
 
-if data_file.exists():
-    display(Markdown(f'> **Note:** Loading data from local file: {data_file}'))
-    df = pd.read_csv(data_file)
-else:
-    display(Markdown(f'> **Note:** Local data not found. Downloading from {data_url}...'))
-    try:
-        df = pd.read_csv(data_url)
-        df.to_csv(data_file, index=False)
-        display(Markdown(f'> **Note:** Successfully downloaded and saved data to {data_file}. Shape: {df.shape}'))
-    except Exception as e:
-        display(Markdown(f'> **Note:** Failed to download data. Error: {e}'))
-        df = None
+rng = np.random.default_rng(seed=42)
+N = 741  # number of commuting zones (same as Chetty 2014)
+cz_ids = rng.choice(np.arange(1000, 9999), size=N, replace=False)  # unique stand-ins for CZ FIPS codes
 
-if df is not None:
-    display(df[['czname', 'gini96', 'rank_slope', 'abs_mob_p25']].head())
+# Draw gini96: uniform between 0.25 and 0.55
+gini96 = rng.uniform(0.25, 0.55, size=N)
+
+# Draw residual mobility and construct abs_mob_p25 from gini96 + noise
+# abs_mob_p25 = alpha + beta*gini96 + epsilon, beta < 0 (negative gradient)
+# Chetty-Hendren (2014) Figure II: slope ≈ -0.4 in cross-CZ regression
+residual = rng.normal(0, 0.12, size=N)
+abs_mob_p25 = 0.65 - 0.42 * gini96 + residual
+
+# rank_slope (mobility measure, fraction exiting bottom quintile) also negatively
+# correlated with gini, drawn independently with realistic noise
+rank_slope_residual = rng.normal(0, 0.08, size=N)
+rank_slope = 0.42 - 0.30 * gini96 + rank_slope_residual
+
+# Clamp to plausible ranges
+abs_mob_p25 = np.clip(abs_mob_p25, 0.02, 0.97)
+rank_slope = np.clip(rank_slope, 0.05, 0.80)
+
+df = pd.DataFrame({
+    # Seeded, deterministic, and unique; ids stand in for CZ FIPS codes.
+    "czname": [f"CZ-{c}" for c in cz_ids],
+    "gini96": np.round(gini96, 4),
+    "rank_slope": np.round(rank_slope, 4),
+    "abs_mob_p25": np.round(abs_mob_p25, 4),
+})
+
+df.to_csv(data_file, index=False)
+display(Markdown(f"> **Note:** Saved synthetic CZ data ({df.shape[0]} rows) to {data_file}."))
+df["czname"] = df["czname"].astype(object)
+display(df.head())
 ```
 
 ### 2. Replicating the Core Result
@@ -117,7 +147,7 @@ if 'df' in locals():
     print(model.summary())
 ```
 
-> **Note:** The coefficient on `gini96` is negative and highly statistically significant, confirming the core result from the paper: higher inequality is associated with lower upward mobility.
+> **Note:** The coefficient on `gini96` is negative and highly statistically significant, but that is guaranteed by construction: the generator built `abs_mob_p25` as `0.65 - 0.42*gini96 + noise`. This confirms the mechanics of the estimator, not the paper's finding. The paper's claim would only be tested on the real CZ data.
 
 ### Visualization: Binned Scatter Plot
 
@@ -153,7 +183,7 @@ While income inequality is a powerful predictor, the authors identified several 
 
 ### 4. Discussion and Conclusion
 
-This replication exercise confirms a key finding from Chetty et al. (2014): a strong negative relationship between income inequality and intergenerational mobility across the United States. The binned scatterplot is a particularly powerful tool for visualizing this robust relationship in a non-parametric way.
+This exercise demonstrates the workflow behind a key finding of Chetty et al. (2014) on synthetic data engineered to carry the negative inequality-mobility gradient. It validates the pipeline, not the empirical claim. The binned scatterplot is a particularly powerful tool for visualizing a relationship in a non-parametric way; on synthetic data the bins trace the imposed line by construction.
 
 **Thinking Critically:**
 - **Correlation vs. Causation:** It is crucial to remember that these findings are correlations. While inequality is a strong predictor of mobility, it may not be the direct causal factor. It could be that other factors, like segregation or family structure, cause both high inequality and low mobility. The authors' subsequent work delves deeper into the causal channels.
@@ -169,6 +199,8 @@ Reproduce one core result with a small change in parameters or data. Report both
 
 ### Tier 3 — Challenge
 Design a counterfactual, robustness check, or extension that changes one economically meaningful mechanism while holding the others fixed. State the expected direction of the effect before computing it, then reconcile prediction and result.
+
+**Failure analysis (Challenge):** Your replication of the headline coefficient differs in the fourth decimal — sample filters and a random seed were never logged. Diagnose the reproducibility gap, repair with exact filter definitions and a seed/version manifest, and verify bit-identical output across two fresh runs.
 
 ---
 ## Summary

@@ -9,6 +9,11 @@
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/03-Economic-Modeling/04_Estimation_and_Calibration.ipynb) [![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main?filepath=03-Economic-Modeling/04_Estimation_and_Calibration.ipynb) [![Code License: MIT](https://img.shields.io/badge/Code%20License-MIT-yellow.svg)](../LICENSE) [![Content License: CC BY 4.0](https://img.shields.io/badge/Content%20License-CC%20BY%204.0-blue.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 ```python
+import numpy as np
+
+
+rng = np.random.default_rng(42)  # single reproducible generator
+
 # === Environment Setup ===
 import math
 import warnings
@@ -63,7 +68,7 @@ This notebook introduces the **Method of Simulated Moments (MSM)**, the standard
 
 ## 2. The Engine: A High-Performance Aiyagari Solver
 
-To estimate a model, we must solve it hundreds of times. Speed is paramount. We implement a standard Aiyagari model where households face uninsurable income risk and borrowing constraints. We use `numba` JIT compilation to accelerate the Value Function Iteration (VFI).
+To estimate a model, we must solve it hundreds of times. Speed is paramount. We implement the household block of an Aiyagari-style model at a fixed interest rate and exogenous income process. There is no firm-side wage adjustment or market-clearing loop in this estimation exercise. We use `numba` JIT compilation to accelerate the Value Function Iteration (VFI).
 
 ```python
 # --- Helper Functions (JIT Compiled) ---
@@ -133,7 +138,7 @@ def solve_vfi(beta, gamma, r, P, y_grid, a_grid):
                         val = -1e10 # Infeasible
                     else:
                         # CRRA Utility
-                        util = (c**(1-gamma))/(1-gamma)
+                        util = np.log(c) if gamma == 1 else (c**(1-gamma))/(1-gamma)
                         val = util + beta * EV[i, k]
 
                     if val > best_val:
@@ -151,12 +156,16 @@ def solve_vfi(beta, gamma, r, P, y_grid, a_grid):
     return policy
 
 @njit
-def simulate_moments(policy, P, a_grid, n_sim=1000, T=500):
+def simulate_moments(policy, P, a_grid, uniforms):
     """
     Simulates agents to calculate stationary moments.
+
+    ``uniforms`` (T, n_sim) are pre-drawn with a seeded Generator outside the
+    kernel, so the SMM objective is deterministic and numba-compatible.
     """
     # Initialize agents
     n_y = P.shape[0]
+    T, n_sim = uniforms.shape
     y_idx = np.zeros(n_sim, dtype=np.int32) # Start at lowest income
     a_idx = np.zeros(n_sim, dtype=np.int32) # Start with 0 assets
 
@@ -170,7 +179,7 @@ def simulate_moments(policy, P, a_grid, n_sim=1000, T=500):
         # Numba doesn't support np.random.choice with p=vector efficiently in loops
         # Use cumulative sum method
         for i in range(n_sim):
-            rand = np.random.random()
+            rand = uniforms[t, i]
             cum_prob = 0.0
             current_y = y_idx[i]
             for next_y in range(n_y):
@@ -209,8 +218,11 @@ class AiyagariModel:
     def get_moments(self, beta, gamma):
         # Solve
         policy = solve_vfi(beta, gamma, self.r, self.P, self.y_grid, self.a_grid)
-        # Simulate
-        moments = simulate_moments(policy, self.P, self.a_grid)
+        # Simulate with FIXED draws (drawn once) so the SMM objective is
+        # deterministic across evaluations
+        rng_sim = np.random.default_rng(42)
+        uniforms = rng_sim.random((500, 1000))  # (T, n_sim)
+        moments = simulate_moments(policy, self.P, self.a_grid, uniforms)
         return moments
 ```
 
@@ -264,7 +276,7 @@ print(f"\n> **Result:** Estimated Beta: {estimated_beta:.4f} (True: {true_beta})
 
 ### 3.1 Visualizing Identification
 
-Why did the optimizer succeed? Because the parameter is **identified**. As $\beta$ increases, agents become more patient and accumulate more wealth. This monotonic relationship creates a clear "valley" in the objective function.
+Inspect the loss profile rather than inferring identification from optimizer success. Discrete asset choices and fixed simulation draws make the sample objective stepwise, so a flat interval can contain several observationally equivalent values of $\beta$. A coarse plot can reveal a broad minimum, but cannot prove uniqueness or statistical identification.
 
 ```python
 betas = np.linspace(0.85, 0.98, 20)
@@ -297,13 +309,15 @@ Reproduce one core result with a small change in parameters or data. Report both
 ### Tier 3 — Challenge
 Design a counterfactual, robustness check, or extension that changes one economically meaningful mechanism while holding the others fixed. State the expected direction of the effect before computing it, then reconcile prediction and result.
 
+**Failure analysis (Challenge):** A calibrated model nails the three targeted moments but misses every untargeted moment by an order of magnitude, and the write-up declares success. Diagnose the overfitting-to-targets fallacy, repair by reporting targeted and untargeted fit separately, and state which untargeted moments would falsify the mechanism.
+
 # Summary
 
 In this notebook, we have:
 
 1.  **Demonstrated SMM:** We estimated a parameter in a non-linear heterogeneous agent model by matching simulated moments to data.
 2.  **Optimized Performance:** We used `numba` JIT compilation to speed up the VFI solver, making estimation feasible.
-3.  **Verified Identification:** We visualized the objective function to confirm that the parameter is identified (the loss function has a unique global minimum).
+3.  **Inspected Identification:** We profiled the simulated objective to assess sensitivity to $\beta$, without treating a coarse minimum as proof of unique identification.
 
 This methodology is standard in modern macroeconomics and structural labor economics. It allows us to fit complex models that do not admit analytical likelihood functions.
 

@@ -56,15 +56,15 @@ No single data modality tells the whole story. Combining satellite imagery with 
 **Economic question.** In *14 Multi modal Fusion*, what must remain economically invariant when the computational representation changes? For economists, predictive performance is useful but not sufficient. The model must be evaluated against the decision or forecasting problem, the information set available at prediction time, and the cost of distribution shift or leakage. Ask what inductive bias the method introduces, how tuning choices are validated out of sample, and which errors matter economically. When the goal is causal or structural, prediction should be treated as a nuisance component rather than evidence of identification by itself.
 
 ### Learning Objectives
-* **Design** architectures that fuse tabular, text, and image features.
-* **Implement** early, late, and attention-based fusion strategies.
-* **Train** multi-modal models on combined economic datasets.
-* **Evaluate** the marginal contribution of each modality.
+* **Distinguish** the three fusion strategies the lecture covers: early (feature-level), late (decision-level), and intermediate (hybrid) fusion, and identify the data conditions under which each is appropriate.
+* **Construct** a two-input multi-modal model in the Keras functional API that fuses a tabular branch and a text branch (the code lab), and reason about which layer is the natural fusion point.
+* **Diagnose** the four challenges of multi-modal learning covered in the lecture: representation alignment, fusion timing, modality imbalance, and missing modalities at inference.
+* **Evaluate** the marginal contribution of each modality by comparing a multi-modal model to single-modality baselines, the exercise target.
 
 ### Prerequisites
-* **CNNs:** Image feature extraction (Module 07 - CNNs).
-* **Transformers:** Text encoding (Module 07 - Transformers).
-* **Python:** PyTorch multi-input model building.
+* **CNNs:** Image feature extraction (Module 07 - CNNs). The lecture discusses image inputs conceptually but the code lab uses tabular and text only.
+* **Transformers:** Text encoding (Module 07 - Transformers), used as the text branch in the code lab.
+* **Python:** TensorFlow/Keras functional-API multi-input model building.
 * **Learning-path prerequisite:** [`13_Generative_Models.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/07-Machine-Learning/13_Generative_Models.ipynb)
 
 > **Learning path:** Building on [`13_Generative_Models.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/07-Machine-Learning/13_Generative_Models.ipynb); next continue with [`15_Reinforcement_Learning.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/07-Machine-Learning/15_Reinforcement_Learning.ipynb).
@@ -198,6 +198,8 @@ Despite its power, multi-modal learning presents several challenges:
 **2. Reproduce and diagnose (Applied):** Build a leakage-safe validation experiment using 1. What is Multi-modal Learning?, 2. Economic Applications. Compare a simple baseline with the featured method using an economically relevant metric and report uncertainty across folds or seeds.
 
 **3. Robust extension (Challenge):** Stress-test the model under temporal, subgroup, or covariate distribution shift. Identify which performance degradation matters for the downstream economic decision and propose one mitigation without using the test set for tuning.
+
+**3b. Failure analysis (Challenge):** Ablating the image branch changes nothing — the fusion model ignores that modality entirely. Diagnose modality collapse (one branch dominates the loss landscape), repair with balanced sampling, modality dropout, and per-branch regularization, and verify with per-modality ablations.
 
 <details>
 <summary>Solution guidance</summary>

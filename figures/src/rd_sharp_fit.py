@@ -49,27 +49,47 @@ def main() -> None:
             means.append(y[mask].mean())
     ax.scatter(centers, means, s=26, color="#48688a", zorder=4, label="bin means")
 
-    for side_mask, color in ((x < CUTOFF, "#b03a2e"), (x >= CUTOFF, "#2e7d32")):
+    intercepts = []
+    for side_mask, color, side in (
+        (x < CUTOFF, "#b03a2e", "left"),
+        (x >= CUTOFF, "#2e7d32", "right"),
+    ):
         xs = x[side_mask]
         coef = np.polyfit(xs - CUTOFF, y[side_mask], 1)
-        grid = np.linspace(xs.min(), xs.max(), 40)
+        intercepts.append(coef[1])
+        bounds = (xs.min(), CUTOFF) if side == "left" else (CUTOFF, xs.max())
+        grid = np.linspace(*bounds, 40)
         ax.plot(
             grid,
             np.polyval(coef, grid - CUTOFF),
             color=color,
             lw=2.2,
-            label="local linear fit",
+            label=f"{side} linear fit",
         )
 
     ax.axvline(CUTOFF, color="gray", ls=":", lw=1.0)
-    ax.annotate("cutoff c", xy=(CUTOFF + 0.4, y.min()), fontsize=9, color="dimgray")
+    ax.annotate(
+        "cutoff c",
+        xy=(CUTOFF, 0.02),
+        xycoords=("data", "axes fraction"),
+        xytext=(5, 0),
+        textcoords="offset points",
+        fontsize=9,
+        color="dimgray",
+    )
     ax.annotate(
         "",
-        xy=(CUTOFF, 4.55),
-        xytext=(CUTOFF, 3.35),
+        xy=(CUTOFF, intercepts[1]),
+        xytext=(CUTOFF, intercepts[0]),
         arrowprops=dict(arrowstyle="<->", color="#b03a2e", lw=1.8),
     )
-    ax.annotate(r"$\hat{\tau}$", xy=(CUTOFF + 0.5, 3.95), fontsize=12, color="#b03a2e")
+    ax.annotate(
+        r"$\hat{\tau}$",
+        xy=(CUTOFF + 0.5, np.mean(intercepts)),
+        fontsize=12,
+        color="#b03a2e",
+    )
+    ax.set_title("Sharp RD: simulated data and fitted discontinuity")
     ax.set_xlabel("running variable X")
     ax.set_ylabel("outcome Y")
     ax.legend(frameon=False, loc="lower right", fontsize=9)

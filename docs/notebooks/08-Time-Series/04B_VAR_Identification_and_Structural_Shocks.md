@@ -6,6 +6,9 @@
 
 # 04B Vector Autoregression: Identification and Structural Shocks
 
+![VAR identification](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/08-Time-Series/var_identification_diagram.png)
+*Figure: Mapping reduced-form shocks to structural shocks.*
+
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/08-Time-Series/04B_VAR_Identification_and_Structural_Shocks.ipynb) [![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main?filepath=08-Time-Series/04B_VAR_Identification_and_Structural_Shocks.ipynb) [![Code License: MIT](https://img.shields.io/badge/Code%20License-MIT-yellow.svg)](../LICENSE) [![Content License: CC BY 4.0](https://img.shields.io/badge/Content%20License-CC%20BY%204.0-blue.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 ```python
@@ -52,9 +55,48 @@ Identification schemes (like Cholesky ordering) impose economic structure on the
 > **Learning path:** Building on [`04A_VAR_Estimation_and_Granger.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/08-Time-Series/04A_VAR_Estimation_and_Granger.ipynb); next continue with [`04C_VAR_Impulse_Responses_and_FEVD.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/08-Time-Series/04C_VAR_Impulse_Responses_and_FEVD.ipynb).
 
 ### Table of Contents
-1. [The Lens: Identification in Multivariate Systems](#The-Lens:-Identification-in-Multivariate-Systems)
+1. [The Lens: Identification in Multivariate Systems](#the-lens-identification-in-multivariate-systems)
 2. [The Identification Problem](#identification-problem)
 3. [Summary](#summary)
+
+<a id='cholesky-lab'></a>
+### 1.1 Code Lab: Why the Ordering Matters
+
+Suppose the true structural shocks are $u_t = B_0\, \varepsilon_t$ with $\varepsilon_t \sim N(0, I)$ and $B_0$ **lower triangular** — monetary policy responds to demand within the period, but not vice versa. The reduced-form residual covariance is $\Sigma_u = B_0 B_0'$. The recursive (Cholesky) identification sets $\hat{B}_0 = \mathrm{chol}(\Sigma_u)$, which recovers $B_0$ **only if the assumed ordering matches the true one**. The lab below demonstrates both the success case and the failure case under permutation.
+
+```python
+import numpy as np
+
+rng = np.random.default_rng(11)
+
+# True structural impact matrix: LOWER triangular (demand shock [1] can move
+# policy [2] within the period; policy cannot move demand within the period).
+B0 = np.array([
+    [1.0, 0.0],
+    [0.6, 0.8],
+])
+Sigma_u = B0 @ B0.T
+
+# Case 1: correct ordering -> Cholesky recovers B0 up to sign conventions
+L_correct = np.linalg.cholesky(Sigma_u)
+print("True B0:\n", B0)
+print("Cholesky with correct ordering:\n", np.round(L_correct, 6))
+assert np.allclose(np.abs(L_correct), np.abs(B0)), "should recover B0"
+
+# Case 2: WRONG ordering (swap variables before Cholesky)
+perm = [1, 0]                       # put policy first
+Sigma_perm = Sigma_u[np.ix_(perm, perm)]
+L_wrong_permuted = np.linalg.cholesky(Sigma_perm)
+# undo the permutation on rows/cols so results are comparable to B0
+P_mat = np.eye(2)[perm]
+L_wrong = P_mat.T @ L_wrong_permuted @ P_mat.T
+print("\nCholesky under WRONG ordering (mapped back):\n", np.round(L_wrong, 3))
+print("Contemporaneous response of demand to a policy shock:",
+      f"{L_wrong[0, 1]:.3f} (true value: {B0[0, 1]:.1f})")
+assert not np.allclose(L_wrong, B0), "wrong ordering must distort impacts"
+print("\nConclusion: recursive identification bakes in causal timing; a wrong")
+print("ordering misattributes contemporaneous co-movement between shocks.")
+```
 
 <a id='identification-problem'></a>
 ## 1. The Identification Problem
@@ -70,6 +112,8 @@ A VAR residual vector \(u_t\) typically has correlated components, so it cannot 
 **2. Reproduce and diagnose (Applied):** Fit the method covered in 1. The Identification Problem to a time-ordered series. Diagnose residual dependence and stability, then evaluate a rolling or expanding-window out-of-sample forecast against a naive baseline.
 
 **3. Robust extension (Challenge):** Alter one structural restriction, lag/order choice, or innovation distribution. Explain how impulse responses, forecasts, or uncertainty change and whether the conclusion survives the alternative specification.
+
+**3b. Failure analysis (Challenge):** Cholesky IRFs change sign when two variables swap order, and no economic argument for the ordering is given. Diagnose the identification assumption carrying the result, repair with economically motivated ordering or sign/long-run restrictions, and present the sensitivity across orderings.
 
 <details>
 <summary>Solution guidance</summary>

@@ -13,6 +13,8 @@
 # Purpose: Import necessary libraries for data manipulation, visualization, and machine learning.
 import matplotlib.pyplot as plt
 import numpy as np
+
+rng = np.random.default_rng(42)  # single reproducible generator
 import pandas as pd
 
 # pandas_datareader is used to fetch data directly from online sources like the FRED database.
@@ -25,6 +27,7 @@ from sklearn.model_selection import TimeSeriesSplit
 # Scikit-learn provides the tools for preprocessing (StandardScaler), dimensionality reduction (PCA),
 # modeling (LinearRegression), and robust evaluation (TimeSeriesSplit, mean_squared_error).
 from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import make_pipeline
 
 # --- Configuration ---
 # Purpose: Standardize plotting styles and numerical output for consistency and readability.
@@ -39,7 +42,7 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 
 ## Table of Contents
 
-1. [Introduction](#Introduction)
+1. [Introduction](#introduction)
 
 ## The Lens: Nowcasting and Forecasting the Economy
 **What problem are we solving?**
@@ -53,10 +56,10 @@ ML forecasting models (LASSO, Random Forests, LSTMs) can handle the "many predic
 **Economic question.** In *21 ML for Macro Forecasting*, what must remain economically invariant when the computational representation changes? For economists, predictive performance is useful but not sufficient. The model must be evaluated against the decision or forecasting problem, the information set available at prediction time, and the cost of distribution shift or leakage. Ask what inductive bias the method introduces, how tuning choices are validated out of sample, and which errors matter economically. When the goal is causal or structural, prediction should be treated as a nuisance component rather than evidence of identification by itself.
 
 ### Learning Objectives
-* **Build** nowcasting models using mixed-frequency data and bridge equations.
-* **Apply** LASSO, Random Forest, and LSTM models to GDP and inflation forecasting.
-* **Evaluate** forecast accuracy against AR and VAR benchmarks using RMSE and Diebold-Mariano tests.
-* **Handle** real-time data vintages and the ragged-edge problem.
+* **Prepare** monthly FRED-MD predictors and quarterly GDP growth for a lagged forecast.
+* **Fit** principal component regression with scaling and PCA re-estimated inside each time split.
+* **Compare** forecasts with a training-history mean and a synthetic AR/Random Forest benchmark.
+* **Explain** why revised data and publication lags limit this pseudo-out-of-sample exercise.
 
 ### Prerequisites
 * **Time Series:** ARIMA and VAR models (Module 08).
@@ -64,6 +67,8 @@ ML forecasting models (LASSO, Random Forests, LSTMs) can handle the "many predic
 * **Learning-path prerequisite:** [`20_Geospatial_Data.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/07-Machine-Learning/20_Geospatial_Data.ipynb)
 
 > **Learning path:** Building on [`20_Geospatial_Data.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/07-Machine-Learning/20_Geospatial_Data.ipynb); next continue with [`22_Style_Transfer_and_Advanced_Vision.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/07-Machine-Learning/22_Style_Transfer_and_Advanced_Vision.ipynb).
+
+> **Conceptual prerequisite:** This lecture extends classical time-series forecasting with machine learning. It assumes familiarity with the pipeline introduced in [`01_Introduction_to_Time_Series.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/08-Time-Series/01_Introduction_to_Time_Series.ipynb), ARMA models in [`02_ARMA_Models.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/08-Time-Series/02_ARMA_Models.ipynb), and the ARIMA / forecast-construction workflow in [`03_ARIMA_and_Forecasting.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/08-Time-Series/03_ARIMA_and_Forecasting.ipynb). If those are not yet familiar, treat this lecture as a follow-up rather than a standalone.
 
 ### 1. The Challenge of High-Dimensional Macro Data
 **Intellectual Provenance:** The use of factor models in macroeconomics has a long history, but the application of principal components to large macroeconomic datasets was popularized by the work of James Stock and Mark Watson in the early 2000s. Their papers demonstrated that a few principal components extracted from a large panel of macroeconomic series could effectively summarize the state of the economy and produce superior forecasts compared to traditional, smaller-scale models. This 'diffusion index' or 'factor-augmented' forecasting approach has since become a standard tool in empirical macroeconomics.
@@ -79,7 +84,7 @@ We will use the widely-cited **FRED-MD dataset**, a large panel of monthly US ma
 
 The process involves:
 1.  **Loading the data:** We'll fetch the FRED-MD dataset and the target variable (Real GDP).
-2.  **Data Cleaning:** Handling missing values is crucial. We will use a simple forward-fill and back-fill strategy.
+2.  **Data Cleaning:** Handling missing values is crucial. We forward-fill from past observations only and drop remaining incomplete rows; this can shorten the usable sample.
 3.  **Transformations:** Many macro series are non-stationary. We will apply the transformations (e.g., taking logs, differencing) suggested by the creators of the dataset to induce stationarity.
 4.  **Aggregation:** We will aggregate the monthly predictor data to a quarterly frequency to match the frequency of our GDP target variable.
 
@@ -93,19 +98,15 @@ try:
     # This dataset is commonly used for testing forecasting models in a data-rich environment.
     fred_md_url = 'https://files.stlouisfed.org/files/htdocs/fred-md/monthly/current.csv'
     df_raw = pd.read_csv(fred_md_url)
-    # The date column must be parsed into a datetime object to serve as the DataFrame index.
-    df_raw['sasdate'] = pd.to_datetime(df_raw['sasdate'], format='%m/%d/%Y')
-    df_raw = df_raw.set_index('sasdate')
-
-    # The first row of the raw CSV contains transformation codes, not data.
-    # We separate these codes into their own DataFrame for later use.
-    tcode_df = df_raw.iloc[:1, 1:]
-    df = df_raw.iloc[1:, 1:]
+    # Remove the transformation-code row BEFORE parsing dates, retaining every series.
+    tcode_df = df_raw.iloc[:1].drop(columns='sasdate')
+    df = df_raw.iloc[1:].copy()
+    df['sasdate'] = pd.to_datetime(df['sasdate'], format='%m/%d/%Y')
+    df = df.set_index('sasdate').apply(pd.to_numeric, errors='coerce')
 
     # Step 2: Clean the data.
-    # Missing values are a common issue. A simple and robust method for large macro panels is to
-    # forward-fill existing values and then back-fill any remaining NaNs at the beginning of the series.
-    df = df.fillna(method='ffill').fillna(method='bfill')
+    # Never back-fill with a future release. Leading missing values remain missing.
+    df = df.ffill()
 
     # Step 3: Apply transformations to induce stationarity.
     # Most macroeconomic time series are non-stationary. The data providers suggest specific transformations
@@ -116,14 +117,16 @@ try:
         if tcode == 4: return np.log(series) # Log level
         if tcode == 5: return np.log(series).diff() # Log difference (approx. growth rate)
         if tcode == 6: return np.log(series).diff().diff() # Change in growth rate
-        return series # No transformation needed
+        if tcode == 7: return series.pct_change(fill_method=None).diff()
+        if tcode == 1: return series
+        raise ValueError(f'Unknown FRED-MD transformation code: {tcode}')
 
     df_transformed = pd.DataFrame()
     for col in df.columns:
         tcode = tcode_df[col].iloc[0]
         df_transformed[col] = transform(df[col].astype(float), tcode)
     # Transformations like differencing introduce NaNs at the start; these must be dropped.
-    df_transformed = df_transformed.dropna()
+    df_transformed = df_transformed.replace([np.inf, -np.inf], np.nan).dropna()
 
     # Step 4: Load and prepare the target variable (quarterly GDP growth).
     gdp = web.DataReader('GDPC1', 'fred', start='1960-01-01', end='2023-12-31')
@@ -133,7 +136,10 @@ try:
     # Step 5: Align the data frequencies.
     # Our predictors are monthly, but the target (GDP) is quarterly. We must align them.
     # A common method is to aggregate the monthly data to quarterly by taking the mean value within each quarter.
-    X = df_transformed.resample('Q').mean()
+    X = df_transformed.resample('QE').mean()
+    # FRED labels GDP at quarter-start; join on common quarterly periods.
+    X.index = X.index.to_period('Q')
+    gdp_growth.index = gdp_growth.index.to_period('Q')
     # We then join the predictors and target, keeping only the time periods where both exist ('inner' join).
     data_full = X.join(gdp_growth, how='inner')
     data_full = data_full.rename(columns={'GDPC1': 'GDP_Growth'})
@@ -148,6 +154,8 @@ try:
     y = y.loc[X_lagged.index]
 
     display(Markdown(f'> **Note:** Data preparation complete. We have {X_lagged.shape[1]} potential predictors to forecast GDP growth.'))
+    if len(X_lagged) <= 11 or X_lagged.shape[1] < 5:
+        raise ValueError('Insufficient complete quarterly data for the PCR validation.')
     DATA_LOADED = True
 except Exception as e:
     display(Markdown(f'> **Note:** Could not load data. Error: {e}. Skipping notebook execution.'))
@@ -166,7 +174,9 @@ if DATA_LOADED:
     # PCA is sensitive to the scale of the variables. A variable with a large variance could dominate
     # the first principal component. To prevent this, we standardize each series to have a mean of 0 and a standard deviation of 1.
     scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X_lagged)
+    # The scree diagnostic uses only the initial training window.
+    initial_train, _ = next(TimeSeriesSplit(n_splits=10).split(X_lagged))
+    X_scaled = scaler.fit_transform(X_lagged.iloc[initial_train])
 
     # Step 2: Fit PCA.
     # We apply PCA to the scaled predictor matrix. This process finds the orthogonal linear combinations
@@ -178,7 +188,7 @@ if DATA_LOADED:
     # The scree plot is a critical diagnostic tool. It shows the cumulative variance explained by the components.
     # This helps us decide how many components (factors) are needed to summarize the information in the original dataset.
     plt.figure(figsize=(12, 7))
-    plt.plot(np.cumsum(pca.explained_variance_ratio_))
+    plt.plot(np.arange(1, len(pca.explained_variance_ratio_) + 1), np.cumsum(pca.explained_variance_ratio_))
     plt.xlabel('Number of Components')
     plt.ylabel('Cumulative Explained Variance')
     plt.title('Scree Plot: Variance Explained by Principal Components')
@@ -194,28 +204,33 @@ if DATA_LOADED:
 
 ### Forecasting GDP Growth with Principal Components
 
+![Time-series CV splits](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/08-Time-Series/timeseries_cross_validation_splits.png)
+*Figure: Cross-validation schemes that respect time ordering..*
+
 ```python
 
 if DATA_LOADED:
     # Step 1: Select the number of principal components (factors) to use as predictors.
     # Based on the scree plot or other criteria, we choose a small number of components for our model.
     n_pcs = 5
-    X_factors = X_pca[:, :n_pcs]
 
     # Step 2: Set up a time-series cross-validation.
     # Standard k-fold cross-validation is invalid for time series because it can lead to training on future data
     # and testing on past data. TimeSeriesSplit creates an expanding window, which respects the temporal order of the data.
     tscv = TimeSeriesSplit(n_splits=10)
-    model = LinearRegression()
+    # The full transformation is refitted on each training fold.
+    model = make_pipeline(StandardScaler(), PCA(n_components=n_pcs), LinearRegression())
 
     # We will store the out-of-sample predictions and actual values here.
     predictions = []
     actuals = []
+    benchmark_predictions = []
+    prediction_dates = []
 
     # Step 3: Loop through the time series splits, training and predicting at each step.
     # This mimics how a forecaster would operate in real-time, re-estimating their model as new data arrives.
-    for train_index, test_index in tscv.split(X_factors):
-        X_train, X_test = X_factors[train_index], X_factors[test_index]
+    for train_index, test_index in tscv.split(X_lagged):
+        X_train, X_test = X_lagged.iloc[train_index], X_lagged.iloc[test_index]
         y_train, y_test = y.iloc[train_index], y.iloc[test_index]
 
         # Train the model only on the 'past' data.
@@ -224,18 +239,20 @@ if DATA_LOADED:
         preds = model.predict(X_test)
         predictions.extend(preds)
         actuals.extend(y_test)
+        benchmark_predictions.extend(np.repeat(y_train.mean(), len(y_test)))
+        prediction_dates.extend(y_test.index)
 
     # Step 4: Evaluate the out-of-sample performance.
     # We calculate the out-of-sample R-squared. A positive value indicates that the model's forecasts
     # are better than a simple forecast based on the historical mean.
-    r_squared = 1 - np.sum((np.array(actuals) - np.array(predictions))**2) / np.sum((np.array(actuals) - np.mean(np.array(actuals)))**2)
+    r_squared = 1 - np.sum((np.array(actuals) - np.array(predictions))**2) / np.sum((np.array(actuals) - np.array(benchmark_predictions))**2)
     display(Markdown(f'> **Note:** Out-of-Sample R-squared from the Principal Component Regression: {r_squared:.3f}'))
 
     # Step 5: Visualize the forecasts against the actual data.
     # This plot provides a qualitative assessment of the model's performance over time.
     fig, ax = plt.subplots(figsize=(14, 7))
     # Create a DataFrame for easy plotting with correct dates.
-    plot_df = pd.DataFrame({'Actual GDP Growth': actuals, 'Predicted GDP Growth': predictions}, index=y.index[len(y)-len(actuals):])
+    plot_df = pd.DataFrame({'Actual GDP Growth': actuals, 'Predicted GDP Growth': predictions}, index=pd.PeriodIndex(prediction_dates).to_timestamp(how="end"))
     plot_df.plot(ax=ax, style=['-', '--'])
     ax.set_title('GDP Growth Forecast: Actual vs. Predicted (Out-of-Sample)')
     ax.set_ylabel('Quarterly GDP Growth (%)')
@@ -244,7 +261,9 @@ if DATA_LOADED:
 ```
 
 ### 4. Conclusion and Extensions
-This notebook demonstrated a powerful and practical technique for macroeconomic forecasting in a data-rich environment. By combining PCA for dimensionality reduction with a simple linear regression, we were able to build a model that effectively forecasts GDP growth out-of-sample.
+The PCR exercise estimates scaling, factors, and regression coefficients using past training data only. Its score measures performance relative to a mean estimated from each training window, not the mean of future outcomes. Test blocks contain rolling one-quarter forecasts with coefficients held fixed within each block.
+
+This is pseudo-out-of-sample evaluation on revised series, not a real-time forecast record. A one-quarter lag does not by itself account for publication delays or the ragged edge. Real-time evaluation requires vintage-specific availability dates; no claim of forecast superiority follows without inspecting the measured errors.
 
 This approach can be extended in several ways:
 - **Dynamic Factor Models (DFM):** A more sophisticated version that explicitly models the time-series dynamics of the factors and idiosyncratic components.
@@ -257,19 +276,19 @@ from sklearn.ensemble import RandomForestRegressor
 from statsmodels.tsa.ar_model import AutoReg
 
 # Generate Synthetic Macro Data (Inflation)
-np.random.seed(42)
 n_obs = 200
 inflation = np.zeros(n_obs)
 # Non-linear Data Generating Process
 for t in range(2, n_obs):
-    inflation[t] = 0.5 * inflation[t-1] - 0.2 * inflation[t-2] + 0.1 * inflation[t-1]**2 + np.random.normal(0, 0.5)
+    inflation[t] = 0.5 * inflation[t-1] - 0.2 * inflation[t-2] + 0.1 * inflation[t-1]**2 + rng.normal(0, 0.5)
 
 train_size = int(n_obs * 0.8)
 train, test = inflation[:train_size], inflation[train_size:]
 
 # 1. AR(1) Model (Benchmark)
 ar_model = AutoReg(train, lags=1).fit()
-ar_pred = ar_model.predict(start=train_size, end=n_obs-1)
+# Fixed coefficients, rolling one-step forecasts using the same realized history as RF.
+ar_pred = ar_model.params[0] + ar_model.params[1] * inflation[train_size-1:n_obs-1]
 
 # 2. Random Forest (ML)
 # Create lag features
@@ -284,13 +303,13 @@ X_train, y_train = create_lags(train, lags=2)
 rf_model = RandomForestRegressor(n_estimators=100, random_state=42)
 rf_model.fit(X_train, y_train)
 
-# Recursive Forecasting for RF
+# Rolling one-step forecasting for RF (no refitting)
 rf_pred = []
 current_window = train[-2:] # Start with last 2 points of training
 for i in range(len(test)):
     next_pred = rf_model.predict(current_window.reshape(1, -1))[0]
     rf_pred.append(next_pred)
-    # Update window: drop oldest, add prediction (or true value? let's use true value for 1-step ahead)
+    # Observe the realized outcome only after making its forecast.
     current_window = np.array([current_window[1], test[i]]) # Using true value for 1-step ahead comparison
 
 # Evaluation (MSE)
@@ -316,6 +335,8 @@ plt.show()
 **2. Reproduce and diagnose (Applied):** Build a leakage-safe validation experiment using 1. The Challenge of High-Dimensional Macro Data, 2. Data Acquisition and Preparation. Compare a simple baseline with the featured method using an economically relevant metric and report uncertainty across folds or seeds.
 
 **3. Robust extension (Challenge):** Stress-test the model under temporal, subgroup, or covariate distribution shift. Identify which performance degradation matters for the downstream economic decision and propose one mitigation without using the test set for tuning.
+
+**3b. Failure analysis (Challenge):** The nowcast looks superb in-sample, but random CV splits let 2023 information predict 2008; moreover 'vintage' real-time series differ from today's revised data. Diagnose both the temporal leakage and the revision mismatch, repair with expanding-window validation on vintage data, and report the honest nowcast accuracy.
 
 <details>
 <summary>Solution guidance</summary>

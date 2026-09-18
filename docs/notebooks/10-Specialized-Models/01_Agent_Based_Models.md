@@ -9,6 +9,8 @@
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/10-Specialized-Models/01_Agent_Based_Models.ipynb) [![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main?filepath=10-Specialized-Models/01_Agent_Based_Models.ipynb) [![Code License: MIT](https://img.shields.io/badge/Code%20License-MIT-yellow.svg)](../LICENSE) [![Content License: CC BY 4.0](https://img.shields.io/badge/Content%20License-CC%20BY%204.0-blue.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 ```python
+rng = np.random.default_rng(42)  # single reproducible generator
+
 # === Environment Setup ===
 import random
 from dataclasses import dataclass, field
@@ -38,21 +40,21 @@ if not NX_AVAILABLE: print("NetworkX not found. Skipping network-based ABM secti
 ```
 
 ### Table of Contents
-1.  [The Philosophy and Building Blocks of ABM](#1.-The-Philosophy-and-Building-Blocks-of-ABM)
-    - [Emergence, Heterogeneity, and Bounded Rationality](#Emergence,-Heterogeneity,-and-Bounded-Rationality)
-    - [The ODD Protocol for Describing ABMs](#The-ODD-Protocol-for-Describing-ABMs)
-2.  [Foundational Model 1: Schelling's Segregation Model](#2.-Foundational-Model-1:-Schelling's-Segregation-Model)
-    - [Emergence and Tipping Points](#Emergence-and-Tipping-Points)
-3.  [Foundational Model 2: Axelrod's Tournament and the Evolution of Cooperation](#3.-Foundational-Model-2:-Axelrod's-Tournament-and-the-Evolution-of-Cooperation)
-    - [Implementing the Iterated Prisoner's Dilemma](#Implementing-the-Iterated-Prisoner's-Dilemma)
-4.  [Application 1: Financial Market ABMs](#4.-Application-1:-Financial-Market-ABMs)
-    - [The Kirman (1993) "Ants" Model of Herd Behavior](#The-Kirman-(1993)-"Ants"-Model-of-Herd-Behavior)
-    - [An Artificial Stock Market (Lux & Marchesi)](#An-Artificial-Stock-Market-(Lux-&-Marchesi))
-5.  [Application 2: A Simple Agent-Based Macroeconomic Model](#5.-Application-2:-A-Simple-Agent-Based-Macroeconomic-Model)
-    - [Generating Endogenous Business Cycles](#Generating-Endogenous-Business-Cycles)
-6.  [Strengths, Weaknesses, and Validation](#6.-Strengths,-Weaknesses,-and-Validation)
-7.  [Summary](#7.-Summary)
-8.  [Exercises](#8.-Exercises)
+1.  [The Philosophy and Building Blocks of ABM](#1-the-philosophy-and-building-blocks-of-abm)
+    - [Emergence, Heterogeneity, and Bounded Rationality](#emergence-heterogeneity-and-bounded-rationality)
+    - [The ODD Protocol for Describing ABMs](#the-odd-protocol-for-describing-abms)
+2.  [Foundational Model 1: Schelling's Segregation Model](#2-foundational-model-1-schellings-segregation-model)
+    - [Emergence and Tipping Points](#emergence-and-tipping-points)
+3.  [Foundational Model 2: Axelrod's Tournament and the Evolution of Cooperation](#3-foundational-model-2-axelrods-tournament-and-the-evolution-of-cooperation)
+    - [Implementing the Iterated Prisoner's Dilemma](#implementing-the-iterated-prisoners-dilemma)
+4.  [Application 1: Financial Market ABMs](#4-application-1-financial-market-abms)
+    - [The Kirman (1993) "Ants" Model of Herd Behavior](#the-kirman-1993)-"Ants"-Model-of-Herd-Behavior)
+    - [An Artificial Stock Market (Lux & Marchesi)](#an-artificial-stock-market-lux-marchesi))
+5.  [Application 2: A Simple Agent-Based Macroeconomic Model](#5-application-2-a-simple-agent-based-macroeconomic-model)
+    - [Generating Endogenous Business Cycles](#generating-endogenous-business-cycles)
+6.  [Strengths, Weaknesses, and Validation](#6-strengths-weaknesses-and-validation)
+7.  [Summary](#7-summary)
+8.  [Exercises](#8-exercises)
 
 ## The Lens: The Economy as an Ecosystem
 **What economic problem are we solving?**
@@ -76,9 +78,14 @@ Standard economics assumes "representative agents"—identical, perfectly ration
 * **Game Theory:** Nash equilibrium and the Prisoner's Dilemma (Module 05 - Game Theory).
 * **Macro Models:** Representative-agent benchmarks such as the RBC model (Module 04).
 
+> **Historical Context — Schelling's checkerboard 1971.** Thomas Schelling demonstrated with coins and graph paper — no computer — that mild individual preferences generate extreme residential segregation (AER 1971; Nobel 2005). Axelrod's prisoner-dilemma tournaments (1980) and Epstein-Axtell's Sugarscape (1996) built the ABM tradition this lab follows.
+
 > **Learning path:** This notebook is the entry point for this track; next continue with [`02_General_Equilibrium_with_Heterogeneous_Agents.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/10-Specialized-Models/02_General_Equilibrium_with_Heterogeneous_Agents.ipynb).
 
 ### 1. The Philosophy and Building Blocks of ABM
+
+![Emergence](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/10-Specialized-Models/emergence_diagram.png)
+*Figure: Emergent macro patterns from micro rules in an ABM..*
 
 The macroeconomic models explored so far are masterpieces of the **"top-down"** or **deductive** approach. They typically feature a high degree of aggregation—often collapsing the behavior of millions of diverse individuals into a single, hyper-rational **representative agent**—to solve for the unique, stable **equilibrium** of the system.
 
@@ -270,7 +277,7 @@ class AxelrodTournament:
         total_score = sum(a.score for a in self.population)
         if total_score == 0: return # Avoids division by zero
         fitness = [a.score / total_score for a in self.population]
-        new_population_agents = np.random.choice(self.population, size=len(self.population), p=fitness, replace=True)
+        new_population_agents = rng.choice(self.population, size=len(self.population), p=fitness, replace=True)
         self.population = [AxelrodAgent(a.strategy_func, a.name) for a in new_population_agents]
 
     def run_simulation(self, n_generations=50):
@@ -570,6 +577,11 @@ print("> **Note:** Even this highly stylized model generates persistent fluctuat
 
 Validation often proceeds via **stylized fact replication**: does the model, for a plausible range of parameters, generate qualitative and quantitative patterns that match those seen in the real world (e.g., fat-tailed returns, volatility clustering)?
 
+> **Common Pitfalls in This Lecture**
+>
+> - **One-seed storytelling.** ABMs are stochastic: a single simulation run is one draw from the model's distribution, and striking emergent patterns may be luck. Run ensembles across seeds and report distributions of outcomes, not representative screenshots.
+> - **Verification vs validation.** Code matching intended mechanics (verification) is different from mechanisms matching reality (validation); both differ from reproducing stylized facts, which many mechanisms can mimic (equifinality). State which claim each experiment supports.
+
 ### Three-Tier Practice Ladder
 
 **1. Mechanism and assumptions (Conceptual):** Explain the central computational idea in **01 Agent Based Models** and connect it to one explicit economic object or research workflow.
@@ -577,6 +589,8 @@ Validation often proceeds via **stylized fact replication**: does the model, for
 **2. Reproduce and diagnose (Applied):** Reproduce an example involving 1. The Philosophy and Building Blocks of ABM, Emergence, Heterogeneity, and Bounded Rationality, then change one input and explain the result before running the code.
 
 **3. Robust extension (Challenge):** Extend the example to a larger or less convenient case and document the correctness and performance checks needed before trusting the result.
+
+**3b. Failure analysis (Challenge):** One beautiful segregation run is presented as 'the result', but a different seed produces a visibly different pattern. Diagnose the single-seed fallacy, repair with an ensemble across seeds reporting the distribution of the segregation index, and discuss which conclusions survive.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

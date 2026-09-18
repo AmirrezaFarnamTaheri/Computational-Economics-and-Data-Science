@@ -12,6 +12,8 @@
 # === Environment Setup ===
 import random
 import numpy as np, pandas as pd
+
+rng = np.random.default_rng(42)  # single reproducible generator
 import matplotlib.pyplot as plt
 
 try:
@@ -53,10 +55,10 @@ if not TENSORFLOW_AVAILABLE:
 
 ## Table of Contents
 
-1. [Introduction](#Introduction)
-2. [Theoretical Foundations](#Theoretical-Foundations)
-3. [Backpropagation from Scratch](#Backpropagation-from-Scratch)
-4. [TensorFlow Implementation](#TensorFlow-Implementation)
+1. [Introduction](#introduction)
+2. [Theoretical Foundations](#theoretical-foundations)
+3. [Backpropagation from Scratch](#backpropagation-from-scratch)
+4. [TensorFlow Implementation](#tensorflow-implementation)
 
 ## The Lens: Universal Function Approximation
 **What problem are we solving?**
@@ -81,6 +83,8 @@ Deep learning has revolutionized prediction in domains from computer vision to N
 * **`01-Foundations/12_NumPy.ipynb`**: Array and tensor basics.
 * **`01-Foundations/13_Pandas.ipynb`**: Data preparation workflows.
 * **Learning-path prerequisite:** [`05_Dimensionality_Reduction_and_Clustering.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/07-Machine-Learning/05_Dimensionality_Reduction_and_Clustering.ipynb)
+
+> **Historical Context — Perceptron winters to backprop (1958–2012).** Frank Rosenblatt's 1958 perceptron drew New York Times headlines, then Minsky and Papert's 1969 critique froze neural funding for a decade. Rumelhart, Hinton, and Williams revived training with backpropagation (Nature, 1986); LeCun's LeNet read bank checks by 1998; AlexNet's 2012 ImageNet win started everything you see in industry today.
 
 > **Learning path:** Building on [`05_Dimensionality_Reduction_and_Clustering.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/07-Machine-Learning/05_Dimensionality_Reduction_and_Clustering.ipynb); next continue with [`07_Convolutional_Neural_Networks.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/07-Machine-Learning/07_Convolutional_Neural_Networks.ipynb).
 
@@ -160,10 +164,9 @@ input_size = 2
 hidden_size = 3
 output_size = 1
 
-np.random.seed(42)
-W1 = np.random.uniform(-1, 1, (input_size, hidden_size))
+W1 = rng.uniform(-1, 1, (input_size, hidden_size))
 b1 = np.zeros((1, hidden_size))
-W2 = np.random.uniform(-1, 1, (hidden_size, output_size))
+W2 = rng.uniform(-1, 1, (hidden_size, output_size))
 b2 = np.zeros((1, output_size))
 
 # XOR Problem
@@ -282,6 +285,11 @@ $$\varphi\big(w(x - c)\big) - \varphi\big(w(x - c - h)\big) \;\xrightarrow[w \to
 
 $$G(x) \;\approx\; \sum_{j=1}^{M} f(c_j)\, \mathbb{1}\{c_j < x \le c_j + h\}.$$
 
+> **Common Pitfalls in This Lecture**
+>
+> - **Raw inputs into a network.** Feeding unscaled features forces one learning rate to serve features measured in dollars and features measured in fractions — slow, divergent optimization. Standardize inputs (fit on train only) as a reflex.
+> - **Training loss as evidence.** Training loss falling says nothing about generalization; small-sample econometric applications overfit almost immediately. Track a validation curve, regularize (weight decay, dropout, early stopping) and report validation metrics.
+
 ## Exercises
 
 **1. Mechanism and assumptions (Conceptual):** Explain the loss/objective and inductive bias of **06 Deep Learning Foundations**. Distinguish optimization error, estimation error, and generalization error in the economic use case.
@@ -289,6 +297,8 @@ $$G(x) \;\approx\; \sum_{j=1}^{M} f(c_j)\, \mathbb{1}\{c_j < x \le c_j + h\}.$$
 **2. Reproduce and diagnose (Applied):** Build a leakage-safe validation experiment using Theoretical Foundations, 1.1 The Universal Approximation Theorem. Compare a simple baseline with the featured method using an economically relevant metric and report uncertainty across folds or seeds.
 
 **3. Robust extension (Challenge):** Stress-test the model under temporal, subgroup, or covariate distribution shift. Identify which performance degradation matters for the downstream economic decision and propose one mitigation without using the test set for tuning.
+
+**3b. Failure analysis (Challenge):** Training loss becomes `NaN` after three epochs, and with learning rate 1.0 the accuracy never moves. Diagnose exploding gradients and a diverging step size, repair with gradient clipping, a sane LR schedule, and input normalization, and plot the gradient norms as evidence.
 
 <details>
 <summary>Solution guidance</summary>

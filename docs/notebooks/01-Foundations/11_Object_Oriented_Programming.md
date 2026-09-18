@@ -35,20 +35,20 @@ plt.rcParams.update(
 ```
 
 ### Table of Contents
-1. [The Lens: Managing Complexity with OOP](#The-Lens:-Managing-Complexity-with-OOP)
-2. [The Anatomy of a Class](#The-Anatomy-of-a-Class)
-    - [Attributes and Methods](#Constructor,-Attributes,-and-Methods)
-    - [`@classmethod` and `@staticmethod`](#Class-and-Static-Methods)
-3. [The Pillars of OOP](#The-Pillars-of-OOP)
-    - [Encapsulation and Information Hiding](#Encapsulation-and-Information-Hiding)
-    - [Inheritance and MRO](#Inheritance:-Modeling-'is-a'-Relationships)
-    - [Polymorphism and Interfaces](#Polymorphism-and-Defining-Interfaces)
-4. [Core Design Principle: Prefer Composition Over Inheritance](#Core-Design-Principle:-Prefer-Composition-Over-Inheritance)
-    - [Case Study: A Portfolio of Assets](#Case-Study:-A-Portfolio-of-Assets)
-5. [Tools for Better Classes: `dataclasses` and `attrs`](#Tools-for-Better-Classes:-dataclasses-and-attrs)
-6. [Performance Note: OOP vs. Data-Oriented Design](#A-Note-on-Performance:-OOP-vs.-Data-Oriented-Design)
-7. [Summary](#Summary)
-8. [Exercises](#Exercises)
+1. [The Lens: Managing Complexity with OOP](#the-lens-managing-complexity-with-oop)
+2. [The Anatomy of a Class](#the-anatomy-of-a-class)
+    - [Attributes and Methods](#constructor-attributes-and-methods)
+    - [`@classmethod` and `@staticmethod`](#class-and-static-methods)
+3. [The Pillars of OOP](#the-pillars-of-oop)
+    - [Encapsulation and Information Hiding](#encapsulation-and-information-hiding)
+    - [Inheritance and MRO](#inheritance-modeling-is-a-relationships)
+    - [Polymorphism and Interfaces](#polymorphism-and-defining-interfaces)
+4. [Core Design Principle: Prefer Composition Over Inheritance](#core-design-principle-prefer-composition-over-inheritance)
+    - [Case Study: A Portfolio of Assets](#case-study-a-portfolio-of-assets)
+5. [Tools for Better Classes: `dataclasses` and `attrs`](#tools-for-better-classes-dataclasses-and-attrs)
+6. [Performance Note: OOP vs. Data-Oriented Design](#a-note-on-performance-oop-vs-data-oriented-design)
+7. [Summary](#summary)
+8. [Exercises](#exercises)
 
 ## The Lens: 11-Object-Oriented-Programming
 As computational models in economics—especially simulations like agent-based models (ABMs) or dynamic structural models—grow in scale, we face a fundamental challenge: managing **stateful complexity**. A purely procedural approach, consisting of functions operating on a collection of global data structures (e.g., lists of wealth, dictionaries of parameters), quickly becomes tangled. A change in one function can have unforeseen side effects on the shared state, making the system difficult to reason about, test, and extend. This is akin to having a large workshop where all tools and parts are thrown into a single pile; finding what you need and ensuring it works correctly becomes a nightmare.
@@ -480,6 +480,11 @@ The DOD approach allows libraries like NumPy, Numba, and JAX to perform highly o
 - Use **OOP** to structure the high-level logic of your model, define components, manage configurations, and orchestrate the simulation.
 - Use **Data-Oriented Design** within performance-critical kernels of your model where you are performing repetitive numerical calculations on large datasets.
 
+> **Common Pitfalls in This Lecture**
+>
+> - **Class-level mutable attributes.** An attribute assigned in the class body (e.g., `items = []`) is *shared* by every instance, so one instance's mutation is visible in all. Initialize mutable state in `__init__` with `self.items = []`.
+> - **Inheritance for reuse.** Reaching for inheritance to reuse a few methods couples subclasses to a concrete parent and breaks under refactoring. Prefer composition — hold a helper object and delegate — which the lecture argues is the sturdier default.
+
 ### Three-Tier Practice Ladder
 
 **1. Mechanism and assumptions (Conceptual):** Explain the central computational idea in **11-Object-Oriented-Programming** and connect it to one explicit economic object or research workflow.
@@ -487,6 +492,8 @@ The DOD approach allows libraries like NumPy, Numba, and JAX to perform highly o
 **2. Reproduce and diagnose (Applied):** Reproduce an example involving The Anatomy of a Class, Constructor, Attributes, and Methods, then change one input and explain the result before running the code.
 
 **3. Robust extension (Challenge):** Extend the example to a larger or less convenient case and document the correctness and performance checks needed before trusting the result.
+
+**3b. Failure analysis (Challenge):** Every `Agent` instance appears to share one transaction history: appending to `agent1.log` shows up in `agent2.log`. Diagnose the class-level mutable attribute, move initialization into `__init__`, and explain when a class attribute *is* appropriate (true constants) with a test that fails before and passes after the fix.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

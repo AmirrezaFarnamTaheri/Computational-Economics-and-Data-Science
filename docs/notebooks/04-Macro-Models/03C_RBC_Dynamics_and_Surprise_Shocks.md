@@ -59,7 +59,7 @@ Impulse-response style simulations translate the linearized solution into time p
 > **Learning path:** Building on [`03B_RBC_Model_Solution.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/04-Macro-Models/03B_RBC_Model_Solution.ipynb); next continue with [`03D_RBC_News_Shocks_and_Expectations.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/04-Macro-Models/03D_RBC_News_Shocks_and_Expectations.ipynb).
 
 # Table of Contents
-* [The Lens: Surprise Shocks and Transition Dynamics](#The-Lens:-Surprise-Shocks-and-Transition-Dynamics)
+* [The Lens: Surprise Shocks and Transition Dynamics](#the-lens-surprise-shocks-and-transition-dynamics)
 * [1. Surprise Shock Dynamics](#1-surprise-shock-dynamics)
 * [Summary](#summary)
 
@@ -203,6 +203,8 @@ simulate_surprise_shock(rbc)
 **2. Reproduce and diagnose (Applied):** Reproduce one quantitative result from the sections on 1. Surprise Shock Dynamics. Change one economically meaningful parameter over a defensible grid, report the policy/value/equilibrium response, and verify convergence with a residual or tighter tolerance.
 
 **3. Robust extension (Challenge):** Design a policy or shock counterfactual that changes one mechanism at a time. Compare welfare or transition dynamics against the baseline and explain which conclusion is structural versus calibration-specific.
+
+**3b. Failure analysis (Challenge):** Impulse responses never die out and the simulated capital stock drifts — the ergodic distribution does not exist. Diagnose the unit-root bug in the capital accumulation step, repair the law of motion, and verify decay of responses plus a stable long-run distribution.
 
 <details>
 <summary>Solution guidance</summary>

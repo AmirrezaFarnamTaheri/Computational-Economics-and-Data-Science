@@ -25,13 +25,13 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 
 ## Table of Contents
 
-1.  [The Lens: Frictions in the Labor Market](#The-Lens:-Frictions-in-the-Labor-Market)
-2.  [The McCall Job Search Model](#The-McCall-Job-Search-Model)
-3.  [The Diamond-Mortensen-Pissarides (DMP) Matching Model](#The-Diamond-Mortensen-Pissarides-(DMP)-Matching-Model)
-4.  [On-the-Job Search and Wage Dispersion](#On-the-Job-Search-and-Wage-Dispersion)
-5.  [Assortative Matching](#Assortative-Matching)
-6.  [Summary](#Summary)
-7.  [Exercises](#Exercises)
+1.  [The Lens: Frictions in the Labor Market](#the-lens-frictions-in-the-labor-market)
+2.  [The McCall Job Search Model](#the-mccall-job-search-model)
+3.  [The Diamond-Mortensen-Pissarides (DMP) Matching Model](#the-diamond-mortensen-pissarides-dmp)-Matching-Model)
+4.  [On-the-Job Search and Wage Dispersion](#on-the-job-search-and-wage-dispersion)
+5.  [Assortative Matching](#assortative-matching)
+6.  [Summary](#summary)
+7.  [Exercises](#exercises)
 
 ## The Lens: Frictions in the Labor Market
 **What problem are we solving?**
@@ -129,6 +129,8 @@ The model consists of a large number of identical workers and firms. The core co
     - $y$: The productivity of a filled job.
 - **Wage Determination:** The wage is determined by Nash bargaining. The total surplus of a match is $S = (W-U) + J$. The worker receives a fraction $\phi$ (their bargaining power) of this surplus, leading to the wage equation: $w = \phi(y + \kappa\theta) + (1-\phi)b$. Notice that the worker's wage depends on their outside option ($b$) and their share of the match surplus, which itself includes the firm's saved search costs ($\kappa\theta$ represents the expected cost to find a new worker).
 
+**Dimension notes:** $u, v \in [0,1]$ are masses (fractions of the labor force), tightness $\theta = v/u$ a scalar ratio; $p(\theta), q(\theta)$ transition rates; continuation values $U, W, V, J$ and flows ($w, b, y, -\kappa$) are all scalars discounted at $r > 0$.
+
 #### 2.2 Solving for the General Equilibrium
 The equilibrium of the model is a market tightness $\theta^*$ and a wage $w^*$ that satisfy three conditions simultaneously:
 1.  **Job Creation (Free Entry):** Firms post vacancies until the value of a vacancy is driven to zero ($V=0$). This implies that the cost of posting a vacancy equals the expected profit from filling it: $\frac{\kappa}{q(\theta)} = J$.
@@ -183,7 +185,7 @@ Solving the steady-state flow equation, $p(\theta)u = s(1-u)$, gives the **Bever
 #### 2.4 Policy Implications
 The DMP model provides a powerful lens for analyzing labor market policies. For instance:
 - **Unemployment Benefits ($b$):** An increase in benefits raises the outside option of workers ($U$), allowing them to bargain for higher wages. This reduces the profitability of a job for a firm ($J$), leading firms to post fewer vacancies. The result is a lower market tightness ($\theta$) and a higher equilibrium unemployment rate.
-- **Firing Costs:** Introducing firing costs (which increase the cost of job separation, $s$) has ambiguous effects. While it may reduce separations, it also makes firms more hesitant to hire, potentially lowering vacancy creation.
+- **Firing Costs:** Introducing firing costs (a separate payment at separation, not the separation rate $s$) has ambiguous effects. While it may reduce separations, it also makes firms more hesitant to hire, potentially lowering vacancy creation.
 - **Matching Efficiency ($m$):** Policies that improve the matching process (e.g., better job boards, retraining programs) increase $m$, shifting the Beveridge curve inwards and leading to lower unemployment for any given level of vacancies.
 
 ### The Beveridge Curve
@@ -209,39 +211,55 @@ The intuition is that firms, knowing that their workers might be poached by a co
 
 ### The Burdett-Mortensen Equilibrium Wage Distribution
 
+Let $F(w)$ denote the **offer** CDF and $G(w)$ the wage CDF among employed workers. Higher-paying firms both retain workers longer and recruit more workers from lower-paying firms. Accounting for both margins gives
+$$l(w)\propto[\delta+\lambda_1(1-F(w))]^{-2}.$$
+Equal profits across wages in the offer support therefore imply
+$$\frac{y-w}{[\delta+\lambda_1(1-F(w))]^2}=\frac{y-w_R}{(\delta+\lambda_1)^2}.$$
+Thus
+$$F(w)=\frac{\delta+\lambda_1}{\lambda_1}\left[1-\sqrt{\frac{y-w}{y-w_R}}\right],\quad
+w_H=y-(y-w_R)\left(\frac{\delta}{\delta+\lambda_1}\right)^2.$$
+The offer density is increasing, not uniform. The employed-wage CDF is
+$$G(w)=\frac{\delta F(w)}{\delta+\lambda_1[1-F(w)]}.$$
+For risk-neutral workers, the reservation wage satisfies
+$$w_R=b+(\lambda_0-\lambda_1)\int_{w_R}^{w_H}\frac{1-F(w)}{r+\delta+\lambda_1[1-F(w)]}\,dw.$$
+The code solves this condition jointly with the offer distribution for $\lambda_0\ge\lambda_1>0$ and $b<y$. It does not import the reservation wage from the earlier McCall calibration.
+
 ```python
-from IPython.display import Image, display
+from scipy.integrate import quad
+from scipy.optimize import brentq
 
-# --- Model Parameters ---
-# lambda0: The Poisson arrival rate of job offers for unemployed workers.
-# lambda1: The Poisson arrival rate of job offers for employed workers.
-# delta: The exogenous job separation rate.
-# r: The interest rate (discount rate).
-# b: Unemployment benefits.
-# y: Productivity of a filled job.
 lambda0, lambda1, delta, r, b, y = 1.0, 0.2, 0.05, 0.01, 0.5, 1.0
-k = lambda1 / (r + delta)
 
-# Solve for reservation wage w_R
-w_R_obj = lambda w: b + (lambda0 * k / (1 + k)) * (y - w) - w
-w_R = fsolve(w_R_obj, 0.6)[0]
+def bm_offer_cdf(w, w_R):
+    ratio = np.maximum((y - np.asarray(w)) / (y - w_R), 0.0)
+    return np.clip((delta + lambda1) / lambda1 * (1 - np.sqrt(ratio)), 0, 1)
 
-# Define the CDF of the wage distribution G(w)
-G = lambda w: ((1 + k) / (k * (y - b))) * (w - b)
+def bm_reservation_gap(w_R):
+    w_H = y - (y - w_R) * (delta / (delta + lambda1))**2
+    gain = quad(lambda w: (1-bm_offer_cdf(w, w_R)) /
+                (r+delta+lambda1*(1-bm_offer_cdf(w, w_R))), w_R, w_H)[0]
+    return w_R - b - (lambda0 - lambda1) * gain
 
-w_vals = np.linspace(w_R, y, 100)
-cdf_vals = G(w_vals)
-pdf_vals = (1 + k) / (k * (y - b)) * np.ones_like(w_vals)
+w_R = brentq(bm_reservation_gap, b, y - 1e-10)
+w_H = y - (y - w_R) * (delta / (delta + lambda1))**2
+w_vals = np.linspace(w_R, w_H, 300)
+cdf_vals = bm_offer_cdf(w_vals, w_R)
+pdf_vals = (delta + lambda1) / (2 * lambda1 * np.sqrt((y-w_vals)*(y-w_R)))
+employed_cdf = delta * cdf_vals / (delta + lambda1 * (1-cdf_vals))
+profit_index = (y-w_vals) / (delta+lambda1*(1-cdf_vals))**2
+assert np.allclose(profit_index, profit_index[0])
+assert abs(bm_reservation_gap(w_R)) < 1e-8
 
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
-ax1.plot(w_vals, cdf_vals)
-ax1.set_title('Equilibrium Wage CDF, G(w)')
-ax1.set_xlabel('Wage (w)'); ax1.set_ylabel('CDF')
+ax1.plot(w_vals, cdf_vals, label='Offer CDF F(w)')
+ax1.plot(w_vals, employed_cdf, '--', label='Employed-wage CDF G(w)')
+ax1.set(xlabel='Wage', ylabel='CDF', title='Offers versus accepted wages')
+ax1.legend()
 ax2.plot(w_vals, pdf_vals)
-ax2.set_title('Equilibrium Wage PDF, g(w)')
-ax2.set_xlabel('Wage (w)'); ax2.set_ylabel('Density')
-plt.suptitle('Burdett-Mortensen Wage Distribution', fontsize=16)
+ax2.set(xlabel='Wage', ylabel='Density', title='Offer density (nonuniform)')
+plt.suptitle('Burdett-Mortensen Wage Dispersion')
 plt.show()
+print(f"Lower support = {w_R:.4f}, upper support = {w_H:.4f}; reservation residual = {bm_reservation_gap(w_R):.2e}")
 ```
 
 ### 4. Assortative Matching
@@ -267,6 +285,8 @@ $$rW = w + s(U - W)$$
 
 $$rV = -\kappa + q(\theta)(J - V)$$
 
+**Dimension notes:** wages, flows, and continuation values ($U$, $W$, $J$, $V$) are scalars; $\beta \in (0,1)$ discounts; offer distributions $F$/$G$ are scalar cdfs; search effort and arrival rates are scalar intensities.
+
 ### Three-Tier Practice Ladder
 
 **1. Mechanism and assumptions (Conceptual):** State the equilibrium/optimality condition that organizes **01 Job Search**. Explain which assumption guarantees existence, uniqueness, or stability, and identify a limiting case where that argument weakens.
@@ -274,6 +294,8 @@ $$rV = -\kappa + q(\theta)(J - V)$$
 **2. Reproduce and diagnose (Applied):** Reproduce one quantitative result from the sections on 1. The McCall Job Search Model, Solving for the McCall Reservation Wage. Change one economically meaningful parameter over a defensible grid, report the policy/value/equilibrium response, and verify convergence with a residual or tighter tolerance.
 
 **3. Robust extension (Challenge):** Design a policy or shock counterfactual that changes one mechanism at a time. Compare welfare or transition dynamics against the baseline and explain which conclusion is structural versus calibration-specific.
+
+**3b. Failure analysis (Challenge):** The computed reservation wage *falls* with assets, contradicting the monotone comparative statics proved in the lecture. Diagnose whether interpolation noise or a Bellman-step bug drives the non-monotonicity (refine grid, switch interpolant, check the maximizer search), repair, and verify monotonicity numerically.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 
@@ -303,7 +325,7 @@ Unemployment is a dynamic equilibrium phenomenon, not just a market failure.
 
 **Key Takeaways:**
 *   **Reservation Wage:** The central decision rule. Workers accept jobs that pay more than their reservation wage and reject others.
-*   **Frictions Matter:** Higher unemployment benefits or lower search efficiency increase the reservation wage, raising the equilibrium unemployment rate.
+*   **Frictions Matter:** Higher benefits reduce vacancy creation in the DMP example. Lower matching efficiency also raises unemployment; it need not raise the individual reservation wage.
 *   **Flows vs. Stocks:** The unemployment rate is a stock determined by the flows into and out of unemployment (job separation and job finding rates).
 
 ## References & Further Reading

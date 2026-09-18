@@ -10,6 +10,7 @@
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/01-Foundations/05_Lists_and_Tuples.ipynb) [![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main?filepath=01-Foundations/05_Lists_and_Tuples.ipynb) [![Code License: MIT](https://img.shields.io/badge/Code%20License-MIT-yellow.svg)](../LICENSE) [![Content License: CC BY 4.0](https://img.shields.io/badge/Content%20License-CC%20BY%204.0-blue.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 ```python
+
 # --- Global Notebook Setup ---
 import array
 import bisect
@@ -23,6 +24,7 @@ from typing import NamedTuple
 
 import matplotlib.pyplot as plt
 import numpy as np
+rng = np.random.default_rng(42)  # single reproducible generator
 
 # Apply the standard course style for all plots
 plt.style.use("seaborn-v0_8-whitegrid")
@@ -40,29 +42,29 @@ plt.rcParams.update(
 ```
 
 ### Table of Contents
-1. [The Lens: Sequences, Mutability, and Semantic Meaning](#The-Lens:-Sequences,-Mutability,-and-Semantic-Meaning)
-2. [Lists: Mutable, Dynamic, Homogeneous Sequences](#Lists:-Mutable,-Dynamic,-Homogeneous-Sequences)
-    - [List Internals and Performance Characteristics](#List-Internals-and-Performance-Characteristics)
-    - [List Comprehensions and Generator Expressions](#List-Comprehensions-and-Generator-Expressions)
-    - [Slicing: Accessing Subsequences](#Slicing:-Accessing-Subsequences)
-    - [Advanced Sorting](#Advanced-Sorting)
-    - [Augmented Assignment and Mutability](#Augmented-Assignment-and-Mutability)
-3. [Tuples: Immutable, Heterogeneous Records](#Tuples:-Immutable,-Heterogeneous-Records)
-    - [Sequence Unpacking](#Sequence-Unpacking)
-    - [Named Tuples for Self-Documenting Code](#Named-Tuples-for-Self-Documenting-Code)
-4. [The Python Memory Model: References, Copies, and Mutability](#The-Python-Memory-Model:-References,-Copies,-and-Mutability)
-    - [Memory Layout: Arrays vs. Linked Lists](#Memory-Layout:-Arrays-vs.-Linked-Lists)
-    - [Assignment Creates an Alias](#Assignment-Creates-an-Alias)
-    - [Shallow Copies for Nested Structures](#Shallow-Copies-for-Nested-Structures)
-    - [Deep Copies for Full Independence](#Deep-Copies-for-Full-Independence)
-5. [Advanced and Specialized Sequences](#Advanced-and-Specialized-Sequences)
-    - [Deques: High-Performance Double-Ended Queues](#Deques:-High-Performance-Double-Ended-Queues)
-    - [Arrays: Memory-Efficient Numeric Sequences](#Arrays:-Memory-Efficient-Numeric-Sequences)
-    - [`bisect`: Maintaining Sorted Sequences](#bisect:-Maintaining-Sorted-Sequences)
-    - [Heaps: Priority Queues with `heapq`](#Heaps:-Priority-Queues-with-heapq)
-6. [Summary](#Summary)
-7. [Exercises](#Exercises)
-8. [Challenge Exercise: Interpolating from a Sorted Sequence](#Challenge-Exercise:-Interpolating-from-a-Sorted-Sequence)
+1. [The Lens: Sequences, Mutability, and Semantic Meaning](#the-lens-sequences-mutability-and-semantic-meaning)
+2. [Lists: Mutable, Dynamic, Homogeneous Sequences](#lists-mutable-dynamic-homogeneous-sequences)
+    - [List Internals and Performance Characteristics](#list-internals-and-performance-characteristics)
+    - [List Comprehensions and Generator Expressions](#list-comprehensions-and-generator-expressions)
+    - [Slicing: Accessing Subsequences](#slicing-accessing-subsequences)
+    - [Advanced Sorting](#advanced-sorting)
+    - [Augmented Assignment and Mutability](#augmented-assignment-and-mutability)
+3. [Tuples: Immutable, Heterogeneous Records](#tuples-immutable-heterogeneous-records)
+    - [Sequence Unpacking](#sequence-unpacking)
+    - [Named Tuples for Self-Documenting Code](#named-tuples-for-self-documenting-code)
+4. [The Python Memory Model: References, Copies, and Mutability](#the-python-memory-model-references-copies-and-mutability)
+    - [Memory Layout: Arrays vs. Linked Lists](#memory-layout-arrays-vs-linked-lists)
+    - [Assignment Creates an Alias](#assignment-creates-an-alias)
+    - [Shallow Copies for Nested Structures](#shallow-copies-for-nested-structures)
+    - [Deep Copies for Full Independence](#deep-copies-for-full-independence)
+5. [Advanced and Specialized Sequences](#advanced-and-specialized-sequences)
+    - [Deques: High-Performance Double-Ended Queues](#deques-high-performance-double-ended-queues)
+    - [Arrays: Memory-Efficient Numeric Sequences](#arrays-memory-efficient-numeric-sequences)
+    - [`bisect`: Maintaining Sorted Sequences](#bisect-maintaining-sorted-sequences)
+    - [Heaps: Priority Queues with `heapq`](#heaps-priority-queues-with-heapq)
+6. [Summary](#summary)
+7. [Exercises](#exercises)
+8. [Challenge Exercise: Interpolating from a Sorted Sequence](#challenge-exercise-interpolating-from-a-sorted-sequence)
 
 ## The Lens: 05-Lists-and-Tuples
 Economic analysis is fundamentally concerned with ordered data: time series of asset prices, panel data observations for a set of individuals, or a sequence of policy actions. Python's primary built-in tools for managing such ordered data are its **sequence types**, with the `list` and `tuple` being the most fundamental.
@@ -288,6 +290,11 @@ alpha, beta, delta = rbc_params  # Unpacking works as expected
 print(f"Unpacked alpha: {alpha}")
 ```
 
+> **Common Pitfalls in This Lecture**
+>
+> - **Aliasing.** `b = a` does not copy a list — both names point to the same object, so `b.append(x)` 'changes' `a`. Copy explicitly (`a[:]`, `list(a)`); nested structures need `copy.deepcopy` because shallow copies share inner lists.
+> - **Mutating while iterating.** Appending to or removing from a list while looping over it skips or revisits elements. Iterate over a copy (`for x in list(items):`) or build a new list with a comprehension.
+
 ### Three-Tier Practice Ladder
 
 **1. Mechanism and assumptions (Conceptual):** Explain the central computational idea in **05-Lists-and-Tuples** and connect it to one explicit economic object or research workflow.
@@ -295,6 +302,8 @@ print(f"Unpacked alpha: {alpha}")
 **2. Reproduce and diagnose (Applied):** Reproduce an example involving Lists: Mutable, Dynamic, Homogeneous Sequences, List Internals and Performance Characteristics, then change one input and explain the result before running the code.
 
 **3. Robust extension (Challenge):** Extend the example to a larger or less convenient case and document the correctness and performance checks needed before trusting the result.
+
+**3b. Failure analysis (Challenge):** A function appends to the list it was passed and the caller's data changes 'on its own'; separately, `copy.copy` on a nested portfolio list still shares the inner lists. Diagnose aliasing and shallow-copy semantics, repair with an explicit deep copy where independence is required, and prove the fix with an identity test (`a[0] is b[0]`).
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 
@@ -326,6 +335,9 @@ Accessing index `i` is fast ($O(1)$) because the address is `base_address + i * 
 Accessing index `i` is slow ($O(n)$) because you must follow the pointers one by one.
 
 #### Assignment Creates an Alias
+
+![Copy behavior](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/01-Foundations/1.3-copy-behavior.png)
+*Figure: What assignment, shallow copy, and deep copy share..*
 When you write `list_b = list_a`, you are not creating a new list. You are creating a second name, `list_b`, that points to the *exact same list object* as `list_a`. Any modification made through one name will be visible through the other, because they are two names for one object. We can verify this using the built-in `id()` function, which returns the unique memory address of an object.
 
 ### Assignment Creates an Alias
@@ -482,10 +494,8 @@ def moving_average_stream(data_stream, *, window_size):
         if len(window) == window_size:
             yield sum(window) / window_size
 
-
 # Simulate a stream of noisy price data
-np.random.seed(42)
-price_stream = 100 + np.random.randn(50).cumsum()
+price_stream = 100 + rng.standard_normal(50).cumsum()
 
 # The result is a list of the moving average values
 moving_avg = list(moving_average_stream(price_stream, window_size=10))

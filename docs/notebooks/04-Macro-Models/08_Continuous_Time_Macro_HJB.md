@@ -67,7 +67,9 @@ The first-order condition is $u'(c)=V_j'(a)$, hence
 
 $$c_j(a)=\left[V_j'(a)\right]^{-1/\gamma}.$$
 
-The derivative must be chosen consistently with the drift $s_j(a)=y_j+ra-c_j(a)$. If $s>0$, information should arrive from the lower asset node; if $s<0$, it should arrive from the upper node. This is the economic content of the **upwind** rule.
+The derivative must be chosen consistently with the drift $s_j(a)=y_j+ra-c_j(a)$. In the backward HJB generator, positive drift uses a forward value difference (toward higher assets); negative drift uses a backward value difference. Probability transport in the adjoint equation has the opposite orientation. This is the economic content of the **upwind** rule.
+
+**Dimension notes:** assets $a_t$ evolve by deterministic drift between income jumps on the grid; income state $z_t \in \{1, 2\}$ jumps at scalar rates $\lambda_{12}, \lambda_{21}$; value functions $V_j(a): \mathbb{R} \to \mathbb{R}$ are scalar, one per income state.
 
 <a id="upwind-discretization"></a>
 ## 2. Upwind Discretization
@@ -83,6 +85,8 @@ A false-transient step solves
 $$\left[(\rho+\Delta^{-1})I-A(V^n)\right]V^{n+1}=u(c^n)+\Delta^{-1}V^n.$$
 
 This implicit step is much more stable than naively marching the nonlinear HJB forward.
+
+**Dimension notes:** grid $a_0 < \cdots < a_{N-1}$ with spacing $\Delta a > 0$ stores $V$ as an $N$-vector of scalars; forward/backward difference operators act on that vector, and candidate policies $c^{\pm}, s^{\pm}$ are $N$-vectors too.
 
 <a id="executable-hjb-solver"></a>
 ## 3. Executable HJB Solver
@@ -117,7 +121,7 @@ def solve_two_state_hjb(
         raise ValueError("Income and switching rates must be positive.")
 
     cash = y[:, None] + r * a[None, :]
-    utility = lambda c: np.where(gamma == 1.0, np.log(c), c ** (1 - gamma) / (1 - gamma))
+    utility = (lambda c: np.log(c)) if gamma == 1.0 else (lambda c: c ** (1 - gamma) / (1 - gamma))
     marginal = lambda c: c ** (-gamma)
 
     # Consuming cash-on-hand forever is a stable initial value guess.
@@ -142,9 +146,11 @@ def solve_two_state_hjb(
 
         use_forward = drift_forward > 0
         use_backward = drift_backward < 0
-        # If both one-sided candidates point inward, prefer the one with larger |drift|.
+        # In a nonconcave iterate compare candidate Hamiltonians, not drift magnitudes.
         conflict = use_forward & use_backward
-        choose_forward = use_forward & (~conflict | (np.abs(drift_forward) >= np.abs(drift_backward)))
+        h_forward = utility(c_forward) + d_forward * drift_forward
+        h_backward = utility(c_backward) + d_backward * drift_backward
+        choose_forward = use_forward & (~conflict | (h_forward >= h_backward))
         choose_backward = use_backward & ~choose_forward
         d_steady = marginal(cash)
         derivative = np.where(choose_forward, d_forward, np.where(choose_backward, d_backward, d_steady))
@@ -211,6 +217,8 @@ $$A^\top g=0,\qquad \mathbf{1}^\top g=1.$$
 
 This duality is a powerful correctness check: if the HJB and Kolmogorov equations are discretized inconsistently, the implied distribution often leaks mass or places probability at the artificial grid boundary.
 
+**Dimension notes:** $g \ge 0$ stacks probability mass over the joint (income, asset) grid — a vector of dimension $2N$; $A \in \mathbb{R}^{2N \times 2N}$ is the discretized generator, so $A^\top g = 0$ with $\mathbf{1}^\top g = 1$ pins down the stationary density as an eigenvector problem.
+
 ```python
 def stationary_distribution(generator, da):
     """Solve A.T g = 0 with one row replaced by the normalization condition."""
@@ -228,9 +236,11 @@ da = hjb["assets"][1] - hjb["assets"][0]
 mass, density = stationary_distribution(hjb["generator"], da)
 n = len(hjb["assets"])
 aggregate_assets = float(np.dot(mass[:n] + mass[n:], hjb["assets"]))
-boundary_mass = float((mass[0] + mass[n] + mass[n-1] + mass[-1]))
+lower_boundary_mass = float(mass[0] + mass[n])
+upper_boundary_mass = float(mass[n-1] + mass[-1])
 print(f"aggregate assets = {aggregate_assets:.4f}")
-print(f"total mass = {mass.sum():.12f}; boundary mass = {boundary_mass:.4%}")
+print(f"total mass = {mass.sum():.12f}; lower boundary = {lower_boundary_mass:.4%}; upper boundary = {upper_boundary_mass:.4%}")
+assert np.max(np.abs(hjb["generator"].T @ mass)) < 1e-8
 assert np.isclose(mass.sum(), 1.0, atol=1e-10)
 assert np.all(mass >= -1e-12)
 ```
@@ -275,13 +285,17 @@ $$c_j(a)=\left[V_j'(a)\right]^{-1/\gamma}.$$
 
 $$D^+V_i=\frac{V_{i+1}-V_i}{\Delta a},\qquad D^-V_i=\frac{V_i-V_{i-1}}{\Delta a}.$$
 
+**Dimension notes:** asset state is scalar on an $N$-grid; value functions $V_j$ are scalars per income state $j \in \{1,2\}$; the stationary density $g \in \mathbb{R}^{2N}$ solves the adjoint (Fokker–Planck) system with generator $A \in \mathbb{R}^{2N \times 2N}$.
+
 ## Exercises
 
-**1. Upwind logic (Conceptual):** Derive why positive asset drift requires a backward-looking value derivative and negative drift requires a forward-looking derivative. What numerical pathology can a centered derivative create near a kink?
+**1. Upwind logic (Conceptual):** Derive why positive asset drift requires a forward value difference in the backward HJB and negative drift requires a backward difference. What numerical pathology can a centered derivative create near a kink?
 
 **2. Grid adequacy (Applied):** Re-solve the model with `a_max` equal to 10, 20, 30, and 50. Record aggregate assets, maximum HJB residual, and boundary mass. Identify the smallest grid that produces a stable aggregate statistic.
 
 **3. Market clearing (Challenge):** Wrap `solve_two_state_hjb` in a scalar root finder for `r`. Specify an exogenous asset supply, solve for the clearing rate, and verify that both the household residual and market-clearing residual meet stated tolerances.
+
+**Failure analysis (Challenge):** The upwind scheme returns negative consumption near the asset boundaries and the stationary density 'leaks' mass outside the grid. Diagnose the inconsistent discretization between the HJB and the Fokker-Planck adjoint, repair with drift-matched upwinding, and verify mass conservation ($\mathbf{1}'g = 1$ at every iteration).
 
 ## Summary & Key Takeaways
 

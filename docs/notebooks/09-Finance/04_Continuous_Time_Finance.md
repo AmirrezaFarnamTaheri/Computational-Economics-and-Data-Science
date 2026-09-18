@@ -33,21 +33,21 @@ if not SYMPY_AVAILABLE: print("The 'sympy' library is not installed (`pip instal
 
 ### Table of Contents
 
-1.  [Introduction to Continuous Time](#1.-Introduction-to-Continuous-Time)
-2.  [The Tools of Stochastic Calculus](#2.-The-Tools-of-Stochastic-Calculus)
-    - [Brownian Motion and SDEs](#Brownian-Motion-and-SDEs)
-    - [Visualizing Geometric Brownian Motion](#Visualizing-Geometric-Brownian-Motion)
-    - [Itô's Lemma: The Chain Rule for Stochastic Processes](#Ito's-Lemma:-The-Chain-Rule-for-Stochastic-Processes)
-3.  [Dynamic Optimization in Continuous Time: The HJB Equation](#3.-Dynamic-Optimization-in-Continuous-Time:-The-HJB-Equation)
-4.  [Application 1: Merton's Portfolio Problem (1969)](#4.-Application-1:-Merton's-Portfolio-Problem-(1969))
-    - [The Complete Symbolic Solution](#The-Complete-Symbolic-Solution)
-    - [Numerical Analysis and Comparative Statics](#Numerical-Analysis-and-Comparative-Statics)
-    - [Simulating the Optimal Wealth Path](#Simulating-the-Optimal-Wealth-Path)
-5.  [Application 2: Linking HJB to Arbitrage-Free Pricing](#5.-Application-2:-Linking-HJB-to-Arbitrage-Free-Pricing)
-    - [The Martingale Pricing Framework and State-Price Density](#The-Martingale-Pricing-Framework-and-State-Price-Density)
-    - [Deriving the Black-Scholes-Merton PDE](#Deriving-the-Black-Scholes-Merton-PDE)
-6.  [Summary](#6.-Summary)
-7.  [Exercises](#7.-Exercises)
+1.  [Introduction to Continuous Time](#1-introduction-to-continuous-time)
+2.  [The Tools of Stochastic Calculus](#2-the-tools-of-stochastic-calculus)
+    - [Brownian Motion and SDEs](#brownian-motion-and-sdes)
+    - [Visualizing Geometric Brownian Motion](#visualizing-geometric-brownian-motion)
+    - [Itô's Lemma: The Chain Rule for Stochastic Processes](#itos-lemma-the-chain-rule-for-stochastic-processes)
+3.  [Dynamic Optimization in Continuous Time: The HJB Equation](#3-dynamic-optimization-in-continuous-time-the-hjb-equation)
+4.  [Application 1: Merton's Portfolio Problem (1969)](#4-application-1-mertons-portfolio-problem-1969))
+    - [The Complete Symbolic Solution](#the-complete-symbolic-solution)
+    - [Numerical Analysis and Comparative Statics](#numerical-analysis-and-comparative-statics)
+    - [Simulating the Optimal Wealth Path](#simulating-the-optimal-wealth-path)
+5.  [Application 2: Linking HJB to Arbitrage-Free Pricing](#5-application-2-linking-hjb-to-arbitrage-free-pricing)
+    - [The Martingale Pricing Framework and State-Price Density](#the-martingale-pricing-framework-and-state-price-density)
+    - [Deriving the Black-Scholes-Merton PDE](#deriving-the-black-scholes-merton-pde)
+6.  [Summary](#6-summary)
+7.  [Exercises](#7-exercises)
 
 ### 1. Introduction to Continuous Time
 
@@ -85,6 +85,8 @@ Standard calculus fails when variables are random and jagged (like stock charts)
 * **Learning-path prerequisite:** [`03_Option_Pricing.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/09-Finance/03_Option_Pricing.ipynb)
 
 > **Learning path:** Building on [`03_Option_Pricing.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/09-Finance/03_Option_Pricing.ipynb); next continue with [`05_Credit_Risk.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/09-Finance/05_Credit_Risk.ipynb).
+
+> **Conceptual prerequisite:** Stochastic differential equations are the stochastic extension of ordinary differential equations. The lecture assumes comfort with the ODE material in [`02-Numerical-Methods/08_Differential_Equations.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/02-Numerical-Methods/08_Differential_Equations.ipynb) (Euler / Runge-Kutta, stability, terminal conditions); without that background the Ito-calculus chain rule can read as unmotivated.
 
 #### Visualizing Geometric Brownian Motion
 
@@ -124,7 +126,10 @@ plt.tight_layout(rect=[0, 0, 1, 0.96])
 plt.show() # Render plot
 ```
 
-#### Itô's Lemma: The Chain Rule for Stochastic Processes
+#### Itô's Lemma: The Chain Rule
+
+![Ito's lemma intuition](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/07-Financial-Economics/ito_lemma_geometric_intuition.png)
+*Figure: Geometric intuition for Ito's lemma..* for Stochastic Processes
 
 To find the dynamics of a function of a stochastic process, $f(S_t, t)$, we cannot use the standard chain rule of calculus because the path of $S_t$ is not differentiable. We must use **Itô's Lemma**, which correctly accounts for the random nature of the process. It arises from a second-order Taylor expansion of $f(S,t)$:
 $$ df = \frac{\partial f}{\partial t} dt + \frac{\partial f}{\partial S} dS + \frac{1}{2} \frac{\partial^2 f}{\partial S^2} (dS)^2 + \dots $$ 
@@ -134,6 +139,8 @@ Plugging this back into the Taylor expansion, we get the celebrated result:
 $$ df = \left( \frac{\partial f}{\partial t} + \mu S_t \frac{\partial f}{\partial S} + \frac{1}{2} \sigma^2 S_t^2 \frac{\partial^2 f}{\partial S^2} \right) dt + \left( \sigma S_t \frac{\partial f}{\partial S} \right) dW_t $$ 
 The presence of the second-order derivative term ($\
 rac{\partial^2 f}{\partial S^2}$), which arises from the non-zero quadratic variation of the process, is the crucial difference from standard calculus. For a convex function, the random up-and-down movements of the stochastic process do not cancel out; they lead to a systematic upward drift. This is visually demonstrated below. This term is fundamental to nearly every result in continuous-time finance, including the Black-Scholes-Merton formula.
+
+**Dimension notes:** $f(S_t, t): \mathbb{R}_+ \times [0,T] \to \mathbb{R}$ scalar; quadratic covariation $(dS_t)^2 = \sigma^2 S_t^2\,dt$ supplies the second-derivative term; all terms in $df$ are scalars of order $dt$.
 
 ![Ito's Lemma Intuition](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/09-Finance/ito_lemma_intuition.png)
 
@@ -155,6 +162,8 @@ To solve this, we take first-order conditions (FOCs) for the control variables $
 
 #### The Complete Symbolic Solution
 We can perform the full derivation symbolically using `SymPy`.
+
+**Dimension notes:** state variables wealth $W_t \ge 0$ and time; control variables consumption rate and risky share $\alpha_t \in [0,1]$ (scalars); value function $V(W, t): \mathbb{R}_+ \times [0,T] \to \mathbb{R}$ solves the scalar HJB.
 
 ```python
 ### Code Lab: Solving the Merton Problem Symbolically
@@ -314,6 +323,8 @@ We can use this framework to derive the BSM PDE without relying on the specific 
 $$ \frac{\partial f}{\partial t} + rS \frac{\partial f}{\partial S} + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 f}{\partial S^2} - rf = 0 $$
 This demonstrates that the BSM pricing formula is independent of risk preferences (the drift $\mu$ and the agent's utility function drop out), which is a cornerstone of modern derivatives pricing.
 
+**Dimension notes:** marginal utility density (the SPD) is a scalar stochastic process; any contingent payoff's price is a scalar obtained as its SPD-weighted expectation over states and dates.
+
 ## Key Equations
 
 These relations are collected from the derivations above as a review map. Their assumptions and derivations remain part of the result; this box is not a substitute for them.
@@ -334,6 +345,8 @@ $$df = \left( \frac{\partial f}{\partial t} + \mu S_t \frac{\partial f}{\partial
 
 $$\rho V(W) = \max_{C_t, \alpha_t} \left\{ u(C_t) + \frac{E_t[dV]}{dt} \right\}$$
 
+**Dimension notes:** Itô terms are scalar corrections of order $dt$; HJB objects ($V$, its derivatives, controls $\alpha_t$, $C_t$) are scalars; pricing relations equate scalar conditional expectations.
+
 ### Three-Tier Practice Ladder
 
 **1. Mechanism and assumptions (Conceptual):** Derive the no-arbitrage, optimality, or risk-pricing relation central to **04 Continuous Time Finance** and verify that it satisfies at least two economically meaningful limiting cases or bounds.
@@ -341,6 +354,8 @@ $$\rho V(W) = \max_{C_t, \alpha_t} \left\{ u(C_t) + \frac{E_t[dV]}{dt} \right\}$
 **2. Reproduce and diagnose (Applied):** Reproduce a calculation from 1. Introduction to Continuous Time, Visualizing Geometric Brownian Motion with transparent inputs. Perturb volatility, discounting, risk aversion, transaction costs, or another key parameter and explain the sensitivity in economic terms.
 
 **3. Robust extension (Challenge):** Construct a stress scenario outside the calibration sample. Compare two valuation/risk methods and explain which discrepancy reflects model risk rather than numerical error.
+
+**3b. Failure analysis (Challenge):** Euler-Maruyama with $\Delta t = 1$ produces negative 'stock prices' for a GBM. Diagnose the discretization (GBM is lognormal; the scheme is only approximate), repair with exact lognormal sampling or a much finer step, and check the simulated first two moments against theory.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

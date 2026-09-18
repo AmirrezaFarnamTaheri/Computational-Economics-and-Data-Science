@@ -23,20 +23,20 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 ```
 
 ### Table of Contents
-1.  [Duality in Consumer Theory](#1.-Duality-in-Consumer-Theory)
-    *   [1.1 Primal and Dual Problems](#1.1-Primal-and-Dual-Problems)
-    *   [1.2 Key Results: Roy's Identity, Shephard's Lemma, and the Slutsky Equation](#1.2-Key-Results:-Roy's-Identity,-Shephard's-Lemma,-and-the-Slutsky-Equation)
-    *   [1.3 The Integrability Problem](#1.3-The-Integrability-Problem)
-2.  [Revealed Preference](#2.-Revealed-Preference)
-    *   [2.1 WARP and SARP](#2.1-WARP-and-SARP)
-    *   [2.2 Checking for WARP Violations](#2.2-Checking-for-WARP-Violations)
-3.  [Application: Labor Supply and Taxation](#3.-Application:-Labor-Supply-and-Taxation)
-4.  [Choice Under Uncertainty](#4.-Choice-Under-Uncertainty)
-    *   [4.1 Expected Utility and Risk Aversion](#4.1-Expected-Utility-and-Risk-Aversion)
-    *   [4.2 The Stochastic Discount Factor (SDF)](#4.2-The-Stochastic-Discount-Factor-(SDF))
-5.  [General Equilibrium](#5.-General-Equilibrium)
-6.  [Summary](#6.-Summary)
-7.  [Exercises](#7.-Exercises)
+1.  [Duality in Consumer Theory](#1-duality-in-consumer-theory)
+    *   [1.1 Primal and Dual Problems](#11-primal-and-dual-problems)
+    *   [1.2 Key Results: Roy's Identity, Shephard's Lemma, and the Slutsky Equation](#12-key-results-roys-identity-shephards-lemma-and-the-slutsky-equation)
+    *   [1.3 The Integrability Problem](#13-the-integrability-problem)
+2.  [Revealed Preference](#2-revealed-preference)
+    *   [2.1 WARP and SARP](#21-warp-and-sarp)
+    *   [2.2 Checking for WARP Violations](#22-checking-for-warp-violations)
+3.  [Application: Labor Supply and Taxation](#3-application-labor-supply-and-taxation)
+4.  [Choice Under Uncertainty](#4-choice-under-uncertainty)
+    *   [4.1 Expected Utility and Risk Aversion](#41-expected-utility-and-risk-aversion)
+    *   [4.2 The Stochastic Discount Factor (SDF)](#42-the-stochastic-discount-factor-sdf))
+5.  [General Equilibrium](#5-general-equilibrium)
+6.  [Summary](#6-summary)
+7.  [Exercises](#7-exercises)
 
 ## The Lens: The Atom of Economics
 **What problem are we solving?**
@@ -70,6 +70,9 @@ The duality between these two approaches allows us to decompose price effects in
 > **Learning path:** This notebook is the entry point for this track; next continue with [`02_General_Equilibrium.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/05-Micro-Models/02_General_Equilibrium.ipynb).
 
 ### 1. Duality in Consumer Theory
+
+![Consumer tangency](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/05-Micro-Models/consumer_tangency.png)
+*Figure: The consumer optimum where MRS equals the price ratio..*
 The concept of duality, which originates in the mathematical field of optimization, was brought into economics in the 1930s by Harold Hotelling and later fully developed by Paul Samuelson in his *Foundations of Economic Analysis* (1947). It provides one of the most powerful and elegant toolkits in microeconomic theory. Duality asserts that every constrained optimization problem (the **primal problem**) has a corresponding **dual problem** that examines the same underlying choice from an inverted perspective. This relationship is not just a mathematical curiosity; it provides deep economic insights and powerful analytical shortcuts.
 
 #### 1.1 Primal and Dual Problems
@@ -98,7 +101,8 @@ The answer is yes, provided the demand function satisfies certain conditions. Fr
 The theory of **Revealed Preference**, developed by Paul Samuelson, provides a non-parametric, behavioral foundation for consumer theory that does not require assuming the existence of a utility function. It relies only on observing consumer choices at different prices.
 
 #### 2.1 WARP and SARP
-- **Weak Axiom of Revealed Preference (WARP):** If a bundle $x^1$ is chosen when bundle $x^2$ was also affordable, then it can never be the case that $x^2$ is chosen when $x^1$ is also affordable. Formally: If $p^1 \cdot x^1 \ge p^1 \cdot x^2$, then it must be that $p^2 \cdot x^2 < p^2 \cdot x^1$. A violation of WARP implies inconsistent choices.
+- **Weak Axiom of Revealed Preference (WARP):** For distinct bundles $x^1 
+e x^2$ under a single-valued choice rule, if a bundle $x^1$ is chosen when bundle $x^2$ was also affordable, then it can never be the case that $x^2$ is chosen when $x^1$ is also affordable. Formally: If $p^1 \cdot x^1 \ge p^1 \cdot x^2$, then it must be that $p^2 \cdot x^2 < p^2 \cdot x^1$. A violation of WARP implies inconsistent choices.
 - **Strong Axiom of Revealed Preference (SARP):** This is the transitive closure of WARP. It rules out longer chains of inconsistent choices (e.g., $x^1$ revealed preferred to $x^2$, which is revealed preferred to $x^3$, which is then revealed preferred to $x^1$). If a consumer's choices satisfy SARP, then we can construct a utility function that rationalizes their behavior.
 
 ```python
@@ -119,20 +123,19 @@ def check_warp(prices, quantities):
             # Is x_j revealed preferred to x_i?
             j_revealed_pref_i = np.dot(p_j, x_j) >= np.dot(p_j, x_i)
 
-            if i_revealed_pref_j and j_revealed_pref_i:
-                if not np.array_equal(x_i, x_j):
-                    is_strict_i = np.dot(p_i, x_i) > np.dot(p_i, x_j)
-                    is_strict_j = np.dot(p_j, x_j) > np.dot(p_j, x_i)
-                    if is_strict_i or is_strict_j:
-                        print(f"> **Warning:** WARP VIOLATION between observations {i} and {j}")
-                        return False
+            # WARP for single-valued choice rules out distinct bundles that
+            # are mutually affordable, even when both budget comparisons tie.
+            if (i_revealed_pref_j and j_revealed_pref_i
+                    and not np.array_equal(x_i, x_j)):
+                print(f"> **Warning:** WARP VIOLATION between observations {i} and {j}")
+                return False
 
-    print("> **Note:** No WARP violations found. Choices are consistent.")
+    print("> **Note:** No WARP violations found. Pairwise WARP holds for these observations.")
     return True
 
 # Dataset 1: Consistent Choices
 prices1 = np.array([[2, 1], [1, 2]])
-quantities1 = np.array([[10, 5], [5, 10]])
+quantities1 = np.array([[5, 10], [10, 5]])
 print("Checking Dataset 1:")
 check_warp(prices1, quantities1)
 
@@ -191,6 +194,11 @@ $M_{t+1}$ is the **Stochastic Discount Factor (SDF)**. It is high when future co
 ### 5. General Equilibrium
 We bring consumer and producer theory together in a general equilibrium framework. The **Edgeworth Box** is the classic tool for analyzing a pure exchange economy. The set of all **Pareto efficient** points forms the **contract curve**, where the agents' indifference curves are tangent ($MRS^A = MRS^B$). The **Fundamental Welfare Theorems** establish the deep connection between competitive equilibria and Pareto efficiency.
 
+> **Common Pitfalls in This Lecture**
+>
+> - **Corner solutions.** Interior FOC algebra assumes strictly positive choices. When $p_x$ is high or preferences are quasi-linear, the optimum sits at $x=0$, where marginal utilities are unequal by design. Check KKT complementary slackness before dividing by quantities.
+> - **Price-level confusion.** Only relative prices are pinned down in Walrasian equilibrium; absolute levels are a numeraire choice. Fixing one price (or income) is required before 'the' equilibrium price vector is meaningful.
+
 ### Three-Tier Practice Ladder
 
 **1. Mechanism and assumptions (Conceptual):** Write the optimization or equilibrium problem underlying **01 Consumer and Producer Theory** and derive its first-order, incentive, or market-clearing conditions. Discuss any relevant corner solution.
@@ -198,6 +206,8 @@ We bring consumer and producer theory together in a general equilibrium framewor
 **2. Reproduce and diagnose (Applied):** Construct a small numerical example using 1. Duality in Consumer Theory, 1.1 Primal and Dual Problems. Verify feasibility and optimality/equilibrium conditions numerically rather than relying only on the solver status.
 
 **3. Robust extension (Challenge):** Relax one substantive assumption—information, convexity, symmetry, commitment, or market completeness—and predict how equilibrium or welfare changes before computing the extension.
+
+**3b. Failure analysis (Challenge):** The interior FOC solver returns a solution where marginal utility ratios clearly do not equal the price ratio — the true optimum sits at a corner. Diagnose the corner-solution failure of equality-constrained logic, repair with KKT complementary-slackness handling, and verify by checking which constraints bind.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

@@ -17,8 +17,8 @@
 - Stationary: $V(s) = \max_{a \in \Gamma(s)} \big\{ r(s, a) + \beta\, \mathbb{E}\big[V(s') \mid s, a\big] \big\}$
 - Contraction: $d(Tx, Ty) \le \beta\, d(x, y)$, so VFI error after $m$ steps satisfies
   $\|V_m - V^*\| \le \frac{\beta^m}{1-\beta}\, d(V_1, V_0)$ — geometric convergence.
-- Stopping rule: iterate until $\|V_{m+1} - V_m\|_\infty \le \varepsilon (1-\beta)/\beta$ to bound the policy error by $\varepsilon$.
-- Cake eating (log, $\gamma=1$): $V(w) = \frac{\ln w + \frac{\beta}{1-\beta}\ln(\beta)}{1-\beta}$-family closed forms; check numerics against them.
+- Stopping rule: iterate until $\|V_{m+1} - V_m\|_\infty \le \varepsilon (1-\beta)/\beta$ to bound $\|V_{m+1}-V^*\|_\infty$ by $\varepsilon$. This is a value-function bound, not a bound on policy actions.
+- Cake eating with $u(c)=\ln c$ and $w_{t+1}=w_t-c_t$: $c^*(w)=(1-\beta)w$ and $V(w)=\frac{\ln w+\ln(1-\beta)}{1-\beta}+\frac{\beta\ln\beta}{(1-\beta)^2}$ for $w>0$. Check the Bellman equation against this benchmark.
 
 ## Algorithms & complexity (discrete state, $S$ states, $A$ actions)
 

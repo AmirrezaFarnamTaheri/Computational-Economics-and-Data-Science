@@ -30,32 +30,32 @@ plt.rcParams.update(
 ```
 
 ### Table of Contents
-1. [Introduction: The Digital Substrate of Economics](#Introduction:-The-Digital-Substrate-of-Economics)
-2. [Numerical Representation and Stability](#Numerical-Representation-and-Stability)
-    - [Integer Representation](#Integer-Representation)
-    - [Floating-Point Representation: IEEE 754](#Floating-Point-Representation:-The-IEEE-754-Standard)
-    - [The Bit-Level Truth: Why 0.1 + 0.2 != 0.3](#The-Bit-Level-Truth:-Why-0.1-+-0.2-!=-0.3)
-    - [Special Floating-Point Values: `inf` and `NaN`](#Special-Floating-Point-Values:-inf-and-NaN)
-    - [Numerical Stability: Catastrophic Cancellation](#Numerical-Stability:-Catastrophic-Cancellation)
-    - [The `Decimal` Type](#The-Decimal-Type:-For-When-Base-10-Precision-Matters)
-3. [Core Data Types](#Core-Data-Types)
-    - [Booleans (`bool`)](#Booleans-(bool))
-    - [The `None` Singleton](#The-None-Singleton)
-    - [Strings (`str`)](#Strings-(str))
-4. [Variables, Objects, and Mutability](#Variables,-Objects,-and-Mutability)
-    - [The `is` Operator vs. `==`](#The-is-Operator-vs.-==)
-    - [Shallow vs. Deep Copying](#Shallow-vs.-Deep-Copying)
-    - [Garbage Collection](#Garbage-Collection:-How-Python-Reclaims-Memory)
-    - [Mutability and Function Arguments: A Common Pitfall](#Mutability-and-Function-Arguments:-A-Common-Pitfall)
-5. [Operators](#Operators)
-    - [Operator Precedence](#Arithmetic-and-Comparison-Operators)
-    - [Bitwise Operators](#Bitwise-Operators)
-6. [The Python Data Model](#The-Python-Data-Model:-Understanding-"Under-the-Hood")
-7. [Advanced Type Hinting](#Advanced-Type-Hinting)
-8. [Exception Handling: Writing Robust Code](#Exception-Handling:-Writing-Robust-Code)
-9. [Summary](#Summary)
-10. [Exercises](#Exercises)
-11. [Solutions to Exercises](#Solutions-to-Exercises)
+1. [Introduction: The Digital Substrate of Economics](#introduction-the-digital-substrate-of-economics)
+2. [Numerical Representation and Stability](#numerical-representation-and-stability)
+    - [Integer Representation](#integer-representation)
+    - [Floating-Point Representation: IEEE 754](#floating-point-representation-the-ieee-754-standard)
+    - [The Bit-Level Truth: Why 0.1 + 0.2 != 0.3](#the-bit-level-truth-why-01-02-03)
+    - [Special Floating-Point Values: `inf` and `NaN`](#special-floating-point-values-inf-and-nan)
+    - [Numerical Stability: Catastrophic Cancellation](#numerical-stability-catastrophic-cancellation)
+    - [The `Decimal` Type](#the-decimal-type-for-when-base-10-precision-matters)
+3. [Core Data Types](#core-data-types)
+    - [Booleans (`bool`)](#booleans-bool))
+    - [The `None` Singleton](#the-none-singleton)
+    - [Strings (`str`)](#strings-str))
+4. [Variables, Objects, and Mutability](#variables-objects-and-mutability)
+    - [The `is` Operator vs. `==`](#the-is-operator-vs)
+    - [Shallow vs. Deep Copying](#shallow-vs-deep-copying)
+    - [Garbage Collection](#garbage-collection-how-python-reclaims-memory)
+    - [Mutability and Function Arguments: A Common Pitfall](#mutability-and-function-arguments-a-common-pitfall)
+5. [Operators](#operators)
+    - [Operator Precedence](#arithmetic-and-comparison-operators)
+    - [Bitwise Operators](#bitwise-operators)
+6. [The Python Data Model](#the-python-data-model-understanding-under-the-hood)
+7. [Advanced Type Hinting](#advanced-type-hinting)
+8. [Exception Handling: Writing Robust Code](#exception-handling-writing-robust-code)
+9. [Summary](#summary)
+10. [Exercises](#exercises)
+11. [Solutions to Exercises](#solutions-to-exercises)
 
 ## The Lens: The Digital Substrate of Economics
 **What problem are we solving?**
@@ -78,6 +78,8 @@ Python's dynamic typing and automatic memory management make it productive, but 
 * **Basic Python:** Ability to run scripts and use variables (Module 01 - Introduction).
 * **Mathematics:** Familiarity with binary number representation is helpful but not required.
 * **Learning-path prerequisite:** [`02_Professional_Development_Environment.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/01-Foundations/02_Professional_Development_Environment.ipynb)
+
+> **Historical Context — Python meets Wall Street (1989–2008).** Guido van Rossum began Python as a Christmas-hobby project in December 1989 and named it after Monty Python, not the snake. Nearly two decades later Wes McKinney, frustrated by Excel-scale tools as a quantitative analyst at AQR, started pandas in 2008 — which is why this curriculum pairs the language's data model directly with labeled economic data.
 
 > **Learning path:** Building on [`02_Professional_Development_Environment.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/01-Foundations/02_Professional_Development_Environment.ipynb); next continue with [`04_Python_Data_Model.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/01-Foundations/04_Python_Data_Model.ipynb).
 
@@ -598,6 +600,11 @@ print("\nCase 3: Logical error (zero income)")
 calculate_debt_to_income("0", "15000")
 ```
 
+> **Common Pitfalls in This Lecture**
+>
+> - **Float equality.** Never compare floats with `==`. IEEE 754 rounding makes `0.1 + 0.2 != 0.3`. Test closeness with `math.isclose(a, b)` or compare against a tolerance — this bites hardest in convergence checks like `while x != target`.
+> - **`is` vs `==`.** `is` tests identity (same object), `==` tests value equality. Small-int and string interning can make `is` work *by accident*, hiding the bug until larger values appear. Use `is` only for sentinels like `None`.
+
 ### Three-Tier Practice Ladder
 
 **1. Mechanism and assumptions (Conceptual):** Explain the central computational idea in **03-Python-Fundamentals-Data-Types** and connect it to one explicit economic object or research workflow.
@@ -605,6 +612,8 @@ calculate_debt_to_income("0", "15000")
 **2. Reproduce and diagnose (Applied):** Reproduce an example involving Numerical Representation and Stability, Integer Representation, then change one input and explain the result before running the code.
 
 **3. Robust extension (Challenge):** Extend the example to a larger or less convenient case and document the correctness and performance checks needed before trusting the result.
+
+**3b. Failure analysis (Challenge):** A pricing routine adds 0.1 to itself one thousand times and then tests `total == 100.0`, which returns `False`. Diagnose the IEEE 754 accumulation error, measure how the gap grows with the number of additions, and repair the comparison using `math.isclose` — then explain why rounding *before* comparing is not a general fix.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

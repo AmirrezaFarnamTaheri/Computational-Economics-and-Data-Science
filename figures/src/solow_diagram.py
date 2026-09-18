@@ -22,8 +22,10 @@ OUT = (
 
 
 def main() -> None:
-    k = np.linspace(0.01, 12, 400)
     s, n, g, delta = 0.3, 0.01, 0.015, 0.05
+    k_star = (s / (n + g + delta)) ** 2
+    k_max = 1.5 * k_star
+    k = np.linspace(0.0, k_max, 400)
     f_k = k**0.5
 
     fig, ax = plt.subplots(figsize=(7.2, 4.6))
@@ -31,7 +33,6 @@ def main() -> None:
     ax.plot(
         k, (n + g + delta) * k, lw=2.0, ls="--", label=r"break-even $(n+g+\delta)k$"
     )
-    k_star = ((s / (n + g + delta)) ** (1 / (1 - 0.5))) ** 1
     y_star = s * k_star**0.5
     ax.plot([k_star, k_star], [0, y_star], color="gray", lw=0.9, ls=":")
     ax.plot([0, k_star], [y_star, y_star], color="gray", lw=0.9, ls=":")
@@ -52,7 +53,7 @@ def main() -> None:
     )
     ax.set_xlabel(r"capital per effective worker $k$")
     ax.set_ylabel("investment per effective worker")
-    ax.set_xlim(0, 12)
+    ax.set_xlim(0, k_max)
     ax.set_ylim(0, None)
     ax.legend(frameon=False)
     ax.set_title("Solow-Swan: saving vs break-even investment (illustrative)")

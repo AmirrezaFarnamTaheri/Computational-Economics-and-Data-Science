@@ -23,18 +23,18 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 
 ### Table of Contents
 
-1.  [Introduction: The Option to Default](#1.-Introduction:-The-Option-to-Default)
-2.  [Structural Models: The Merton (1974) Framework](#2.-Structural-Models:-The-Merton-(1974)-Framework)
-    - [Equity as a Call Option](#Equity-as-a-Call-Option)
-    - [Implementation and Sensitivity Analysis](#Implementation-and-Sensitivity-Analysis)
-3.  [Reduced-Form Models: Jarrow-Turnbull (1995)](#3.-Reduced-Form-Models:-Jarrow-Turnbull-(1995))
-    - [Hazard Rates and Default Intensity](#Hazard-Rates-and-Default-Intensity)
-4.  [Application: Calibrating Merton's Model to Real Data](#4.-Application:-Calibrating-Merton's-Model-to-Real-Data)
-    - [The KMV Iterative Algorithm](#The-KMV-Iterative-Algorithm)
-    - [Calculating Distance-to-Default (DD)](#Calculating-Distance-to-Default-(DD))
-5.  [The Credit Spread Puzzle](#5.-The-Credit-Spread-Puzzle)
-6.  [Summary](#6.-Summary)
-7.  [Exercises](#7.-Exercises)
+1.  [Introduction: The Option to Default](#1-introduction-the-option-to-default)
+2.  [Structural Models: The Merton (1974) Framework](#2-structural-models-the-merton-1974)-Framework)
+    - [Equity as a Call Option](#equity-as-a-call-option)
+    - [Implementation and Sensitivity Analysis](#implementation-and-sensitivity-analysis)
+3.  [Reduced-Form Models: Jarrow-Turnbull (1995)](#3-reduced-form-models-jarrow-turnbull-1995))
+    - [Hazard Rates and Default Intensity](#hazard-rates-and-default-intensity)
+4.  [Application: Calibrating Merton's Model to Real Data](#4-application-calibrating-mertons-model-to-real-data)
+    - [The KMV Iterative Algorithm](#the-kmv-iterative-algorithm)
+    - [Calculating Distance-to-Default (DD)](#calculating-distance-to-default-dd))
+5.  [The Credit Spread Puzzle](#5-the-credit-spread-puzzle)
+6.  [Summary](#6-summary)
+7.  [Exercises](#7-exercises)
 
 ## The Lens: Default as a Rational Choice
 **What economic problem are we solving?**
@@ -67,6 +67,9 @@ This notebook focuses on the structural approach, which provides the deepest eco
 
 ### 2. Structural Models: The Merton (1974) Framework
 
+![Merton model payoffs](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/09-Finance/merton_model_payoffs.png)
+*Figure: Equity as a call option on firm assets in the Merton model..*
+
 The Merton model assumes a firm has a simple capital structure: equity and a single zero-coupon bond with face value $F$ maturing at time $T$. The firm's asset value $V_A$ follows a Geometric Brownian Motion.
 
 #### Equity as a Call Option
@@ -78,6 +81,8 @@ $$ E_0 = V_0 N(d_1) - F e^{-rT} N(d_2) $$
 The debt holders get whatever is left. The value of risky debt is:
 $$ D_0 = V_0 - E_0 $$
 This implies risky debt is equivalent to a risk-free bond *minus* the value of a put option on the firm's assets (the "default put").
+
+**Dimension notes:** firm asset value $V_A$ scalar GBM; debt face value $F$, maturity $T$ constants; equity is the scalar call payoff $\max(V_A(T) - F, 0)$, so $E_0, \sigma_E$ link to unobservables $(V_0, \sigma_A)$ through two equations.
 
 ```python
 ### Merton Model Implementation
@@ -149,6 +154,8 @@ Reduced-form models ignore the firm's assets. Instead, they assume default arriv
 $$ D(0, T) = F e^{-(r+\lambda(1-R))T} $$
 where $R$ is the recovery rate. The credit spread is simply $s = \lambda(1-R)$. These models are easier to calibrate to market data (e.g., the term structure of spreads) but lack the structural economic intuition of Merton.
 
+**Dimension notes:** default intensity $\lambda \ge 0$ scalar hazard; survival probability $e^{-\lambda T}$ scalar; credit spread enters the discount rate additively, keeping bond values scalar.
+
 ### 4. Application: Calibrating Merton's Model to Real Data
 
 Merton's model is elegant, but it has a problem: **we cannot observe the market value of a firm's assets ($V_A$) or their volatility ($\sigma_A$).** We only observe the value of Equity ($E$) and its volatility ($\sigma_E$).
@@ -159,6 +166,8 @@ To make the model usable, we treat $V_A$ and $\sigma_A$ as unknowns to be solved
     $$ \sigma_E = \frac{V_A}{E} \Delta_{\text{Call}} \sigma_A = \frac{V_A}{E} N(d_1) \sigma_A $$
 
 This gives us a system of two non-linear equations with two unknowns ($V_A, \sigma_A$). Commercial providers like **KMV (now Moody's Analytics)** use an iterative algorithm to solve this system.
+
+**Dimension notes:** observable inputs: equity value $E$ and volatility $\sigma_E$ (scalars); unknowns $(V_0, \sigma_A)$ solved from the valuation equation plus Ito-matched volatility equation — two equations, two unknowns.
 
 ```python
 ### The KMV Iterative Algorithm
@@ -190,7 +199,9 @@ def solve_merton_kmv(E_obs, sigma_E_obs, F, T, r):
     V_guess = E_obs + F
     sigma_guess = sigma_E_obs * (E_obs / V_guess)
 
-    V_implied, sigma_A_implied = fsolve(system, [V_guess, sigma_guess])
+    V_implied, sigma_A_implied = fsolve(system, [V_guess, sigma_guess], full_output=True)[0]
+    if V_implied <= 0 or sigma_A_implied <= 0:
+        raise ValueError("KMV solver returned a non-positive asset value or volatility.")
     return V_implied, sigma_A_implied
 
 # Example Calibration
@@ -214,7 +225,7 @@ print(f"  Distance-to-Default (DD): {DD:.2f} standard deviations")
 #### Calculating Distance-to-Default (DD)
 The **Distance-to-Default (DD)** is the most popular metric from the KMV model. It measures how many standard deviations the asset value is away from the default barrier (debt face value). 
 $$ \text{DD} = \frac{V_A - F}{V_A \sigma_A} $$
-A higher DD implies a safer firm. This metric is widely used by banks and hedge funds to rank companies by creditworthiness.
+A higher DD implies a safer firm. This metric is widely used by banks and hedge funds to rank companies by creditworthiness. Note the assumption it carries: default is triggered exactly at the debt face value at a single horizon. Adding a default barrier, a longer horizon, or a drift term changes the distance and, with it, the ranking.
 
 ### 5. The Credit Spread Puzzle
 
@@ -245,6 +256,8 @@ $$D_0 = V_0 - E_0$$
 
 $$D(0, T) = F e^{-(r+\lambda(1-R))T}$$
 
+**Dimension notes:** payoffs and values are scalars; $N(d_1), N(d_2)$ standard normal cdfs at scalar arguments; distances-to-default are standardized scalar statistics.
+
 ### Three-Tier Practice Ladder
 
 **1. Mechanism and assumptions (Conceptual):** Derive the no-arbitrage, optimality, or risk-pricing relation central to **05 Credit Risk** and verify that it satisfies at least two economically meaningful limiting cases or bounds.
@@ -252,6 +265,8 @@ $$D(0, T) = F e^{-(r+\lambda(1-R))T}$$
 **2. Reproduce and diagnose (Applied):** Reproduce a calculation from 1. Introduction: The Option to Default, 2. Structural Models: The Merton (1974) Framework with transparent inputs. Perturb volatility, discounting, risk aversion, transaction costs, or another key parameter and explain the sensitivity in economic terms.
 
 **3. Robust extension (Challenge):** Construct a stress scenario outside the calibration sample. Compare two valuation/risk methods and explain which discrepancy reflects model risk rather than numerical error.
+
+**3b. Failure analysis (Challenge):** Distance-to-default computed with *equity* volatility is wildly off, and the KMV iteration to back out asset volatility does not converge. Diagnose the wrong-volatility mapping, repair with the standard iterative asset-volatility solve, and verify convergence plus sanity of $(V_0, \sigma_A)$.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

@@ -103,6 +103,8 @@ Where:
 
 We can visualize this process by "unrolling" the loop over time:
 
+**Dimension notes:** input $\mathbf{x}_t \in \mathbb{R}^{d}$, hidden state $\mathbf{h}_t \in \mathbb{R}^{h}$; $W_{xh}, W_{hh}$ are conformable weight matrices mapping into the $h$-dim hidden state ($W_{hh} \in \mathbb{R}^{h \times h}$), biases included.
+
 ![BPTT Diagram](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/07-Machine-Learning/bptt_diagram_1.png)
 *<center><b>Figure 1: An RNN Cell Unrolled Through Time.</b> The diagram shows the forward pass (black arrows) where the hidden state is passed from one time step to the next, and the backward pass of gradients (red dashed arrows) for BPTT.</center>*
 
@@ -121,6 +123,8 @@ $$ \frac{\partial L_t}{\partial \mathbf{h}_k} \propto (W_{hh})^{t-k} $$
 This repeated multiplication is the source of the **vanishing/exploding gradient problem**.
 - **Vanishing Gradients:** If the largest eigenvalue of $W_{hh}$ is less than 1, the product $(W_{hh})^{t-k}$ will shrink towards zero as the time gap $t-k$ grows. The gradients from distant past steps become zero, and the network cannot learn long-range dependencies.
 - **Exploding Gradients:** If the largest eigenvalue is greater than 1, the product will explode, leading to unstable training. This is easier to handle with **gradient clipping**, which caps the gradient at a maximum value.
+
+**Dimension notes:** the loss $L$ is a scalar; its gradient accumulates products of Jacobians $\partial \mathbf{h}_t / \partial \mathbf{h}_{t-1} \in \mathbb{R}^{h \times h}$ across $T$ steps — vanishing/exploding gradients correspond to spectral norms persistently below or above one.
 
 <a id='advanced'></a>
 ## 4. Advanced RNN Architectures
@@ -240,8 +244,8 @@ try:
     X_test_pad = pad_sequences(X_test_seq, maxlen=50, padding='post', truncating='post')
 
     # 3. Build and train the RNN model
-except Exception:
-    pass
+except Exception as exc:
+    print(f"Optional RNN demonstration skipped: {exc}")
 ```
 
 > **Note:** Building and training a sentiment classification model.
@@ -318,6 +322,8 @@ custom_rnn_model.summary()
 
 **3. Robust extension (Challenge):** Stress-test the model under temporal, subgroup, or covariate distribution shift. Identify which performance degradation matters for the downstream economic decision and propose one mitigation without using the test set for tuning.
 
+**3b. Failure analysis (Challenge):** BPTT gradient norms grow exponentially with sequence length and the hidden states saturate. Diagnose the exploding-gradient pathology of vanilla RNNs, repair with gradient clipping, truncated BPTT, or an LSTM, and compare gradient histograms across fixes.
+
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 
 <a id='exercises'></a>
@@ -359,6 +365,8 @@ $$\frac{\partial L_t}{\partial \mathbf{h}_k} = \frac{\partial L_t}{\partial \mat
 **4. Core relation**
 
 $$\frac{\partial L_t}{\partial \mathbf{h}_k} \propto (W_{hh})^{t-k}$$
+
+**Dimension notes:** states and gates are vectors ($\mathbf{h}_t \in \mathbb{R}^h$); weight matrices carry matching shapes ($W_{hh} \in \mathbb{R}^{h \times h}$, output projection to the $d_y$-dim prediction), activations elementwise.
 
 ### Solutions to Exercises
 

@@ -13,6 +13,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+rng = np.random.default_rng(42)  # single reproducible generator
+
 try:
     import tensorflow as tf
     from tensorflow.keras import layers, models
@@ -101,8 +103,8 @@ x_test = np.reshape(x_test, (len(x_test), 28, 28, 1))
 
 # Add random noise
 noise_factor = 0.5
-x_train_noisy = x_train + noise_factor * np.random.normal(loc=0.0, scale=1.0, size=x_train.shape)
-x_test_noisy = x_test + noise_factor * np.random.normal(loc=0.0, scale=1.0, size=x_test.shape)
+x_train_noisy = x_train + noise_factor * rng.normal(loc=0.0, scale=1.0, size=x_train.shape)
+x_test_noisy = x_test + noise_factor * rng.normal(loc=0.0, scale=1.0, size=x_test.shape)
 x_train_noisy = np.clip(x_train_noisy, 0., 1.)
 x_test_noisy = np.clip(x_test_noisy, 0., 1.)
 
@@ -181,6 +183,8 @@ plt.show()
 
 **3. Robust extension (Challenge):** Stress-test the model under temporal, subgroup, or covariate distribution shift. Identify which performance degradation matters for the downstream economic decision and propose one mitigation without using the test set for tuning.
 
+**3b. Failure analysis (Challenge):** The autoencoder reconstructs perfectly but its latent codes are useless downstream — the bottleneck is as wide as the input. Diagnose the identity-mapping degeneracy, repair with a genuine bottleneck (or denoising objective), and evaluate the latent on the downstream task as the criterion.
+
 <details>
 <summary>Solution guidance</summary>
 
@@ -228,12 +232,11 @@ class Autoencoder(nn.Module):
 
 # 2. Generate Synthetic "Yield Curve" Data
 # Imagine 10 points on a yield curve, driven by 3 factors (Level, Slope, Curvature)
-np.random.seed(42)
 n_samples = 1000
 input_dim = 10
-factors = np.random.normal(0, 1, (n_samples, 3))
-loadings = np.random.normal(0, 1, (3, input_dim))
-yield_curves = factors @ loadings + np.random.normal(0, 0.1, (n_samples, input_dim))
+factors = rng.normal(0, 1, (n_samples, 3))
+loadings = rng.normal(0, 1, (3, input_dim))
+yield_curves = factors @ loadings + rng.normal(0, 0.1, (n_samples, input_dim))
 yield_curves = torch.FloatTensor(yield_curves)
 
 # 3. Train

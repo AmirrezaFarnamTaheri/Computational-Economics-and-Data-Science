@@ -10,6 +10,7 @@
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/01-Foundations/04_Python_Data_Model.ipynb) [![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main?filepath=01-Foundations/04_Python_Data_Model.ipynb) [![Code License: MIT](https://img.shields.io/badge/Code%20License-MIT-yellow.svg)](../LICENSE) [![Content License: CC BY 4.0](https://img.shields.io/badge/Content%20License-CC%20BY%204.0-blue.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 ```python
+
 # --- Global Notebook Setup ---
 import sys
 import time
@@ -20,6 +21,7 @@ from functools import total_ordering
 
 import matplotlib.pyplot as plt
 import numpy as np
+rng = np.random.default_rng(42)  # single reproducible generator
 import pandas as pd
 
 # Apply the standard course style for all plots
@@ -38,17 +40,17 @@ plt.rcParams.update(
 ```
 
 ### Table of Contents
-1. [The Lens: The Grammar of Pythonic Objects](#The-Lens:-The-Grammar-of-Pythonic-Objects)
-2. [Object Lifecycle: `__new__` vs `__init__`](#Object-Lifecycle:-__new__-vs-__init__)
-3. [Code Lab: A Pythonic `Vector` Class](#Code-Lab:-A-Pythonic-Vector-Class)
-4. [The Context Manager Protocol: `with` Statements](#The-Context-Manager-Protocol:-with-Statements-for-Safe-Resource-Management)
-4. [The Descriptor Protocol: Managed Attribute Access](#The-Descriptor-Protocol:-Managed-Attribute-Access-for-Robust-Models)
-5. [Dynamic Attribute Access: `__getattr__`](#Dynamic-Attribute-Access:-__getattr__-for-Lazy-Loading)
-6. [Advanced Protocols for Framework Design](#Advanced-Protocols-for-Framework-Design)
-7. [Performance Optimization with `__slots__`](#Performance-Optimization-with-__slots__)
-8. [Summary](#Summary)
-9. [Exercises](#Exercises)
-10. [Curated References and Further Reading](#Curated-References-and-Further-Reading)
+1. [The Lens: The Grammar of Pythonic Objects](#the-lens-the-grammar-of-pythonic-objects)
+2. [Object Lifecycle: `__new__` vs `__init__`](#object-lifecycle-__new__-vs-__init__)
+3. [Code Lab: A Pythonic `Vector` Class](#code-lab-a-pythonic-vector-class)
+4. [The Context Manager Protocol: `with` Statements](#the-context-manager-protocol-with-statements-for-safe-resource-management)
+4. [The Descriptor Protocol: Managed Attribute Access](#the-descriptor-protocol-managed-attribute-access-for-robust-models)
+5. [Dynamic Attribute Access: `__getattr__`](#dynamic-attribute-access-__getattr__-for-lazy-loading)
+6. [Advanced Protocols for Framework Design](#advanced-protocols-for-framework-design)
+7. [Performance Optimization with `__slots__`](#performance-optimization-with-__slots__)
+8. [Summary](#summary)
+9. [Exercises](#exercises)
+10. [Curated References and Further Reading](#curated-references-and-further-reading)
 
 ## The Lens: 04-Python-Data-Model
 Python's distinctive character—often described as "Pythonic"—is not an accident of syntax but the result of a deliberate design philosophy centered on consistency and readability. This philosophy is implemented through the **Python data model**, a formal specification that acts as a bridge between the language's core syntax and the objects you create and use. It is, in essence, the grammar of Python objects.
@@ -107,6 +109,7 @@ We will implement protocols for:
 - **Boolean Content:** `__bool__`
 
 ```python
+import math
 # The @total_ordering decorator from the functools module is a powerful tool.
 # If you define __eq__ and one other rich comparison method (like __lt__),
 # it will automatically generate the implementations for all the others (<=, >, >=).
@@ -177,7 +180,8 @@ class Vector(Sequence):
         # Otherwise, we return the individual component.
         return self._components[index]
 
-    # --- Protocol 4: Numeric Emulation ---
+
+# --- Protocol 4: Numeric Emulation ---
     def __abs__(self) -> float:
         """Calculates the Euclidean norm (L2 norm) of the vector for abs()."""
         return math.sqrt(sum(x * x for x in self))
@@ -467,7 +471,7 @@ class LazyDataSource:
             # Simulate loading data from a file
             print(f"--> Reading '{name.upper()}.csv' from disk...")
             # Create some dummy data
-            value = pd.Series(np.random.rand(10) * 100, name=name.upper())
+            value = pd.Series(rng.random(10) * 100, name=name.upper())
 
             # CRUCIAL STEP: Cache the loaded value in the instance's __dict__.
             # The next time this attribute is accessed, it will be found directly,
@@ -550,7 +554,6 @@ except TypeError as e:
 
 print("\nNow, let's create a concrete implementation:")
 
-
 class SimpleGrowthModel(GenericModel):
     def solve(self):
         alpha = self.params["alpha"]
@@ -564,8 +567,7 @@ class SimpleGrowthModel(GenericModel):
 
     def simulate(self, n_periods):
         print(f"Simulating for {n_periods} periods...")
-        return np.random.rand(n_periods)
-
+        return rng.random(n_periods)
 
 growth_params = {"alpha": 0.33, "beta": 0.95}
 g_model = SimpleGrowthModel(growth_params)
@@ -680,6 +682,8 @@ except AttributeError as e:
 **2. Reproduce and diagnose (Applied):** Reproduce an example involving Object Lifecycle: `__new__` vs `__init__`, Code Lab: A Pythonic `Vector` Class, then change one input and explain the result before running the code.
 
 **3. Robust extension (Challenge):** Extend the example to a larger or less convenient case and document the correctness and performance checks needed before trusting the result.
+
+**3b. Failure analysis (Challenge):** Objects of a custom `Contract` class with `__eq__` defined vanish from a set, or appear twice, depending on construction order. Diagnose the inconsistent `__hash__` (or mutation of an object after insertion), fix the class so `__hash__` agrees with `__eq__`, and write a test that inserts, removes, and re-looks-up instances.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

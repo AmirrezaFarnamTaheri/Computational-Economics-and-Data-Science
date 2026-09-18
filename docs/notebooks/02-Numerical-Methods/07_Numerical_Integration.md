@@ -19,7 +19,7 @@ Mathematically, an expectation is a **definite integral**. To solve dynamic mode
 We cannot sum over a continuum. We must approximate the integral as a weighted sum: $\int f(x) dx \approx \sum w_i f(x_i)$.
 *   **Newton-Cotes (Trapezoid):** Robust, good for general functions.
 *   **Gaussian Quadrature:** Extremely accurate for smooth functions (e.g., Normal shocks).
-*   **Monte Carlo:** The only way to survive the Curse of Dimensionality ($D > 4$).
+*   **Monte Carlo:** A robust way to survive the Curse of Dimensionality (beyond a few dimensions, deterministic grids become impractical).
 *   **Quasi-Monte Carlo (QMC):** Uses low-discrepancy sequences to beat random sampling ($O(N^{-1})$ convergence).
 *   **MCMC (Metropolis-Hastings):** Essential for Bayesian inference when we can't sample directly from the posterior.
 
@@ -41,8 +41,6 @@ By the end of this notebook, you will be able to:
 
 ```python
 # === Environment Setup ===
-import warnings
-
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
@@ -98,6 +96,9 @@ Optimally chooses nodes and weights. An $N$-point rule integrates a polynomial o
 Gaussian rules are defined on standard intervals (e.g., $[-1, 1]$). To integrate over $[a, b]$, we use a linear change of variable $x = \frac{b-a}{2}\xi + \frac{a+b}{2}$. This scales the weights by $\frac{b-a}{2}$ (the Jacobian of the transformation).
 
 ### Derivation of Simpson's Rule
+
+![Quadrature convergence](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/02-Numerical-Methods/quadrature_convergence.png)
+*Figure: Quadrature error falling with the number of nodes..*
 Simpson's rule approximates $f(x)$ with a quadratic $P(x) = Ax^2 + Bx + C$ passing through $-h, 0, h$. Integrating $P(x)$ from $-h$ to $h$:
 $\int_{-h}^h (Ax^2 + Bx + C) dx = [\frac{Ax^3}{3} + \frac{Bx^2}{2} + Cx]_{-h}^h = \frac{2Ah^3}{3} + 2Ch$
 Solving for $A, B, C$ in terms of $f(-h), f(0), f(h)$, we get the weights $\frac{h}{3}[1, 4, 1]$.
@@ -130,9 +131,13 @@ print("Observation: Gaussian Quadrature is phenomenally accurate for smooth func
 
 ### Application: Expected Utility with Normal Shocks
 
-Calculate $E[u(c)]$ where $c = \mu + \sigma \epsilon$ and $\epsilon \sim N(0, 1)$.
-$$ E[u(c)] = \frac{1}{\sqrt{\pi}} \int_{-\infty}^{\infty} u(\mu + \sigma\sqrt{2}x) e^{-x^2} dx $$
-We use **Gauss-Hermite** quadrature.
+For a function $u: \mathbb{R} \to \mathbb{R}$ with an integrable Gaussian expectation, first consider $c = \mu + \sigma\,\epsilon$ and $\epsilon \sim N(0, 1)$. Start from the definition of expectation under the standard normal density $\phi(\epsilon) = \frac{1}{\sqrt{2\pi}} e^{-\epsilon^2/2}$:
+$$ E[u(c)] = \int_{-\infty}^{\infty} u(\mu + \sigma\epsilon)\, \frac{1}{\sqrt{2\pi}}\, e^{-\epsilon^2/2}\, d\epsilon. $$
+Now substitute $\epsilon = \sqrt{2}\,x$, so $d\epsilon = \sqrt{2}\,dx$ and $\epsilon^2/2 = x^2$:
+$$ E[u(c)] = \int_{-\infty}^{\infty} u(\mu + \sigma\sqrt{2}\,x)\, \frac{1}{\sqrt{2\pi}}\, e^{-x^2} \sqrt{2}\,dx = \frac{1}{\sqrt{\pi}} \int_{-\infty}^{\infty} u(\mu + \sigma\sqrt{2}\,x)\, e^{-x^2}\, dx. $$
+The integrand is now in Gauss–Hermite form $\int e^{-x^2} g(x)\,dx$ (with $g$ absorbing every factor except $e^{-x^2}$), which is exactly what Gauss–Hermite nodes and weights evaluate efficiently. We use **Gauss-Hermite** quadrature.
+
+CRRA utility requires positive consumption, so the example below instead sets $c=\exp(\mu+\sigma\epsilon)$. Here $\mu$ and $\sigma$ describe **log consumption**. An additive normal specification assigns positive probability to nonpositive consumption and, for $u(c)=-1/c$, has a singularity at zero; a finite-looking quadrature answer would not establish a valid expected utility. For lognormal consumption and $\gamma=2$, the analytic benchmark is $E[u(c)]=-\exp(-\mu+\sigma^2/2)$.
 
 ```python
 def utility(c):
@@ -140,23 +145,24 @@ def utility(c):
     gamma = 2.0
     return (c**(1-gamma))/(1-gamma)
 
-mu, sigma = 10, 2
+mu, sigma = np.log(10.0), 0.2  # mean and standard deviation of log consumption
 N_nodes = 7
 
 # Get Gauss-Hermite nodes/weights
 gh_nodes, gh_weights = roots_hermite(N_nodes)
 
-# Change of variable for Normal(mu, sigma^2)
-# nodes become: mu + sqrt(2)*sigma*x
-c_nodes = mu + np.sqrt(2) * sigma * gh_nodes
+# Transform Gaussian log consumption to positive consumption.
+c_nodes = np.exp(mu + np.sqrt(2) * sigma * gh_nodes)
 
 # Compute expectation: (1/sqrt(pi)) * sum(w * u(c))
 expected_u = (1 / np.sqrt(np.pi)) * np.sum(gh_weights * utility(c_nodes))
 
 # Compare with Monte Carlo (benchmark)
-mc_draws = rng.normal(mu, sigma, size=1_000_000)
+mc_draws = rng.lognormal(mu, sigma, size=1_000_000)
 mc_u = np.mean(utility(mc_draws))
 
+analytic_u = -np.exp(-mu + sigma**2 / 2)
+print(f"Expected Utility (analytic lognormal): {analytic_u:.6f}")
 print(f"Expected Utility (Gauss-Hermite, N={N_nodes}): {expected_u:.6f}")
 print(f"Expected Utility (Monte Carlo, N=1M):    {mc_u:.6f}")
 ```
@@ -182,22 +188,24 @@ Random numbers clump together. Low-discrepancy sequences (like Sobol or Halton) 
 To generate a Halton sequence in 1D with base $b$, we reverse the digits of the index $n$ in base $b$. E.g., for base 2: $1=1_2 \to 0.1_2=0.5$, $2=10_2 \to 0.01_2=0.25$, $3=11_2 \to 0.11_2=0.75$. This fills the gaps sequentially.
 
 ### Verbatim Walkthrough: The Race to Zero Error
-Let's see the "Curse of Dimensionality" in action. We will compare how fast the error drops for Quadrature vs Monte Carlo as we increase $N$ in different dimensions.
+Let's watch the race below, which is staged in one dimension. The theory block explains how the verdict flips as the dimension grows.
 
 **Theory:**
-*   Simpson's Rule Error: $O(N^{-4/D})$ (Gets terrible as $D$ grows).
-*   Monte Carlo Error: $O(N^{-1/2})$ (Constant, slow but steady).
+*   Tensor-product Simpson's Rule Error: $O(N^{-4/D})$ when $N$ counts the *total* function evaluations in $D$ dimensions (gets terrible as $D$ grows).
+*   Monte Carlo Error: $O(N^{-1/2})$, independent of dimension (slow but steady).
 
-Notice that for $D=1$, Simpson crushes MC. For $D=10$, Simpson is useless.
+Notice that for $D=1$ below, Simpson's error collapses far faster than MC's. In $D=10$, a comparably accurate tensor-grid Simpson rule would need roughly $N^{10}$ evaluations while MC keeps its dimension-free $N^{-1/2}$ rate.
 
 ```python
 # Comparing Convergence Rates
+# Integrand: exp(x) on [0, 1]. Deliberately NOT a polynomial - Simpson's
+# rule is exact up to degree 3, so x^2 would show zero error at every N.
 N_values = [100, 1000, 10000, 100000]
 mc_errors = []
 quad_errors = []
 
-# True Integral of x^2 from 0 to 1 is 1/3
-true_val = 1/3
+# True integral of e^x from 0 to 1 is e - 1
+true_val = np.e - 1
 
 print(f"{'N':<10} | {'MC Error':<15} | {'Simpson Error':<15}")
 print("-"*45)
@@ -205,12 +213,12 @@ print("-"*45)
 for N in N_values:
     # Monte Carlo
     x_mc = rng.random(N)
-    est_mc = np.mean(x_mc**2)
+    est_mc = np.mean(np.exp(x_mc))
     mc_errors.append(abs(est_mc - true_val))
 
     # Simpson's Rule (1D)
     x_quad = np.linspace(0, 1, N)
-    y_quad = x_quad**2
+    y_quad = np.exp(x_quad)
     est_quad = simpson(y_quad, x_quad)
     quad_errors.append(abs(est_quad - true_val))
 
@@ -267,20 +275,6 @@ for i in range(n_samples):
 
 print(f"MCMC Acceptance Rate: {accepted/n_samples:.2%}")
 print(f"Estimated Mean: {np.mean(samples[1000:]):.4f} (True Posterior Mean approx {np.mean(data):.4f})")
-
-# Simple Halton Sequence Generator (for illustration)
-def halton_sequence(n, b):
-    seq = []
-    for i in range(1, n + 1):
-        f = 1
-        r = 0
-        ii = i
-        while ii > 0:
-            f = f / b
-            r = r + f * (ii % b)
-            ii = ii // b
-        seq.append(r)
-    return np.array(seq)
 
 # Plot
 plt.figure(figsize=(8, 5))
@@ -341,9 +335,9 @@ The convergence statements in this notebook assume the integrand is finite on th
 ## Summary
 
 **Key Takeaways:**
-*   **Smooth & Low Dim?** Use Gaussian Quadrature (Legendre for bounded, Hermite for Normal). It's unbeatable.
+*   **Smooth & Low Dim?** Use Gaussian Quadrature (Legendre for bounded, Hermite for Normal). Hard to beat when the integrand is genuinely smooth.
 *   **Rough or High Dim?** Use Monte Carlo. It's slow but reliable.
-*   **Variance Reduction:** Always use Antithetic Variates in MC; it's free precision.
+*   **Variance Reduction:** Antithetic Variates are nearly free and cut variance for payoffs that are monotone in the underlying shock - but measure the reduction instead of assuming it, since non-monotone payoffs can backfire.
 
 ## Exercises
 
@@ -355,6 +349,8 @@ Calculate the **Value at Risk (VaR)** (the 5th percentile of losses) for a portf
 
 ### 3. Challenge: High-Dimensional Volume
 Estimate the volume of a hypersphere in 10 dimensions using Monte Carlo integration. Sample points in a bounding hypercube and count the fraction that fall inside the sphere. Compare with the analytical formula: $V_n(R) = \frac{\pi^{n/2}}{\Gamma(n/2 + 1)}R^n$.
+
+**Failure analysis (Challenge):** The trapezoid rule on an integrand with a jump converges at first order, not the advertised $O(h^2)$, and the error plot 'flatlines'. Diagnose the broken smoothness assumption, repair by splitting the integral at the discontinuity (or adaptive quadrature), and verify the recovered convergence order empirically.
 
 ## References & Further Reading
 

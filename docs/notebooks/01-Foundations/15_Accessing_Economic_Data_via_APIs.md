@@ -42,18 +42,18 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 ```
 
 ### Table of Contents
-1. [The Lens: Live Data and the Economic Pulse](#The-Lens:-Live-Data-and-the-Economic-Pulse)
-2. [The FRED API: U.S. Economic Data](#The-FRED-API:-U.S.-Economic-Data)
-    - [Installation and API Key](#Getting-Started:-Installation-and-API-Key)
-    - [Searching for Data](#Searching-for-Data)
-    - [Downloading and Plotting](#Downloading-and-Plotting-a-Single-Series)
-    - [Example: The Phillips Curve](#Practical-Example:-The-Phillips-Curve)
-3. [The World Bank API: Global Development Data](#The-World-Bank-API:-Global-Development-Data)
-    - [Searching for Indicators](#Searching-for-Indicators-and-Countries)
-    - [Downloading Cross-Country Data](#Downloading-Data-for-Multiple-Countries)
-    - [Cleaning and Visualization](#Cleaning-and-Plotting-the-Data)
-4. [Summary](#Summary)
-5. [Exercises](#Exercises)
+1. [The Lens: Live Data and the Economic Pulse](#the-lens-live-data-and-the-economic-pulse)
+2. [The FRED API: U.S. Economic Data](#the-fred-api-us-economic-data)
+    - [Installation and API Key](#getting-started-installation-and-api-key)
+    - [Searching for Data](#searching-for-data)
+    - [Downloading and Plotting](#downloading-and-plotting-a-single-series)
+    - [Example: The Phillips Curve](#practical-example-the-phillips-curve)
+3. [The World Bank API: Global Development Data](#the-world-bank-api-global-development-data)
+    - [Searching for Indicators](#searching-for-indicators-and-countries)
+    - [Downloading Cross-Country Data](#downloading-data-for-multiple-countries)
+    - [Cleaning and Visualization](#cleaning-and-plotting-the-data)
+4. [Summary](#summary)
+5. [Exercises](#exercises)
 
 ## The Lens: 15-Accessing-Economic-Data-via-APIs
 In the previous chapter, we learned that data acquisition is the fuel for economic analysis. While static files are useful, the most vibrant economic research relies on **live data**—streams of information that update as the economy evolves. 
@@ -189,7 +189,7 @@ if fred and cpi_data is not None:
     # Calculate year-over-year inflation from the CPI data we already have
     inflation_data = cpi_data.pct_change(
         12
-    ).dropna()  # dropna() removes the first 12 months with no value
+    ).dropna() * 100  # Convert fractional changes to percent, matching the axis label
 
     # To plot them together, we need to align the data. We'll create a DataFrame.
     phillips_df = pd.DataFrame(
@@ -280,6 +280,8 @@ plt.show()
 **2. Reproduce and diagnose (Applied):** Reproduce an example involving Advanced Topic: Anatomy of an HTTP Request/Response, The FRED API: U.S. Economic Data, then change one input and explain the result before running the code.
 
 **3. Robust extension (Challenge):** Extend the example to a larger or less convenient case and document the correctness and performance checks needed before trusting the result.
+
+**3b. Failure analysis (Challenge):** An FRED/World-Bank fetch script that worked in testing now fails hourly with HTTP 429, and one cached response is stale by weeks. Diagnose the missing rate-limit handling and unversioned cache, fix with exponential backoff honoring `Retry-After` plus timestamped cache entries, and simulate a 429 response in a test.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

@@ -6,12 +6,17 @@
 
 # 04C Vector Autoregression: Impulse Responses and FEVD
 
+![VAR impulse responses](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/08-Time-Series/var_irf.png)
+*Figure: Impulse response functions from an estimated VAR.*
+
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/08-Time-Series/04C_VAR_Impulse_Responses_and_FEVD.ipynb) [![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main?filepath=08-Time-Series/04C_VAR_Impulse_Responses_and_FEVD.ipynb) [![Code License: MIT](https://img.shields.io/badge/Code%20License-MIT-yellow.svg)](../LICENSE) [![Content License: CC BY 4.0](https://img.shields.io/badge/Content%20License-CC%20BY%204.0-blue.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 ```python
 # === Environment Setup ===
 import matplotlib.pyplot as plt
 import numpy as np
+
+rng = np.random.default_rng(42)  # single reproducible generator
 import pandas as pd
 from statsmodels.tsa.api import VAR
 
@@ -53,8 +58,10 @@ Impulse responses (IRFs) and forecast error variance decompositions (FEVDs) tran
 
 > **Learning path:** Building on [`04B_VAR_Identification_and_Structural_Shocks.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/08-Time-Series/04B_VAR_Identification_and_Structural_Shocks.ipynb); next continue with [`05_Volatility_Modeling_ARCH_GARCH.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/08-Time-Series/05_Volatility_Modeling_ARCH_GARCH.ipynb).
 
+> **Conceptual prerequisite:** Impulse responses and forecast error variance decompositions operate on a reduced-form VAR fitted in [`04A_VAR_Estimation_and_Granger.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/08-Time-Series/04A_VAR_Estimation_and_Granger.ipynb). If the OLS / information-criterion lag-selection material in 04A is not familiar, review it before working through this lecture; the IRF / FEVD tools call into a model object that 04A constructs.
+
 ### Table of Contents
-1. [The Lens: Tracing Shock Propagation](#The-Lens:-Tracing-Shock-Propagation)
+1. [The Lens: Tracing Shock Propagation](#the-lens-tracing-shock-propagation)
 2. [Impulse Response Functions (IRFs)](#irf)
 3. [Forecast Error Variance Decomposition (FEVD)](#fevd)
 4. [Summary](#summary)
@@ -65,12 +72,11 @@ Impulse responses (IRFs) and forecast error variance decompositions (FEVDs) tran
 # Generate Bivariate VAR(1) Data
 # y1_t = 0.5*y1_{t-1} + 0.2*y2_{t-1} + e1_t
 # y2_t = -0.2*y1_{t-1} + 0.5*y2_{t-1} + e2_t
-np.random.seed(42)
 T = 200
 y = np.zeros((T, 2))
 for t in range(1, T):
-    y[t, 0] = 0.5 * y[t-1, 0] + 0.2 * y[t-1, 1] + np.random.normal(0, 1)
-    y[t, 1] = -0.2 * y[t-1, 0] + 0.5 * y[t-1, 1] + np.random.normal(0, 1)
+    y[t, 0] = 0.5 * y[t-1, 0] + 0.2 * y[t-1, 1] + rng.normal(0, 1)
+    y[t, 1] = -0.2 * y[t-1, 0] + 0.5 * y[t-1, 1] + rng.normal(0, 1)
 
 data = pd.DataFrame(y, columns=['y1', 'y2'])
 
@@ -80,15 +86,45 @@ irf = results.irf(10)
 
 print("Plotting Impulse Responses...")
 plt.figure(figsize=(10, 6))
-irf.plot(orth=False)
+irf.plot(orth=True)
 plt.show()
 ```
 
 <a id='fevd'></a>
 ## 2. Forecast Error Variance Decomposition (FEVD)
+The IRF and FEVD code uses Cholesky-orthogonalized innovations in the order `[y1, y2]`. Causal interpretation requires the recursive timing restrictions discussed in 04B.
+
 Another key tool for VAR analysis is the **Forecast Error Variance Decomposition (FEVD)**. It shows the proportion of the forecast error variance for each variable that is attributable to shocks from itself and from the other variables in the system, at different forecast horizons.
 
 For example, the FEVD for GDP growth might show that at a 1-quarter horizon, 90% of its forecast error variance is due to its own shocks, but at a 20-quarter horizon, monetary policy shocks account for 30% of the variance. This helps us assess the relative importance of different shocks in driving the fluctuations of each variable.
+
+```python
+# --- Forecast Error Variance Decomposition (FEVD) ---
+# Reuse the bivariate VAR(1) fit from the IRF cell above: `data`, `results`.
+# `results.fevd(10)` returns an FEVD object with a `.plot()` method that shows
+# the share of each variable's forecast error variance attributable to each
+# orthogonalized shock, at forecast horizons 1..10. Shares sum to one over shocks.
+
+fevd = results.fevd(10)
+
+print("Plotting Forecast Error Variance Decomposition...")
+fig = fevd.plot(figsize=(14, 8))
+for ax in fig.axes:
+    ax.set_ylim(0.0, 1.0)
+    ax.set_ylabel("Share of forecast error variance")
+fig.suptitle("FEVD: share of h-step forecast error variance by shock")
+plt.tight_layout()
+plt.show()
+
+# Numerical sanity check: each row of the variance decomposition should sum to 1
+# (within float tolerance) at every horizon.
+fevd_array = fevd.decomp  # shape: (response variable, horizon, shock)
+row_sums = fevd_array.sum(axis=2)  # (n_vars, 10), horizons 1 through 10
+print("Row sums of FEVD at h=1:", row_sums[:, 0])
+print("Row sums of FEVD at h=10:", row_sums[:, -1])
+assert np.allclose(row_sums, 1.0, atol=1e-8), "FEVD rows must sum to 1"
+print("OK: every FEVD row sums to 1 within 1e-8.")
+```
 
 ## Exercises
 
@@ -97,6 +133,8 @@ For example, the FEVD for GDP growth might show that at a 1-quarter horizon, 90%
 **2. Reproduce and diagnose (Applied):** Fit the method covered in 2. Forecast Error Variance Decomposition (FEVD) to a time-ordered series. Diagnose residual dependence and stability, then evaluate a rolling or expanding-window out-of-sample forecast against a naive baseline.
 
 **3. Robust extension (Challenge):** Alter one structural restriction, lag/order choice, or innovation distribution. Explain how impulse responses, forecasts, or uncertainty change and whether the conclusion survives the alternative specification.
+
+**3b. Failure analysis (Challenge):** Forecast-error variance shares sum to more than 100% at long horizons and IRFs never die out. First check shock-axis summation and normalization: nonstationarity alone does not make correctly normalized finite-horizon FEVD shares exceed one. Separately diagnose persistent IRFs using stability and cointegration tests; consider a VECM or appropriate differencing and recompute the diagnostics.
 
 <details>
 <summary>Solution guidance</summary>

@@ -44,16 +44,16 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 ```
 
 ### Table of Contents
-1. [The Lens: Web Scraping as Data Excavation](#The-Lens:-Web-Scraping-as-Data-Excavation)
-2. [The Ethics and Legality of Scraping](#The-Ethics-and-Legality-of-Scraping)
-3. [Static Scraping with `requests` and `BeautifulSoup`](#Static-Scraping-with-requests-and-BeautifulSoup)
-    - [Parsing HTML Structure](#Parsing-HTML-Structure)
-    - [Extracting Data into Pandas](#Extracting-Data-into-Pandas)
-4. [Dynamic Scraping with `playwright`](#Dynamic-Scraping-with-playwright)
-    - [Why Not Selenium?](#Why-Not-Selenium?)
-    - [Handling JavaScript and Interaction](#Handling-JavaScript-and-Interaction)
-5. [Summary](#Summary)
-6. [Exercises](#Exercises)
+1. [The Lens: Web Scraping as Data Excavation](#the-lens-web-scraping-as-data-excavation)
+2. [The Ethics and Legality of Scraping](#the-ethics-and-legality-of-scraping)
+3. [Static Scraping with `requests` and `BeautifulSoup`](#static-scraping-with-requests-and-beautifulsoup)
+    - [Parsing HTML Structure](#parsing-html-structure)
+    - [Extracting Data into Pandas](#extracting-data-into-pandas)
+4. [Dynamic Scraping with `playwright`](#dynamic-scraping-with-playwright)
+    - [Why Not Selenium?](#why-not-selenium)
+    - [Handling JavaScript and Interaction](#handling-javascript-and-interaction)
+5. [Summary](#summary)
+6. [Exercises](#exercises)
 
 ## The Lens: 18-Data-Acquisition-Web-Scraping
 While APIs provide a clean pipeline to data, the vast majority of the world's information exists as unstructured HTML on websites. Web scraping is the digital equivalent of archaeological excavation: it involves carefully digging through layers of presentation code (HTML, CSS, JavaScript) to extract the valuable artifacts (data) buried underneath.
@@ -194,6 +194,8 @@ scrape_js_site()
 **2. Reproduce and diagnose (Applied):** Reproduce an example involving The Ethics and Legality of Scraping, Static Scraping with `requests` and `BeautifulSoup`, then change one input and explain the result before running the code.
 
 **3. Robust extension (Challenge):** Extend the example to a larger or less convenient case and document the correctness and performance checks needed before trusting the result.
+
+**3b. Failure analysis (Challenge):** A scraper died mid-collection when the site redesigned its markup, and earlier runs got the IP throttled. Diagnose the brittle CSS selectors and the missing politeness policy, repair with structure-agnostic parsing (e.g., table semantics), request delays, and retry logic, and add a schema-change detection check that fails loudly.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

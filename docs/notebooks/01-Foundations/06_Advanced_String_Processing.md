@@ -33,19 +33,19 @@ plt.rcParams.update(
 ```
 
 ### Table of Contents
-1. [The Lens: Text as Data in Economics](#The-Lens:-Text-as-Data-in-Economics)
-2. [The String Data Model: Immutability and Performance](#The-String-Data-Model:-Immutability-and-Performance)
-    - [Performance: The `join` Method vs. Concatenation](#Performance:-The-join-Method-vs.-Concatenation)
-3. [From Abstract Text to Physical Bytes: Unicode and Encodings](#From-Abstract-Text-to-Physical-Bytes:-Unicode-and-Encodings)
-    - [Unicode Normalization: Canonical Equivalence](#Unicode-Normalization:-Canonical-Equivalence)
-4. [Advanced Text Processing with Regular Expressions](#Advanced-Text-Processing-with-Regular-Expressions)
-    - [Greedy vs. Non-Greedy Matching](#Greedy-vs.-Non-Greedy-Matching)
-    - [Verbose Regex for Readability](#Verbose-Regex-for-Readability)
-    - [Regex for Economic Sentiment Analysis](#Regex-for-Economic-Sentiment-Analysis)
-    - [Under the Hood: ASCII and Unicode](#Under-the-Hood:-ASCII-and-Unicode)
-5. [Summary](#Summary)
-6. [Exercises](#Exercises)
-7. [Solutions to Exercises](#Solutions-to-Exercises)
+1. [The Lens: Text as Data in Economics](#the-lens-text-as-data-in-economics)
+2. [The String Data Model: Immutability and Performance](#the-string-data-model-immutability-and-performance)
+    - [Performance: The `join` Method vs. Concatenation](#performance-the-join-method-vs-concatenation)
+3. [From Abstract Text to Physical Bytes: Unicode and Encodings](#from-abstract-text-to-physical-bytes-unicode-and-encodings)
+    - [Unicode Normalization: Canonical Equivalence](#unicode-normalization-canonical-equivalence)
+4. [Advanced Text Processing with Regular Expressions](#advanced-text-processing-with-regular-expressions)
+    - [Greedy vs. Non-Greedy Matching](#greedy-vs-non-greedy-matching)
+    - [Verbose Regex for Readability](#verbose-regex-for-readability)
+    - [Regex for Economic Sentiment Analysis](#regex-for-economic-sentiment-analysis)
+    - [Under the Hood: ASCII and Unicode](#under-the-hood-ascii-and-unicode)
+5. [Summary](#summary)
+6. [Exercises](#exercises)
+7. [Solutions to Exercises](#solutions-to-exercises)
 
 ## The Lens: 06-Advanced-String-Processing
 A vast and growing amount of economic data is unstructured text. Central bank announcements, corporate filings, news articles, and social media posts all contain valuable information that requires specialized tools to unlock. This chapter moves beyond basic string manipulation to cover the advanced techniques essential for working with text as data.
@@ -306,6 +306,8 @@ print(f"Character 9786 is: {chr(9786)}")
 **2. Reproduce and diagnose (Applied):** Reproduce an example involving The String Data Model: Immutability and Performance, Demonstrating String Immutability, then change one input and explain the result before running the code.
 
 **3. Robust extension (Challenge):** Extend the example to a larger or less convenient case and document the correctness and performance checks needed before trusting the result.
+
+**3b. Failure analysis (Challenge):** A hand-rolled parser splits survey lines on commas and corrupts every row containing a quoted comma (`"Smith, Jr"`). Diagnose why `split(',')` cannot work, repair using the `csv` module (or a quote-aware regex), and add edge-case tests: quoted commas, escaped quotes, and empty fields.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

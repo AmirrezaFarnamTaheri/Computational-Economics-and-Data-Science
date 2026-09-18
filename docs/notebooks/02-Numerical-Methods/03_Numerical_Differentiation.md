@@ -75,8 +75,8 @@ sp.init_printing(use_unicode=True)
   * [Computational Graph](#computational-graph)
   * [Code: Manual Backpropagation](#code-manual-backpropagation)
   * [Verbatim Walkthrough: Building AutoDiff from Scratch](#verbatim-walkthrough-building-autodiff-from-scratch)
-  * [Code: Complex Step vs Finite Difference](#code-complex-step-vs-finite-difference)
   * [Intuition: Dual Numbers (Forward Mode)](#intuition-dual-numbers-forward-mode)
+  * [Code: Complex Step vs Finite Difference](#code-complex-step-vs-finite-difference)
 * [3. The JAX Framework](#3-the-jax-framework)
   * [The Constraint of Pure Functions](#the-constraint-of-pure-functions)
 * [4. Application: Utility Maximization](#4-application-utility-maximization)
@@ -88,16 +88,20 @@ sp.init_printing(use_unicode=True)
 
 ## 1. Numerical Differentiation via Finite Differences
 
-The derivative is defined as $f'(x) = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h}$. Numerically, we just pick a small $h$.
+The derivative is defined as $f'(x) = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h}$. Numerically, we just pick a small $h$. Throughout, $f: \mathbb{R} \to \mathbb{R}$ is smooth and the step $h \in \mathbb{R} \setminus \{0\}$; every estimate below approximates the scalar $f'(x) \in \mathbb{R}$.
 
 ### 1.1 The Formulas
 
 1.  **Forward Difference:** $D_+ f(x) = \frac{f(x+h) - f(x)}{h}$. Error: $O(h)$.
-2.  **Central Difference:** $D_c f(x) = \frac{f(x+h) - f(x-h)}{2h}$. Error: $O(h^2)$.
+2.  **Backward Difference:** $D_- f(x) = \frac{f(x) - f(x-h)}{h}$. Error: $O(h)$.
+3.  **Central Difference:** $D_c f(x) = \frac{f(x+h) - f(x-h)}{2h}$. Error: $O(h^2)$.
 
 **Why Central is Better:** By looking both ways, the first-order error terms cancel out, giving significantly higher accuracy for the same step size.
 
 ### Derivation via Taylor Series
+
+![Finite-difference error](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/02-Numerical-Methods/finite_difference_error.png)
+*Figure: Finite-difference error as the step size shrinks..*
 Expand $f(x+h)$ and $f(x-h)$:
 1.  $f(x+h) = f(x) + hf'(x) + \frac{h^2}{2}f''(x) + \frac{h^3}{6}f'''(x) + \dots$
 2.  $f(x-h) = f(x) - hf'(x) + \frac{h^2}{2}f''(x) - \frac{h^3}{6}f'''(x) + \dots$
@@ -121,6 +125,9 @@ $$ D_{richardson} = \frac{4D(h/2) - D(h)}{3} = f'(x) + O(h^4) $$
 def forward_diff(f, x, h=1e-5):
     return (f(x + h) - f(x)) / h
 
+def backward_diff(f, x, h=1e-5):
+    return (f(x) - f(x - h)) / h
+
 def central_diff(f, x, h=1e-5):
     return (f(x + h) - f(x - h)) / (2 * h)
 
@@ -131,6 +138,7 @@ true_val = np.exp(1.0)
 
 print(f"True Value:     {true_val:.8f}")
 print(f"Forward (h=1e-4): {forward_diff(f, x0, h=1e-4):.8f}")
+print(f"Backward (h=1e-4): {backward_diff(f, x0, h=1e-4):.8f}")
 print(f"Central (h=1e-4): {central_diff(f, x0, h=1e-4):.8f} (Much Closer!)")
 ```
 
@@ -142,6 +150,8 @@ Choosing `h` involves a painful trade-off:
 
 There is a "Goldilocks" zone, typically around $h \approx \sqrt{\epsilon_{mach}}$ for forward difference and $h \approx \epsilon_{mach}^{1/3}$ for central difference.
 
+*Why these scales?* Rounding noise in a difference quotient behaves like $\epsilon_{mach}/h$: subtracting nearby values leaves only a few machine-accurate bits in the numerator, which dividing by a tiny $h$ amplifies. Balancing that against truncation gives the optimum: $O(h)$ truncation yields $h \sim \sqrt{\epsilon_{mach}}$, while the central difference's $O(h^2)$ truncation yields $h \sim \epsilon_{mach}^{1/3}$.
+
 ## 2. Automatic Differentiation (AD)
 
 AD is **not** numerical differentiation (finite differences) and it is **not** symbolic differentiation (Mathematica). 
@@ -150,7 +160,7 @@ AD computes the **exact** derivative (up to machine precision) by applying the C
 
 ### Forward vs. Reverse Mode
 
-*   **Forward Mode:** Good for functions $f: \mathbb{R} \to \mathbb{R}^n$ (few inputs, many outputs).
+*   **Forward Mode:** Good for functions $f: \mathbb{R}^m \to \mathbb{R}^n$ with few inputs relative to outputs ($m \ll n$).
 *   **Reverse Mode (Backprop):** Good for functions $f: \mathbb{R}^n \to \mathbb{R}$ (many inputs, one output). 
 
 **Economic Context:** Most economic problems (Optimization, Maximum Likelihood) involve a scalar objective function with many parameters ($n \gg 1$). Thus, **Reverse Mode (Backprop)** is the standard.
@@ -190,7 +200,7 @@ class Node:
     def backward(self, grad=1.0):
         self.grad += grad
         if self.grad_fn:
-            self.grad_fn(self.grad)
+            self.grad_fn(grad)  # propagate only this contribution, not the accumulated total
 
     def __add__(self, other):
         # y = a + b => dy/da = 1, dy/db = 1
@@ -210,11 +220,17 @@ class Node:
 # x = Node(2.0); y = Node(3.0); z = x * y + x
 # z.backward() 
 # print(x.grad) # Should be y + 1 = 4
+# Shared intermediate: x = Node(2.0); u = x * x; z = u + u
+# z.backward(); print(x.grad) # 8, since z = 2*x**2
 ```
 
 ### Verbatim Walkthrough: Building AutoDiff from Scratch
-Let's implement the **Forward Mode** using Dual Numbers. This is the "magic" that JAX does under the hood.
-Recall that a dual number is $a + b\epsilon$, where $\epsilon^2 = 0$. Here, $a$ is the primal value and $b$ is the derivative.
+Let's build the **Forward Mode** ourselves using Dual Numbers — the clearest way to see what JAX does under the hood.
+
+### Intuition: Dual Numbers (Forward Mode)
+Forward mode can be understood using **Dual Numbers** of the form $v + \dot{v}\epsilon$, where $\epsilon^2 = 0$. This is similar to complex numbers ($i^2 = -1$).
+We define elementary arithmetic: $(a + \dot{a}\epsilon) + (b + \dot{b}\epsilon) = (a+b) + (\dot{a}+\dot{b})\epsilon$ and $(a + \dot{a}\epsilon)(b + \dot{b}\epsilon) = ab + (a\dot{b} + b\dot{a})\epsilon$.
+Notice that the $\epsilon$ term automatically carries the derivative rule (product rule in the second case). If we evaluate $f(x + 1\epsilon)$, the result is $f(x) + f'(x)\epsilon$. The coefficient of $\epsilon$ is the exact derivative!
 
 ```python
 class Dual:
@@ -269,7 +285,7 @@ h_vals = [1e-5, 1e-10, 1e-15, 1e-20]
 print(f"{'h':<10} | {'Finite Diff Error':<20} | {'Complex Step Error':<20}")
 print("-"*55)
 
-# True derivative (approx)
+# Analytical derivative via the quotient rule (exact)
 true_val = (np.exp(x0)*np.sin(x0)**3 - 3*np.exp(x0)*np.sin(x0)**2*np.cos(x0)) / np.sin(x0)**6
 
 for h in h_vals:
@@ -278,13 +294,8 @@ for h in h_vals:
 
     print(f"{h:<10.0e} | {abs(fd_val - true_val):<20.2e} | {abs(cs_val - true_val):<20.2e}")
 
-print("Observation: Finite Difference explodes at 1e-15 (cancellation). Complex Step remains accurate.")
+print("Observation: once h gets tiny, cancellation makes the finite-difference error balloon, while Complex Step stays near machine precision.")
 ```
-
-### Intuition: Dual Numbers (Forward Mode)
-Forward mode can be understood using **Dual Numbers** of the form $v + \dot{v}\epsilon$, where $\epsilon^2 = 0$. This is similar to complex numbers ($i^2 = -1$).
-We define elementary arithmetic: $(a + \dot{a}\epsilon) + (b + \dot{b}\epsilon) = (a+b) + (\dot{a}+\dot{b})\epsilon$ and $(a + \dot{a}\epsilon)(b + \dot{b}\epsilon) = ab + (a\dot{b} + b\dot{a})\epsilon$.
-Notice that the $\epsilon$ term automatically carries the derivative rule (product rule in the second case). If we evaluate $f(x + 1\epsilon)$, the result is $f(x) + f'(x)\epsilon$. The coefficient of $\epsilon$ is the exact derivative!
 
 ## 3. The JAX Framework
 
@@ -392,6 +403,8 @@ $$4D(h/2) - D(h) \approx 3f'(x)$$
 
 $$D_{richardson} = \frac{4D(h/2) - D(h)}{3} = f'(x) + O(h^4)$$
 
+**Dimension notes:** all quantities are scalars: $f: \mathbb{R} \to \mathbb{R}$, step $h > 0$, and each estimate $D(h) \approx f'(x) \in \mathbb{R}$.
+
 ## Summary
 
 **Key Takeaways:**
@@ -409,6 +422,8 @@ Use JAX to perform Maximum Likelihood Estimation for a linear regression model $
 
 ### 3. Challenge: Second-Order Risk Aversion
 For a CRRA utility function $u(c) = \frac{c^{1-\gamma}}{1-\gamma}$, use JAX to compute the Arrow-Pratt coefficient of relative risk aversion $R(c) = -\frac{c u''(c)}{u'(c)}$. Verify numerically that it equals $\gamma$ for any $c$.
+
+**Failure analysis (Challenge):** A central-difference derivative *loses* accuracy as $h$ shrinks below $10^{-5}$, contradicting the $O(h^2)$ theory. Diagnose the rounding-vs-truncation trade-off, locate the optimal $h \approx \varepsilon^{1/3}$ empirically, and plot total error against $h$ with both regimes annotated.
 
 ## References & Further Reading
 

@@ -25,6 +25,9 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 ```
 
 ## The Lens: Prices, Frictions, and Monetary Policy
+
+![The Phillips MONIAC](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/01-Foundations/1.1-phillips-moniac.jpg)
+*Figure: Bill Phillips built the MONIAC hydraulic computer in 1949: macroeconomics before silicon.*
 **What problem are we solving?**
 The RBC model assumes prices adjust instantly. This implies monetary policy (printing money) has no effect on the real economy ("money neutrality").
 But in the real world, central banks *do* affect output and employment. Recessions often follow monetary contractions.
@@ -57,18 +60,18 @@ It boils macroeconomics down to three equations:
 > **Learning path:** Building on [`04_OLG_Models.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/04-Macro-Models/04_OLG_Models.ipynb); next continue with [`06_Heterogeneous_Agent_Models.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/04-Macro-Models/06_Heterogeneous_Agent_Models.ipynb).
 
 ## Table of Contents
-1.  [The New Keynesian Synthesis](#1.-The-New-Keynesian-Synthesis)
-2.  [Microfoundations of the Three-Equation Model](#2.-Microfoundations-of-the-Three-Equation-Model)
-    *   [The Dynamic IS Curve](#The-Dynamic-IS-Curve)
-    *   [The New Keynesian Phillips Curve (NKPC)](#The-New-Keynesian-Phillips-Curve-(NKPC))
-    *   [The Monetary Policy Rule](#The-Monetary-Policy-Rule)
-3.  [Solving and Analyzing the Canonical Model](#3.-Solving-and-Analyzing-the-Canonical-Model)
-    *   [The Model in Matrix Form](#The-Model-in-Matrix-Form)
-    *   [Impulse Response to a Monetary Policy Shock](#Impulse-Response-to-a-Monetary-Policy-Shock)
-4.  [Optimal Monetary Policy](#4.-Optimal-Monetary-Policy)
-5.  [The Zero Lower Bound (ZLB)](#5.-The-Zero-Lower-Bound-(ZLB))
-6.  [Summary](#6.-Summary)
-7.  [Exercises](#7.-Exercises)
+1.  [The New Keynesian Synthesis](#1-the-new-keynesian-synthesis)
+2.  [Microfoundations of the Three-Equation Model](#2-microfoundations-of-the-three-equation-model)
+    *   [The Dynamic IS Curve](#the-dynamic-is-curve)
+    *   [The New Keynesian Phillips Curve (NKPC)](#the-new-keynesian-phillips-curve-nkpc))
+    *   [The Monetary Policy Rule](#the-monetary-policy-rule)
+3.  [Solving and Analyzing the Canonical Model](#3-solving-and-analyzing-the-canonical-model)
+    *   [The Model in Matrix Form](#the-model-in-matrix-form)
+    *   [Impulse Response to a Monetary Policy Shock](#impulse-response-to-a-monetary-policy-shock)
+4.  [Optimal Monetary Policy](#4-optimal-monetary-policy)
+5.  [The Zero Lower Bound (ZLB)](#5-the-zero-lower-bound-zlb))
+6.  [Summary](#6-summary)
+7.  [Exercises](#7-exercises)
 
 ### 1. The New Keynesian Synthesis
 
@@ -90,9 +93,14 @@ $$ \hat{\pi}_t = \beta E_t[\hat{\pi}_{t+1}] + \kappa x_t + u_t $$
 Inflation $\hat{\pi}_t$ depends on expected future inflation and the output gap $x_t$ (which is proportional to real marginal cost). The slope, $\kappa$, is a composite parameter that depends on the degree of price stickiness $\theta$, the discount factor $\beta$, and other preference parameters.
 
 #### The Monetary Policy Rule
+
+![Taylor-rule determinacy regions](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/04-Macro-Models/nk_determinacy_regions.png)
+*Figure: Determinacy versus indeterminacy in the Taylor-rule plane..*
 We close the model with a **Taylor (1993) rule**, which posits that the central bank systematically responds to deviations of inflation and the output gap from their targets (assumed to be zero).
 $$ \hat{i}_t = \phi_\pi \hat{\pi}_t + \phi_y x_t + v_t $$
-For the model to have a unique, stable equilibrium, the central bank must adhere to the **Taylor Principle**, which requires $\phi_\pi > 1$. The intuition is crucial: if inflation rises by 1 percentage point, the central bank must raise the nominal interest rate by *more* than 1 percentage point. This ensures that the *real* interest rate ($r_t = i_t - E_t[\pi_{t+1}]$) also rises, which is necessary to cool down the economy and bring inflation back to target. If the central bank were to raise the nominal rate by less than the increase in inflation ($"phi"_\pi < 1$), the real rate would actually fall, stimulating the economy and leading to an explosive, self-fulfilling spiral of ever-increasing inflation.
+For the model to have a unique, stable equilibrium, the central bank must adhere to the **Taylor Principle**, which for $\phi_y=0$ requires $\phi_\pi > 1$. With nonnegative output feedback the condition is $\kappa(\phi_\pi-1)+(1-\beta)\phi_y>0$. The intuition is crucial: if inflation rises by 1 percentage point, the central bank must raise the nominal interest rate by *more* than 1 percentage point. This ensures that the *real* interest rate ($r_t = i_t - E_t[\pi_{t+1}]$) also rises, which is necessary to cool down the economy and bring inflation back to target. If the central bank were to raise the nominal rate by less than the increase in inflation ($"phi"_\pi < 1$), the real rate would actually fall, stimulating the economy and leading to an explosive, self-fulfilling spiral of ever-increasing inflation.
+
+**Dimension notes:** $\hat{i}_t$, $\hat{\pi}_t$, $x_t$ are scalar log-deviations from steady state (percentage points); rule coefficients $\phi_\pi, \phi_y \ge 0$ and shock $v_t$ are scalars; determinacy uses the generalized inequality above, not $\phi_\pi>1$ alone.
 
 ### 3. Solving and Analyzing the Canonical Model
 
@@ -124,7 +132,10 @@ class NKModel:
         self.solution = self._solve()
 
     def _solve(self):
-        # This uses the method of undetermined coefficients for this specific simple case.
+        # Determinacy for the contemporaneous Taylor rule with nonnegative coefficients.
+        if self.kappa*(self.phi_pi-1) + (1-self.beta)*self.phi_y <= 0:
+            raise ValueError("Indeterminate policy regime: generalized Taylor principle fails.")
+        # Undetermined coefficients yield the fundamental solution in this simple case.
         denom = self.sigma * (1 - self.rho_v) + self.phi_y + (self.kappa * (self.phi_pi - self.rho_v)) / (1 - self.beta * self.rho_v)
         Px = -1 / denom
         Ppi = (self.kappa / (1 - self.beta * self.rho_v)) * Px
@@ -173,12 +184,16 @@ Instead of assuming the central bank follows a simple rule, we can solve for the
 $$ \mathcal{L} = E_0 \sum_{t=0}^\infty \beta^t (\pi_t^2 + \lambda_x x_t^2) $$
 Minimizing this loss subject to the constraint of the NKPC yields the **optimal targeting rule**. Under commitment, the FOC for this problem implies a relationship that must hold in all periods:
 $$ x_t - x_{t-1} = -\frac{\kappa}{\lambda_x} \pi_t $$
-This rule dictates that the central bank should engineer a fall in the output gap whenever inflation is above target. It implies a trade-off: to reduce inflation by one unit, the bank must accept a cost of $\lambda_x/\kappa$ units of lost output. This is the **sacrifice ratio**.
+This rule dictates that the central bank should engineer a fall in the output gap whenever inflation is above target. This is a history-dependent targeting condition, not a fixed empirical sacrifice ratio. Under commitment from date zero the initial multiplier must also be specified; with no inherited commitment it is zero.
+
+**Dimension notes:** loss $\mathcal{L}$ is a scalar objective over paths of the scalar gaps $\pi_t, x_t$; weight $\lambda_x > 0$ trades off their variances; $\beta \in (0,1)$ discounts the quadratic losses.
 
 ### 5. The Zero Lower Bound (ZLB)
-A crucial challenge for modern monetary policy is the **Zero Lower Bound (ZLB)** on nominal interest rates. When a large negative shock hits the economy, the natural rate of interest $r_t^n$ can become deeply negative. The optimal policy might prescribe setting $i_t < 0$, but this is not possible. The policy rule becomes constrained: $i_t = \max(0, \phi_\pi \pi_t + \phi_y x_t)$.
+The zero lower bound is an idealization of the effective lower bound; some nominal rates can be slightly negative. Here we impose zero on the **level** of the nominal rate, not on its deviation from steady state. With zero steady-state inflation, write $\bar i=-\log\beta$ and
+$$i_t^{level}=\max(0,\bar i+\phi_\pi\pi_t+\phi_yx_t).$$
+The IS curve then uses $i_t^{level}-\bar i-E_t\pi_{t+1}-r_t^n$, where $r_t^n$ is a deviation of the natural rate. A sufficiently negative natural-rate shock pushes the desired level below zero. Deflation raises the ex-ante real rate relative to what demand requires.
 
-When stuck at the ZLB, the central bank loses its primary tool for stimulating the economy. If the recession leads to deflation ($"pi"_t < 0$), the real interest rate ($i_t - \pi_t \approx -\pi_t$) actually *rises*, further depressing the economy and potentially leading to a dangerous deflationary spiral. To solve this non-linear model, we must use different techniques, such as the perfect-foresight time iteration method shown below.
+The finite-horizon experiment uses perfect foresight and terminal gaps $x_T=\pi_T=0$. Each date is solved backward by checking the unconstrained and binding regimes; it is not a global nonlinear stochastic solution.
 
 ```python
 ### Simulating a ZLB Episode
@@ -186,31 +201,33 @@ When stuck at the ZLB, the central bank loses its primary tool for stimulating t
 def simulate_zlb(params, r_n_path):
     T = len(r_n_path)
     x_path, pi_path, i_path = np.zeros(T), np.zeros(T), np.zeros(T)
-    # Iterate backwards from the terminal steady state (where x=pi=0)
-    for t in range(T - 2, -1, -1):
-        x_exp, pi_exp = x_path[t+1], pi_path[t+1]
-        # Solve the system of two equations for x_t, pi_t
-        def system(vars):
-            x, pi = vars
-            i = max(0, params['phi_pi']*pi + params['phi_y']*x) # ZLB constraint
-            eq1 = x - x_exp + (1/params['sigma'])*(i - pi_exp - r_n_path[t])
-            eq2 = pi - params['beta']*pi_exp - params['kappa']*x
-            return [eq1, eq2]
-        x_path[t], pi_path[t] = fsolve(system, [0,0])
-        i_path[t] = max(0, params['phi_pi']*pi_path[t] + params['phi_y']*x_path[t])
+    i_bar = -np.log(params['beta'])
+    x_exp = pi_exp = 0.0  # terminal values at T, beyond the supplied path
+    for t in range(T - 1, -1, -1):
+        beta, sigma, kappa = params['beta'], params['sigma'], params['kappa']
+        phi_pi, phi_y = params['phi_pi'], params['phi_y']
+        x = (sigma*x_exp + (1-phi_pi*beta)*pi_exp + r_n_path[t]) / (sigma+phi_y+phi_pi*kappa)
+        pi = beta*pi_exp + kappa*x
+        rate = i_bar + phi_pi*pi + phi_y*x
+        if rate < 0:
+            rate = 0.0
+            x = x_exp + (i_bar + pi_exp + r_n_path[t]) / sigma
+            pi = beta*pi_exp + kappa*x
+        x_path[t], pi_path[t], i_path[t] = x, pi, rate
+        assert abs(x-x_exp+(rate-i_bar-pi_exp-r_n_path[t])/sigma) < 1e-10
+        assert abs(pi-beta*pi_exp-kappa*x) < 1e-10
+        assert np.isclose(rate, max(0.0, i_bar+phi_pi*pi+phi_y*x))
+        x_exp, pi_exp = x, pi
     return pd.DataFrame({'Output Gap': x_path, 'Inflation': pi_path, 'Nominal Rate': i_path})
 
 nk_params = nk_model.__dict__
 T_sim = 60
-# A shock of -0.05 means the natural rate falls by 5 percentage points.
 r_n_shocks = np.zeros(T_sim); r_n_shocks[0] = -0.05
-
-zlb_irfs = simulate_zlb(nk_params, r_n_shocks) * 100 # Convert to percent
-
+zlb_irfs = simulate_zlb(nk_params, r_n_shocks) * 100
 zlb_irfs.plot(subplots=True, layout=(3,1), figsize=(10, 12), style='-o', markersize=4)
-plt.suptitle('The Economy at the Zero Lower Bound', fontsize=16, y=1.0)
+plt.suptitle('Zero Lower Bound: Gaps and Nominal Rate Level (%)', fontsize=16)
 plt.tight_layout(); plt.show()
-print("> **Note:** The large negative shock pushes the required nominal rate below zero. The central bank is constrained, and the output gap and inflation fall sharply. The economy only begins to recover as the natural rate returns to normal and the policy rate can lift off from zero.")
+print('The one-period natural-rate shock binds the ZLB on impact. From date one the gaps return to zero and the nominal rate returns to its positive steady-state level.')
 ```
 
 ## Key Equations
@@ -233,6 +250,8 @@ $$\hat{i}_t = \phi_\pi \hat{\pi}_t + \phi_y x_t + v_t$$
 
 $$\mathcal{L} = E_0 \sum_{t=0}^\infty \beta^t (\pi_t^2 + \lambda_x x_t^2)$$
 
+**Dimension notes:** all variables are scalar log-deviations; structural parameters $\sigma, \kappa, \lambda_x > 0$ and rule coefficients $\phi_\pi, \phi_y$ are scalars; $r_t^n$ is the natural-rate shock process.
+
 ### Three-Tier Practice Ladder
 
 **1. Mechanism and assumptions (Conceptual):** State the equilibrium/optimality condition that organizes **05 New Keynesian Models**. Explain which assumption guarantees existence, uniqueness, or stability, and identify a limiting case where that argument weakens.
@@ -240,6 +259,8 @@ $$\mathcal{L} = E_0 \sum_{t=0}^\infty \beta^t (\pi_t^2 + \lambda_x x_t^2)$$
 **2. Reproduce and diagnose (Applied):** Reproduce one quantitative result from the sections on 1. The New Keynesian Synthesis, 2. Microfoundations of the Three-Equation Model. Change one economically meaningful parameter over a defensible grid, report the policy/value/equilibrium response, and verify convergence with a residual or tighter tolerance.
 
 **3. Robust extension (Challenge):** Design a policy or shock counterfactual that changes one mechanism at a time. Compare welfare or transition dynamics against the baseline and explain which conclusion is structural versus calibration-specific.
+
+**3b. Failure analysis (Challenge):** Simulations under $\phi_\pi = 0.8$ swing wildly and the student suspects a solver bug; the same code is stable under $\phi_\pi = 1.5$. Diagnose indeterminacy (sunspot solutions exist in this region), confirm with the determinacy frontier, and explain why no solver fix is possible — only a policy-regime change.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

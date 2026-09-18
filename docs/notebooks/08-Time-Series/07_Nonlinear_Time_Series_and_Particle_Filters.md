@@ -205,6 +205,8 @@ $$\log\sum_i e^{a_i}=m+\log\sum_i e^{a_i-m},\qquad m=\max_i a_i.$$
 
 **3. Economic state-space model (Challenge):** Replace the benchmark transition with a stochastic-volatility or nonlinear DSGE state equation. Write the exact proposal and weight equations before adapting the code.
 
+**Failure analysis (Challenge):** After 50 steps one particle carries all the weight and the filtered estimate jumps around. Diagnose particle degeneracy (ESS collapse), repair with resampling (and regularization/roughening), and monitor effective sample size as the diagnostic.
+
 ## Economic Interpretation: Filtering is real-time inference
 
 A particle filter converts a nonlinear state-space model into a sequence of empirical posterior distributions. In macro and finance the latent state can represent volatility, a regime, productivity, or another economically meaningful object that is never observed directly. The resampling step concentrates computational effort on state paths that remain plausible after new data arrive, so filtering uncertainty is part of the economic inference rather than a numerical nuisance to hide.

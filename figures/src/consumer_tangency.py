@@ -29,23 +29,24 @@ ALPHA, INCOME, PX, PY = 0.5, 10.0, 1.0, 2.0
 def main() -> None:
     x = np.linspace(0.5, 12, 300)
 
+    x_star = ALPHA * INCOME / PX
+    y_star = (1 - ALPHA) * INCOME / PY
+    u_star = x_star**ALPHA * y_star ** (1 - ALPHA)
     fig, ax = plt.subplots(figsize=(6.4, 4.8))
-    for level in (2.0, 2.9, 3.8):
-        y = level**2 / x ** (2 * ALPHA)
+    for level in (2.0, u_star, 4.5):
+        y = (level / x**ALPHA) ** (1 / (1 - ALPHA))
         ax.plot(x, y, lw=1.4, color="#7fa6c9")
-    ax.annotate("indifference curves", xy=(7.4, 2.55), fontsize=9, color="#48688a")
+    ax.annotate("indifference curves", xy=(7.4, 3.3), fontsize=9, color="black")
 
     x_budget = np.array([0.0, INCOME / PX])
     ax.plot(
         x_budget,
-        INCOME / PY - (PY / PX) * x_budget,
+        INCOME / PY - (PX / PY) * x_budget,
         lw=2.2,
         color="#b03a2e",
-        label=f"budget: ${PX:g}x + ${PY:g}y = {INCOME:g}",
+        label=f"budget: {PX:g}x + {PY:g}y = {INCOME:g}",
     )
 
-    x_star = ALPHA * INCOME / PX
-    y_star = (1 - ALPHA) * INCOME / PY
     ax.scatter([x_star], [y_star], zorder=5, color="black")
     ax.plot([x_star, x_star], [0, y_star], color="gray", lw=0.9, ls=":")
     ax.plot([0, x_star], [y_star, y_star], color="gray", lw=0.9, ls=":")

@@ -69,6 +69,8 @@ $$
 
 With only one pre-treatment wave, this dataset cannot empirically validate a pre-trend. Parallel trends remains an identifying assumption that must be defended institutionally and with external evidence.
 
+**Dimension notes:** unit-level record: state indicator $nj \in \{0,1\}$, wave indicator $d \in \{0,1\}$, interaction $d\_nj = nj \times d \in \{0,1\}$, outcome $fte \in \mathbb{R}$ employment; the DiD estimand is a scalar difference-in-means.
+
 ```python
 means = df.groupby(["nj", "d"], observed=True)["fte"].agg(["count", "mean"])
 display(means)
@@ -140,3 +142,5 @@ A positive DiD coefficient means New Jersey employment rose relative to the Penn
 ## References & Further Reading
 - Card, D. & Krueger, A. B. (1994). Minimum Wages and Employment: A Case Study of the Fast-Food Industry in New Jersey and Pennsylvania. *American Economic Review*, 84(4), 772–793.
 - Angrist, J. D. & Pischke, J.-S. (2009). *Mostly Harmless Econometrics*. Princeton University Press.
+
+**Failure analysis (Challenge):** The DiD estimate flips sign when the February wave is used instead of November, and FTE imputation was skipped. Diagnose the sample-construction sensitivity, repair with the paper's exact wave definitions and imputation, and reconcile your table against the published one.

@@ -56,6 +56,8 @@ $$\lambda(t)=\mu+\sum_{t_i<t}\alpha e^{-\beta(t-t_i)},$$
 
 where $\mu>0$ is baseline activity, $\alpha>0$ is the jump in intensity after an event, and $\beta>0$ controls decay. Conditional on the current history, the chance of an event in a short interval $dt$ is approximately $\lambda(t)dt$.
 
+**Dimension notes:** intensity $\lambda(t) \ge 0$ is a scalar stochastic function of clock time; parameters $\mu, \alpha, \beta > 0$ scalars with units events-per-second and 1/seconds respectively; event times $t_i$ scalar.
+
 <a id="stability"></a>
 ## 2. Stability and Branching
 
@@ -68,6 +70,8 @@ For a stationary univariate Hawkes process we require $n<1$. The long-run mean i
 $$E[\lambda(t)]=\frac{\mu}{1-n}.$$
 
 Thus a seemingly small change in $n$ near one can have a large effect on average activity and clustering.
+
+**Dimension notes:** branching ratio $n = \alpha/\beta \in [0, 1)$ is a dimensionless scalar; stationarity fails at $n \ge 1$; long-run mean intensity $\mu/(1-n)$ scalar, inflating baseline by the geometric factor $1/(1-n)$.
 
 <a id="ogata"></a>
 ## 3. Ogata Thinning
@@ -139,6 +143,8 @@ $$I(Q)=Y\sigma\sqrt{\frac{Q}{V}},$$
 
 where $\sigma$ is a volatility scale and $Y$ is an order-one coefficient estimated for the relevant market. This is a reduced-form execution-cost relation, not a consequence of the Hawkes model. It is useful here because a burst of self-excited order flow can move an execution into a different participation-rate regime.
 
+**Dimension notes:** executed quantity $Q$ and daily volume $V > 0$ share units (shares), making $Q/V$ dimensionless; volatility scale $\sigma$ carries return units so impact $I(Q)$ is a scalar price move; $Y = O(1)$.
+
 ```python
 def square_root_impact(quantity, daily_volume, volatility=0.02, y_coefficient=0.8):
     quantity = np.asarray(quantity, dtype=float)
@@ -174,6 +180,8 @@ $$E[\lambda(t)]=\frac{\mu}{1-n}.$$
 
 $$I(Q)=Y\sigma\sqrt{\frac{Q}{V}},$$
 
+**Dimension notes:** intensities, kernel integrals and impacts are scalar functions/scalars; stability condition $n < 1$ and impact law $I(Q) = Y\sigma\sqrt{Q/V}$ bind scalars throughout.
+
 ## Exercises
 
 **1. Stability (Conceptual):** Derive the stationary mean intensity from the immigrant-offspring interpretation. Why does it diverge as `alpha/beta → 1`?
@@ -181,6 +189,8 @@ $$I(Q)=Y\sigma\sqrt{\frac{Q}{V}},$$
 **2. Clustering (Applied):** Simulate 200 paths for branching ratios 0.1, 0.5, 0.8, and 0.95 while holding the theoretical mean event rate fixed. Compare count dispersion and maximum local intensity.
 
 **3. Bivariate microstructure (Challenge):** Extend the simulator to mutually exciting buy/sell processes with a 2×2 excitation matrix. State the spectral-radius stability condition and examine how cross-excitation changes order-sign autocorrelation.
+
+**Failure analysis (Challenge):** MLE delivers $\alpha/\beta = 1.1$ and simulating the fitted process explodes. Diagnose the stationarity violation, repair with constrained MLE ($n < 1$), and verify the simulated mean intensity matches $\mu/(1-n)$.
 
 ## Summary & Key Takeaways
 

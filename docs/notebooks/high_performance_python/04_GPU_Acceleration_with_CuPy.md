@@ -9,6 +9,8 @@
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/high_performance_python/04_GPU_Acceleration_with_CuPy.ipynb) [![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main?filepath=high_performance_python/04_GPU_Acceleration_with_CuPy.ipynb) [![Code License: MIT](https://img.shields.io/badge/Code%20License-MIT-yellow.svg)](../LICENSE) [![Content License: CC BY 4.0](https://img.shields.io/badge/Content%20License-CC%20BY%204.0-blue.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 ```python
+rng = np.random.default_rng(42)  # single reproducible generator
+
 %config InlineBackend.figure_format = "retina"
 # === Environment Setup ===
 import timeit
@@ -43,12 +45,12 @@ Some computational tasks in economics—like solving high-dimensional dynamic pr
 > **Learning path:** Building on [`03_Parallel_Computing_with_Dask.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/high_performance_python/03_Parallel_Computing_with_Dask.ipynb); this notebook closes the current track.
 
 ### Table of Contents
-1.  [CPU vs. GPU: A Tale of Two Processors](#1.-CPU-vs.-GPU:-A-Tale-of-Two-Processors)
-2.  [The CuPy API: NumPy on the GPU](#2.-The-CuPy-API:-NumPy-on-the-GPU)
-3.  [Moving Data Between CPU and GPU](#3.-Moving-Data-Between-CPU-and-GPU)
-4.  [Benchmarking: CPU vs. GPU Performance](#4.-Benchmarking:-CPU-vs.-GPU-Performance)
-5.  [A More Complex Example: SVD](#5.-A-More-Complex-Example:-SVD)
-6.  [Summary](#6.-Summary)
+1.  [CPU vs. GPU: A Tale of Two Processors](#1-cpu-vs-gpu-a-tale-of-two-processors)
+2.  [The CuPy API: NumPy on the GPU](#2-the-cupy-api-numpy-on-the-gpu)
+3.  [Moving Data Between CPU and GPU](#3-moving-data-between-cpu-and-gpu)
+4.  [Benchmarking: CPU vs. GPU Performance](#4-benchmarking-cpu-vs-gpu-performance)
+5.  [A More Complex Example: SVD](#5-a-more-complex-example-svd)
+6.  [Summary](#6-summary)
 
 ### 1. CPU vs. GPU: A Tale of Two Processors
 
@@ -103,7 +105,7 @@ A critical concept in GPU computing is data transfer. For the GPU to operate on 
 ```python
 if CUPY_AVAILABLE:
     # Create a NumPy array
-    numpy_arr = np.random.rand(5)
+    numpy_arr = rng.random(5)
     print(f"Original NumPy array: {numpy_arr}")
 
     # Move it to the GPU
@@ -125,8 +127,8 @@ if CUPY_AVAILABLE:
     size = 5000
 
     # Create two random matrices in NumPy (CPU)
-    a_cpu = np.random.rand(size, size).astype(np.float32)
-    b_cpu = np.random.rand(size, size).astype(np.float32)
+    a_cpu = rng.random(size, size).astype(np.float32)
+    b_cpu = rng.random(size, size).astype(np.float32)
 
     # Create two random matrices in CuPy (GPU)
     a_gpu = cp.random.rand(size, size).astype(cp.float32)
@@ -180,6 +182,8 @@ if CUPY_AVAILABLE:
 **2. Reproduce and diagnose (Applied):** Optimize the workload using 1. CPU vs. GPU: A Tale of Two Processors, 2. The CuPy API: NumPy on the GPU. Report warm-up separately from steady-state timing, use multiple repetitions, and verify numerical equivalence to the baseline.
 
 **3. Robust extension (Challenge):** Scale the workload until the bottleneck changes (compute, memory bandwidth, serialization, transfer, or scheduler overhead). Identify the crossover point and recommend when the optimization should not be used.
+
+**3b. Failure analysis (Challenge):** The CuPy port is slower than NumPy for the production workload's typical array sizes — host-device transfers dominate. Diagnose the transfer-vs-compute split, repair with batching and pinned memory (or staying on CPU for small $n$), and measure the crossover size.
 
 <details>
 <summary>Solution guidance</summary>

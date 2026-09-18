@@ -4,7 +4,7 @@
 
 > Notebook outputs are intentionally omitted from the documentation build; code and narrative remain source-faithful.
 
-# 08 Endogenous Growth
+# 07 Endogenous Growth
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/04-Macro-Models/07_Endogenous_Growth.ipynb) [![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main?filepath=04-Macro-Models/07_Endogenous_Growth.ipynb) [![Code License: MIT](https://img.shields.io/badge/Code%20License-MIT-yellow.svg)](../LICENSE) [![Content License: CC BY 4.0](https://img.shields.io/badge/Content%20License-CC%20BY%204.0-blue.svg)](https://creativecommons.org/licenses/by/4.0/)
 
@@ -57,16 +57,16 @@ This notebook models the economics of ideas.
 > **Learning path:** Building on [`06_Heterogeneous_Agent_Models.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/04-Macro-Models/06_Heterogeneous_Agent_Models.ipynb); this notebook closes the current track.
 
 ## Table of Contents
-1.  [The Economics of Ideas](#1.-The-Economics-of-Ideas)
-2.  [The Romer (1990) Model: Expanding Variety](#2.-The-Romer-(1990)-Model:-Expanding-Variety)
-    *   [The Model Environment](#The-Model-Environment)
-    *   [Solving for the Balanced Growth Path](#Solving-for-the-Balanced-Growth-Path)
-    *   [Welfare Analysis: Market vs. Planner](#Welfare-Analysis:-Market-vs.-Planner)
-3.  [The Uzawa-Lucas Model: Human Capital](#3.-The-Uzawa-Lucas-Model:-Human-Capital)
-4.  [Application: Growth and the Environment](#4.-Application:-Growth-and-the-Environment)
-5.  [Critiques and Extensions: Semi-Endogenous Growth](#5.-Critiques-and-Extensions:-Semi-Endogenous-Growth)
-6.  [Summary](#6.-Summary)
-7.  [Exercises](#7.-Exercises)
+1.  [The Economics of Ideas](#1-the-economics-of-ideas)
+2.  [The Romer (1990) Model: Expanding Variety](#2-the-romer-1990)-Model:-Expanding-Variety)
+    *   [The Model Environment](#the-model-environment)
+    *   [Solving for the Balanced Growth Path](#solving-for-the-balanced-growth-path)
+    *   [Welfare Analysis: Market vs. Planner](#welfare-analysis-market-vs-planner)
+3.  [The Uzawa-Lucas Model: Human Capital](#3-the-uzawa-lucas-model-human-capital)
+4.  [Application: Growth and the Environment](#4-application-growth-and-the-environment)
+5.  [Critiques and Extensions: Semi-Endogenous Growth](#5-critiques-and-extensions-semi-endogenous-growth)
+6.  [Summary](#6-summary)
+7.  [Exercises](#7-exercises)
 
 ### 1. The Economics of Ideas
 The Solow and RCK models treat technological progress—the ultimate driver of long-run growth—as an exogenous process, arriving like "manna from heaven." **Endogenous Growth Theory**, pioneered by Paul Romer and Robert Lucas Jr., seeks to endogenize innovation by modeling the economic incentives that lead to the creation of new technologies.
@@ -86,22 +86,23 @@ The model features three sectors:
   where $L_A$ is the amount of labor devoted to R&D. This specification exhibits **intertemporal knowledge spillovers**: the productivity of current researchers ($"delta" A$) is proportional to the stock of ideas already discovered ($A$).
 - **Households:** A representative household maximizes CRRA utility, leading to the standard Euler equation which, in steady state, gives the real interest rate: $r = \rho + \sigma g$, where $g$ is the growth rate of consumption.
 
-#### Solving for the Balanced Growth Path
-A **Balanced Growth Path (BGP)** is an equilibrium where all variables grow at constant (possibly zero) rates. The key equilibrium conditions are:
-1.  **Labor Market Clearing:** The total labor supply, $L$, is allocated between production and R&D: $L = L_Y + L_A$.
-2.  **Free Entry into R&D:** Firms will pay researchers a wage $w_A$ up to the point where the cost of a new design equals its value, which is the present discounted value of the monopoly profits it will generate. This pins down the interest rate: $r = \alpha (1-\alpha) \delta L_A$.
+**Dimension notes:** final output $Y$ and labor $L_Y$ are scalars; intermediate varieties are indexed by a continuum $i \in [0, A]$ with nonnegative quantities $x(i)$; technology $A$ measures the measure of varieties invented so far.
 
-Combining the household's Euler equation with the firm's free entry condition allows us to solve for the BGP growth rate of the economy, $g = \dot{Y}/Y = \dot{A}/A$:
-$$ g = \frac{\delta L - \frac{\rho}{\alpha(1-\alpha)}}{1 + \frac{\sigma}{\alpha(1-\alpha)}} $$
-This is the key result: the long-run growth rate is **endogenous**. It depends on the size of the population ($L$), the productivity of research ($\delta$), household preferences (patience $\rho$ and risk aversion $\sigma$), and the production technology ($\alpha$).
+#### Solving for the Balanced Growth Path
+Assume fixed labor $L$, no depreciation, one unit of capital per intermediate unit, and symmetric quantities $x=K/A$. Final demand implies $p=\alpha L_Y^{1-\alpha}x^{\alpha-1}$; monopoly pricing gives $p=r/\alpha$. Profits per patent are $\pi=(1-\alpha)rx/\alpha$. Along an interior balanced growth path $x$ and patent value are constant, so $V_A=\pi/r=(1-\alpha)x/\alpha$.
+
+Equal production and research wages require
+$$w_Y=(1-\alpha)Y/L_Y=\delta A V_A=w_A.$$
+Substituting demand and monopoly pricing yields $r=\alpha\delta L_Y$. With $L_Y=L-L_A$, $g=\delta L_A$, and the household Euler equation $r=\rho+\sigma g$,
+$$\boxed{g=\frac{\alpha\delta L-\rho}{\sigma+\alpha}.}$$
+If the numerator is nonpositive, the interior solution is infeasible and R&D is zero. At an interior solution require $0<g<\delta L$ and a finite discounted utility integral. These are model restrictions, not consequences of clipping a plot.
 
 #### Welfare Analysis: Market vs. Planner
-Is the market growth rate optimal? A social planner who can allocate all resources to maximize household utility faces a different set of incentives. The planner's solution reveals three externalities in the market economy:
-1.  **Intertemporal Spillover (Positive):** Current R&D makes future researchers more productive ($ \dot{A} = \delta L_A A $). The creator of a design is not compensated for this future benefit. This leads to **underinvestment** in R&D.
-2.  **Appropriability Effect (Negative):** The monopolist innovator can only appropriate a fraction of the social value they create because they must pay for labor and capital. This also leads to **underinvestment**.
-3.  **Consumer Surplus Effect (Positive):** The monopolist charges a price above marginal cost, creating a deadweight loss. This means the social value of an innovation is higher than the private profit stream. This also leads to **underinvestment**.
-
-In the Romer model, all three externalities point in the same direction. The market growth rate is unambiguously lower than the social optimum ($g < g^*$).
+A planner internalizes knowledge spillovers and removes monopoly markups. Under the same fixed-labor, zero-depreciation assumptions, the labor-allocation condition and the shadow-value equation for ideas imply
+$$\dot\mu_A/\mu_A=\rho-\delta L.$$
+On the balanced growth path $\mu_A$ is proportional to $C^{-\sigma}$, giving
+$$g_{planner}=\frac{\delta L-\rho}{\sigma}.$$
+For feasible interior allocations this exceeds the market rate: future research benefits are not captured by patent holders, and monopoly pricing distorts intermediate input use. The comparison is conditional on the model, not a claim that every research subsidy improves welfare. A subsidy changes private costs and requires financing; increasing physical research productivity $\delta$ is a different experiment.
 
 ```python
 ### Interactive Romer Model: Market vs. Planner
@@ -113,8 +114,10 @@ class RomerModel:
 
     def solve(self):
         # For simplicity, we use the common simplified form of the growth equations
-        self.g_market = (self.delta * self.L - self.rho) / (self.sigma + 1)
-        self.g_planner = (self.delta * self.L - self.rho) / self.sigma
+        self.g_market = max(0.0, (self.alpha * self.delta * self.L - self.rho) / (self.sigma + self.alpha))
+        self.g_planner = max(0.0, (self.delta * self.L - self.rho) / self.sigma)
+        if max(self.g_market, self.g_planner) >= self.delta * self.L:
+            raise ValueError("Interior BGP requires positive production labor.")
 
 def plot_romer_comparison(L=100, delta=0.05, rho=0.03, sigma=2.0):
     model = RomerModel(L=L, delta=delta, rho=rho, sigma=sigma)
@@ -166,11 +169,13 @@ $$\dot{A} = \delta L_A A$$
 
 **3. Core relation**
 
-$$g = \frac{\delta L - \frac{\rho}{\alpha(1-\alpha)}}{1 + \frac{\sigma}{\alpha(1-\alpha)}}$$
+$$g = \frac{\alpha\delta L-\rho}{\sigma+\alpha}$$
 
 **4. Core relation**
 
 $$\dot{A} = \delta L_A^\lambda A^\phi, \quad \phi < 1$$
+
+**Dimension notes:** $Y, L_Y, A$ scalars with integrals over $i \in [0, A]$; $\alpha \in (0,1)$ shares; the R&D equation is a scalar ODE and BGP growth rates are scalars.
 
 ### Three-Tier Practice Ladder
 
@@ -179,6 +184,8 @@ $$\dot{A} = \delta L_A^\lambda A^\phi, \quad \phi < 1$$
 **2. Reproduce and diagnose (Applied):** Reproduce one quantitative result from the sections on 1. The Economics of Ideas, 2. The Romer (1990) Model: Expanding Variety. Change one economically meaningful parameter over a defensible grid, report the policy/value/equilibrium response, and verify convergence with a residual or tighter tolerance.
 
 **3. Robust extension (Challenge):** Design a policy or shock counterfactual that changes one mechanism at a time. Compare welfare or transition dynamics against the baseline and explain which conclusion is structural versus calibration-specific.
+
+**3b. Failure analysis (Challenge):** On the supposed balanced growth path, output grows at 2% but consumption at 1.6% — the path is not balanced. Diagnose the violated transversality/R&D-externality condition (or a mis-indexed growth accounting identity), repair, and verify all growing variables share one common rate.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 
@@ -195,7 +202,7 @@ Ideas are not like other goods. Their non-rivalry is the ultimate source of long
 
 1.  **The Role of Non-Rivalry:** Explain precisely why the non-rivalry of ideas is the fundamental assumption required to generate endogenous growth. How does this property lead to increasing returns to scale at the aggregate level?
 
-2.  **Policy Analysis:** Using the interactive Romer model widget, analyze the effect of an R&D subsidy. An R&D subsidy can be modeled as an increase in the productivity of researchers, $\delta$. If the government increases $\delta$ by 20%, what happens to the market growth rate and the socially optimal growth rate? Does the subsidy close the gap?
+2.  **Policy Analysis:** Using the interactive Romer model widget, analyze the effect of an R&D subsidy. First study an increase in physical research productivity $\delta$, which is not itself a fiscal subsidy. If research productivity $\delta$ increases by 20%, what happens to the market growth rate and the socially optimal growth rate? Does the absolute or proportional market-planner gap shrink? What additional private-cost wedge and government budget would be needed to model a subsidy?
 
 3.  **Scale Effects:** Use the interactive widget to demonstrate the scale effect in the Romer model. How does doubling the labor force `L` affect the market growth rate? How does this contradict the empirical evidence from countries like the U.S. over the 20th century?
 

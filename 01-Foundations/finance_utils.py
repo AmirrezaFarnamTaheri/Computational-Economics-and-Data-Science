@@ -1,4 +1,3 @@
 def calculate_pv(fv, r, n):
-    """Calculates the Present Value of a single future cash flow."""
-    # Fix: Correct parentheses for order of operations
+    """Return the present value of a future cash flow after n periods."""
     return fv / (1 + r) ** n

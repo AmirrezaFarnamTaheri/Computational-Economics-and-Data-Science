@@ -12,18 +12,17 @@
 # === Environment Setup ===
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 # --- Configuration ---
-plt.style.use('seaborn-v0_8-whitegrid')
-plt.rcParams.update({'font.size': 12, 'figure.figsize': (11, 7), 'figure.dpi': 130})
-%config InlineBackend.figure_format = 'retina'
-np.set_printoptions(suppress=True, linewidth=120, precision=4)
 ```
 
 ### Table of Contents
-1. [The Lens: Discrete Choices with Conditional Value Functions](#The-Lens:-Discrete-Choices-with-Conditional-Value-Functions)
-2. [The Rust (1987) Model: Optimal Replacement](#The-Rust-(1987)-Model:-Optimal-Replacement)
-3. [Summary](#Summary)
+1. [The Lens: Discrete Choices with Conditional Value Functions](#the-lens-discrete-choices-with-conditional-value-functions)
+2. [The Rust (1987) Model: Optimal Replacement](#the-rust-1987)-Model:-Optimal-Replacement)
+3. [Summary](#summary)
+
+> **Historical Context — Harold Zurcher's buses (1987).** John Rust's 1987 Econometrica paper modeled a Madison, Wisconsin bus mechanic replacing engines optimally under uncertainty — the first landmark pairing of dynamic programming with micro panel data. Structural estimation as practiced across IO, labor, and macro largely traces to this study of grease and mileage.
 
 ## The Lens: Discrete Choices with Conditional Value Functions
 **What problem are we solving?**
@@ -71,7 +70,7 @@ where $v(x, d)$ is the **conditional value function**—the value of committing 
 2.  **Value of Keeping (`d=0`):** If the manager keeps the engine, he pays maintenance cost $c(x)$ and moves to a new state $x'$.
     $$ v(x, 0) = -c(x) + \beta E[V(x') | x] $$
 
-This structure creates a **nested fixed point problem**. To solve for the outer value function $V(x)$, we iterate on these conditional value functions.
+This is a Bellman fixed-point calculation. A **nested fixed point** estimator adds an outer parameter-optimization loop around this solution step. The code below is a simplified replacement problem with no unobserved taste shocks and a deterministic reset to zero; it is not a replication of the estimated Rust model.
 
 ```python
 class OptimalReplacement:
@@ -133,8 +132,9 @@ V, v_keep, v_replace = model.solve()
 
 # Find the threshold state where optimal choice switches from Keep to Replace
 policy = (v_replace > v_keep).astype(int)
-threshold_state = np.argmax(policy)
-print(f"Optimal Replacement Threshold: State {threshold_state} (Mileage {threshold_state})")
+replacement_states = np.flatnonzero(policy)
+threshold_state = int(replacement_states[0]) if replacement_states.size else None
+print(f"Optimal replacement threshold: {threshold_state if threshold_state is not None else 'no replacement on this grid'}")
 ```
 
 ```python
@@ -142,8 +142,9 @@ print(f"Optimal Replacement Threshold: State {threshold_state} (Mileage {thresho
 
 plt.figure(figsize=(10, 6))
 plt.plot(model.state_grid, v_keep, label='Value of Keeping Engine', linewidth=2)
-plt.plot(model.state_grid, np.full_like(model.state_grid, v_replace), label='Value of Replacing', linestyle='--', linewidth=2)
-plt.axvline(x=threshold_state, color='red', linestyle=':', label=f'Replacement Threshold (x={threshold_state})')
+plt.plot(model.state_grid, np.full(model.n_states, v_replace, dtype=float), label='Value of Replacing', linestyle='--', linewidth=2)
+if threshold_state is not None:
+    plt.axvline(x=threshold_state, color='red', linestyle=':', label=f'Replacement Threshold (x={threshold_state})')
 
 plt.title('Optimal Replacement Policy: Keep vs. Replace')
 plt.xlabel('Mileage (State x)')
@@ -208,6 +209,8 @@ pd.DataFrame({
 **2. Reproduce and diagnose (Applied):** Reproduce one quantitative result from the sections on 1. The Rust (1987) Model: Optimal Replacement, The Conditional Value Function. Change one economically meaningful parameter over a defensible grid, report the policy/value/equilibrium response, and verify convergence with a residual or tighter tolerance.
 
 **3. Robust extension (Challenge):** Design a policy or shock counterfactual that changes one mechanism at a time. Compare welfare or transition dynamics against the baseline and explain which conclusion is structural versus calibration-specific.
+
+**3b. Failure analysis (Challenge):** The MLE of the Rust model converges to a boundary (a transition probability of exactly 0) with a flat likelihood in that direction and huge standard errors. Diagnose the identification/boundary problem, repair with a reparameterization (logit-type probabilities) or penalization, and inspect the profile likelihood to show the flatness.
 
 <details>
 <summary>Solution guidance</summary>

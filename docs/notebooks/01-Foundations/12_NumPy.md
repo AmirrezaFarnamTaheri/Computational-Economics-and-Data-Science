@@ -21,6 +21,8 @@ import pandas as pd  # Used for displaying results
 from numpy.lib.stride_tricks import as_strided
 from scipy import stats
 
+rng = np.random.default_rng(42)  # single reproducible generator
+
 # Apply the standard course style for all plots
 plt.style.use("seaborn-v0_8-whitegrid")
 plt.rcParams.update(
@@ -39,32 +41,34 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 ```
 
 ### Table of Contents
-1. [The Lens: Vectorization and the Scientific Stack](#The-Lens:-Vectorization-and-the-Scientific-Stack)
-2. [The `ndarray`: Data Types, Memory, and Strides](#The-ndarray:-Data-Types,-Memory,-and-Strides)
-    - [Data Types (`dtype`) and Overflow](#Data-Types-(dtype)-and-Overflow)
-    - [Strides: The Key to Efficient Views](#Strides:-The-Key-to-Efficient-Views)
-    - [Advanced Topic: Reshaping without Copying](#Deep-Dive:-Reshaping-without-Copying)
-    - [Views vs. Copies](#Views-vs.-Copies:-A-Critical-Distinction)
-3. [Array Creation and Manipulation](#Array-Creation-and-Manipulation)
-    - [Modern Random Number Generation](#Modern-Random-Number-Generation)
-4. [Advanced Indexing](#Advanced-Indexing)
-    - [Boolean Indexing](#Boolean-Indexing)
-    - [Fancy Indexing](#Integer-Array-Indexing-("Fancy"-Indexing))
-    - [Broadcasting and Universal Functions](#Broadcasting-and-Universal-Functions-(Ufuncs))
-    - [Advanced Topic: Visualizing Broadcasting Rules](#Advanced-Topic:-Visualizing-Broadcasting-Rules)
-    - [Vectorization vs. `np.vectorize`](#Vectorization-vs.-np.vectorize)
-5. [Linear Algebra with `numpy.linalg`](#Linear-Algebra-with-numpy.linalg)
-    - [Application: Understanding OLS](#Application:-Understanding-OLS-with-Linear-Algebra)
-    - [Application: Portfolio Variance](#Application:-Portfolio-Variance)
-7. [Advanced Techniques](#Advanced-Techniques)
-    - [`einsum`: The Language of Tensors](#einsum:-The-Language-of-Tensors)
-    - [Sliding Window Views with `as_strided`](#Sliding-Window-Views-with-as_strided)
-8. [Profiling and Performance](#Profiling-and-Performance:-Making-Code-Fast)
-    - [Benchmarking with `timeit`](#Quick-Benchmarking-with-timeit)
-    - [Function-Level Profiling with `cProfile`](#Function-Level-Profiling-with-cProfile)
-    - [Line-by-Line Profiling](#Line-by-Line-Profiling-with-line_profiler)
-9. [Summary](#Summary)
-10. [Exercises](#Exercises)
+1. [The Lens: Vectorization and the Scientific Stack](#the-lens-vectorization-and-the-scientific-stack)
+2. [The `ndarray`: Data Types, Memory, and Strides](#the-ndarray-data-types-memory-and-strides)
+    - [Data Types (`dtype`) and Overflow](#data-types-dtype)-and-Overflow)
+    - [Strides: The Key to Efficient Views](#strides-the-key-to-efficient-views)
+    - [Advanced Topic: Reshaping without Copying](#deep-dive-reshaping-without-copying)
+    - [Views vs. Copies](#views-vs-copies-a-critical-distinction)
+3. [Array Creation and Manipulation](#array-creation-and-manipulation)
+    - [Modern Random Number Generation](#modern-random-number-generation)
+4. [Advanced Indexing](#advanced-indexing)
+    - [Boolean Indexing](#boolean-indexing)
+    - [Fancy Indexing](#integer-array-indexing-fancy-indexing))
+    - [Broadcasting and Universal Functions](#broadcasting-and-universal-functions-ufuncs))
+    - [Advanced Topic: Visualizing Broadcasting Rules](#advanced-topic-visualizing-broadcasting-rules)
+    - [Vectorization vs. `np.vectorize`](#vectorization-vs-npvectorize)
+5. [Linear Algebra with `numpy.linalg`](#linear-algebra-with-numpylinalg)
+    - [Application: Understanding OLS](#application-understanding-ols-with-linear-algebra)
+    - [Application: Portfolio Variance](#application-portfolio-variance)
+7. [Advanced Techniques](#advanced-techniques)
+    - [`einsum`: The Language of Tensors](#einsum-the-language-of-tensors)
+    - [Sliding Window Views with `as_strided`](#sliding-window-views-with-as_strided)
+8. [Profiling and Performance](#profiling-and-performance-making-code-fast)
+    - [Benchmarking with `timeit`](#quick-benchmarking-with-timeit)
+    - [Function-Level Profiling with `cProfile`](#function-level-profiling-with-cprofile)
+    - [Line-by-Line Profiling](#line-by-line-profiling-with-line_profiler)
+9. [Summary](#summary)
+10. [Exercises](#exercises)
+
+> **Historical Context — From Numeric to NumPy (1995–2006).** Jim Hugunin's `Numeric` package (1995) brought array computing to Python; Travis Oliphant merged it with Numarray into NumPy in 2006. The vectorized `ndarray` design descends from APL and from Cleve Moler's late-1970s teaching tool MATLAB — every `.sum(axis=0)` you write carries that lineage.
 
 ## The Lens: 12-NumPy
 NumPy (Numerical Python) is the fundamental package for scientific computing in Python. It provides a high-performance, multidimensional array object (`ndarray`) and a vast library of tools for working with these arrays. It forms the core of the **Python Scientific Stack**, a collection of essential libraries for data analysis and modeling that also includes `SciPy` (for common scientific operations), `pandas` (for data manipulation), and `Matplotlib` (for plotting).
@@ -285,6 +289,15 @@ NumPy's `linalg` submodule provides essential linear algebra functionality, incl
 
 A classic application of linear algebra in econometrics is solving for the coefficients of an Ordinary Least Squares (OLS) regression. The linear model is defined as $y = X\beta + \epsilon$, and the OLS estimator $\hat{\beta}$ that minimizes the sum of squared residuals is given by the famous normal equations:
 $$ \hat{\beta} = (X^T X)^{-1} X^T y $$
+
+**Where the formula comes from.** Fix dimensions first. With $n$ observations and $k$ regressors:
+$$ y \in \mathbb{R}^n, \qquad X \in \mathbb{R}^{n \times k}, \qquad \beta \in \mathbb{R}^k, \qquad \epsilon \in \mathbb{R}^n, $$
+so the objective $S(\beta) = \lVert y - X\beta \rVert_2^2$ maps $\mathbb{R}^k \to \mathbb{R}$. Minimizing it step by step:
+
+1.  **Expand the square.** Using $X\beta \in \mathbb{R}^n$: $S(\beta) = y^\top y - 2\,\beta^\top X^\top y + \beta^\top X^\top X\beta$.
+2.  **Differentiate.** The gradient is itself a $k$-vector, like $\beta$: $\nabla_\beta S = -2 X^\top y + 2 X^\top X \beta$.
+3.  **Set it to zero.** This yields the normal equations $X^\top X\,\beta = X^\top y$ — a $k \times k$ linear system.
+4.  **Solve.** If $X$ has full column rank $k$, then $X^\top X$ is invertible and the unique minimizer is $\hat{\beta} = (X^\top X)^{-1} X^\top y$.
 
 This formula is a cornerstone of econometrics. In this section, we will use NumPy's linear algebra tools to implement this formula from scratch. This is a valuable exercise for understanding the mechanics of OLS. However, it's crucial to distinguish this educational implementation from production-level tools.
 
@@ -511,13 +524,11 @@ try:
 except ImportError:
     LINE_PROFILER_AVAILABLE = False
 
-
 def monte_carlo_pi_vectorized(n_samples):
     """A vectorized version of the Monte Carlo simulation."""
-    xy = np.random.rand(n_samples, 2)
+    xy = rng.random((n_samples, 2))
     in_circle = np.sum(xy[:, 0] ** 2 + xy[:, 1] ** 2 < 1.0)
     return 4 * in_circle / n_samples
-
 
 if not LINE_PROFILER_AVAILABLE:
     print(
@@ -530,6 +541,11 @@ else:
     %lprun -f monte_carlo_pi_vectorized monte_carlo_pi_vectorized(100000)
 ```
 
+> **Common Pitfalls in This Lecture**
+>
+> - **Views masquerading as copies.** Slicing returns a *view*: `sub = A[0:5]` then modifying `sub` mutates `A` too. This corrupts datasets silently. Call `.copy()` whenever independence matters, and remember fancy indexing copies while basic slicing views.
+> - **Shape `(n,)` vs `(n, 1).** A `(n,)` array is neither a row nor a column; adding it to an `(n, 1)` array broadcasts into an `(n, n)` outer-product surprise instead of elementwise arithmetic. Check `.shape` and reshape deliberately.
+
 ### Three-Tier Practice Ladder
 
 **1. Mechanism and assumptions (Conceptual):** Explain the central computational idea in **12-NumPy** and connect it to one explicit economic object or research workflow.
@@ -537,6 +553,8 @@ else:
 **2. Reproduce and diagnose (Applied):** Reproduce an example involving The `ndarray`: Data Types, Memory, and Strides, Data Types (`dtype`) and Overflow, then change one input and explain the result before running the code.
 
 **3. Robust extension (Challenge):** Extend the example to a larger or less convenient case and document the correctness and performance checks needed before trusting the result.
+
+**3b. Failure analysis (Challenge):** An elementwise update `(w * x) + y` on vectors of shapes `(n,)` and `(n,1)` silently produced an `(n, n)` matrix and exhausted memory at $n = 10^6$. Diagnose the broadcasting rule that fired, fix with an explicit `reshape`/`ravel`, and add a shape assertion so the failure becomes loud instead of silent.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

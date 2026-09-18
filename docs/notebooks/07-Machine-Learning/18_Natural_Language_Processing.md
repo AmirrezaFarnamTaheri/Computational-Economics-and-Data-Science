@@ -60,7 +60,7 @@ warnings.filterwarnings('ignore', category=FutureWarning)
 
 ## Table of Contents
 
-1. [Introduction](#Introduction)
+1. [Introduction](#introduction)
 
 ## The Lens: Text as Economic Data
 **What problem are we solving?**
@@ -238,6 +238,8 @@ These pre-trained models can then be **fine-tuned** for specific downstream task
 **2. Reproduce and diagnose (Applied):** Build a leakage-safe validation experiment using 1. The NLP Pipeline: From Raw Text to Numerical Data, 1.1 Preprocessing. Compare a simple baseline with the featured method using an economically relevant metric and report uncertainty across folds or seeds.
 
 **3. Robust extension (Challenge):** Stress-test the model under temporal, subgroup, or covariate distribution shift. Identify which performance degradation matters for the downstream economic decision and propose one mitigation without using the test set for tuning.
+
+**3b. Failure analysis (Challenge):** A sentiment model with 90% validation accuracy fails on FOMC minutes, and the tokenizer splits "can't" into garbage tokens. Diagnose domain shift plus tokenizer mismatch, repair with domain-adaptive fine-tuning and a consistent vocabulary, and evaluate on held-out target-domain text.
 
 <details>
 <summary>Solution guidance</summary>

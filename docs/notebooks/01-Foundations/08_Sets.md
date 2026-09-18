@@ -31,20 +31,20 @@ plt.rcParams.update(
 ```
 
 ### Table of Contents
-1. [The Lens: Sets as Mathematical Foundations](#The-Lens:-Sets-as-Mathematical-Foundations)
-2. [Set Theory Fundamentals: A Quick Refresher](#Set-Theory-Fundamentals:-A-Quick-Refresher)
-3. [Creating and Populating Sets](#Creating-and-Populating-Sets)
-    - [Set Comprehensions](#Set-Comprehensions)
-4. [Core Set Operations: The Power of Relational Logic](#Core-Set-Operations:-The-Power-of-Relational-Logic)
-    - [Application: Comparing Model Features](#Application:-Comparing-Model-Features)
-    - [Subset and Superset Testing](#Subset-and-Superset-Testing)
-    - [Jaccard Similarity: Measuring Overlap](#Jaccard-Similarity:-Measuring-Overlap)
-5. [Modifying Sets: In-Place Operations](#Modifying-Sets:-In-Place-Operations)
-6. [frozenset: The Immutable Set](#frozenset:-The-Immutable-Set)
-7. [Performance Considerations: O(1) Membership Testing](#Performance-Considerations:-O(1)-Membership-Testing)
-8. [Summary](#Summary)
-9. [Exercises](#Exercises)
-10. [Challenge Exercise: Generating a Power Set](#Challenge-Exercise:-Generating-a-Power-Set)
+1. [The Lens: Sets as Mathematical Foundations](#the-lens-sets-as-mathematical-foundations)
+2. [Set Theory Fundamentals: A Quick Refresher](#set-theory-fundamentals-a-quick-refresher)
+3. [Creating and Populating Sets](#creating-and-populating-sets)
+    - [Set Comprehensions](#set-comprehensions)
+4. [Core Set Operations: The Power of Relational Logic](#core-set-operations-the-power-of-relational-logic)
+    - [Application: Comparing Model Features](#application-comparing-model-features)
+    - [Subset and Superset Testing](#subset-and-superset-testing)
+    - [Jaccard Similarity: Measuring Overlap](#jaccard-similarity-measuring-overlap)
+5. [Modifying Sets: In-Place Operations](#modifying-sets-in-place-operations)
+6. [frozenset: The Immutable Set](#frozenset-the-immutable-set)
+7. [Performance Considerations: O(1) Membership Testing](#performance-considerations-o1)-Membership-Testing)
+8. [Summary](#summary)
+9. [Exercises](#exercises)
+10. [Challenge Exercise: Generating a Power Set](#challenge-exercise-generating-a-power-set)
 
 ## The Lens: 08-Sets
 A `set` is an unordered collection of **unique, hashable** elements. While lists store items in sequence and dictionaries store key-value pairs, sets are designed to efficiently test for membership and perform mathematical set operations like union, intersection, and difference. Their performance for these operations is exceptional, with an average time complexity of **O(1)** for additions, removals, and membership tests, thanks to their underlying hash map implementation (similar to dictionaries).
@@ -118,7 +118,12 @@ print(f"Original data: {data}")
 print(f"Unique squares: {unique_squares}")
 ```
 
-### Core Set Operations: The Power of Relational Logic
+### Core Set Operations
+
+![Union of sets](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/01-Foundations/1.5.2-venn-union.png)
+![Intersection of sets](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/01-Foundations/1.5.2-venn-intersection.png)
+![Set difference](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/01-Foundations/1.5.2-venn-difference.png)
+*Figure: Union of two sets..*: The Power of Relational Logic
 
 Python provides two equivalent ways to perform set operations: through infix operators (like `|`, `&`, `-`) and through corresponding methods (like `.union()`, `.intersection()`). The operators are concise and readable for simple comparisons, while the methods can accept any iterable as an argument, converting it to a set automatically before performing the operation.
 
@@ -284,6 +289,8 @@ print(f"  -> Time taken: {set_time:.6f} seconds")
 **2. Reproduce and diagnose (Applied):** Reproduce an example involving Set Theory Fundamentals: A Quick Refresher, Creating and Populating Sets, then change one input and explain the result before running the code.
 
 **3. Robust extension (Challenge):** Extend the example to a larger or less convenient case and document the correctness and performance checks needed before trusting the result.
+
+**3b. Failure analysis (Challenge):** Building a set of coalition lists raises `TypeError: unhashable type: 'list'`, and de-duplicating a sequence with a set silently destroys insertion order. Diagnose the hashability requirement, fix with tuples/`frozenset`, and restore deterministic order with `dict.fromkeys` — verifying the dedup count is unchanged.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

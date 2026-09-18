@@ -6,12 +6,17 @@
 
 # 06 Cointegration and Error Correction Models
 
+![Cointegration analysis](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/08-Time-Series/cointegration_analysis.png)
+*Figure: Cointegrated series and the error-correction link.*
+
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/08-Time-Series/06_Cointegration_and_Error_Correction_Models.ipynb) [![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main?filepath=08-Time-Series/06_Cointegration_and_Error_Correction_Models.ipynb) [![Code License: MIT](https://img.shields.io/badge/Code%20License-MIT-yellow.svg)](../LICENSE) [![Content License: CC BY 4.0](https://img.shields.io/badge/Content%20License-CC%20BY%204.0-blue.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 ```python
 # === Environment Setup ===
 import matplotlib.pyplot as plt
 import numpy as np
+
+rng = np.random.default_rng(42)  # single reproducible generator
 import pandas as pd
 import statsmodels.api as sm
 from statsmodels.tsa.api import VECM
@@ -82,12 +87,11 @@ The tell-tale signs of a spurious regression are a very high $R^2$ combined with
 ### Demonstration of Spurious Regression
 
 ```python
-np.random.seed(42)
 n_obs = 500
 
 # Generate two independent random walks
-x = np.random.normal(size=n_obs).cumsum()
-y = np.random.normal(size=n_obs).cumsum()
+x = rng.normal(size=n_obs).cumsum()
+y = rng.normal(size=n_obs).cumsum()
 
 # Regress y on x
 X = sm.add_constant(x)
@@ -118,14 +122,14 @@ For example, if consumption ($c_t$) and income ($y_t$) are both I(1), but the li
 <a id='vecm'></a>
 ## 3. Vector Error Correction Models (VECM)
 
-If a set of variables are cointegrated, we cannot use a standard VAR model on their levels (because they are non-stationary) or on their first-differences (because we would lose the long-run equilibrium information). The appropriate model is a **Vector Error Correction Model (VECM)**.
+A levels VAR can represent cointegrated variables, but stationary-VAR inference need not apply. A **Vector Error Correction Model (VECM)** makes the cointegration-rank restriction explicit. A VAR in differences without an error-correction term discards that long-run information.
 
 A VECM is a restricted VAR designed for cointegrated series. It can be thought of as a VAR in first-differences, with an additional **error correction term**. For two variables, the VECM is:
 $$ \Delta y_{1,t} = \alpha_1(y_{2,t-1} - \beta y_{1,t-1}) + \text{lags of } \Delta y_{1,t}, \Delta y_{2,t} + \epsilon_{1,t} $$
 $$ \Delta y_{2,t} = \alpha_2(y_{2,t-1} - \beta y_{1,t-1}) + \text{lags of } \Delta y_{1,t}, \Delta y_{2,t} + \epsilon_{2,t} $$
 
 - The term $(y_{2,t-1} - \beta y_{1,t-1})$ is the lagged **error correction term**—the deviation from the long-run equilibrium in the previous period.
-- The coefficient $\alpha$ is the **speed of adjustment**. It measures how strongly the variable responds to deviations from equilibrium. For example, a negative $\alpha_1$ means that if $y_1$ was too high relative to its long-run relationship with $y_2$ in the previous period, it will tend to decrease in the current period, moving back towards equilibrium.
+- The coefficient $\alpha$ is the **speed of adjustment**. It measures how strongly the variable responds to deviations from equilibrium. Under the displayed normalization $e=y_2-\beta y_1$ with $\beta>0$, an unusually high $y_1$ makes $e<0$, so a positive $\alpha_1$ moves $y_1$ down. Reversing the cointegrating vector reverses the signs of the adjustment coefficients without changing the model.
 
 <a id='case-study'></a>
 
@@ -135,20 +139,20 @@ $$ \Delta y_{2,t} = \alpha_2(y_{2,t-1} - \beta y_{1,t-1}) + \text{lags of } \Del
 
 > **Note:** Testing for cointegration between the two series using the Engle-Granger test.
 
-> **Note:** The p-value is greater than 0.05, so we fail to reject the null of no cointegration.
+> **Exercise:** Compute an Engle-Granger p-value on the supplied data. A p-value above 0.05 is a failure to reject no cointegration, not evidence for imposing rank one.
 
 ```python
 
 # 3. Estimate and Analyze the VECM
 ```
 
-> **Note:** Since the series are cointegrated, we can estimate a VECM.
+> **Exercise:** Fit a VECM only after justifying its rank and deterministic terms. The interpretation below is illustrative, not an estimated empirical result.
 
 ```python
-# k_ar_diff is the number of lags in the VAR part of the VECM
-model_vecm = VECM(df, k_ar_diff=1, coint_rank=1, deterministic='ci')
-results_vecm = model_vecm.fit()
-print(results_vecm.summary())
+# This optional empirical lab needs quarterly LogCons and LogInc supplied by the reader.
+# No data acquisition cell is included here; do not silently reuse an unrelated `df`.
+print('Empirical VECM exercise: supply aligned consumption/income data and test the rank first.')
+print('The synthetic VECM below is self-contained and specifies rank one by construction.')
 ```
 
 ### Interpreting the VECM Results
@@ -164,7 +168,7 @@ The VECM summary provides a wealth of information. Let's break down the key part
     - This section shows the **long-run cointegrating relationship**. The coefficients are normalized. If the `beta` vector is `[1.0000, -0.9200]`, it means the long-run relationship is:
       $$ LogCons_{t-1} - 0.92 \times LogInc_{t-1} = 0 $$
       $$ LogCons = 0.92 \times LogInc $$
-    - This implies a long-run marginal propensity to consume of 0.92, which is economically very sensible.
+    - The coefficient 0.92 is a long-run elasticity in this log-log relation, not a marginal propensity to consume. In levels, the implied derivative is $dC/dY=0.92(C/Y)$.
 
 ### Beyond Engle-Granger: The Johansen Test
 
@@ -179,6 +183,8 @@ The **Johansen test** is a more powerful and widely used procedure that overcome
 **2. Reproduce and diagnose (Applied):** Fit the method covered in 1. Introduction: The Problem of Non-Stationary Variables, Spurious Regression to a time-ordered series. Diagnose residual dependence and stability, then evaluate a rolling or expanding-window out-of-sample forecast against a naive baseline.
 
 **3. Robust extension (Challenge):** Alter one structural restriction, lag/order choice, or innovation distribution. Explain how impulse responses, forecasts, or uncertainty change and whether the conclusion survives the alternative specification.
+
+**3b. Failure analysis (Challenge):** Engle-Granger finds cointegration testing A-on-B but not B-on-A, and the residual ADF uses wrong critical values. Diagnose the two-step asymmetry and small-sample distortion, repair with Johansen (or an ADL bootstrap), and verify with both directions reported.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 
@@ -248,13 +254,12 @@ An alpha coefficient of -0.2 in the consumption equation means that when consump
 from statsmodels.tsa.vector_ar.vecm import VECM, coint_johansen
 
 # Generate Cointegrated Data
-np.random.seed(42)
 n = 200
 # Shared stochastic trend
-common_trend = np.cumsum(np.random.normal(0, 1, n))
+common_trend = np.cumsum(rng.normal(0, 1, n))
 # Series X and Y are tied to the trend
-x = common_trend + np.random.normal(0, 2, n)
-y = 0.5 * common_trend + np.random.normal(0, 2, n) + 5
+x = common_trend + rng.normal(0, 2, n)
+y = 0.5 * common_trend + rng.normal(0, 2, n) + 5
 data_coint = pd.DataFrame({'x': x, 'y': y})
 
 # 1. Johansen Test

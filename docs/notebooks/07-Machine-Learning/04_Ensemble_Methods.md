@@ -170,6 +170,8 @@ display(Markdown(f"> **Note:** Stacking Accuracy: {stacking_acc:.4f}"))
 
 **3. Robust extension (Challenge):** Stress-test the model under temporal, subgroup, or covariate distribution shift. Identify which performance degradation matters for the downstream economic decision and propose one mitigation without using the test set for tuning.
 
+**3b. Failure analysis (Challenge):** A stacked ensemble underperforms its best base model — the meta-learner was trained on in-sample predictions. Diagnose the leakage in the stacking design, repair with out-of-fold predictions for the meta-features, and compare all three levels honestly.
+
 <details>
 <summary>Solution guidance</summary>
 

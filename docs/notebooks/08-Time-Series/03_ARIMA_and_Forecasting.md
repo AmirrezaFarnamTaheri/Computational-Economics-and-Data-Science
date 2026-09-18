@@ -430,6 +430,8 @@ $$y_t = y_{t-1} + \epsilon_t$$
 
 **3. Robust extension (Challenge):** Alter one structural restriction, lag/order choice, or innovation distribution. Explain how impulse responses, forecasts, or uncertainty change and whether the conclusion survives the alternative specification.
 
+**3b. Failure analysis (Challenge):** Forecast intervals are far too narrow and Ljung-Box rejects residual whiteness — a seasonal pattern was never modeled. Diagnose the misspecification, repair with a SARIMA specification, and verify white residuals plus calibrated interval coverage on a holdout.
+
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 
 <a id='exercises'></a>

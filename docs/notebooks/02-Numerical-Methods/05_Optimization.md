@@ -39,12 +39,15 @@ By the end of this notebook, you will be able to:
 *   **02-Numerical-Methods/03_Numerical_Differentiation.ipynb**: Gradients drive optimization.
 * **Learning-path prerequisite:** [`04_Root_Finding.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/02-Numerical-Methods/04_Root_Finding.ipynb)
 
+> **Historical Context — Kantorovich
+
+![Tjalling Koopmans](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/01-Foundations/1.1-tjalling-koopmans.jpg)
+*Figure: Tjalling Koopmans (1910-1985), Nobel 1975 for activity analysis, shared with Kantorovich..* 1939, Dantzig 1947.** Leonid Kantorovich invented linear programming optimizing plywood production for a Soviet trust (Nobel 1975); George Dantzig discovered the simplex method in 1947 planning USAF logistics. Their descendants — interior-point solvers, CVXPY — now price auctions, schedule airlines, and solve the consumer problems below.
+
 > **Learning path:** Building on [`04_Root_Finding.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/02-Numerical-Methods/04_Root_Finding.ipynb); next continue with [`06_Interpolation_and_Approximation.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/02-Numerical-Methods/06_Interpolation_and_Approximation.ipynb).
 
 ```python
 # === Environment Setup ===
-import warnings
-
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.optimize import differential_evolution, minimize
@@ -78,7 +81,7 @@ np.set_printoptions(suppress=True, precision=4, linewidth=120)
   * [Karush-Kuhn-Tucker (KKT) Conditions](#karush-kuhn-tucker-kkt-conditions)
   * [The Envelope Theorem: A Zero-to-Hero Explanation](#the-envelope-theorem-a-zero-to-hero-explanation)
   * [Verbatim Walkthrough: Geometric Derivation of KKT](#verbatim-walkthrough-geometric-derivation-of-kkt)
-  * [Application: Mean-Variance Portfolio Optimization](#application-mean-variance-portfolio-optimization)
+  * [Optimality: No Feasible Descent Direction](#optimality-no-feasible-descent-direction)
   * [Application: Mean-Variance Portfolio Optimization](#application-mean-variance-portfolio-optimization)
   * [SQP vs. Interior Point Methods](#sqp-vs-interior-point-methods)
 * [4. Global Optimization](#4-global-optimization)
@@ -117,10 +120,19 @@ This is more robust for non-convex problems than line search. `scipy.optimize` u
 
 ### Visualizing the Path
 Let's minimize the **Rosenbrock function** (the "banana valley"), a classic test case for optimizers. It has a global minimum at $(1, 1)$ inside a long, narrow, curved valley.
+We race Nelder-Mead (derivative-free) against BFGS supplied with the **analytic gradient** via `jac=rosen_2d_grad`; the step counts in the legend show why handing the optimizer exact derivatives is almost always worth the calculus.
 
 ```python
 def rosen_2d(x):
     return (1 - x[0])**2 + 100 * (x[1] - x[0]**2)**2
+
+def rosen_2d_grad(x):
+    # Analytic gradient; exact derivatives beat finite differences
+    # inside Rosenbrock's narrow curved valley.
+    return np.array([
+        -2 * (1 - x[0]) - 400 * x[0] * (x[1] - x[0]**2),
+        200 * (x[1] - x[0]**2),
+    ])
 
 # Track the path
 path_nm = []
@@ -132,7 +144,8 @@ x0 = np.array([-1.5, 1.5])
 res_nm = minimize(rosen_2d, x0, method='Nelder-Mead', callback=lambda x: path_nm.append(x))
 
 # 2. BFGS (Quasi-Newton)
-res_bfgs = minimize(rosen_2d, x0, method='BFGS', callback=lambda x: path_bfgs.append(x))
+res_bfgs = minimize(rosen_2d, x0, method='BFGS', jac=rosen_2d_grad,
+                    callback=lambda x: path_bfgs.append(x))
 
 # Plotting
 x = np.linspace(-2, 2, 100)
@@ -202,8 +215,10 @@ When problems are non-convex or too complex for CVXPY, we use **Sequential Least
 ### Application: The Consumer's Problem
 $$ \max_{x,y} x^\alpha y^{1-\alpha} \quad \text{s.t.} \quad p_x x + p_y y = I $$
 
+All quantities are scalars: quantities $x, y \in \mathbb{R}_{++}$, prices $p_x, p_y > 0$, income $I > 0$, preference share $\alpha \in (0, 1)$.
+
 ### Karush-Kuhn-Tucker (KKT) Conditions
-The KKT conditions are the necessary conditions for optimality in constrained problems. They generalize Lagrange multipliers. For a solution $x^*$ to be optimal, there must exist multipliers $\lambda$ (for equality) and $\mu$ (for inequality) such that:
+Under a constraint qualification (for example, linearly independent active constraint gradients), the KKT conditions are necessary for a local optimum of a differentiable constrained problem. They generalize Lagrange multipliers. Here we use minimization with $h(x)=0$ and $g(x)\le0$. For a solution $x^* \in \mathbb{R}^n$ to be optimal — with objective $f: \mathbb{R}^n \to \mathbb{R}$, equality constraint $h: \mathbb{R}^n \to \mathbb{R}$, and inequality constraint $g: \mathbb{R}^n \to \mathbb{R}$ — there must exist multipliers $\lambda \in \mathbb{R}$ (for equality) and $\mu \ge 0$ (for inequality) such that:
 1.  **Stationarity:** $\nabla f(x^*) + \lambda \nabla h(x^*) + \mu \nabla g(x^*) = 0$
 2.  **Primal Feasibility:** Constraints are satisfied.
 3.  **Dual Feasibility:** $\mu \ge 0$.
@@ -223,8 +238,10 @@ Let $x^*(\theta)$ be the optimal choice for a given $\theta$. So $V(\theta) = f(
 $$ \frac{dV}{d\theta} = \frac{\partial f}{\partial x} \frac{dx^*}{d\theta} + \frac{\partial f}{\partial \theta} $$
 
 **The Insight:**
-At the optimum, the First Order Condition (FOC) holds: $\frac{\partial f}{\partial x} = 0$. Therefore, the first term vanishes!
+For a differentiable interior unconstrained optimum, the First Order Condition (FOC) holds: $\frac{\partial f}{\partial x} = 0$. Therefore, the first term vanishes!
 $$ \frac{dV}{d\theta} = \frac{\partial f(x^*, \theta)}{\partial \theta} = \frac{\partial \mathcal{L}}{\partial \theta} $$
+
+**Constrained case:** With parameter-dependent constraints, use the partial derivative of the Lagrangian, including constraint terms, under the relevant regularity conditions. The objective gradient alone need not vanish; for example, a consumer budget binds.
 
 **Meaning:** We can ignore the fact that the agent re-optimizes ($dx^*/d\theta$) when calculating the first-order effect on the value function. We only need to look at the direct effect of the parameter change.
 
@@ -241,16 +258,18 @@ Therefore, $\nabla f$ must be a multiple of $\nabla g$:
 $$ \nabla f(x^*) = \lambda \nabla g(x^*) $$
 or $\nabla f - \lambda \nabla g = 0$. This is the stationarity condition!
 
-### Application: Mean-Variance Portfolio Optimization
+### Optimality: No Feasible Descent Direction
 1.  **Feasible Direction:** Imagine you are at a point on the boundary $g(x)=0$. Any movement inside the feasible set must make an angle of $\ge 90^\circ$ with the constraint gradient $\nabla g$. (Otherwise you'd walk *out* of the set).
 2.  **Descent Direction:** To improve the objective (minimize $f$), you want to move opposite to $\nabla f$. 
 3.  **Optimality:** If you are at the optimum, there is no direction that is both *feasible* and a *descent* direction.
-4.  **Conclusion:** The direction of steepest descent ($-\nabla f$) must point exactly perpendicular to the constraint boundary surface, directly opposing the constraint gradient ($\nabla g$). Thus, $\nabla f = -\lambda \nabla g$.
+4.  **Conclusion:** The direction of steepest descent ($-\nabla f$) must point exactly perpendicular to the constraint boundary surface, pointing in the same direction as the outward constraint gradient ($\nabla g$) when the single active inequality has a positive multiplier. Thus, $\nabla f = -\lambda \nabla g$.
 
 ### Application: Mean-Variance Portfolio Optimization
 A cornerstone of modern finance is Markowitz Portfolio Theory. We want to minimize risk (variance) for a given level of return.
 
 **Problem:** $\min_w \frac{1}{2} w^T \Sigma w \quad \text{s.t.} \quad \mu^T w \ge R, \quad \mathbf{1}^T w = 1$
+
+Dimensions: weights $w \in \mathbb{R}^N$, expected returns $\mu \in \mathbb{R}^N$, covariance $\Sigma \in \mathbb{R}^{N \times N}$ symmetric positive semi-definite, $\mathbf{1} \in \mathbb{R}^N$ the ones vector; the objective maps $\mathbb{R}^N \to \mathbb{R}$.
 
 **Derivation:**
 The Lagrangian is $\mathcal{L} = \frac{1}{2} w^T \Sigma w - \lambda (w^T \mu - R) - \gamma (w^T \mathbf{1} - 1)$.
@@ -267,6 +286,13 @@ def neg_utility(z, alpha):
     x, y = z
     return -(x**alpha * y**(1-alpha))
 
+def neg_utility_grad(z, alpha):
+    # jac must be the gradient OF THE MINIMIZED objective, i.e. of the
+    # negative utility - not of the utility itself.
+    x, y = (max(v, 1e-12) for v in z)  # guard the x=0 or y=0 bound
+    u = x**alpha * y**(1-alpha)
+    return np.array([-alpha * u / x, -(1 - alpha) * u / y])
+
 # Constraint: I - px*x - py*y >= 0 (Inequality form for minimize)
 def budget_constraint(z, px, py, I):
     x, y = z
@@ -282,7 +308,8 @@ bnds = ((0, None), (0, None)) # x, y >= 0
 z0 = [10, 10]
 
 # Solve
-res = minimize(neg_utility, z0, args=params, method='SLSQP', bounds=bnds, constraints=cons)
+res = minimize(neg_utility, z0, args=params, method='SLSQP',
+               jac=neg_utility_grad, bounds=bnds, constraints=cons)
 
 print(f"Success: {res.success}")
 print(f"Optimal x: {res.x[0]:.2f}")
@@ -292,10 +319,10 @@ print(f"Optimal y: {res.x[1]:.2f}")
 ```python
 if CVXPY_AVAILABLE:
     # --- Mean-Variance Portfolio Optimization ---
-    np.random.seed(42)
+    rng = np.random.default_rng(42)
     n_assets = 5
-    mu = np.abs(np.random.randn(n_assets, 1)) # Expected returns
-    Sigma = np.random.randn(n_assets, n_assets)
+    mu = np.abs(rng.standard_normal((n_assets, 1))) # Expected returns
+    Sigma = rng.standard_normal((n_assets, n_assets))
     Sigma = Sigma.T @ Sigma # Make positive semi-definite
 
     w = cp.Variable(n_assets)
@@ -346,13 +373,15 @@ def eggholder(x):
 
 bounds = [(-512, 512), (-512, 512)]
 
-# 1. Try local search (BFGS)
-res_local = minimize(eggholder, [0, 0], bounds=bounds)
+# 1. Try local search. With bounds and no method argument, scipy's
+#    default pick is L-BFGS-B; we name it explicitly so the label below
+#    describes what actually ran.
+res_local = minimize(eggholder, [0, 0], bounds=bounds, method='L-BFGS-B')
 
 # 2. Try global search
 res_global = differential_evolution(eggholder, bounds)
 
-print(f"Local Min (BFGS):   {res_local.fun:.2f} at {res_local.x}")
+print(f"Local Min (L-BFGS-B): {res_local.fun:.2f} at {res_local.x}")
 print(f"Global Min (DiffEv): {res_global.fun:.2f} at {res_global.x}")
 print("Notice the massive difference!")
 ```
@@ -369,13 +398,15 @@ $$\max_{x,y} x^\alpha y^{1-\alpha} \quad \text{s.t.} \quad p_x x + p_y y = I$$
 
 $$\frac{dV}{d\theta} = \frac{\partial f}{\partial x} \frac{dx^*}{d\theta} + \frac{\partial f}{\partial \theta}$$
 
-**3. Core relation**
+**3. Envelope relation (differentiable interior unconstrained optimum; constrained problems require the Lagrangian including constraints)**
 
 $$\frac{dV}{d\theta} = \frac{\partial f(x^*, \theta)}{\partial \theta} = \frac{\partial \mathcal{L}}{\partial \theta}$$
 
 **4. Core relation**
 
 $$\nabla f(x^*) = \lambda \nabla g(x^*)$$
+
+**Dimension notes:** consumer problem — scalars $x, y, p_x, p_y, I \in \mathbb{R}_{++}$ with $\alpha \in (0, 1)$. Envelope theorem — value function $V: \mathbb{R} \to \mathbb{R}$, policy $x^*(\theta) \in \mathbb{R}$. Portfolio problem — $w, \mu \in \mathbb{R}^N$, $\Sigma \in \mathbb{R}^{N \times N}$.
 
 ## Summary
 
@@ -384,6 +415,11 @@ $$\nabla f(x^*) = \lambda \nabla g(x^*)$$
 *   **Smooth & Local?** Use `minimize(method='BFGS')` or `SLSQP` for constraints.
 *   **Rugged & Global?** Use `differential_evolution`.
 *   **Visualizing:** Always try to visualize the objective function in 2D/3D to understand the difficulty.
+
+> **Common Pitfalls in This Lecture**
+>
+> - **Local optima.** Gradient-based and simplex methods stop at the *first* local optimum. For non-convex problems, use multiple starting points, global heuristics, or — best — reformulate the problem as convex so local is global.
+> - **Ignoring solver status.** `result.x` is returned even when the solver failed. Always inspect `result.success`, `result.message`, and gradient norm; and rescale badly conditioned problems (variables differing by orders of magnitude) before blaming the algorithm.
 
 ## Exercises
 
@@ -396,6 +432,8 @@ Use `CVXPY` to solve this for 3 assets. Plot the Efficient Frontier by varying $
 
 ### 3. Challenge: MLE for Logistic Regression
 Write the negative log-likelihood function for Logistic Regression. Use `minimize` to find the optimal coefficients $\beta$ for a synthetic dataset. Compare your results with `sklearn.linear_model.LogisticRegression`.
+
+**Failure analysis (Challenge):** `minimize` returns `success=True` at a visibly suboptimal point, and the SLSQP solution violates the budget constraint by $10^{-2}$. Diagnose the local-optimum trap and tolerance slack, repair with multi-start plus an explicit feasibility check, and compare against a convex reformulation where possible.
 
 ## References & Further Reading
 

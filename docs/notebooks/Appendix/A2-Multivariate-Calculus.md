@@ -76,13 +76,13 @@ Multivariate calculus gives us gradients (the direction of steepest ascent), Hes
 
 ## Table of Contents
 
-- [2.1 Partial Derivatives and Differentiability](#2.1-Partial-Derivatives-and-Differentiability)
-- [2.2 The Jacobian Matrix](#2.2-The-Jacobian-Matrix)
-- [2.3 The Hessian Matrix](#2.3-The-Hessian-Matrix)
-- [2.4 Implicit Function Theorem](#2.4-Implicit-Function-Theorem)
-- [2.5 Taylor Expansion in Multiple Dimensions](#2.5-Taylor-Expansion-in-Multiple-Dimensions)
-- [2.6 Optimization Review](#2.6-Optimization-Review)
-- [Summary](#Summary)
+- [2.1 Partial Derivatives and Differentiability](#21-partial-derivatives-and-differentiability)
+- [2.2 The Jacobian Matrix](#22-the-jacobian-matrix)
+- [2.3 The Hessian Matrix](#23-the-hessian-matrix)
+- [2.4 Implicit Function Theorem](#24-implicit-function-theorem)
+- [2.5 Taylor Expansion in Multiple Dimensions](#25-taylor-expansion-in-multiple-dimensions)
+- [2.6 Optimization Review](#26-optimization-review)
+- [Summary](#summary)
 
 ## 2.1 Partial Derivatives and Differentiability
 
@@ -255,6 +255,8 @@ $$J_F(x) = \begin{bmatrix} \frac{\partial F_1}{\partial x_1} & \cdots & \frac{\p
 
 $$H_f(x) = \begin{bmatrix} \frac{\partial^2 f}{\partial x_1^2} & \frac{\partial^2 f}{\partial x_1 \partial x_2} & \cdots & \frac{\partial^2 f}{\partial x_1 \partial x_n} \\\\vdots & \vdots & \ddots & \vdots \\\\frac{\partial^2 f}{\partial x_n \partial x_1} & \frac{\partial^2 f}{\partial x_n \partial x_2} & \cdots & \frac{\partial^2 f}{\partial x_n^2} \end{bmatrix}$$
 
+**Dimension notes:** $f: \mathbb{R}^n \to \mathbb{R}$; partial derivatives stack into the gradient $\nabla f(x) \in \mathbb{R}^n$ and second partials into the Hessian $D^2 f(x) \in \mathbb{R}^{n \times n}$ (symmetric when $f \in C^2$).
+
 ## A2 Proof Compendium: Comparative Statics and the Envelope
 
 ### The Implicit-Function Derivative
@@ -305,6 +307,8 @@ For a constrained problem with Lagrangian $\mathcal{L}(x,\lambda;\theta)$, the s
 **2. Reproduce and diagnose (Applied):** Work a concrete example from 2.1 Partial Derivatives and Differentiability, 2.1.1 Partial Derivatives by hand and verify it computationally. Show the intermediate algebra, not only the final result.
 
 **3. Robust extension (Challenge):** Remove one hypothesis and construct a counterexample or boundary case. Explain exactly which line of the original proof fails and what weaker conclusion, if any, remains.
+
+**3b. Failure analysis (Challenge):** A finite-difference gradient disagrees with the analytic one by $10^{-3}$ regardless of step count. Diagnose the truncation-versus-rounding step-size choice, repair with central differences near $h \approx \varepsilon^{1/3}$ (or complex-step), and tabulate error against $h$.
 
 <details>
 <summary>Solution guidance</summary>

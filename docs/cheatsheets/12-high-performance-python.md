@@ -16,7 +16,7 @@
 - **Amdahl**: $S(n) = \dfrac{1}{(1-p) + p/n}$ — the serial fraction caps speedup at $1/(1-p)$ regardless of cores.
 - Vectorize before parallelizing: NumPy elementwise beats Python loops by 10–100× with zero threading risk.
 - `numba @njit`: first call pays LLVM compile cost (cache it); loops then run at C speed. Type-stable inputs required.
-- Memory layout: row-major (C order) — iterate rows innermost; `np.ascontiguousarray` before hot loops.
+- Memory layout: row-major (C order): vary the last index (columns within a row) in the innermost loop; `np.ascontiguousarray` before hot loops.
 - Chunking (Dask): pick chunks that fit comfortably in RAM (~100 MB) so workers never swap.
 - Profile first (`cProfile`, `line_profiler`): optimize the 3% of code taking 97% of time.
 

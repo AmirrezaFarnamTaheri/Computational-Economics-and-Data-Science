@@ -72,17 +72,19 @@ Linear algebra is the computational engine behind virtually every quantitative m
 * **Python:** NumPy array creation and indexing (Module 01 - NumPy).
 * **Learning-path prerequisite:** [`A3-Probability-Theory.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/Appendix/A3-Probability-Theory.ipynb)
 
+> **Historical Context — Perron-Frobenius 1907–1912.** Oskar Perron and Georg Frobenius worked out the spectral theory of positive matrices a century ago — long before anyone guessed it would price bonds, rank webpages, or guarantee stability in Leontief input-output systems. The theorems below power all three.
+
 > **Learning path:** Building on [`A3-Probability-Theory.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/Appendix/A3-Probability-Theory.ipynb); next continue with [`T1_Publishing_with_Quarto.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/Appendix/T1_Publishing_with_Quarto.ipynb).
 
 ## Table of Contents
 
-- [4.1 Matrix Operations](#4.1-Matrix-Operations)
-- [4.2 Special Matrices](#4.2-Special-Matrices)
-- [4.3 Eigenvalues and Eigenvectors](#4.3-Eigenvalues-and-Eigenvectors)
-- [4.4 Matrix Decompositions](#4.4-Matrix-Decompositions)
-- [4.5 Vector and Matrix Norms](#4.5-Vector-and-Matrix-Norms)
-- [4.6 Important Theorems (Summary)](#4.6-Important-Theorems-(Summary))
-- [Summary](#Summary)
+- [4.1 Matrix Operations](#41-matrix-operations)
+- [4.2 Special Matrices](#42-special-matrices)
+- [4.3 Eigenvalues and Eigenvectors](#43-eigenvalues-and-eigenvectors)
+- [4.4 Matrix Decompositions](#44-matrix-decompositions)
+- [4.5 Vector and Matrix Norms](#45-vector-and-matrix-norms)
+- [4.6 Important Theorems (Summary)](#46-important-theorems-summary))
+- [Summary](#summary)
 
 **Historical Note:** While the concepts of determinants and solving systems of linear equations have been studied for centuries, the formalization of matrices and matrix algebra is largely a 19th-century development. The term "matrix" was coined by **James Joseph Sylvester** in 1850. **Arthur Cayley** developed the algebraic properties of matrices, including multiplication and inversion, making him a key figure in the founding of modern linear algebra.
 
@@ -214,6 +216,8 @@ $$\lambda_j v_i^\top v_j=v_i^\top Av_j=(Av_i)^\top v_j=\lambda_i v_i^\top v_j,$$
 
 $$x^\top Ax=z^\top\Lambda z=\sum_i\lambda_i z_i^2.$$
 
+**Dimension notes:** $A \in \mathbb{R}^{n \times n}$ (Hermitian/symmetric where stated), eigenvectors $v \in \mathbb{R}^n \setminus \{0\}$, eigenvalues $\lambda \in \mathbb{C}$; the Rayleigh quotient $v^*Av / v^*v$ is a scalar.
+
 ## Exercises
 
 **1. Mechanism and assumptions (Conceptual):** Restate one theorem used in **A4 Linear Algebra** with every hypothesis explicit. Prove one non-trivial step that is often skipped and explain where that step is used later in the curriculum.
@@ -221,6 +225,8 @@ $$x^\top Ax=z^\top\Lambda z=\sum_i\lambda_i z_i^2.$$
 **2. Reproduce and diagnose (Applied):** Work a concrete example from 4.1 Matrix Operations, 4.2 Special Matrices by hand and verify it computationally. Show the intermediate algebra, not only the final result.
 
 **3. Robust extension (Challenge):** Remove one hypothesis and construct a counterexample or boundary case. Explain exactly which line of the original proof fails and what weaker conclusion, if any, remains.
+
+**3b. Failure analysis (Challenge):** Downstream code crashes sorting eigenvalues of an asymmetric matrix: two came back complex. Diagnose the real-eigenvalue assumption, repair with complex-aware handling (or the symmetry the application actually guarantees), and verify the decomposition reconstructs $A$.
 
 <details>
 <summary>Solution guidance</summary>

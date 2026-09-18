@@ -28,16 +28,16 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 ```
 
 ### Table of Contents
-1.  [The Moral Hazard Problem (Hidden Action)](#1.-The-Moral-Hazard-Problem-(Hidden-Action))
-    *   [1.1 The Static Incentive-Insurance Trade-Off](#1.1-The-Static-Incentive-Insurance-Trade-Off)
-    *   [1.2 The First-Order Approach (Continuous Effort)](#1.2-The-First-Order-Approach-(Continuous-Effort))
-    *   [1.3 Dynamic Moral Hazard](#1.3-Dynamic-Moral-Hazard)
-2.  [The Adverse Selection Problem (Hidden Information)](#2.-The-Adverse-Selection-Problem-(Hidden-Information))
-    *   [2.1 The Optimal Screening Menu](#2.1-The-Optimal-Screening-Menu)
-    *   [2.2 The Revelation Principle](#2.2-The-Revelation-Principle)
-3.  [Application: Optimal Unemployment Insurance](#3.-Application:-Optimal-Unemployment-Insurance)
-4.  [Chapter Summary](#4.-Chapter-Summary)
-5.  [Exercises](#5.-Exercises)
+1.  [The Moral Hazard Problem (Hidden Action)](#1-the-moral-hazard-problem-hidden-action))
+    *   [1.1 The Static Incentive-Insurance Trade-Off](#11-the-static-incentive-insurance-trade-off)
+    *   [1.2 The First-Order Approach (Continuous Effort)](#12-the-first-order-approach-continuous-effort))
+    *   [1.3 Dynamic Moral Hazard](#13-dynamic-moral-hazard)
+2.  [The Adverse Selection Problem (Hidden Information)](#2-the-adverse-selection-problem-hidden-information))
+    *   [2.1 The Optimal Screening Menu](#21-the-optimal-screening-menu)
+    *   [2.2 The Revelation Principle](#22-the-revelation-principle)
+3.  [Application: Optimal Unemployment Insurance](#3-application-optimal-unemployment-insurance)
+4.  [Chapter Summary](#4-chapter-summary)
+5.  [Exercises](#5-exercises)
 
 ## The Lens: The Economics of Incentives
 **What problem are we solving?**
@@ -194,6 +194,8 @@ Where $c_e$ and $c_u$ are consumption when employed and unemployed, $\epsilon_s$
 **2. Reproduce and diagnose (Applied):** Construct a small numerical example using 1. The Moral Hazard Problem (Hidden Action), 1.1 The Static Incentive-Insurance Trade-Off. Verify feasibility and optimality/equilibrium conditions numerically rather than relying only on the solver status.
 
 **3. Robust extension (Challenge):** Relax one substantive assumption—information, convexity, symmetry, commitment, or market completeness—and predict how equilibrium or welfare changes before computing the extension.
+
+**3b. Failure analysis (Challenge):** The 'optimal' contract pays the agent a negative wage in the worst output state — infeasible under limited liability, yet the solver reports success. Diagnose the dropped participation/limited-liability constraints, repair with the constrained program, and verify which constraints bind at the optimum.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

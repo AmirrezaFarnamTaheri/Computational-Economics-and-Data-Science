@@ -9,9 +9,11 @@
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/09-Finance/06_High_Frequency_Data.ipynb) [![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main?filepath=09-Finance/06_High_Frequency_Data.ipynb) [![Code License: MIT](https://img.shields.io/badge/Code%20License-MIT-yellow.svg)](../LICENSE) [![Content License: CC BY 4.0](https://img.shields.io/badge/Content%20License-CC%20BY%204.0-blue.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 ```python
+
 # === Environment Setup ===
 import matplotlib.pyplot as plt
 import numpy as np
+rng = np.random.default_rng(42)  # single reproducible generator
 import pandas as pd
 
 # --- Configuration ---
@@ -23,12 +25,12 @@ plt.rcParams.update({'figure.dpi': 130, 'font.size': 12, 'axes.titlesize': 'x-la
 
 ### Table of Contents
 
-1.  [Introduction: The World of Ticks and Trades](#1.-Introduction:-The-World-of-Ticks-and-Trades)
-2.  [Handling Tick Data](#2.-Handling-Tick-Data)
-3.  [The Limit Order Book (LOB) and Key Concepts](#3.-The-Limit-Order-Book-(LOB)-and-Key-Concepts)
-4.  [Realized Volatility and Microstructure Noise](#4.-Realized-Volatility-and-Microstructure-Noise)
-5.  [Order Flow Imbalance (OFI)](#5.-Order-Flow-Imbalance-(OFI))
-6.  [Summary](#6.-Summary)
+1.  [Introduction: The World of Ticks and Trades](#1-introduction-the-world-of-ticks-and-trades)
+2.  [Handling Tick Data](#2-handling-tick-data)
+3.  [The Limit Order Book (LOB) and Key Concepts](#3-the-limit-order-book-lob)-and-Key-Concepts)
+4.  [Realized Volatility and Microstructure Noise](#4-realized-volatility-and-microstructure-noise)
+5.  [Order Flow Imbalance (OFI)](#5-order-flow-imbalance-ofi))
+6.  [Summary](#6-summary)
 
 ## The Lens: Finance at the Speed of Light
 **What economic problem are we solving?**
@@ -69,11 +71,11 @@ base_time = pd.to_datetime('2023-10-27 09:30:00')
 time_deltas = np.random.exponential(scale=0.1, size=n_ticks).cumsum()
 timestamps = base_time + pd.to_timedelta(time_deltas, unit='s')
 
-mid_price = 100 + np.random.randn(n_ticks).cumsum() * 0.01
-spread = np.random.uniform(0.01, 0.05, n_ticks)
+mid_price = 100 + rng.standard_normal(n_ticks).cumsum() * 0.01
+spread = rng.uniform(0.01, 0.05, n_ticks)
 bid = mid_price - spread / 2
 ask = mid_price + spread / 2
-volume = np.random.randint(100, 1000, n_ticks)
+volume = rng.integers(100, 1000, n_ticks)
 
 tick_df = pd.DataFrame({'bid': bid, 'ask': ask, 'volume': volume}, index=timestamps)
 print("> **Note:** Synthetic tick data created.")
@@ -129,6 +131,8 @@ In theory, the more frequently we sample returns (e.g., every second), the more 
 
 This leads to a trade-off: sampling too infrequently means we miss some of the true price variation, while sampling too frequently means our measure is contaminated by noise. The **volatility signature plot** is the standard diagnostic tool for visualizing this trade-off and choosing an appropriate sampling frequency. It plots the average realized volatility against the sampling interval.
 
+**Dimension notes:** intraday log returns $r_i$ scalars summed over $n$ bars; realized volatility $RV = \sum_i r_i^2$ scalar, converging to integrated variance as sampling densifies; microstructure noise adds scalar contamination to each $r_i$.
+
 ```python
 ### Calculating Realized Volatility and Signature Plot
 
@@ -165,6 +169,8 @@ Where $I_{B,t}$ is an indicator for buying pressure and $I_{A,t}$ is for selling
 - $I_{A,t} = \Delta q_{A,t}$ if $\Delta p_{A,t} \le 0$ (volume increases at a non-increasing price)
 
 A positive OFI indicates strong buying pressure and has been shown to predict short-term price increases.
+
+**Dimension notes:** best bid/ask sizes and their changes are scalar counts per event; order-flow imbalance aggregates them into one signed scalar per interval, sign conventions fixed by side.
 
 ```python
 ### Calculating Order Flow Imbalance
@@ -211,6 +217,8 @@ print("> **Note:** The plot shows a strong correlation between the cumulative OF
 **2. Reproduce and diagnose (Applied):** Reproduce a calculation from 1. Introduction: The World of Ticks and Trades, 2. Handling Tick Data with transparent inputs. Perturb volatility, discounting, risk aversion, transaction costs, or another key parameter and explain the sensitivity in economic terms.
 
 **3. Robust extension (Challenge):** Construct a stress scenario outside the calibration sample. Compare two valuation/risk methods and explain which discrepancy reflects model risk rather than numerical error.
+
+**3b. Failure analysis (Challenge):** Realized volatility *falls* toward zero as sampling gets denser — microstructure noise has taken over. Diagnose the noise bias in the RV estimator, repair with sparse sampling or a noise-robust estimator (e.g., two-scale), and plot the volatility signature plot as evidence.
 
 <details>
 <summary>Solution guidance</summary>

@@ -60,31 +60,31 @@ except ImportError:
 
 ### Table of Contents
 
-1.  [Introduction to Options and Payoffs](#1.-Introduction-to-Options-and-Payoffs)
-    - [Call and Put Option Payoff Diagrams](#Call-and-Put-Option-Payoff-Diagrams)
-2.  [The No-Arbitrage Principle](#2.-The-No-Arbitrage-Principle)
-3.  [Model 1: The Binomial Asset Pricing Model](#3.-Model-1:-The-Binomial-Asset-Pricing-Model)
-    - [Constructing a Binomial Tree](#Constructing-a-Binomial-Tree)
-    - [The Replicating Portfolio and Risk-Neutral Pricing](#The-Replicating-Portfolio-and-Risk-Neutral-Pricing)
-4.  [Model 2: The Black-Scholes-Merton (BSM) Model](#4.-Model-2:-The-Black-Scholes-Merton-(BSM)-Model)
-    - [Deriving the BSM Partial Differential Equation](#Deriving-the-BSM-Partial-Differential-Equation)
-    - [The BSM Formula for European Options](#The-BSM-Formula-for-European-Options)
-5.  [Risk Management: The Greeks](#5.-Risk-Management:-The-Greeks)
-    - [Visualizing the Greeks](#Visualizing-the-Greeks)
-6.  [Model 3: Monte Carlo Simulation for Option Pricing](#6.-Model-3:-Monte-Carlo-Simulation-for-Option-Pricing)
-    - [Pricing Exotic Options: Asian and Barrier Options](#Pricing-Exotic-Options:-Asian-and-Barrier-Options)
-7.  [Real-World Application: The Volatility Smile](#7.-Real-World-Application:-The-Volatility-Smile)
-    - [Case Study: Calculating Implied Volatility for AAPL Options](#Case-Study:-Calculating-Implied-Volatility-for-AAPL-Options)
-8.  [Beyond Black-Scholes: Handling the Smile](#8.-Beyond-Black-Scholes:-Handling-the-Smile)
-9.  [Summary](#9.-Summary)
-10. [Exercises](#10.-Exercises)
+1.  [Introduction to Options and Payoffs](#1-introduction-to-options-and-payoffs)
+    - [Call and Put Option Payoff Diagrams](#call-and-put-option-payoff-diagrams)
+2.  [The No-Arbitrage Principle](#2-the-no-arbitrage-principle)
+3.  [Model 1: The Binomial Asset Pricing Model](#3-model-1-the-binomial-asset-pricing-model)
+    - [Constructing a Binomial Tree](#constructing-a-binomial-tree)
+    - [The Replicating Portfolio and Risk-Neutral Pricing](#the-replicating-portfolio-and-risk-neutral-pricing)
+4.  [Model 2: The Black-Scholes-Merton (BSM) Model](#4-model-2-the-black-scholes-merton-bsm)-Model)
+    - [Deriving the BSM Partial Differential Equation](#deriving-the-bsm-partial-differential-equation)
+    - [The BSM Formula for European Options](#the-bsm-formula-for-european-options)
+5.  [Risk Management: The Greeks](#5-risk-management-the-greeks)
+    - [Visualizing the Greeks](#visualizing-the-greeks)
+6.  [Model 3: Monte Carlo Simulation for Option Pricing](#6-model-3-monte-carlo-simulation-for-option-pricing)
+    - [Pricing Exotic Options: Asian and Barrier Options](#pricing-exotic-options-asian-and-barrier-options)
+7.  [Real-World Application: The Volatility Smile](#7-real-world-application-the-volatility-smile)
+    - [Case Study: Calculating Implied Volatility for AAPL Options](#case-study-calculating-implied-volatility-for-aapl-options)
+8.  [Beyond Black-Scholes: Handling the Smile](#8-beyond-black-scholes-handling-the-smile)
+9.  [Summary](#9-summary)
+10. [Exercises](#10-exercises)
 
 ### 1. Introduction to Options and Payoffs
 
 A financial **option** is a derivative contract that gives the buyer the **right, but not the obligation**, to buy (a **call** option) or sell (a **put** option) an underlying asset at a specified **strike price** ($K$) on or before a specified **expiration date** ($T$). The price paid for this right is called the **premium**.
 
-- **Call Option:** Gives the holder the right to *buy* the underlying asset. A call option is profitable if the asset price $S_T$ at expiration is above the strike price $K$.
-- **Put Option:** Gives the holder the right to *sell* the underlying asset. A put option is profitable if the asset price $S_T$ at expiration is below the strike price $K$.
+- **Call Option:** Gives the holder the right to *buy* the underlying asset. A call has a positive payoff when $S_T>K$; profit also subtracts the premium and financing cost.
+- **Put Option:** Gives the holder the right to *sell* the underlying asset. A put has a positive payoff when $S_T<K$; profit also subtracts the premium and financing cost.
 
 The value of an option at expiration is its **intrinsic value** or **payoff**.
 
@@ -107,10 +107,12 @@ Pricing an option is tricky because its value depends on the future price of ano
 * **Python:** NumPy vectorized operations and SciPy `norm` functions.
 * **Learning-path prerequisite:** [`02_Asset_Pricing.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/09-Finance/02_Asset_Pricing.ipynb)
 
+> **Historical Context — Black-Scholes 1973.** Fischer Black and Myron Scholes published their no-arbitrage formula in the Journal of Political Economy just as the CBOE opened in April 1973; Robert Merton's rigorous extension appeared the same year. Texas Instruments soon sold a calculator with the formula built in; Scholes and Merton shared the 1997 Nobel (Black died in 1995).
+
 > **Learning path:** Building on [`02_Asset_Pricing.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/09-Finance/02_Asset_Pricing.ipynb); next continue with [`04_Continuous_Time_Finance.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/09-Finance/04_Continuous_Time_Finance.ipynb).
 
 ![Call and Put Payoffs](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/09-Finance/call_put_payoffs.png)
-*Figure 1: Payoff diagrams for a long call and a long put option, showing the profit and loss zones relative to the strike price.*
+*Figure 1: Payoff diagrams for a long call and a long put option, showing positive payoffs relative to the strike price; premiums are not included.*
 
 ### 2. The No-Arbitrage Principle
 
@@ -120,6 +122,9 @@ This leads to the powerful concept of **risk-neutral valuation**. Since we can p
 
 ### 3. Model 1: The Binomial Asset Pricing Model
 
+![Binomial tree](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/07-Financial-Economics/binomial_tree_visualization.png)
+*Figure: A two-period binomial lattice for option pricing..*
+
 #### Constructing a Binomial Tree
 The Binomial Model, developed by Cox, Ross, and Rubinstein (1979), discretizes time into a series of steps. In each step, the underlying asset price $S$ is assumed to either move up by a factor $u > 1$ or down by a factor $d < 1$. We can form a **binomial tree** representing all possible price paths.
 
@@ -128,6 +133,8 @@ To ensure the tree is arbitrage-free and matches the volatility of the underlyin
 - **Down-factor ($d$):** $ d = e^{-\sigma \sqrt{\Delta t}} = 1/u $
 - **Risk-Neutral Probability ($p$):** This is the probability of an up-move in a world where the asset grows at the risk-free rate. It is *not* the real-world probability.
 $$ p = \frac{e^{r \Delta t} - d}{u - d} $$
+
+**Dimension notes:** single underlying price $S$ scalar on a binomial lattice; up/down factors $u > 1 > d$; risk-neutral probability $p \in (0,1)$; option value $C_t$ scalar computed by backward induction.
 
 #### The Replicating Portfolio and Risk-Neutral Pricing
 
@@ -147,7 +154,7 @@ The PDE derivation below leans on **Itô's Lemma**, the chain rule for stochasti
 > **Itô's Lemma.** Let $S_t$ follow the Itô process $dS_t = \mu(S_t, t)\, dt + \sigma(S_t, t)\, dW_t$, and let $f(S, t)$ be twice continuously differentiable in $S$ and once in $t$. Then $f(S_t, t)$ is itself an Itô process, and
 > $$ df = \left( \frac{\partial f}{\partial t} + \mu \frac{\partial f}{\partial S} + \frac{1}{2}\sigma^2 \frac{\partial^2 f}{\partial S^2} \right) dt + \sigma \frac{\partial f}{\partial S}\, dW_t. $$
 
-**Why the extra term relative to ordinary calculus?** In ordinary calculus, a second-order Taylor expansion drops the $(dS)^2$ term because it is $O(dt^2)$ and vanishes faster than $dt$. Here it does not, because $dS_t$ has a random part of order $\sqrt{dt}$: $(dW_t)^2$ has mean $dt$ and *variance* $O(dt^2)$, so as $dt \to 0$ it behaves like the deterministic quantity $dt$ (this is the content of Itô's isometry — the randomness in $(dW_t)^2$ washes out faster than its mean). The heuristic multiplication table is
+**Why the extra term relative to ordinary calculus?** In ordinary calculus, a second-order Taylor expansion drops the $(dS)^2$ term because it is $O(dt^2)$ and vanishes faster than $dt$. Here it does not, because $dS_t$ has a random part of order $\sqrt{dt}$: For independent Brownian increments over a partition of $[0,T]$, the sum of squared increments has mean $T$ and variance $2\sum_i(\Delta t_i)^2\to0$. This quadratic-variation limit justifies the shorthand $(dW_t)^2=dt$ in Itô calculus; a single squared increment does not become deterministic relative to its mean. The heuristic multiplication table is
 
 $$ (dt)^2 = 0, \qquad dt\, dW_t = 0, \qquad (dW_t)^2 = dt. $$
 
@@ -163,7 +170,12 @@ which rearranges into the statement above by collecting all $dt$ terms and all $
 
 We apply this with $\mu \to \mu S$, $\sigma \to \sigma S$ (geometric Brownian motion) and $f = C(S,t)$, the option price, in the derivation below.
 
+**Dimension notes:** $S_t$ follows scalar GBM dynamics; $f \in C^{2,1}$ maps (price, time) to $\mathbb{R}$; the lemma's extra $\frac{1}{2}\sigma^2 S^2 f_{SS}\,dt$ term is scalar correction from $(dS)^2 = \sigma^2 S^2 dt$.
+
 ### 4. Model 2: The Black-Scholes-Merton (BSM) Model
+
+![Geometric Brownian motion](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/09-Finance/gbm_path.png)
+*Figure: Simulated GBM paths underlying the BSM assumptions..*
 
 The Black-Scholes-Merton model is the continuous-time limit of the binomial model as the number of time steps approaches infinity. It assumes the underlying asset price follows a **Geometric Brownian Motion (GBM)**:
 $$ dS_t = \mu S_t dt + \sigma S_t dW_t $$
@@ -184,6 +196,8 @@ $$ d\Pi = r \Pi dt = r \left( C - \frac{\partial C}{\partial S} S \right) dt $$
 Equating the two expressions for $d\Pi$ and cancelling $dt$ yields the celebrated **Black-Scholes-Merton Partial Differential Equation (PDE)**:
 $$ \frac{\partial C}{\partial t} + rS \frac{\partial C}{\partial S} + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 C}{\partial S^2} - rC = 0 $$
 This PDE governs the price of any derivative on a non-dividend-paying stock. The specific derivative (e.g., call vs. put) is defined by the **boundary conditions** of the problem (i.e., the known payoff at expiration).
+
+**Dimension notes:** GBM drift $\mu$ and volatility $\sigma$ scalars; $dS_t$ mixes a deterministic $dt$ part with $\mathcal{N}(0, dt)$ scaling; option value $C(S_t, t)$ scalar field solved under the risk-neutral measure where $\mu = r$.
 
 #### The BSM Formula for European Options
 
@@ -231,6 +245,8 @@ where:
 The formula has a beautiful financial interpretation: $S_t N(d_1)$ is the present value of receiving the stock if the option finishes in-the-money, and $K e^{-r(T-t)} N(d_2)$ is the present value of paying the strike price. $N(d_1)$ and $N(d_2)$ are risk-adjusted probabilities. In particular, $N(d_1)$ acts as the option's Delta.
 
 As the number of steps in the Binomial model approaches infinity, its price converges to the BSM price. We can demonstrate this numerically.
+
+**Dimension notes:** PDE variables $(S, t) \in \mathbb{R}_+ \times [0, T]$ map to scalar option values; the heat-equation change of variables converts terminal payoff (scalar boundary data) into closed-form normal CDF evaluations $N(d_1), N(d_2)$.
 
 ```python
 ### Option Pricer Classes
@@ -347,7 +363,7 @@ The "Greeks" are the partial derivatives of the option price with respect to its
 - **Delta ($\Delta = \frac{\partial C}{\partial S}$):** Measures the rate of change of the option price with respect to a change in the underlying stock price. A delta of 0.6 means the option price will increase by about $0.60 for a $1 increase in the stock price. It is the primary measure of directional exposure.
 - **Gamma ($\Gamma = \frac{\partial^2 C}{\partial S^2}$):** Measures the rate of change of Delta. High Gamma indicates the hedge is very sensitive to market movements and needs to be rebalanced frequently.
 - **Vega ($\nu = \frac{\partial C}{\partial \sigma}$):** Measures sensitivity to volatility. It is typically quoted as the change in option price for a 1 percentage point change in implied volatility.
-- **Theta ($\Theta = -\frac{\partial C}{\partial t}$):** Measures the rate of price decay with the passage of time (time decay). For a long option position, theta is almost always negative.
+- **Theta ($\Theta = \frac{\partial C}{\partial t} = -\frac{\partial C}{\partial \tau},\quad \tau=T-t$):** Measures the rate of price decay with the passage of time (time decay). For a long option position, theta is almost always negative.
 - **Rho ($\rho = \frac{\partial C}{\partial r}$):** Measures sensitivity to the risk-free interest rate.
 
 #### Visualizing the Greeks
@@ -442,13 +458,13 @@ print("> **Note:** As expected, the path-dependent options are cheaper. The Asia
 
 ### 7. Real-World Application: The Volatility Smile
 
-In the BSM model, volatility is a constant input. In reality, we can observe market prices of options and reverse-engineer the BSM formula to find the **implied volatility** ($\sigma_{imp}$)—the volatility level that makes the BSM price equal the market price. This is the market's consensus forecast of future volatility.
+In the BSM model, volatility is a constant input. In reality, we can observe market prices of options and reverse-engineer the BSM formula to find the **implied volatility** ($\sigma_{imp}$)—the volatility level that makes the BSM price equal the market price. It is a model-implied pricing statistic, which can reflect risk premia and model misspecification as well as expected volatility.
 
 If the BSM model were a perfect description of reality, implied volatility would be constant across all strike prices for a given expiration. In reality, it is not. A plot of implied volatility against strike price reveals a **"volatility smile"** or **"smirk."** This pattern shows that out-of-the-money puts (low strikes) and calls (high strikes) are priced with a higher implied volatility than at-the-money options. This reflects the market's perception of a higher probability of large price moves (i.e., fatter tails in the return distribution) than the log-normal distribution assumed by BSM.
 
 #### Case Study: Calculating Implied Volatility for AAPL Options
 
-Let's move from mock data to reality. We will fetch live option chain data for Apple Inc. (AAPL) using the `yfinance` library, calculate the implied volatility for each option, and plot the real-world volatility smirk.
+The default example constructs deterministic synthetic bid/ask quotes from a specified BSM volatility curve, then recovers that curve by numerical inversion. Call `plot_volatility_smile(use_live=True)` to request live AAPL quotes explicitly. AAPL equity options are American and the stock pays dividends; a European, zero-dividend BSM inversion is only an illustrative diagnostic, not a production valuation. Live data failures raise an error rather than being relabeled as observations.
 
 ```python
 ### Implied Volatility and the Volatility Smile
@@ -462,42 +478,53 @@ def implied_volatility(market_price, S, K, T, r, option_type):
     except (ValueError, RuntimeError):
         return np.nan
 
-def plot_volatility_smile(ticker_symbol="AAPL"):
-    if not YFINANCE_AVAILABLE:
-        print(f"> **Note:** Skipping volatility smile plot for {ticker_symbol} because `yfinance` is not installed.")
-        return
+def prepare_option_quotes(quotes, S, T, r, option_type):
+    """Invert valid bid/ask midquotes without mutating the supplied chain."""
+    clean = quotes.loc[:, ['strike', 'bid', 'ask']].copy()
+    valid = np.isfinite(clean).all(axis=1)
+    valid &= (clean['strike'] > 0) & (clean['bid'] >= 0) & (clean['ask'] >= clean['bid'])
+    clean = clean.loc[valid].copy()
+    clean['mid_price'] = (clean['bid'] + clean['ask']) / 2
+    clean = clean.loc[clean['mid_price'] > 0].copy()
+    clean['iv'] = [implied_volatility(mid, S, strike, T, r, option_type)
+                   for strike, mid in zip(clean['strike'], clean['mid_price'])]
+    return clean.dropna(subset=['iv'])
 
-    try:
-        # 1. Fetch data for the stock
+
+def plot_volatility_smile(ticker_symbol="AAPL", use_live=False):
+    """Plot a deterministic model illustration; live quotes require explicit opt-in."""
+    S_market, T_market, r_market = 170.0, 0.1, 0.05
+    exp_date_str = "Synthetic model quotes (not market observations)"
+    strikes = np.arange(140, 201, 5)
+    vols = 0.35 - 0.15 * ((strikes - S_market) / S_market) + 0.5 * ((strikes - S_market) / S_market)**2
+    chains = []
+    for opt_type in ['call', 'put']:
+        prices = np.array([BSMPricer(S_market, strike, T_market, r_market, vol, opt_type).price()
+                           for strike, vol in zip(strikes, vols)])
+        chains.append(pd.DataFrame({'strike': strikes, 'bid': 0.99 * prices, 'ask': 1.01 * prices}))
+    calls, puts = chains
+
+    if use_live:
+        if not YFINANCE_AVAILABLE:
+            raise ImportError("Install yfinance before requesting live quotes.")
+        # Let data failures surface: an explicit live request must not silently become synthetic.
         ticker = yf.Ticker(ticker_symbol)
         S_market = ticker.history(period='1d')['Close'].iloc[-1]
         exp_dates = ticker.options
-        # Select a near-term expiration date (e.g., the 3rd available one)
-        options = ticker.option_chain(exp_dates[2])
-        calls = options.calls
-        puts = options.puts
-        exp_date_str = exp_dates[2]
+        if not exp_dates:
+            raise ValueError("No option expirations returned.")
+        exp_date_str = exp_dates[min(2, len(exp_dates) - 1)]
+        options = ticker.option_chain(exp_date_str)
+        calls, puts = options.calls, options.puts
+        T_market = (pd.Timestamp(exp_date_str) - pd.Timestamp.today().normalize()).days / 365.0
+        if T_market <= 0:
+            raise ValueError("Select an expiration strictly after today.")
+        # Fixed illustrative rate; use a maturity-matched continuously compounded rate for research.
 
-        # 2. Calculate time to maturity and risk-free rate
-        T_market = (pd.to_datetime(exp_date_str) - pd.to_datetime('today')).days / 365.0
-        r_market = yf.Ticker('^IRX').history(period='1d')['Close'].iloc[-1] / 100
-
-    except Exception as e:
-        print(f"> **Note:** Could not fetch live option data for {ticker_symbol} from yfinance (Error: {e}). Using illustrative data instead.")
-        # Fallback to illustrative data
-        S_market, T_market, r_market = 170.0, 0.1, 0.05
-        strikes = np.arange(140, 201, 5)
-        vols = 0.35 - 0.15 * ((strikes - S_market) / S_market) + 0.5 * ((strikes - S_market) / S_market)**2
-        calls = pd.DataFrame({'strike': strikes, 'impliedVolatility': vols})
-        puts = pd.DataFrame({'strike': strikes, 'impliedVolatility': vols + 0.02})
-        exp_date_str = "Illustrative Data"
-
-    # 3. Calculate implied volatility for calls and puts
-    for df, opt_type in zip([calls, puts], ['call', 'put']):
-        df['mid_price'] = (df['bid'] + df['ask']) / 2 if 'bid' in df.columns else np.nan
-        df.dropna(subset=['mid_price', 'strike'], inplace=True)
-        df = df[df['mid_price'] > 0]
-        df['iv'] = df.apply(lambda row: implied_volatility(row['mid_price'], S_market, row['strike'], T_market, r_market, opt_type), axis=1) # Apply function to every element/row
+    calls = prepare_option_quotes(calls, S_market, T_market, r_market, 'call')
+    puts = prepare_option_quotes(puts, S_market, T_market, r_market, 'put')
+    if calls.empty or puts.empty:
+        raise ValueError("No valid invertible call/put midquotes remain.")
 
     # 4. Plot the volatility smile
     plt.figure(figsize=(14, 8))
@@ -509,7 +536,8 @@ def plot_volatility_smile(ticker_symbol="AAPL"):
     plt.legend(); plt.grid(True)
     plt.show() # Render plot
 
-    print("> **Note:** The plot shows a classic volatility 'smirk' for equity options. Implied volatility is highest for low-strike (out-of-the-money) puts and decreases as the strike price increases. This reflects higher market demand for crash protection (puts), implying that the market prices in a higher probability of large downward moves than the log-normal distribution of BSM assumes.")
+    print("Inspect the recovered IV curve; synthetic quotes reproduce the specified volatility function, not an empirical finding.")
+    return calls, puts
 
 plot_volatility_smile()
 ```
@@ -546,6 +574,8 @@ $$df = \left( \frac{\partial f}{\partial t} + \mu \frac{\partial f}{\partial S} 
 
 $$(dt)^2 = 0, \qquad dt\, dW_t = 0, \qquad (dW_t)^2 = dt.$$
 
+**Dimension notes:** all quantities are scalars: lattice factors $u, d$, probability $p$, discounting $e^{-r\Delta t}$; closed-form prices evaluate normal CDFs at scalar arguments $d_1, d_2$.
+
 ## 9. Carr-Madan FFT: Pricing Many Strikes at Once
 
 Monte Carlo is flexible but expensive when a calibration routine needs prices across a dense strike grid. Carr and Madan (1999) exploit a model's characteristic function and the Fast Fourier Transform (FFT). After damping the call-price function so its Fourier transform is integrable, option prices across log strikes can be recovered from one transformed grid.
@@ -556,6 +586,11 @@ The implementation burden is not the FFT call itself. Correct work must track tr
 
 **Reference:** Carr, P. & Madan, D. (1999). Option valuation using the fast Fourier transform. *Journal of Computational Finance*, 2(4), 61–73.
 
+> **Common Pitfalls in This Lecture**
+>
+> - **BSM applied to Americans.** Black-Scholes prices European options only; applying it to American puts (early exercise premium) systematically undervalues them. Use binomial/finite-difference lattices whenever exercise is possible before expiry.
+> - **Implied-vol garbage in.** Implied vol inverts a model through illiquid quotes: deep ITM options, stale prints and wide spreads produce wild IVs. Filter by moneyness/liquidity and interpolate on the surface rather than quoting a single strike's IV.
+
 ### Three-Tier Practice Ladder
 
 **1. Mechanism and assumptions (Conceptual):** Derive the no-arbitrage, optimality, or risk-pricing relation central to **03 Option Pricing** and verify that it satisfies at least two economically meaningful limiting cases or bounds.
@@ -563,6 +598,8 @@ The implementation burden is not the FFT call itself. Correct work must track tr
 **2. Reproduce and diagnose (Applied):** Reproduce a calculation from Interactive Lab: Volatility and the Black-Scholes Call, 1. Introduction to Options and Payoffs with transparent inputs. Perturb volatility, discounting, risk aversion, transaction costs, or another key parameter and explain the sensitivity in economic terms.
 
 **3. Robust extension (Challenge):** Construct a stress scenario outside the calibration sample. Compare two valuation/risk methods and explain which discrepancy reflects model risk rather than numerical error.
+
+**3b. Failure analysis (Challenge):** Implied volatility from a deep-ITM illiquid quote reads 200%, and the BSM price of an American put sits below its intrinsic value. Diagnose quote quality and model applicability, repair with moneyness/liquidity filters and a lattice for early exercise, and verify via put-call parity.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

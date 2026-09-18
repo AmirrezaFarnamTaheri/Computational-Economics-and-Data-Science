@@ -42,15 +42,17 @@ Empirical economics is facing a data deluge. Administrative records, scanner dat
 - Familiarity with functions, NumPy, and reproducible timing experiments.
 * **Learning-path prerequisite:** [`02_Accelerating_Code_with_Numba.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/high_performance_python/02_Accelerating_Code_with_Numba.ipynb)
 
+> **Historical Context — MapReduce 2004 to Dask 2015.** Google's MapReduce paper (Dean and Ghemawat, OSDI 2004) taught the industry to parallelize by mapping and reducing; Hadoop open-sourced it (2006), Spark refined it (2009–2012), and Dask (2015) brought the same scheduling ideas to native pandas objects — datasets larger than RAM became ordinary.
+
 > **Learning path:** Building on [`02_Accelerating_Code_with_Numba.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/high_performance_python/02_Accelerating_Code_with_Numba.ipynb); next continue with [`04_GPU_Acceleration_with_CuPy.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/high_performance_python/04_GPU_Acceleration_with_CuPy.ipynb).
 
 ### Table of Contents
-1.  [Introduction: The Scaling Problem](#1.-Introduction:-The-Scaling-Problem)
-2.  [Setting Up a Local Dask Cluster](#2.-Setting-Up-a-Local-Dask-Cluster)
-3.  [Dask DataFrames: Parallelizing Pandas](#3.-Dask-DataFrames:-Parallelizing-Pandas)
-    *   [Example: Analyzing a Large CSV](#Example:-Analyzing-a-Large-CSV)
-4.  [Dask Arrays: Parallelizing NumPy](#4.-Dask-Arrays:-Parallelizing-NumPy)
-5.  [Summary](#5.-Summary)
+1.  [Introduction: The Scaling Problem](#1-introduction-the-scaling-problem)
+2.  [Setting Up a Local Dask Cluster](#2-setting-up-a-local-dask-cluster)
+3.  [Dask DataFrames: Parallelizing Pandas](#3-dask-dataframes-parallelizing-pandas)
+    *   [Example: Analyzing a Large CSV](#example-analyzing-a-large-csv)
+4.  [Dask Arrays: Parallelizing NumPy](#4-dask-arrays-parallelizing-numpy)
+5.  [Summary](#5-summary)
 
 ### 1. Introduction: The Scaling Problem
 
@@ -162,6 +164,8 @@ print("First 10 elements:", result_array[:10])
 **2. Reproduce and diagnose (Applied):** Optimize the workload using 1. Introduction: The Scaling Problem, 2. Setting Up a Local Dask Cluster. Report warm-up separately from steady-state timing, use multiple repetitions, and verify numerical equivalence to the baseline.
 
 **3. Robust extension (Challenge):** Scale the workload until the bottleneck changes (compute, memory bandwidth, serialization, transfer, or scheduler overhead). Identify the crossover point and recommend when the optimization should not be used.
+
+**3b. Failure analysis (Challenge):** A Dask DataFrame is slower than plain pandas even though the data fits in RAM — it was loaded with 4,000 tiny partitions. Diagnose the partitioning overhead, repair by repartitioning (or staying in pandas), and measure the crossover file size where Dask starts winning.
 
 <details>
 <summary>Solution guidance</summary>

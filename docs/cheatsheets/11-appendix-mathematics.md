@@ -9,7 +9,7 @@
 | Contraction | $d(Tx, Ty) \le \beta\, d(x, y)$, $\beta \in [0,1)$ | $(X, d)$ metric space |
 | Banach theorem | unique $x^*$ with $Tx^* = x^*$; $x_m \to x^*$ | $x^* \in X$ |
 | Error bound | $\|x_m - x^*\| \le \frac{\beta^m}{1-\beta} d(x_0, x_1)$ | scalar |
-| Blackwell (discounted) | $T(v + a) \le Tv + \beta a$ ⇒ $T$ is a $\beta$-contraction | $a \ge 0$ scalar |
+| Blackwell (discounted) | Monotonicity plus $T(v + a) \le Tv + \beta a$ imply a $\beta$-contraction in the sup norm on bounded functions | $a \ge 0$ scalar |
 | Separating hyperplane | disjoint convex sets ⇒ $\exists p \ne 0, c$: $p'A \le c \le p'B$ | $p \in \mathbb{R}^n$ |
 
 ## Multivariate calculus

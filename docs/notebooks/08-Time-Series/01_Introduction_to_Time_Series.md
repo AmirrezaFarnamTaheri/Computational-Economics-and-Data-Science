@@ -9,9 +9,11 @@
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/08-Time-Series/01_Introduction_to_Time_Series.ipynb) [![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main?filepath=08-Time-Series/01_Introduction_to_Time_Series.ipynb) [![Code License: MIT](https://img.shields.io/badge/Code%20License-MIT-yellow.svg)](../LICENSE) [![Content License: CC BY 4.0](https://img.shields.io/badge/Content%20License-CC%20BY%204.0-blue.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 ```python
+
 # === Environment Setup ===
 import matplotlib.pyplot as plt
 import numpy as np
+rng = np.random.default_rng(42)  # single reproducible generator
 import pandas as pd
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 
@@ -24,15 +26,15 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 
 ### Table of Contents
 
-1.  [Introduction: The Nature of Time Series Data](#1.-Introduction:-The-Nature-of-Time-Series-Data)
-2.  [Stochastic Processes and Stationarity](#2.-Stochastic-Processes-and-Stationarity)
-    - [Weak vs. Strict Stationarity](#Weak-vs.-Strict-Stationarity)
-3.  [Testing for Unit Roots: ADF, Phillips-Perron, and KPSS](#3.-Testing-for-Unit-Roots:-ADF,-Phillips-Perron,-and-KPSS)
-4.  [Characterizing Serial Correlation: ACF and PACF](#4.-Characterizing-Serial-Correlation:-ACF-and-PACF)
-    - [Code Lab: Visualizing ACF and PACF for Sample Processes](#Code-Lab:-Visualizing-ACF-and-PACF-for-Sample-Processes)
-5.  [The Lag Operator and Characteristic Equations](#5.-The-Lag-Operator-and-Characteristic-Equations)
-6.  [Summary](#Summary)
-7.  [Exercises](#6.-Exercises)
+1.  [Introduction: The Nature of Time Series Data](#1-introduction-the-nature-of-time-series-data)
+2.  [Stochastic Processes and Stationarity](#2-stochastic-processes-and-stationarity)
+    - [Weak vs. Strict Stationarity](#weak-vs-strict-stationarity)
+3.  [Testing for Unit Roots: ADF, Phillips-Perron, and KPSS](#3-testing-for-unit-roots-adf-phillips-perron-and-kpss)
+4.  [Characterizing Serial Correlation: ACF and PACF](#4-characterizing-serial-correlation-acf-and-pacf)
+    - [Code Lab: Visualizing ACF and PACF for Sample Processes](#code-lab-visualizing-acf-and-pacf-for-sample-processes)
+5.  [The Lag Operator and Characteristic Equations](#5-the-lag-operator-and-characteristic-equations)
+6.  [Summary](#summary)
+7.  [Exercises](#6-exercises)
 
 ## The Lens: When History Matters
 **What economic problem are we solving?**
@@ -92,15 +94,14 @@ Processes with trends, seasonality, or changing volatility are non-stationary. A
 ```python
 ### Visualizing Stationary vs. Non-Stationary Processes
 
-np.random.seed(123)
 steps = 500
 
 # 1. Stationary Process (White Noise)
-stationary_series = np.random.normal(size=steps)
+stationary_series = rng.normal(size=steps)
 
 # 2. Non-Stationary Process (Random Walk)
 # A random walk is y_t = y_{t-1} + e_t. Its mean is constant (0), but its variance increases with time.
-non_stationary_series = np.cumsum(np.random.normal(size=steps))
+non_stationary_series = np.cumsum(rng.normal(size=steps))
 
 # --- Plotting ---
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 10), sharex=True)
@@ -248,12 +249,11 @@ The patterns of decay in the ACF and PACF plots, known as correlograms, are the 
 ### ACF and PACF of Sample Processes
 
 # Set a random seed for reproducibility
-np.random.seed(42)
 
 # 1. White Noise: A process with no memory.
 # Economic intuition: Asset returns under the Efficient Market Hypothesis are often modeled as white noise,
 # implying that past returns have no predictive power over future returns.
-wn = np.random.normal(size=500)
+wn = rng.normal(size=500)
 
 # 2. AR(1) Process: A process with persistent memory.
 # The term `0.8 * ar1[t-1]` means that 80% of the value from the previous period persists into the current period.
@@ -261,13 +261,13 @@ wn = np.random.normal(size=500)
 # doesn't just affect growth in one quarter; its effects persist and decay over several subsequent quarters.
 ar1 = np.zeros(500)
 for t in range(1, 500):
-    ar1[t] = 0.8 * ar1[t-1] + np.random.normal()
+    ar1[t] = 0.8 * ar1[t-1] + rng.normal()
 
 # 3. MA(1) Process: A process with a one-period memory of shocks.
 # The value at time t depends on the current shock (errors[t]) and the previous period's shock (errors[t-1]).
 # Economic intuition: Imagine a surprise announcement causes a one-time spike in a stock price. An MA(1) model
 # suggests this shock affects the price in the period it occurs and the next period, but has no influence after that.
-errors = np.random.normal(size=500)
+errors = rng.normal(size=500)
 ma1 = np.zeros(500)
 for t in range(1, 500):
     ma1[t] = errors[t] + 0.7 * errors[t-1]
@@ -330,6 +330,8 @@ $$H_0: \gamma = 0 \;\;(\text{unit root, non-stationary}) \qquad \text{vs.} \qqua
 **2. Reproduce and diagnose (Applied):** Fit the method covered in 1. Introduction: The Nature of Time Series Data, 2. Stochastic Processes and Stationarity to a time-ordered series. Diagnose residual dependence and stability, then evaluate a rolling or expanding-window out-of-sample forecast against a naive baseline.
 
 **3. Robust extension (Challenge):** Alter one structural restriction, lag/order choice, or innovation distribution. Explain how impulse responses, forecasts, or uncertainty change and whether the conclusion survives the alternative specification.
+
+**3b. Failure analysis (Challenge):** A regression of one random walk on another, independent random walk reports $R^2 = 0.97$ and a t-statistic of 40. Diagnose the spurious-regression problem, repair by differencing and re-running (plus a simulation showing the size distortion), and explain why the usual critical values do not apply.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

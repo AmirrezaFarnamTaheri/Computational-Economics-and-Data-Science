@@ -37,12 +37,12 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 
 ### Table of Contents
 
-1.  [The Lens: The Macroeconomy with a Balance Sheet](#The-Lens:-The-Macroeconomy-with-a-Balance-Sheet)
-2.  [Microfoundations: The Costly State Verification Problem](#Microfoundations:-The-Costly-State-Verification-Problem)
-3.  [The BGG Model in a DSGE Framework](#The-BGG-Model-in-a-DSGE-Framework)
-4.  [Numerical Solution: Solving the Log-Linear System](#Numerical-Solution:-Solving-the-Log-Linear-System)
-5.  [Case Study: The Impact of a Technology Shock](#Case-Study:-The-Impact-of-a-Technology-Shock)
-6.  [Summary](#Summary)
+1.  [The Lens: The Macroeconomy with a Balance Sheet](#the-lens-the-macroeconomy-with-a-balance-sheet)
+2.  [Microfoundations: The Costly State Verification Problem](#microfoundations-the-costly-state-verification-problem)
+3.  [The BGG Model in a DSGE Framework](#the-bgg-model-in-a-dsge-framework)
+4.  [Numerical Solution: Solving the Log-Linear System](#numerical-solution-solving-the-log-linear-system)
+5.  [Case Study: The Impact of a Technology Shock](#case-study-the-impact-of-a-technology-shock)
+6.  [Summary](#summary)
 
 ## The Lens: The Macroeconomy with a Balance Sheet
 **What economic problem are we solving?**
@@ -71,6 +71,9 @@ Standard models assume the Modigliani-Miller theorem: a firm's financial health 
 
 ### 2. Microfoundations: The Costly State Verification Problem
 
+![BGG financial accelerator](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/09-Finance/bgg_accelerator_loop.png)
+*Figure: The financial-accelerator feedback loop in the BGG model..*
+
 The BGG model's financial friction stems from an information asymmetry between entrepreneurs (borrowers) and lenders.
 
 **The Setup:**
@@ -84,6 +87,8 @@ The optimal contract is a **standard debt contract**. The lender charges an **Ex
 Log-linearizing this relationship gives:
 $$ E_t[\hat{r}_{k,t+1}] - \hat{r}_t = \nu (\hat{q}_t + \hat{k}_{t+1} - \hat{n}_t) $$
 where hats denote log-deviations, and $\nu > 0$ captures the elasticity of the premium with respect to leverage.
+
+**Dimension notes:** entrepreneur net worth $N_t$, capital $q K_{t+1}$, and borrowed amount are scalars; monitoring cost $\mu$ times realized payoff defines the audit threshold; default cutoff solves one scalar indifference condition.
 
 ### 3. The BGG Model in a DSGE Framework
 
@@ -271,6 +276,8 @@ plt.show() # Render plot
 **2. Reproduce and diagnose (Applied):** Reproduce a calculation from 2. Microfoundations: The Costly State Verification Problem, 3. The BGG Model in a DSGE Framework with transparent inputs. Perturb volatility, discounting, risk aversion, transaction costs, or another key parameter and explain the sensitivity in economic terms.
 
 **3. Robust extension (Challenge):** Construct a stress scenario outside the calibration sample. Compare two valuation/risk methods and explain which discrepancy reflects model risk rather than numerical error.
+
+**3b. Failure analysis (Challenge):** In the simulated accelerator, leverage exceeds one and the risk premium turns negative before the run explodes. Diagnose the constraint violations in the contract solution, repair with bounded policy functions and feasibility checks, and verify the premium stays positive and leverage below its cap.
 
 <details>
 <summary>Solution guidance</summary>

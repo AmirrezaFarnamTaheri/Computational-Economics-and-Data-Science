@@ -5,7 +5,8 @@ Target lecture: 06-Econometrics/01_Linear_Model_and_OLS.ipynb (theory section).
 Run:  python figures/src/ols_projection_geometry.py
   ->  images/06-Econometrics/ols_projection_geometry.png
 
-Two-regressor schematic drawn in the plane spanned by x1 and x2.
+One-regressor, no-intercept example in R^2. With two independent regressors
+in R^2 the column space would be all of R^2 and the residual would be zero.
 """
 
 from pathlib import Path
@@ -27,19 +28,20 @@ OUT = (
 def main() -> None:
     fig, ax = plt.subplots(figsize=(6.2, 5.4))
     ax.set_aspect("equal")
+    origin = np.zeros(2)
+    x = np.array([4.0, 1.6])
+    y = np.array([2.7, 4.1])
+    yhat = x * (x @ y) / (x @ x)
+    residual = y - yhat
+    assert np.isclose(x @ residual, 0.0)
 
-    origin = np.array([0.0, 0.0])
-    x1 = np.array([3.6, 0.9])
-    x2 = np.array([1.1, 2.9])
-    beta = np.array([1.15, 0.75])
-    yhat = beta[0] * x1 + beta[1] * x2
-    y = yhat + np.array([0.55, 1.85])
-
-    for vec, color, label in (
-        (x1, "#48688a", r"$\mathbf{x}_1$"),
-        (x2, "#48688a", r"$\mathbf{x}_2$"),
-        (y, "#b03a2e", r"$\mathbf{y}$"),
-        (yhat, "#2e7d32", r"$\hat{\mathbf{y}} = \mathbf{P}_X \mathbf{y}$"),
+    line = np.array([-0.15, 1.45])[:, None] * x
+    ax.plot(line[:, 0], line[:, 1], color="#bbbbbb", lw=1.0)
+    ax.annotate(r"col($\mathbf{X}$) = span($\mathbf{x}$)", xy=(4.0, 0.55), fontsize=10)
+    for vec, color, label, offset in (
+        (x, "#48688a", r"$\mathbf{x}$", (6, -12)),
+        (y, "#b03a2e", r"$\mathbf{y}$", (0, 9)),
+        (yhat, "#2e7d32", r"$\hat{\mathbf{y}} = \mathbf{P}_X\mathbf{y}$", (9, -22)),
     ):
         ax.annotate(
             "",
@@ -47,35 +49,32 @@ def main() -> None:
             xytext=origin,
             arrowprops=dict(arrowstyle="-|>", color=color, lw=2.0),
         )
-        ax.annotate(label, xy=vec * 1.04, fontsize=12, color=color)
-
-    ax.plot([y[0], yhat[0]], [y[1], yhat[1]], ls="--", color="#7a5aa0", lw=1.8)
-    mid = (y + yhat) / 2
-    ax.annotate(
-        r"$\mathbf{u} = \mathbf{y} - \hat{\mathbf{y}}$",
-        xy=mid,
-        xytext=(8, 4),
-        textcoords="offset points",
-        fontsize=12,
-        color="#7a5aa0",
-    )
+        ax.annotate(
+            label, xy=vec, xytext=offset, textcoords="offset points", fontsize=12
+        )
     ax.annotate(
         "",
-        xy=yhat,
-        xytext=y,
+        xy=y,
+        xytext=yhat,
         arrowprops=dict(arrowstyle="-|>", color="#7a5aa0", lw=1.8),
     )
+    ax.annotate(
+        r"$\mathbf{u} = \mathbf{y} - \hat{\mathbf{y}}$",
+        xy=(y + yhat) / 2,
+        xytext=(10, 3),
+        textcoords="offset points",
+        fontsize=12,
+    )
 
-    t = np.linspace(-0.35, 1.45, 24)
-    dir_hat = yhat / np.linalg.norm(yhat)
-    perp = np.array([-dir_hat[1], dir_hat[0]])
-    line = yhat[None, :] + 2.05 * t[:, None] * perp[None, :]
-    ax.plot(line[:, 0], line[:, 1], color="#bbbbbb", lw=1.0)
-    ax.annotate(r"col($\mathbf{X}$)", xy=line[-1] * 1.02, fontsize=10, color="#888888")
-    ax.add_patch(plt.Rectangle((0, 0), 0, 0))  # keep frame stable
-
-    ax.set_xlim(-1.4, 6.4)
-    ax.set_ylim(-1.2, 5.6)
+    # A right-angle mark is meaningful because the axes use equal scaling.
+    along = x / np.linalg.norm(x)
+    normal = residual / np.linalg.norm(residual)
+    corner = np.array(
+        [yhat - 0.22 * along, yhat - 0.22 * along + 0.22 * normal, yhat + 0.22 * normal]
+    )
+    ax.plot(corner[:, 0], corner[:, 1], color="gray", lw=1.0)
+    ax.set_xlim(-0.7, 6.3)
+    ax.set_ylim(-0.5, 5.0)
     ax.axis("off")
     ax.set_title("OLS: project y onto col(X); residuals are orthogonal")
     fig.tight_layout()

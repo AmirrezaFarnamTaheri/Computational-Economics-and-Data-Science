@@ -22,7 +22,7 @@ plt.rcParams.update({'font.size': 12, 'figure.figsize': (11, 7), 'figure.dpi': 1
 np.set_printoptions(suppress=True, linewidth=120, precision=4)
 ```
 
-## The Lens: Continuous States Without Grid Errors
+## The Lens: Continuous States With Controlled Grid Error
 **What problem are we solving?**
 When state variables are continuous, coarse grids can distort optimal decisions. We need a way to evaluate value functions off-grid and allow smooth policy choices.
 
@@ -46,10 +46,10 @@ Interpolation combined with continuous optimization lets us solve continuous-sta
 > **Learning path:** Building on [`03A_Discrete_Choice_DP_Rust.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/03-Economic-Modeling/03A_Discrete_Choice_DP_Rust.ipynb); next continue with [`04_Estimation_and_Calibration.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/03-Economic-Modeling/04_Estimation_and_Calibration.ipynb).
 
 ### Table of Contents
-1. [The Lens: Continuous States Without Grid Errors](#The-Lens:-Continuous-States-Without-Grid-Errors)
-2. [Continuous State DP: Consumption-Savings](#Continuous-State-DP:-Consumption-Savings)
-3. [Solving Continuous DP with Interpolation](#Solving-Continuous-DP-with-Interpolation)
-4. [Summary](#Summary)
+1. [The Lens: Continuous States With Controlled Grid Error](#the-lens-continuous-states-with-controlled-grid-error)
+2. [Continuous State DP: Consumption-Savings](#continuous-state-dp-consumption-savings)
+3. [Solving Continuous DP with Interpolation](#solving-continuous-dp-with-interpolation)
+4. [Summary](#summary)
 
 ```python
 class ContinuousDPSolver:
@@ -89,7 +89,7 @@ class ContinuousDPSolver:
         v_next = V_interp(k_prime)
         return self.utility(c) + self.beta * v_next
 
-    def solve(self, tol=1e-5, max_iter=200):
+    def solve(self, tol=1e-5, max_iter=1000):
         V_old = np.copy(self.V)
         policy_k = np.zeros_like(self.k_grid)
 
@@ -124,6 +124,7 @@ class ContinuousDPSolver:
 
         self.V = V_old
         self.policy = policy_k
+        raise RuntimeError(f"Continuous VFI did not converge; final update={diff:.3e}")
 
 cont_model = ContinuousDPSolver()
 cont_model.solve()
@@ -220,6 +221,8 @@ $$a_t=\frac{c_t+a_{t+1}-y_t}{1+r}.$$
 
 **3. Robust extension (Challenge):** Design a policy or shock counterfactual that changes one mechanism at a time. Compare welfare or transition dynamics against the baseline and explain which conclusion is structural versus calibration-specific.
 
+**3b. Failure analysis (Challenge):** Linear interpolation of the value function creates kinks, and the policy oscillates between adjacent grid points across iterations. Diagnose the non-differentiability the kinks inject into the Bellman step, repair with a smoother basis (cubic/shape-preserving splines) or policy smoothing, and verify via the Bellman residual's smoothness.
+
 <details>
 <summary>Solution guidance</summary>
 
@@ -232,7 +235,7 @@ A strong solution states assumptions before computation, includes an independent
 We have explored two advanced DP techniques:
 
 1.  **Discrete Choice (Rust):** Solved by defining conditional value functions for each discrete alternative and taking the upper envelope. This handles the non-differentiability inherent in discrete choices.
-2.  **Continuous States (Interpolation):** Solved by approximating the value function between grid points. This allows the agent to choose *any* real number for capital, eliminating the quantization error of grid-based methods and providing accurate steady-state values.
+2.  **Continuous States (Interpolation):** Solved by approximating the value function between grid points. This allows the agent to choose *any* real number for capital, removing the restriction to grid-valued controls, while leaving interpolation, boundary, and optimization errors that require diagnostics.
 
 ## References & Further Reading
 

@@ -116,6 +116,8 @@ The VAE is trained by minimizing a loss function with two components:
 $$ \text{Loss}_{VAE} = \underbrace{||\mathbf{x} - \hat{\mathbf{x}}||^2}_{\text{Reconstruction Loss}} + \underbrace{D_{KL}(q(\mathbf{z}|\mathbf{x}) || p(\mathbf{z}))}_{\text{KL Divergence}} $$ 
 The first term is the standard reconstruction error. The second term is the **Kullback-Leibler (KL) divergence**, which acts as a regularizer. It measures how much the learned latent distribution $q(\mathbf{z}|\mathbf{x})$ deviates from a standard prior distribution $p(\mathbf{z})$ (typically a standard normal distribution). This forces the learned representations to be organized in a structured, Gaussian-like cloud in the latent space.
 
+**Dimension notes:** encoder outputs Gaussian parameters $\mu(\mathbf{x}), \log \sigma(\mathbf{x}) \in \mathbb{R}^{d_z}$ for latent $\mathbf{z} \in \mathbb{R}^{d_z}$; the ELBO is a scalar: reconstruction term plus KL divergence between two diagonal Gaussians in $\mathbb{R}^{d_z}$.
+
 <a id='contrastive'></a>
 ## 3. Contrastive Learning (SimCLR)
 
@@ -141,8 +143,10 @@ Where:
 - $z_i$ and $z_j$ are the latent vectors of the positive pair.
 - $\text{sim}(u, v) = u^T v / ||u|| ||v||$ is the cosine similarity.
 - $\tau$ is a **temperature** parameter that scales the scores. Lower temperatures amplify the differences between pairs.
-- The denominator sums over all other examples in the batch ($2N-1$ negative pairs).
+- The denominator sums over all $2N-1$ remaining samples in the batch: one of them is the positive partner $(j)$, and the other $2N-2$ are negatives.
 This is a form of cross-entropy loss that tries to classify the correct positive pair among all possible pairs in the batch.
+
+**Dimension notes:** embeddings $\mathbf{z}_i \in \mathbb{R}^{d_e}$ live on the unit sphere after normalization; the NT-Xent loss is a scalar over a batch of $N$ anchor-positive pairs against $2N - 2$ negatives.
 
 <a id='applications'></a>
 ## 4. Applications in Economics
@@ -157,12 +161,12 @@ We will first build and train the Denoising Autoencoder example, and then visual
 if TENSORFLOW_AVAILABLE:
     # Load and preprocess the Fashion MNIST dataset
     (x_train_f, _), (x_test_f, _) = fashion_mnist.load_data()
-    x_train_f = x_train_f.astype('float32') / 255.[..., tf.newaxis]
-    x_test_f = x_test_f.astype('float32') / 255.[..., tf.newaxis]
+    x_train_f = (x_train_f.astype('float32') / 255.0)[..., np.newaxis]
+    x_test_f = (x_test_f.astype('float32') / 255.0)[..., np.newaxis]
 
     # Create a noisy version of the dataset
     noise_factor = 0.2
-    x_train_noisy = x_train_f + noise_factor * tf.random.normal(shape=x_train_f.shape)
+    x_train_noisy = tf.clip_by_value(x_train_f + noise_factor * tf.random.normal(shape=x_train_f.shape), 0., 1.)
     x_test_noisy = tf.clip_by_value(x_test_f + noise_factor * tf.random.normal(shape=x_test_f.shape), 0., 1.)
 
     # Build the convolutional autoencoder model
@@ -227,9 +231,8 @@ if TENSORFLOW_AVAILABLE:
             with tf.GradientTape() as tape:
                 z_mean, z_log_var, z = self.encoder(data)
                 recon = self.decoder(z)
-                recon_loss = tf.reduce_mean(tf.reduce_sum(tf.keras.losses.binary_crossentropy(data, recon), axis=-1))
+                recon_loss = tf.reduce_mean(tf.keras.losses.binary_crossentropy(data, recon)) * original_dim
                 kl_loss = tf.reduce_mean(tf.reduce_sum(-0.5 * (1 + z_log_var - tf.square(z_mean) - tf.exp(z_log_var)), axis=1))
-                self.add_loss(kl_loss)
                 total_loss = recon_loss + kl_loss
             grads = tape.gradient(total_loss, self.trainable_weights); self.optimizer.apply_gradients(zip(grads, self.trainable_weights))
             return {"loss": total_loss, "reconstruction_loss": recon_loss, "kl_loss": kl_loss}
@@ -326,6 +329,8 @@ except Exception:
 
 **3. Robust extension (Challenge):** Stress-test the model under temporal, subgroup, or covariate distribution shift. Identify which performance degradation matters for the downstream economic decision and propose one mitigation without using the test set for tuning.
 
+**3b. Failure analysis (Challenge):** SimCLR's loss collapses to $\log(2N-1)$ and every embedding is nearly identical. Diagnose representation collapse (temperature, projection head, batch size), repair with the standard configuration, and verify with an embedding-uniformity metric plus linear-probe accuracy.
+
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 
 <a id='exercises'></a>
@@ -362,6 +367,8 @@ $$\text{Loss}_{VAE} = \underbrace{||\mathbf{x} - \hat{\mathbf{x}}||^2}_{\text{Re
 **3. Core relation**
 
 $$\ell_{i,j} = -\log \frac{\exp(\text{sim}(z_i, z_j) / \tau)}{\sum_{k=1}^{2N} \mathbf{1}_{k \neq i} \exp(\text{sim}(z_i, z_k) / \tau)}$$
+
+**Dimension notes:** reconstructions match input shape ($\mathbf{x}, \tilde{\mathbf{x}}, g_\theta(f_\theta(\tilde{\mathbf{x}})) \in \mathbb{R}^{d}$); all listed objectives are scalar losses over batches.
 
 ### Solutions to Exercises
 

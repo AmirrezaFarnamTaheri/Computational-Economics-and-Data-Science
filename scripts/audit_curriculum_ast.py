@@ -122,6 +122,41 @@ def _transform_python(source: str) -> str:
     return "\n".join(out) + "\n"
 
 
+# Cell magics whose body is plain Python. The IPython transformer turns the
+# whole cell into run_cell_magic(name, args, "body"), so the body is a string
+# argument that ast.parse never inspects. For Python-valued magics the body is
+# real Python and belongs under the syntax gate.
+_PYTHON_BODY_MAGICS = frozenset({"time", "timeit", "capture", "prun"})
+
+
+def _split_cell_magic(source: str) -> tuple[str, str] | None:
+    lines = source.splitlines()
+    if not lines:
+        return None
+    first = lines[0].lstrip()
+    if not first.startswith("%%"):
+        return None
+    name = first[2:].split(None, 1)[0].strip()
+    body = "\n".join(lines[1:])
+    return name, body
+
+
+def _parseable_source(source: str) -> str:
+    """Transform a cell for ast.parse, keeping Python-valued magic bodies.
+
+    IPython's transformer wraps ``%%magic`` bodies in a string argument, which
+    let syntax errors inside ``%%time`` blocks pass the strict gate. Python-
+    bodied magics are parsed directly; non-Python magics (%%bash, %%html, ...)
+    are replaced with a placeholder as before.
+    """
+    magic = _split_cell_magic(source)
+    if magic is not None:
+        name, body = magic
+        if name in _PYTHON_BODY_MAGICS:
+            return _transform_python(body)
+    return _transform_python(source)
+
+
 def _resolve_image(notebook: Path, target: str, root: Path) -> Path | None:
     target = target.strip().split("#", 1)[0].split("?", 1)[0]
     if not target or re.match(r"^(?:https?:|data:|attachment:)", target, re.I):
@@ -182,7 +217,7 @@ def audit_notebook(path: Path, root: Path) -> NotebookResult:
         if BLANKET_WARNING_RE.search(source):
             blanket_warnings.append(index)
         try:
-            ast.parse(_transform_python(source), filename=f"{path}::cell-{index}")
+            ast.parse(_parseable_source(source), filename=f"{path}::cell-{index}")
         except SyntaxError as exc:
             syntax_errors.append(f"cell {index}: line {exc.lineno}: {exc.msg}")
 

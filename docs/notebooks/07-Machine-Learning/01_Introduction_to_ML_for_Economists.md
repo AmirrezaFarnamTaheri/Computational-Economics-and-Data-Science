@@ -14,13 +14,15 @@ import warnings
 
 import matplotlib.pyplot as plt
 import numpy as np
+
+rng = np.random.default_rng(42)  # single reproducible generator
 import pandas as pd
 import seaborn as sns
 import statsmodels.api as sm
 from sklearn.cluster import KMeans
 from sklearn.datasets import fetch_california_housing
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.linear_model import LassoCV, LinearRegression, RidgeCV
+from sklearn.linear_model import Lasso, LassoCV, LinearRegression, Ridge, RidgeCV
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import KFold, train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -60,19 +62,19 @@ except ImportError:
 ```
 
 ### Table of Contents
-1.  [The Predictive Modeling Framework](#1.-The-Predictive-Modeling-Framework)
-    - [The Bias-Variance Trade-off](#The-Bias-Variance-Trade-off)
-    - [Cross-Validation](#Cross-Validation)
-2.  [Regularization for High-Dimensional Data](#2.-Regularization-for-High-Dimensional-Data)
-    - [Objective Functions of Ridge ($L_2$) and Lasso ($L_1$)](#Objective-Functions-of-Ridge-($L_2$)-and-Lasso-($L_1$))
-    - [Geometric Intuition: Why Lasso Performs Feature Selection](#Geometric-Intuition:-Why-Lasso-Performs-Feature-Selection)
-3.  [Causal Machine Learning](#3.-Causal-Machine-Learning)
-    - [The Challenge: Regularization Bias and Confounding](#The-Challenge:-Regularization-Bias-and-Confounding)
-    - [The Solution: Double/Debiased ML](#The-Solution:-Double/Debiased-ML)
-4.  [Case Study: Forecasting the Equity Premium](#4.-Case-Study:-Forecasting-the-Equity-Premium)
-5.  [Unsupervised Learning: Clustering](#5.-Unsupervised-Learning:-Clustering)
-6.  [Summary](#6.-Summary)
-7.  [Exercises](#7.-Exercises)
+1.  [The Predictive Modeling Framework](#1-the-predictive-modeling-framework)
+    - [The Bias-Variance Trade-off](#the-bias-variance-trade-off)
+    - [Cross-Validation](#cross-validation)
+2.  [Regularization for High-Dimensional Data](#2-regularization-for-high-dimensional-data)
+    - [Objective Functions of Ridge ($L_2$) and Lasso ($L_1$)](#objective-functions-of-ridge-l_2)-and-Lasso-($L_1$))
+    - [Geometric Intuition: Why Lasso Performs Feature Selection](#geometric-intuition-why-lasso-performs-feature-selection)
+3.  [Causal Machine Learning](#3-causal-machine-learning)
+    - [The Challenge: Regularization Bias and Confounding](#the-challenge-regularization-bias-and-confounding)
+    - [The Solution: Double/Debiased ML](#the-solution-doubledebiased-ml)
+4.  [Case Study: Forecasting the Equity Premium](#4-case-study-forecasting-the-equity-premium)
+5.  [Unsupervised Learning: Clustering](#5-unsupervised-learning-clustering)
+6.  [Summary](#6-summary)
+7.  [Exercises](#7-exercises)
 
 ## The Lens: A Tale of Two Cultures
 **What economic problem are we solving?**
@@ -98,6 +100,9 @@ This chapter introduces the economist to the ML toolkit: from the bias-variance 
 > **Learning path:** This notebook is the entry point for this track; next continue with [`02_Gradient_Boosting_Machines.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/07-Machine-Learning/02_Gradient_Boosting_Machines.ipynb).
 
 ### 1. The Predictive Modeling Framework
+
+![Bias-variance tradeoff](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/07-Machine-Learning/figure1_bias_variance_tradeoff.png)
+*Figure: Test error as a U in model complexity: the bias-variance tradeoff..*
 #### The Bias-Variance Trade-off
 A central challenge in building predictive models is **overfitting**. A highly flexible model might fit the training data perfectly but fail to generalize to new, unseen data because it has memorized the noise, not the underlying signal. To formalize this, we can decompose the expected Mean Squared Error (MSE) of a model at a specific point $x_0$:
 $$ E[(y_0 - \hat{f}(x_0))^2] = \underbrace{(\text{Bias}[\hat{f}(x_0)])^2}_{\text{Squared Bias}} + \underbrace{\text{Var}[\hat{f}(x_0)]}_{\text{Variance}} + \underbrace{\sigma^2_{\epsilon}}_{\text{Irreducible Error}} $$
@@ -112,12 +117,11 @@ The **trade-off** is the key insight: as we increase model flexibility, bias typ
 
 def true_fun(X): return np.cos(1.5 * np.pi * X)
 
-np.random.seed(0)
 n_samples = 30
 degrees = [1, 4, 15]
 
-X = np.sort(np.random.rand(n_samples))
-y = true_fun(X) + np.random.randn(n_samples) * 0.1
+X = np.sort(rng.random(n_samples))
+y = true_fun(X) + rng.standard_normal(n_samples) * 0.1
 
 plt.figure(figsize=(14, 5))
 for i, degree in enumerate(degrees):
@@ -144,6 +148,9 @@ We cannot use the training error to select the best model. A robust method for e
 
 ### 2. Regularization for High-Dimensional Data
 
+![Ridge and lasso geometry](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/07-Machine-Learning/figure2_lasso_ridge_geometry.png)
+*Figure: Constraint geometry behind ridge and lasso estimates..*
+
 When the number of features $p$ is large relative to the number of observations $n$, OLS estimates have very high variance. **Regularization** combats this by adding a penalty term to the loss function.
 
 #### Objective Functions of Ridge ($L_2$) and Lasso ($L_1$)
@@ -161,11 +168,12 @@ The $L_1$ penalty is crucial: because the absolute value function has a "sharp c
 
 # Generate high-dimensional data
 n_samples, n_features = 50, 100
-X = np.random.randn(n_samples, n_features)
-true_coef = 3 * np.random.randn(n_features)
+rng = np.random.default_rng(42)
+X = rng.standard_normal((n_samples, n_features))
+true_coef = 3 * rng.standard_normal(n_features)
 # Introduce sparsity: only first 10 features matter
 true_coef[10:] = 0
-y = np.dot(X, true_coef) + np.random.normal(scale=2, size=n_samples)
+y = np.dot(X, true_coef) + rng.normal(scale=2, size=n_samples)
 
 alphas = np.logspace(-1, 5, 50)
 
@@ -215,30 +223,38 @@ for i in range(90):
 # Create training and test sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
-# Scale features based on the training data
-scaler = StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)
+from sklearn.pipeline import make_pipeline
+from sklearn.model_selection import GridSearchCV
 
 # --- Train and Evaluate Models ---
+# Search over the entire pipeline so each CV fold fits its own scaler.
+# A scaler followed by RidgeCV/LassoCV would still fit scaling before internal CV.
 models = {}
-models['OLS'] = LinearRegression().fit(X_train_scaled, y_train)
-models['Ridge'] = RidgeCV(alphas=np.logspace(-2, 4, 100), cv=5).fit(X_train_scaled, y_train)
-models['Lasso'] = LassoCV(cv=5, random_state=42, max_iter=5000).fit(X_train_scaled, y_train)
+models['OLS'] = make_pipeline(StandardScaler(), LinearRegression()).fit(X_train, y_train)
+models['Ridge'] = GridSearchCV(
+    make_pipeline(StandardScaler(), Ridge()),
+    {'ridge__alpha': np.logspace(-2, 4, 30)},
+    cv=5, scoring='neg_mean_squared_error'
+).fit(X_train, y_train)
+models['Lasso'] = GridSearchCV(
+    make_pipeline(StandardScaler(), Lasso(max_iter=5000)),
+    {'lasso__alpha': np.logspace(-4, 0, 30)},
+    cv=5, scoring='neg_mean_squared_error'
+).fit(X_train, y_train)
 
 test_mse = {}
 for name, model in models.items():
-    y_pred = model.predict(X_test_scaled)
+    y_pred = model.predict(X_test)
     test_mse[name] = mean_squared_error(y_test, y_pred)
 
 print("> **Note:** Comparing Test Set Mean Squared Error (MSE) for the three models:")
 for name, mse in test_mse.items():
     print(f"- {name}: {mse:.4f}")
 
-print("> **Note:** In this high-dimensional setting ($p \approx 100$), OLS overfits badly. Ridge and Lasso achieve much lower test MSE.")
+print("> **Note:** Compare the measured test errors: adding 90 noise features does not guarantee that OLS loses to regularization.")
 
 # --- Visualize Lasso Coefficients ---
-coefs = pd.Series(models['Lasso'].coef_, index=X.columns)
+coefs = pd.Series(models['Lasso'].best_estimator_.named_steps['lasso'].coef_, index=X.columns)
 n_selected = np.sum(coefs != 0)
 print(f"\nLasso selected {n_selected} out of {X.shape[1]} features.")
 
@@ -340,10 +356,10 @@ try:
     y_true_list = []
 
     # We iterate through the test set, expanding the training set by one observation at each step.
-    for t in range(train_size, train_size + 100):
+    for t in range(train_size, min(train_size + 100, n_total)):
         X_train, y_train = X.iloc[:t], y.iloc[:t]
         X_test, y_test = X.iloc[[t]], y.iloc[t]
-        y_true_list.append(y_test.iloc[0])
+        y_true_list.append(y_test)
 
         # The historical mean is a simple benchmark that predicts the equity premium will be its average value up to that point.
         y_preds['Hist. Mean'].append(y_train.mean())
@@ -428,6 +444,13 @@ $$\hat{\beta}_{Ridge} = \arg\min_{\beta} (||\mathbf{y} - \mathbf{X}\beta||_2^2 +
 
 $$\hat{\beta}_{Lasso} = \arg\min_{\beta} (||\mathbf{y} - \mathbf{X}\beta||_2^2 + \alpha ||\beta||_1)$$
 
+**Dimension notes:** features $x_0 \in \mathbb{R}^p$, target $y_0 \in \mathbb{R}$, fitted map $\hat{f}: \mathbb{R}^p \to \mathbb{R}$; the decomposition holds pointwise, so bias, variance and the irreducible error $\sigma_\epsilon^2$ are scalars summed to a scalar.
+
+> **Common Pitfalls in This Lecture**
+>
+> - **Data leakage.** Standardizing, imputing or selecting features on the full dataset before splitting leaks test information into training and inflates scores. Fit every preprocessing step inside a pipeline, on training folds only.
+> - **Test-set recycling.** Tuning hyperparameters against the test set turns it into a training signal; reported performance becomes optimistic with no way to detect it. Hold the test set untouched until the final model, and tune via nested cross-validation.
+
 ### Three-Tier Practice Ladder
 
 **1. Mechanism and assumptions (Conceptual):** Explain the loss/objective and inductive bias of **01 Introduction to ML for Economists**. Distinguish optimization error, estimation error, and generalization error in the economic use case.
@@ -435,6 +458,8 @@ $$\hat{\beta}_{Lasso} = \arg\min_{\beta} (||\mathbf{y} - \mathbf{X}\beta||_2^2 +
 **2. Reproduce and diagnose (Applied):** Build a leakage-safe validation experiment using Interactive Lab: Regularization as an Economic Forecasting Tradeoff, 1. The Predictive Modeling Framework. Compare a simple baseline with the featured method using an economically relevant metric and report uncertainty across folds or seeds.
 
 **3. Robust extension (Challenge):** Stress-test the model under temporal, subgroup, or covariate distribution shift. Identify which performance degradation matters for the downstream economic decision and propose one mitigation without using the test set for tuning.
+
+**3b. Failure analysis (Challenge):** A credit model scores 0.99 AUC — because the scaler was fitted before the train/test split and a post-outcome column leaked the label. Diagnose both leaks, repair with a Pipeline (fit on train only) and feature audit, and report the realistic score after the fix.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

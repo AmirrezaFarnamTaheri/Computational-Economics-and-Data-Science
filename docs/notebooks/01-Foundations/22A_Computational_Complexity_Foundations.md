@@ -53,13 +53,13 @@ As economic models become more complex—incorporating heterogeneous agents, hig
 > **Learning path:** Building on [`21_Symbolic_Computation_with_SymPy.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/01-Foundations/21_Symbolic_Computation_with_SymPy.ipynb); next continue with [`22B_Complexity_in_Economic_Applications.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/01-Foundations/22B_Complexity_in_Economic_Applications.ipynb).
 
 ### Table of Contents
-1. [The Lens: Why Algorithm Speed Matters](#The-Lens:-Why-Algorithm-Speed-Matters)
-2. [Big-O Notation: Characterizing Scalability](#Big-O-Notation:-Characterizing-Scalability)
-3. [Asymptotic Notation, Formally](#Asymptotic-Notation,-Formally)
-4. [Complexity Classes and P vs NP](#Complexity-Classes-and-P-vs-NP)
-5. [Empirical Verification with `timeit`](#Empirical-Verification-with-timeit)
-6. [Summary](#Summary)
-7. [Exercises](#Exercises)
+1. [The Lens: Why Algorithm Speed Matters](#the-lens-why-algorithm-speed-matters)
+2. [Big-O Notation: Characterizing Scalability](#big-o-notation-characterizing-scalability)
+3. [Asymptotic Notation, Formally](#asymptotic-notation-formally)
+4. [Complexity Classes and P vs NP](#complexity-classes-and-p-vs-np)
+5. [Empirical Verification with `timeit`](#empirical-verification-with-timeit)
+6. [Summary](#summary)
+7. [Exercises](#exercises)
 
 ### Big-O Notation: Characterizing Scalability
 
@@ -128,7 +128,7 @@ Asymptotic notation classifies *algorithms*. Complexity theory classifies *probl
 
 > **Definition (NP).** The class of decision problems whose "yes" answers can be **verified** in polynomial time given a suitable certificate. (NP stands for *nondeterministic* polynomial, not "non-polynomial" — a frequent misreading.)
 
-The distinction is between *finding* and *checking*. Given a proposed assignment of workers to tasks, checking whether total cost is below a threshold is easy; *finding* the cheapest assignment among exponentially many may not be. Note $\text{P} \subseteq \text{NP}$ trivially: if you can solve it quickly, you can verify it quickly by re-solving.
+The distinction is between *finding* and *checking*. Given a proposed assignment of workers to tasks, checking whether total cost is below a threshold is easy; *finding* the cheapest assignment among exponentially many may not be. Note $\text{P} \subseteq \text{NP}$ by direct construction: if you can solve a problem quickly, you can verify any claimed answer quickly by re-solving the instance yourself and checking the answer matches.
 
 > **Definition (NP-hard, NP-complete).** A problem $H$ is **NP-hard** if every problem in NP reduces to it in polynomial time — so a polynomial algorithm for $H$ would yield one for *all* of NP. If $H$ is additionally *in* NP, it is **NP-complete**: among the hardest problems in NP.
 
@@ -241,6 +241,8 @@ plt.show()
 **2. Reproduce and diagnose (Applied):** Reproduce an example involving Big-O Notation: Characterizing Scalability, Asymptotic Notation, Formally, then change one input and explain the result before running the code.
 
 **3. Robust extension (Challenge):** Extend the example to a larger or less convenient case and document the correctness and performance checks needed before trusting the result.
+
+**3b. Failure analysis (Challenge):** A student defends an $O(n^2)$ matcher because 'n is small', yet profiling at realistic $n$ shows it consuming 90% of runtime. Diagnose the scaling misjudgment by timing at several $n$ and fitting the growth curve, replace with the $O(n \log n)$ approach, and report measured versus theoretical exponents.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

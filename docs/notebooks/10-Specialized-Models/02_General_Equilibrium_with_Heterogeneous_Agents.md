@@ -52,13 +52,13 @@ The **Aiyagari (1994) model** is the foundational framework for analyzing the ec
 
 ## Table of Contents
 
-1. [Beyond the Representative Agent](#1.-Beyond-the-Representative-Agent:-The-Need-for-Heterogeneity)
-2. [The Aiyagari (1994) Model](#2.-The-Aiyagari-(1994)-Model:-A-Canon-of-Macroeconomics)
-3. [Computational Strategy](#3.-Computational-Strategy:-Solving-the-Model)
-4. [Code Implementation and Results](#4.-Code-Implementation-and-Results)
-5. [The Importance of the Aiyagari Model](#5.-The-Importance-of-the-Aiyagari-Model)
-6. [Summary](#6.-Summary-and-Key-Takeaways)
-7. [Exercises](#7.-Exercises)
+1. [Beyond the Representative Agent](#1-beyond-the-representative-agent-the-need-for-heterogeneity)
+2. [The Aiyagari (1994) Model](#2-the-aiyagari-1994)-Model:-A-Canon-of-Macroeconomics)
+3. [Computational Strategy](#3-computational-strategy-solving-the-model)
+4. [Code Implementation and Results](#4-code-implementation-and-results)
+5. [The Importance of the Aiyagari Model](#5-the-importance-of-the-aiyagari-model)
+6. [Summary](#6-summary-and-key-takeaways)
+7. [Exercises](#7-exercises)
 
 ### 1. Beyond the Representative Agent: The Need for Heterogeneity
 
@@ -308,6 +308,8 @@ $$V(a, y) = \max_{a'} \left\{ u((1+r)a + y - a') + \beta \sum_{y'} \pi(y'|y) V(a
 **2. Reproduce and diagnose (Applied):** Reproduce an example involving 1. Beyond the Representative Agent: The Need for Heterogeneity, 2. The Aiyagari (1994) Model: A Canon of Macroeconomics, then change one input and explain the result before running the code.
 
 **3. Robust extension (Challenge):** Extend the example to a larger or less convenient case and document the correctness and performance checks needed before trusting the result.
+
+**3b. Failure analysis (Challenge):** Krusell-Smith forecasting-rule coefficients oscillate across iterations and agents' forecast errors stay large. Diagnose the too-simple rule and loose tolerance, repair with a richer rule (higher moments) and tighter convergence, and verify the $R^2$ of agents' perceived law.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

@@ -36,28 +36,28 @@ plt.rcParams.update(
 ```
 
 ### Table of Contents
-1. [The Lens: The Engine of Modern Python](#The-Lens:-The-Engine-of-Modern-Python)
-2. [The Hash Map Mechanism](#The-Hash-Map-Mechanism)
-    - [The Hashable Requirement and Immutability](#The-Hashable-Requirement-and-Immutability)
-    - [Hash Collisions and Load Factor](#Hash-Collisions,-Load-Factor,-and-Performance-Degradation)
-    - [Advanced Topic: A Toy Hash Map Implementation](#Advanced-Topic:-A-Toy-Hash-Map-Implementation)
-    - [Performance: O(1) vs. O(n) in Practice](#Performance:-O(1)-vs.-O(n)-in-Practice)
-3. [Idiomatic Dictionary Usage](#Idiomatic-Dictionary-Usage)
-    - [Dictionary Comprehensions](#Dictionary-Comprehensions)
-    - [Merging Dictionaries](#Merging-Dictionaries)
-    - [Handling Missing Keys](#Handling-Missing-Keys)
-    - [Dictionary Views and Set Operations](#Dictionary-Views-and-Set-Operations)
-    - [Efficient Construction and Pop: `fromkeys` and `popitem`](#Efficient-Construction-and-Pop:-fromkeys-and-popitem)
-4. [Specialized Dictionaries in `collections`](#Specialized-Dictionaries-in-collections)
-    - [`Counter`: Frequency Maps](#collections.Counter:-Frequency-Maps)
-    - [`ChainMap`: Hierarchical Configurations](#collections.ChainMap:-Hierarchical-Configurations)
-5. [Advanced Patterns for Robust Code](#Advanced-Patterns-for-Robust-Code)
-    - [Encapsulation with Read-Only Views](#Encapsulation-with-Read-Only-Views)
-    - [Structural Pattern Matching](#Structural-Pattern-Matching-Python-3.10+)
-    - [Dictionaries and Object Internals: `__dict__` vs `__slots__`](#Dictionaries-and-Object-Internals:-__dict__-and-__slots__)
-6. [Summary](#Summary)
-7. [Exercises](#Exercises)
-8. [Challenge Exercise: Building an Inverted Index](#Challenge-Exercise:-Building-an-Inverted-Index)
+1. [The Lens: The Engine of Modern Python](#the-lens-the-engine-of-modern-python)
+2. [The Hash Map Mechanism](#the-hash-map-mechanism)
+    - [The Hashable Requirement and Immutability](#the-hashable-requirement-and-immutability)
+    - [Hash Collisions and Load Factor](#hash-collisions-load-factor-and-performance-degradation)
+    - [Advanced Topic: A Toy Hash Map Implementation](#advanced-topic-a-toy-hash-map-implementation)
+    - [Performance: O(1) vs. O(n) in Practice](#performance-o1)-vs.-O(n)-in-Practice)
+3. [Idiomatic Dictionary Usage](#idiomatic-dictionary-usage)
+    - [Dictionary Comprehensions](#dictionary-comprehensions)
+    - [Merging Dictionaries](#merging-dictionaries)
+    - [Handling Missing Keys](#handling-missing-keys)
+    - [Dictionary Views and Set Operations](#dictionary-views-and-set-operations)
+    - [Efficient Construction and Pop: `fromkeys` and `popitem`](#efficient-construction-and-pop-fromkeys-and-popitem)
+4. [Specialized Dictionaries in `collections`](#specialized-dictionaries-in-collections)
+    - [`Counter`: Frequency Maps](#collectionscounter-frequency-maps)
+    - [`ChainMap`: Hierarchical Configurations](#collectionschainmap-hierarchical-configurations)
+5. [Advanced Patterns for Robust Code](#advanced-patterns-for-robust-code)
+    - [Encapsulation with Read-Only Views](#encapsulation-with-read-only-views)
+    - [Structural Pattern Matching](#structural-pattern-matching-python-310)
+    - [Dictionaries and Object Internals: `__dict__` vs `__slots__`](#dictionaries-and-object-internals-__dict__-and-__slots__)
+6. [Summary](#summary)
+7. [Exercises](#exercises)
+8. [Challenge Exercise: Building an Inverted Index](#challenge-exercise-building-an-inverted-index)
 
 ## The Lens: 07-Dictionaries
 The dictionary, `dict`, is arguably Python's most important data structure. It is the fundamental implementation behind many core features of the language: object attributes are stored in an instance's `__dict__`, module namespaces are dictionaries, and class methods are looked up in a class's dictionary. Its defining characteristic is exceptional performance: insertion, deletion, and lookup operations have an **O(1) average time complexity**, meaning their speed is independent of the dictionary's size. This remarkable efficiency is the result of its underlying implementation as a **hash map** (also known as a hash table).
@@ -285,7 +285,10 @@ print(f"Popped last event: {last_event}")
 print(f"Remaining history: {history}")
 ```
 
-### Specialized Dictionaries in `collections`
+### Specialized Dictionaries in
+
+![OrderedDict architecture](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/01-Foundations/python_ordered_dict_architecture.png)
+*Figure: How OrderedDict remembers insertion order..* `collections`
 
 The `collections` module provides several highly-optimized dictionary subclasses for specialized use cases.
 
@@ -470,6 +473,11 @@ except AttributeError as e:
     print(f"-> Caught expected error: {e}")
 ```
 
+> **Common Pitfalls in This Lecture**
+>
+> - **Missing-key `KeyError`.** Indexing a dictionary with a key that is absent raises `KeyError` mid-run. Prefer `.get(key, default)` when absence is normal, `collections.defaultdict(list)` when accumulating, or `setdefault` for one-time initialization.
+> - **Mutating during iteration.** Adding or deleting keys while iterating a dict raises `RuntimeError: dictionary changed size`. Collect the keys first (`for k in list(d.keys()):`) or construct a fresh dictionary.
+
 ### Three-Tier Practice Ladder
 
 **1. Mechanism and assumptions (Conceptual):** Explain the central computational idea in **07-Dictionaries** and connect it to one explicit economic object or research workflow.
@@ -477,6 +485,8 @@ except AttributeError as e:
 **2. Reproduce and diagnose (Applied):** Reproduce an example involving The Hash Map Mechanism, The Hashable Requirement and Immutability, then change one input and explain the result before running the code.
 
 **3. Robust extension (Challenge):** Extend the example to a larger or less convenient case and document the correctness and performance checks needed before trusting the result.
+
+**3b. Failure analysis (Challenge):** A loop that deletes low-balance accounts while iterating a dictionary raises `RuntimeError: dictionary changed size during iteration`, and an earlier `.lookup()` on a missing ID crashed production. Diagnose both failures, fix with `list(d.keys())` (or a comprehension) and `.get` defaults, and add a regression test for the missing-key path.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 

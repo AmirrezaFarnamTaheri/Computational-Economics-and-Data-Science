@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import unicodedata
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -64,6 +65,47 @@ def rewrite_links(text: str, notebook: Path) -> str:
     return LINK_RE.sub(notebook_link, IMAGE_RE.sub(image, text))
 
 
+def _mkdocs_slug(title: str) -> str:
+    """Slugify like Python-Markdown's toc extension used by the docs theme."""
+    value = unicodedata.normalize("NFKD", title)
+    value = value.encode("ascii", "ignore").decode("ascii")
+    value = re.sub(r"[^\w\s-]", "", value.lower())
+    return re.sub(r"[-\s]+", "-", value).strip("-")
+
+
+def convert_headings_and_anchors(text: str) -> str:
+    """Rewrite notebook TOC anchors to the slugs the docs build generates.
+
+    Jupyter exports headings with GitHub-style anchors (spaces become
+    hyphens, dots and apostrophes are kept, e.g. ``#3.1-Probability-Spaces``).
+    The Material theme slugifies headings the Python-Markdown way instead:
+    punctuation is dropped outright (``3.1`` becomes ``31``).  A table of
+    contents copied from the notebook therefore lands on missing anchors.
+    Slugs are computed from the page's own headings when available, falling
+    back to the same algorithm for cross-references.
+    """
+    headings: set[str] = set()
+    in_code_fence = False
+    out_lines: list[str] = []
+    for line in text.split("\n"):
+        if line.lstrip().startswith("```"):
+            in_code_fence = not in_code_fence
+            out_lines.append(line)
+            continue
+        heading = None if in_code_fence else re.match(r"^(#{1,6})\s+(.+?)\s*$", line)
+        if heading:
+            headings.add(heading.group(2))
+        out_lines.append(line)
+    body = "\n".join(out_lines)
+
+    def anchor(match: re.Match[str]) -> str:
+        name = match.group(2)[1:]
+        slug = _mkdocs_slug(name if name not in headings else name)
+        return f"{match.group(1)}#{slug}{match.group(3)}"
+
+    return re.sub(r"(\[[^\]]*\]\()(#[^)\s]+)(\))", anchor, body)
+
+
 def convert(notebook: Path) -> str:
     nb = json.loads(notebook.read_text(encoding="utf-8"))
     rel = notebook.relative_to(ROOT).as_posix()
@@ -80,7 +122,7 @@ def convert(notebook: Path) -> str:
         if not text:
             continue
         if cell.get("cell_type") == "markdown":
-            lines += [rewrite_links(text, notebook), ""]
+            lines += [rewrite_links(convert_headings_and_anchors(text), notebook), ""]
         elif cell.get("cell_type") == "code":
             lines += ["```python", text, "```", ""]
     return "\n".join(lines).rstrip() + "\n"

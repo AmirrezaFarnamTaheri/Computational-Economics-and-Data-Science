@@ -65,6 +65,9 @@ SVMs are theoretically grounded in statistical learning theory (VC dimension) an
 <a id='intro'></a>
 ## 1. The Geometric Intuition: Maximal Margin Classifier
 
+![Kernel trick](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/07-Machine-Learning/kernel_trick.png)
+*Figure: The kernel trick: implicit feature maps through inner products..*
+
 Support Vector Machines (SVMs) are a powerful and elegant class of supervised learning algorithms. At their core, they are based on a simple geometric idea. For a linearly separable dataset, there can be infinitely many hyperplanes (lines in 2D, planes in 3D, etc.) that separate the classes.
 
 > **Historical Context: The SVM**
@@ -185,6 +188,8 @@ They are less effective on very large datasets, as the training time complexity 
 **2. Reproduce and diagnose (Applied):** Build a leakage-safe validation experiment using 1. The Geometric Intuition: Maximal Margin Classifier, 2. Support Vectors and the Soft Margin. Compare a simple baseline with the featured method using an economically relevant metric and report uncertainty across folds or seeds.
 
 **3. Robust extension (Challenge):** Stress-test the model under temporal, subgroup, or covariate distribution shift. Identify which performance degradation matters for the downstream economic decision and propose one mitigation without using the test set for tuning.
+
+**3b. Failure analysis (Challenge):** An RBF SVM scores 100% train / 60% test with $C = 10^4$, $\gamma = 10$. Diagnose the overfitting configuration (wiggly boundary memorizing points), repair via cross-validated grid search over $(C, \gamma)$, and visualize the decision boundary smoothness before and after.
 
 <details>
 <summary>Solution guidance</summary>

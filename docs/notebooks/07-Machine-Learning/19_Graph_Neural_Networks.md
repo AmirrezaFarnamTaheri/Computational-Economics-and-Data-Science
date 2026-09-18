@@ -68,6 +68,63 @@ By stacking multiple layers, a node can receive information from nodes that are 
 
 ![GNN Message Passing](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/07-Machine-Learning/gnn_message_passing.png)
 
+<a id='mp-lab'></a>
+### 2.1 Code Lab: One Round of Message Passing by Hand
+
+A common propagation rule averages each node's neighbourhood
+
+$$
+H^{(k+1)} = \sigma\!\left(\tilde{D}^{-1}\tilde{A}\,\tilde{H}^{(k)} W^{(k)}\right),
+$$
+
+where $\tilde{A} = A + I$ adds self-loops and $\tilde{D}$ is its degree matrix, so every row of $\tilde{D}^{-1}\tilde{A}$ sums to one. (The original Kipf & Welling GCN uses the symmetric normalizer $\tilde{D}^{-1/2}\tilde{A}\tilde{D}^{-1/2}$ instead, which trades exact averaging for better numerical behaviour on undirected graphs.) The lab below runs **one layer by hand in NumPy**.
+
+**Dimension notes:** graph with $N$ nodes: adjacency $A \in \mathbb{R}^{N \times N}$ (self-loops give $\tilde{A}$), degree matrix $\tilde{D}$ diagonal; node features $\tilde{H}^{(k)} \in \mathbb{R}^{N \times d_k}$ transform via $W^{(k)} \in \mathbb{R}^{d_k \times d_{k+1}}$.
+
+```python
+import numpy as np
+
+rng = np.random.default_rng(42)
+
+# Small directed supply-chain graph: supplier -> factory -> retailer -> consumer
+names = ["supplier", "factory", "retailer", "consumer"]
+A = np.array([
+    [0, 1, 0, 0],
+    [0, 0, 1, 0],
+    [0, 0, 0, 1],
+    [0, 0, 0, 0],
+], dtype=float)
+
+# Node features: e.g., [inventory, backlog]
+H = np.array([
+    [10.0, 0.0],
+    [ 2.0, 5.0],
+    [ 8.0, 1.0],
+    [ 1.0, 9.0],
+])
+
+# Add self-loops, then ROW-normalize so every node averages over its
+# closed neighbourhood (itself + direct neighbours).
+A_tilde = A + np.eye(len(A))
+A_norm = A_tilde / A_tilde.sum(axis=1, keepdims=True)
+
+# One GCN-style layer with an arbitrary weight matrix and ReLU
+W = rng.normal(scale=0.5, size=(H.shape[1], 3))  # 2 features -> 3 hidden units
+H_next = np.maximum(A_norm @ H @ W, 0)
+
+print("Node order:", names)
+print("\nFeatures before message passing:\n", H)
+print("\nFeatures after one normalized message-passing layer:\n",
+      np.round(H_next, 3))
+
+# Sanity checks: every row of the normalized operator sums to one, and a
+# constant signal must pass through unchanged.
+assert np.allclose(A_norm.sum(axis=1), 1.0), "rows must sum to 1"
+out_const = A_norm @ np.ones((4, 2))
+assert np.allclose(out_const, np.ones((4, 2))), "constants must be preserved"
+print("\nChecks passed: rows normalize to 1; constant signals are preserved.")
+```
+
 <a id='gnn-case-study'></a>
 ## 3. Case Study: Supply Chain Shock Propagation
 
@@ -113,6 +170,8 @@ plt.rcParams.update({'figure.figsize': (10, 6), 'font.size': 12})
 
 **3. Robust extension (Challenge):** Stress-test the model under temporal, subgroup, or covariate distribution shift. Identify which performance degradation matters for the downstream economic decision and propose one mitigation without using the test set for tuning.
 
+**3b. Failure analysis (Challenge):** Message passing changes nothing on a graph of isolated components, and node IDs leak the label through an index feature. Diagnose the graph-construction error and the index leakage, repair the adjacency and drop the leaky feature, and verify with a label-permutation test that accuracy falls to chance.
+
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 
 <a id='exercises'></a>
@@ -132,3 +191,4 @@ Graph Neural Networks (GNNs) operate directly on graph-structured data, using a 
 - Hastie, T., Tibshirani, R. & Friedman, J. (2009). *The Elements of Statistical Learning* (2nd ed.). Springer.
 - James, G., Witten, D., Hastie, T., Tibshirani, R. & Taylor, J. (2023). *An Introduction to Statistical Learning with Applications in Python*. Springer.
 - Goodfellow, I., Bengio, Y. & Courville, A. (2016). *Deep Learning*. MIT Press.
+- Kipf, T. N. & Welling, M. (2017). *Semi-Supervised Classification with Graph Convolutional Networks*. ICLR 2017.

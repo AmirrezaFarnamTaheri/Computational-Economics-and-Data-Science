@@ -50,8 +50,6 @@ By the end of this notebook, you will be able to:
 
 ```python
 # === Environment Setup ===
-import warnings
-
 import matplotlib.pyplot as plt
 import numpy as np
 from numpy.polynomial import chebyshev
@@ -91,7 +89,10 @@ np.set_printoptions(suppress=True, precision=4, linewidth=120)
   * [2. Applied: Value Function Interpolation](#2-applied-value-function-interpolation)
   * [3. Challenge: 2D Interpolation](#3-challenge-2d-interpolation)
 
-## 1. The Runge Phenomenon: A Warning
+## 1. The Runge Phenomenon
+
+![Runge phenomenon](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/02-Numerical-Methods/runge_phenomenon.png)
+*Figure: High-degree interpolation oscillating on equispaced nodes..*: A Warning
 
 Intuition suggests that using a higher-degree polynomial to fit more points yields a better approximation. **This is wrong.**
 
@@ -125,13 +126,16 @@ plt.show()
 
 ## 2. Chebyshev Approximation: The Solution
 
+![Chebyshev interpolation](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/images/02-Numerical-Methods/chebyshev_approximation.png)
+*Figure: Chebyshev nodes tame the oscillation..*
+
 To fix Runge's problem, we cluster the nodes near the endpoints. These are **Chebyshev nodes**.
 $$ x_k = \cos\left(\frac{2k-1}{2n}\pi\right) $$
 
-Approximating a smooth function using Chebyshev nodes provides **spectral convergence**—the error decreases exponentially with $N$.
+For a function analytic in a complex neighborhood of the interval, Chebyshev interpolation can achieve geometric (exponential) convergence in $N$. Infinite smoothness alone does not guarantee an exponential rate; finite differentiability generally gives algebraic convergence.
 
 ### The Lebesgue Constant
-The maximum error of polynomial interpolation is bounded by $||f - P_n|| \le (1 + \Lambda_n) ||f - p^*||$, where $p^*$ is the best possible polynomial approximation. $\Lambda_n$ is the **Lebesgue Constant**, which depends *only* on the node locations. For equidistant nodes, $\Lambda_n$ grows exponentially ($2^n$). For Chebyshev nodes, it grows logarithmically ($\log n$). This explains why Chebyshev is near-optimal.
+The maximum error of polynomial interpolation is bounded by $||f - P_n|| \le (1 + \Lambda_n) ||f - p^*||$, where $p^*$ is the best possible polynomial approximation. $\Lambda_n$ is the **Lebesgue Constant**, which depends *only* on the node locations. For equidistant nodes, $\Lambda_n$ grows exponentially with $n$. For Chebyshev nodes, it grows only on the order of $\log n$. This explains why Chebyshev is near-optimal.
 
 ### Barycentric Interpolation
 The standard way to fit a polynomial (solving the Vandermonde system) is numerically unstable for high degrees ($N > 20$). The **Barycentric Formula** is a stable, $O(N)$ way to evaluate the interpolating polynomial. `scipy.interpolate.BarycentricInterpolator` uses this method automatically.
@@ -166,7 +170,7 @@ Sometimes we don't want a global polynomial. We want to connect the dots piecewi
 
 *   **Linear:** Connects dots with lines. Preserves monotonicity but has kinks (discontinuous derivative).
 *   **Cubic Spline:** Connects with cubic polynomials. Smooth derivatives, but can overshoot.
-*   **PCHIP:** Piecewise Cubic Hermite Interpolating Polynomial. Smooth AND preserves monotonicity. **Best for Value Functions.**
+*   **PCHIP:** Piecewise Cubic Hermite Interpolating Polynomial. Smooth AND preserves monotonicity (note: monotonicity, not concavity - PCHIP cannot create spurious extrema, but it can locally bend the wrong way for concave data). **Best for Value Functions.**
 
 ### Application: Optimal Policy Functions
 In Dynamic Programming (Bellman Equations), the Value Function $V(k)$ is often concave and monotonic. Using a method that violates these properties (like a high-degree polynomial on a coarse grid) can introduce fake local maxima, confusing the optimizer. PCHIP or Linear interpolation is safer.
@@ -182,6 +186,9 @@ v_true = np.log(k_fine)
 
 # Interpolators
 linear_interp = interp1d(k_grid, v_grid, kind='linear')
+# CubicSpline defaults to bc_type='not-a-knot' (the third derivative is
+# continuous at the two interior-most breaks); pass bc_type='natural' to
+# zero the second derivatives at the endpoints instead.
 cubic_interp = CubicSpline(k_grid, v_grid)
 pchip_interp = PchipInterpolator(k_grid, v_grid)
 
@@ -189,8 +196,10 @@ pchip_interp = PchipInterpolator(k_grid, v_grid)
 plt.figure(figsize=(10, 6))
 plt.plot(k_fine, v_true, 'k-', lw=2, label='True V(k) = log(k)')
 plt.plot(k_grid, v_grid, 'ko', label='Grid Points')
+plt.plot(k_fine, linear_interp(k_fine), 'b-.', label='Linear (kinks)')
 plt.plot(k_fine, cubic_interp(k_fine), 'r--', label='Cubic Spline (Overshoots)')
-plt.plot(k_fine, pchip_interp(k_fine), 'g:', lw=3, label='PCHIP (Preserves Concavity)')
+plt.plot(k_fine, pchip_interp(k_fine), 'g:', lw=3,
+         label='PCHIP (Preserves Monotonicity)')
 plt.title('Why Shape Preservation Matters in Economics')
 plt.legend()
 plt.show()
@@ -233,10 +242,10 @@ $$ R(V(k)) = 0 $$
 Instead of solving for values at grid points (Finite Difference), **Collocation** methods assume the solution is a weighted sum of basis functions:
 $$ V(k) \approx \hat{V}(k) = \sum_{i=1}^N c_i \phi_i(k) $$
 
-We find the coefficients $c_i$ by forcing the residual to be zero at $N$ specific points (collocation nodes):
+We find the coefficients $c_i$ — equivalently the vector $c \in \mathbb{R}^N$, one weight per basis function $\phi_i: \mathbb{R} \to \mathbb{R}$ — by forcing the residual to be zero at $N$ collocation nodes $k_1, \dots, k_N \in \mathbb{R}$:
 $$ R(\hat{V}(k_j)) = 0 \quad \text{for } j=1, \dots, N $$
 
-If we use **Chebyshev polynomials** as basis functions and **Chebyshev nodes** as collocation points, this method is known as **Orthogonal Collocation**. It provides spectral accuracy, meaning the error decays exponentially as $N$ increases.
+If we use **Chebyshev polynomials** as basis functions and **Chebyshev nodes** as collocation points, this method is known as **Orthogonal Collocation**. For analytic solutions and a stable discretization, it can achieve exponential error decay as $N$ increases; smoothness, boundary conditions, and conditioning determine the rate in a particular problem.
 
 ```python
 # Example: Approximating f(x) = exp(x) on [-1, 1] using Chebyshev Collocation
@@ -291,7 +300,7 @@ Interpolating in 1D is easy. In $D$ dimensions, the number of grid points grows 
 *   $N=10, D=4 \implies 10,000$ points.
 *   $N=10, D=10 \implies 10,000,000,000$ points.
 
-This is why standard grid-based methods fail for complex models (e.g., Heterogeneous Agents with many states).
+This is why standard grid-based methods become impractical for complex models (e.g., Heterogeneous Agents with many states).
 
 **Solutions:**
 1.  **Sparse Grids (Smolyak):** Only keep the most "important" cross-terms. If $f(x, y)$ is smooth, the cross term $x^N y^N$ has a tiny coefficient. We can drop it without losing much accuracy. Smolyak grids grow as $N (\log N)^{D-1}$ instead of $N^D$.
@@ -356,6 +365,8 @@ $$f(x) = \frac{1}{1 + 25x^2}$$
 
 $$x_k = \cos\left(\frac{2k-1}{2n}\pi\right)$$
 
+**Dimension notes:** approximant $\hat{f}: \mathbb{R} \to \mathbb{R}$ with coefficients $c_i \in \mathbb{R}$; Lagrange basis built from distinct nodes $x_j \in \mathbb{R}$; Runge example lives on $[-1, 1]$; Chebyshev nodes $x_k \in [-1, 1]$.
+
 ## Economic Interpretation: Approximation error becomes policy error
 
 Approximation quality matters because value functions, policy rules, and equilibrium maps are repeatedly evaluated inside solvers. A small local interpolation error can alter an argmax, shift a simulated distribution, and then feed back into market clearing. Chebyshev nodes and sparse grids are useful precisely because they allocate approximation capacity where global polynomial error would otherwise become economically consequential.
@@ -366,7 +377,7 @@ Approximation quality matters because value functions, policy rules, and equilib
 *   **Avoid Equidistant Polynomials:** They oscillate. Use Chebyshev nodes if you can choose your grid.
 *   **Value Functions need Shape:** Use `PchipInterpolator` or Linear interpolation for VFI to avoid creating fake local optima.
 *   **Smooth Functions need Chebyshev:** For Euler equation methods, Chebyshev polynomials are incredibly efficient.
-*   **High Dimensions:** Standard grids die after D=4. You need smarter methods.
+*   **High Dimensions:** Tensor-grid sizes grow as $N^D$, so they become impractical after a few dimensions. You need smarter methods.
 
 ## Exercises
 
@@ -379,6 +390,8 @@ Assume a Value Function $V(k) = \ln(k)$. Interpolate it on the range $[1, 10]$ u
 ### 3. Challenge: 2D Interpolation
 Use `scipy.interpolate.RegularGridInterpolator` to approximate the production function $F(K, L) = K^{0.3} L^{0.7}$.
 Create a grid for $K \in [1, 10]$ and $L \in [1, 10]$. Evaluate the error at the off-grid point $K=5.5, L=5.5$.
+
+**Failure analysis (Challenge):** A degree-20 polynomial fit on 21 equispaced nodes predicts nonsense near the endpoints while fitting the middle well. Diagnose Runge oscillation, repair with Chebyshev nodes or a cubic spline, and quantify the max error on a dense grid before and after.
 
 ## References & Further Reading
 

@@ -80,6 +80,8 @@ RL provides a computational framework for solving dynamic optimization problems 
 * **Deep Learning:** Neural network training (Module 07 - DL Foundations).
 * **Learning-path prerequisite:** [`14_Multi_modal_Fusion.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/07-Machine-Learning/14_Multi_modal_Fusion.ipynb)
 
+> **Historical Context — Checkers to Atari (1959–2015).** Arthur Samuel's checkers program learned by self-play at IBM in 1959 — machine learning demonstrated before the term existed. Watkins' Q-learning (1989), Tesauro's TD-Gammon (1992), Mnih et al.'s DQN playing Atari from pixels (Nature 2015), and AlphaGo beating Lee Sedol (2016) mark the milestones behind this lecture's algorithms.
+
 > **Learning path:** Building on [`14_Multi_modal_Fusion.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/07-Machine-Learning/14_Multi_modal_Fusion.ipynb); next continue with [`16_Advanced_Deep_RL.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/07-Machine-Learning/16_Advanced_Deep_RL.ipynb).
 
 <a id='intro'></a>
@@ -119,6 +121,8 @@ $$ V^*(s) = \max_{a} E[R_{t+1} + \gamma V^*(S_{t+1}) | S_t=s, A_t=a] $$
 $$ Q^*(s, a) = E[R_{t+1} + \gamma \max_{a'} Q^*(S_{t+1}, a') | S_t=s, A_t=a] $$ 
 If we know the transition dynamics $P$ and reward function $R$, we can solve these equations using dynamic programming methods like **value iteration**.
 
+**Dimension notes:** value functions are scalar fields over the state(/action) space: $V^*: \mathcal{S} \to \mathbb{R}$, $Q^*: \mathcal{S} \times \mathcal{A} \to \mathbb{R}$; rewards scalar, discount $\gamma \in [0, 1)$.
+
 <a id='q-learning'></a>
 ## 3. Model-Free Learning: Q-Learning
 
@@ -135,6 +139,8 @@ Where $\alpha$ is the learning rate. Q-learning is an **off-policy** algorithm b
 ### Code Lab: Q-Learning to Solve a Grid World
 
 ```python
+# Seeded for reproducibility.
+rng = np.random.default_rng(42)
 
 class GridWorld:
     def __init__(self):
@@ -155,7 +161,7 @@ def q_learning(env, episodes=1000, alpha=0.1, gamma=0.99, epsilon=0.1):
         state = env.reset()
         done = False
         while not done:
-            action = np.argmax(q_table[state]) if np.random.random() > epsilon else np.random.choice(4)
+            action = np.argmax(q_table[state]) if rng.random() > epsilon else rng.choice(4)
             next_state, reward = env.step(action)
             q_table[state][action] = q_table[state][action] + alpha * (reward + gamma * np.max(q_table[next_state]) - q_table[state][action])
             state = next_state
@@ -184,6 +190,8 @@ Training a Q-network with the standard Q-learning update is notoriously unstable
 ### Code Lab: Deep Q-Network (DQN) for CartPole
 
 ```python
+# Seeded for reproducibility.
+rng = np.random.default_rng(42)
 if DEEP_RL_AVAILABLE:
     class DQNAgent:
         def __init__(self, state_size, action_size):
@@ -203,7 +211,7 @@ if DEEP_RL_AVAILABLE:
         def update_target_model(self): self.target_model.set_weights(self.model.get_weights())
         def remember(self, s, a, r, s_next, d): self.memory.append((s, a, r, s_next, d))
         def act(self, state):
-            if np.random.rand() <= self.epsilon: return random.randrange(self.action_size)
+            if rng.random() <= self.epsilon: return random.randrange(self.action_size)
             return np.argmax(self.model.predict(state, verbose=0)[0])
         def replay(self, batch_size):
             minibatch = random.sample(self.memory, batch_size)
@@ -260,6 +268,8 @@ $$ \nabla_\theta J(\theta) = E_\pi [\nabla_\theta \log \pi(A_t|S_t; \theta) Q^\p
 
 The **REINFORCE** algorithm is the simplest implementation of this theorem. It runs an episode, calculates the actual return $G_t$ at each step (as a noisy estimate of $Q^\pi$), and updates the policy parameters in the direction that makes actions leading to high returns more likely.
 
+**Dimension notes:** policy parameters $\theta \in \mathbb{R}^{p}$; $\pi(a \mid s; \theta)$ is a distribution over actions; objective $J(\theta) \in \mathbb{R}$ is expected return, so $\nabla_\theta J \in \mathbb{R}^{p}$ matches the parameter vector.
+
 <a id='actor-critic'></a>
 ## 6. Actor-Critic Methods
 
@@ -289,6 +299,8 @@ The agent faces a trade-off: harvesting more today yields higher immediate profi
 ### Case Study: Q-Learning for Optimal Harvesting
 
 ```python
+# Seeded for reproducibility.
+rng = np.random.default_rng(42)
 
 class FisheryEnv:
     def __init__(self, k=100, r=0.1, price=1):
@@ -311,7 +323,7 @@ def q_learning_fishery(env, episodes=20000, alpha=0.1, gamma=0.9, epsilon=0.1):
     for ep in range(episodes):
         state = env.reset()
         for t in range(50):
-            action_idx = np.argmax(q_table[state]) if np.random.random() > epsilon else np.random.choice(n_actions)
+            action_idx = np.argmax(q_table[state]) if rng.random() > epsilon else rng.choice(n_actions)
             harvest_amount = action_idx * 5
             next_state, reward = env.step(harvest_amount)
             q_table[state, action_idx] += alpha * (reward + gamma * np.max(q_table[next_state]) - q_table[state, action_idx])
@@ -327,7 +339,7 @@ q_table_fish = q_learning_fishery(fish_env)
 optimal_policy_fish = np.argmax(q_table_fish, axis=1) * 5
 
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(18, 7))
-fig.suptitle('Figure 4: Optimal Fishery Management via Q-Learning', fontsize=18, y=1.02)
+fig.suptitle('Figure 3: Optimal Fishery Management via Q-Learning', fontsize=18, y=1.02)
 im = ax1.imshow(q_table_fish.T, cmap='viridis', aspect='auto', origin='lower')
 ax1.set_title('a) Learned Q-Values'); ax1.set_xlabel('Current Fish Stock'); ax1.set_ylabel('Harvest Amount')
 fig.colorbar(im, ax=ax1, label='Expected Future Reward')
@@ -338,6 +350,11 @@ plt.show()
 
 > **Note:** The Q-learning agent learns a sensible policy. When the fish stock is low, it harvests very little to allow the stock to recover. When the stock is high, it harvests a larger amount, maintaining a sustainable equilibrium.
 
+> **Common Pitfalls in This Lecture**
+>
+> - **The deadly triad.** Function approximation + bootstrapping + off-policy learning can diverge — Q-networks happily invent infinite values. Stabilize with target networks, experience replay and gradient clipping, as DQN does.
+> - **Terminal-state bootstrapping.** TD targets must bootstrap only on non-terminal next states: using $\max_a Q(s', a)$ for a terminal $s'$ injects phantom future value. Handle `done` flags explicitly in the target computation.
+
 ### Three-Tier Practice Ladder
 
 **1. Mechanism and assumptions (Conceptual):** Explain the loss/objective and inductive bias of **15 Reinforcement Learning**. Distinguish optimization error, estimation error, and generalization error in the economic use case.
@@ -345,6 +362,8 @@ plt.show()
 **2. Reproduce and diagnose (Applied):** Build a leakage-safe validation experiment using 1. Introduction: Learning Goal-Directed Behavior, 2. The Mathematical Framework: Markov Decision Processes (MDPs). Compare a simple baseline with the featured method using an economically relevant metric and report uncertainty across folds or seeds.
 
 **3. Robust extension (Challenge):** Stress-test the model under temporal, subgroup, or covariate distribution shift. Identify which performance degradation matters for the downstream economic decision and propose one mitigation without using the test set for tuning.
+
+**3b. Failure analysis (Challenge):** DQN on CartPole diverges: the replay buffer holds 500 transitions and the target network updates every step. Diagnose the deadly-triad configuration, repair with standard buffer size, target-network period, and gradient clipping, and compare learning curves across the five most-cited fixes.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 
@@ -389,6 +408,8 @@ $$Q(s_t, a_t) \leftarrow Q(s_t, a_t) + \alpha \left( \underbrace{r_{t+1} + \gamm
 
 $$\nabla_\theta J(\theta) = E_\pi [\nabla_\theta \log \pi(A_t|S_t; \theta) Q^\pi(S_t, A_t)]$$
 
+**Dimension notes:** $V^*, Q^*$ scalar fields; returns discounted sums of scalar rewards; TD errors and gradients are scalars/vectors of the matching parameter dimensions.
+
 ### Solutions to Exercises
 
 ---
@@ -428,3 +449,4 @@ An **on-policy** algorithm updates its policy based on actions taken by that sam
 - Hastie, T., Tibshirani, R. & Friedman, J. (2009). *The Elements of Statistical Learning* (2nd ed.). Springer.
 - James, G., Witten, D., Hastie, T., Tibshirani, R. & Taylor, J. (2023). *An Introduction to Statistical Learning with Applications in Python*. Springer.
 - Goodfellow, I., Bengio, Y. & Courville, A. (2016). *Deep Learning*. MIT Press.
+- Sutton, R. S. & Barto, A. G. (2018). *Reinforcement Learning: An Introduction* (2nd ed.). MIT Press.

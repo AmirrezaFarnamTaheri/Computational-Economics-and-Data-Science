@@ -98,6 +98,8 @@ Let's break down the components in the context of econometric modeling:
 
 - **Marginal Likelihood, $P(D)$:** This term represents the probability of the data, averaged over all possible values of the parameters, weighted by our prior beliefs: $P(D) = \int P(D|\theta)P(\theta) d\theta$. This denominator acts as a normalizing constant, ensuring the posterior distribution integrates to 1. For parameter estimation, we can often ignore it, as the posterior is proportional to the numerator: **Posterior $\propto$ Likelihood $\times$ Prior**. However, the marginal likelihood (also called **model evidence**) is crucial for Bayesian model comparison.
 
+**Dimension notes:** $D$ denotes the observed data sample; $\theta \in \Theta \subseteq \mathbb{R}^k$; prior, likelihood and posterior are scalar-valued functions on $\Theta$, normalized to integrate to one where applicable.
+
 ## 2. Conjugate Priors: An Analytical Shortcut
 
 Before modern computational methods became widespread, Bayesian analysis relied heavily on finding analytical solutions to the updating problem. This is possible in special cases where the **prior distribution is conjugate to the likelihood function**. A prior is conjugate if the resulting posterior distribution belongs to the same family of distributions as the prior.
@@ -338,6 +340,8 @@ $$\underbrace{P(\theta|D)}_{\text{Posterior}} = \frac{\overbrace{P(D|\theta)}^{\
 
 $$y_i = \alpha + \beta x_i + \epsilon_i, \quad \text{where} \quad \epsilon_i \sim N(0, \sigma^2)$$
 
+**Dimension notes:** $\theta \in \mathbb{R}^k$ throughout; densities are scalar functions of $\theta$ given data $D$, and posterior predictive statements integrate the $k$-vector $\theta$ out.
+
 ### Three-Tier Practice Ladder
 
 **1. Mechanism and assumptions (Conceptual):** Define the estimand in **11 Bayesian Econometrics**, list the identifying assumptions, and give a concrete data-generating process that violates one assumption while leaving the others intact.
@@ -345,6 +349,8 @@ $$y_i = \alpha + \beta x_i + \epsilon_i, \quad \text{where} \quad \epsilon_i \si
 **2. Reproduce and diagnose (Applied):** Implement or reproduce the estimator using the material on 1. The Core of the Bayesian Paradigm: Bayes' Theorem, 2. Conjugate Priors: An Analytical Shortcut. Report uncertainty and at least two diagnostics; then compare with an alternative specification that targets the same estimand.
 
 **3. Robust extension (Challenge):** Run a Monte Carlo or sensitivity exercise that varies the most fragile identifying condition. Quantify bias/coverage or the range of estimates and state what evidence would change your substantive conclusion.
+
+**3b. Failure analysis (Challenge):** The posterior sits on top of the prior despite 1,000 observations, and the two MCMC chains have $\hat{R} = 1.4$. Diagnose the sign-flipped likelihood and the non-converged sampler, repair both, and validate the pipeline by recovering known parameters from synthetic data.
 
 > Use the existing exercises above when they target the same skill; this ladder makes the intended progression explicit rather than replacing instructor-authored problems.
 
