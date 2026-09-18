@@ -53,6 +53,26 @@ def _page_anchors(text: str) -> set[str]:
     return anchors
 
 
+def _iter_prose_links(text: str):
+    """Yield (target, line_no) for Markdown links outside fenced code blocks.
+
+    Generated notebook pages embed source code in ```python fences, and a
+    Python subscript such as ``axes[0].plot(a_fine_grid, ...)`` matches the
+    bare link regex while being code, not a link. Scanning it produces false
+    "broken docs link" findings, so fences are skipped the same way the
+    heading scan skips them.
+    """
+    in_fence = False
+    for line_no, line in enumerate(text.split("\n"), 1):
+        if line.lstrip().startswith("```"):
+            in_fence = not in_fence
+            continue
+        if in_fence:
+            continue
+        for match in LINK_RE.finditer(line):
+            yield match.group(1), line_no
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--strict", action="store_true")
@@ -81,7 +101,7 @@ def main() -> int:
         # failure mode behind the TOC-anchor drift: headings get renamed while the
         # links pointing at them are left stale.
         anchors = _page_anchors(text)
-        for target in LINK_RE.findall(text):
+        for target, _line in _iter_prose_links(text):
             target = target.strip().split("?", 1)[0].strip("<>")
             page_part, sep, frag = target.partition("#")
             if not sep or not frag:
@@ -104,15 +124,24 @@ def main() -> int:
                 anchor_findings.append(
                     f"broken anchor: {path.relative_to(ROOT)} -> #{frag}"
                 )
-        # Generated notebook pages intentionally contain source-faithful prose and
-        # many external links; only validate documentation-local page links there.
-        for target in LINK_RE.findall(text):
+        # Every relative link to a local target must resolve, not only
+        # Markdown/HTML pages. Notebook badge links such as `../LICENSE` are
+        # copied verbatim into docs/notebooks/<track>/ where they point at a
+        # nonexistent file; restricting this check to .md/.html made that a
+        # silent blind spot while mkdocs emitted an unresolved-link WARNING.
+        for target, _line in _iter_prose_links(text):
             target = target.strip().split("#", 1)[0].split("?", 1)[0].strip("<>")
             if not target or re.match(r"^(?:https?:|mailto:|data:)", target, re.I):
                 continue
-            if not target.endswith((".md", ".html")):
-                continue
             resolved = (path.parent / target).resolve()
+            try:
+                resolved.relative_to(ROOT.resolve())
+            except ValueError:
+                # Escapes the repository root entirely (e.g. a parent link).
+                findings.append(
+                    f"broken docs link: {path.relative_to(ROOT)} -> {target}"
+                )
+                continue
             if not resolved.is_file():
                 findings.append(
                     f"broken docs link: {path.relative_to(ROOT)} -> {target}"

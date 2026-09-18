@@ -14,3 +14,5 @@ The Appendix track collects mathematical foundations and practical research tool
 - [Publishing with Quarto](../notebooks/Appendix/T1_Publishing_with_Quarto.md)
 - [Replication Exercise: Chetty et al. (2014)](../notebooks/Appendix/T2_Replication_Exercise_Chetty_2014.md)
 - [Autograding with Otter](../notebooks/Appendix/T3_Autograding_with_Otter.md)
+- [Replication: Card & Krueger (1994)](../notebooks/Appendix/T4_Replication_Card_Krueger_1994.md)
+- [Replication: Fama & French Five-Factor Model](../notebooks/Appendix/T5_Replication_Fama_French_Five_Factor.md)

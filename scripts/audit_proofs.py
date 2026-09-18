@@ -32,21 +32,48 @@ def source(cell: dict) -> str:
     return "".join(src) if isinstance(src, list) else str(src)
 
 
+def iter_source_notebooks(root: Path):
+    """Yield source notebooks only, mirroring audit_curriculum_ast.iter_notebooks.
+
+    An unrestricted ``root.rglob`` also picks up the ``build/exec*`` copies of
+    notebooks that the deterministic-execution lane writes out, which then
+    appear as duplicate rows in the committed audit report and inflate the
+    "theory-heavy notebooks triaged" count with artifacts. Skip the same
+    directories the canonical source enumerator skips.
+    """
+    skip_dirs = frozenset({"build", "node_modules", "venv", ".venv", "site"})
+    for path in sorted(root.rglob("*.ipynb")):
+        rel_parts = path.relative_to(root).parts
+        if ".ipynb_checkpoints" in rel_parts:
+            continue
+        if any(part.startswith(".") for part in rel_parts[:-1]):
+            continue
+        if any(part in skip_dirs for part in rel_parts):
+            continue
+        yield path
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--root", type=Path, default=Path(__file__).resolve().parents[1]
     )
     parser.add_argument("--output-dir", type=Path, default=None)
+    parser.add_argument(
+        "--strict",
+        action="store_true",
+        help="fail when a theory-heavy notebook is missing the structural "
+        "ingredients of a derivation (assumption, formal statement, working, "
+        "economic interpretation)",
+    )
     args = parser.parse_args()
     root = args.root.resolve()
     output = (args.output_dir or root / "audit").resolve()
     output.mkdir(parents=True, exist_ok=True)
 
     rows = []
-    for path in sorted(root.rglob("*.ipynb")):
-        if ".ipynb_checkpoints" in path.parts:
-            continue
+    weak: list[str] = []
+    for path in iter_source_notebooks(root):
         nb = json.loads(path.read_text(encoding="utf-8"))
         markdown = "\n\n".join(
             source(c) for c in nb.get("cells", []) if c.get("cell_type") == "markdown"
@@ -71,6 +98,8 @@ def main() -> int:
                 "structural_score": score,
             }
         )
+        if score < 3:
+            weak.append(f"{path.relative_to(root)} (score {score}/4)")
 
     rows.sort(
         key=lambda row: (row["structural_score"], -row["theory_term_hits"], row["path"])
@@ -106,8 +135,13 @@ def main() -> int:
         "",
     ]
     (output / "PROOF_STRUCTURE_AUDIT.md").write_text("\n".join(lines), encoding="utf-8")
-    print(f"Triaged {len(rows)} theory-heavy notebooks.")
-    return 0
+    print(
+        f"Triaged {len(rows)} theory-heavy notebooks from source (build/ artifacts excluded)."
+    )
+    if weak:
+        print(f"Structurally incomplete derivations: {len(weak)}")
+        print("\n".join(weak[:20]))
+    return 1 if args.strict and weak else 0
 
 
 if __name__ == "__main__":

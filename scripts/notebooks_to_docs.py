@@ -17,6 +17,14 @@ REPO = (
 RAW = "https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main"
 IMAGE_RE = re.compile(r"(!\[[^\]]*\]\()([^)]+)(\))")
 LINK_RE = re.compile(r"(\[[^\]]+\]\()([^)]+\.ipynb(?:#[^)]*)?)(\))")
+# Any other relative link to a file in the repository: README, LICENSE, data
+# files, PDFs. Copied unchanged these resolve to a nonexistent path under
+# docs/notebooks/<track>/, so they must be rewritten too. The lookbehind
+# accepts both plain links ``[t](dest)`` and links whose text is an image,
+# the badge pattern ``[![t](img)](dest)`` where the ``]`` follows a ``)``.
+FILE_RE = re.compile(
+    r"(?<=[)\]])\]\((?!https?://|mailto:|data:|attachment:|#)([^)]+)\)"
+)
 
 TRACKS = [
     "01-Foundations",
@@ -62,7 +70,25 @@ def rewrite_links(text: str, notebook: Path) -> str:
         suffix = f"#{anchor[0]}" if anchor else ""
         return f"{match.group(1)}{REPO}/blob/main/{rel}{suffix}{match.group(3)}"
 
-    return LINK_RE.sub(notebook_link, IMAGE_RE.sub(image, text))
+    def file_link(match: re.Match[str]) -> str:
+        target = match.group(1).strip()
+        file_part, _sep, _frag = target.partition("#")
+        if not file_part:
+            return match.group(0)
+        resolved = (notebook.parent / file_part).resolve()
+        try:
+            rel = resolved.relative_to(ROOT.resolve()).as_posix()
+        except ValueError:
+            return match.group(0)
+        # Only rewrite links that point at a committed file; a link to a
+        # nonexistent path is a notebook-side defect and should survive
+        # verbatim so the docs audit can report it.
+        if not (ROOT.resolve() / rel).is_file():
+            return match.group(0)
+        return f"]({RAW}/{rel})"
+
+    text = LINK_RE.sub(notebook_link, IMAGE_RE.sub(image, text))
+    return FILE_RE.sub(file_link, text)
 
 
 def _mkdocs_slug(title: str) -> str:
@@ -141,7 +167,10 @@ def main() -> int:
         for notebook in sorted((ROOT / track).glob("*.ipynb")):
             target = DOCS_ROOT / track / f"{notebook.stem}.md"
             target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_text(convert(notebook), encoding="utf-8")
+            # Explicit LF: this output is diffed byte-for-byte against the
+            # committed pages by the CI staleness guard, and on Windows
+            # write_text would otherwise emit CRLF via os.linesep.
+            target.write_text(convert(notebook), encoding="utf-8", newline="\n")
             written += 1
     print(
         f"Generated {written} notebook documentation pages in {DOCS_ROOT.relative_to(ROOT)}"

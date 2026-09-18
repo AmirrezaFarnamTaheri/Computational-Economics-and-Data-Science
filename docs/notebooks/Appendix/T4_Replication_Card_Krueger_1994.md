@@ -6,7 +6,7 @@
 
 # T4 Replication Lab: Card & Krueger (1994) Minimum Wage and Employment
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/Appendix/T4_Replication_Card_Krueger_1994.ipynb) [![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main?filepath=Appendix/T4_Replication_Card_Krueger_1994.ipynb) [![Code License: MIT](https://img.shields.io/badge/Code%20License-MIT-yellow.svg)](../LICENSE) [![Content License: CC BY 4.0](https://img.shields.io/badge/Content%20License-CC%20BY%204.0-blue.svg)](https://creativecommons.org/licenses/by/4.0/)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/Appendix/T4_Replication_Card_Krueger_1994.ipynb) [![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main?filepath=Appendix/T4_Replication_Card_Krueger_1994.ipynb) [![Code License: MIT](https://img.shields.io/badge/Code%20License-MIT-yellow.svg)](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/LICENSE) [![Content License: CC BY 4.0](https://img.shields.io/badge/Content%20License-CC%20BY%204.0-blue.svg)](https://creativecommons.org/licenses/by/4.0/)
 ## The Lens: A Policy Change as a Natural Experiment
 New Jersey raised its minimum wage while neighboring eastern Pennsylvania did not. The empirical question is whether fast-food employment changed differently in New Jersey after the policy. The two-wave restaurant panel makes the canonical difference-in-differences (DiD) estimand transparent: compare the before/after change in the treated state with the same change in the control state.
 
@@ -52,12 +52,35 @@ def locate(relative: str) -> Path:
 
 DATA = locate("data/replications/card_krueger_1994_njmin3.csv")
 df = pd.read_csv(DATA)
-required = {"nj", "d", "d_nj", "fte", "bk", "kfc", "roys", "wendys", "co_owned", "centralj", "southj", "pa1", "pa2"}
+required = {"nj", "d", "d_nj", "fte", "bk", "kfc", "roys", "wendys", "co_owned", "centralj", "southj", "pa1", "pa2", "demp"}
 missing = required.difference(df.columns)
 assert not missing, f"Missing required columns: {sorted(missing)}"
 assert set(df["nj"].dropna().unique()) <= {0, 1}
 assert set(df["d"].dropna().unique()) <= {0, 1}
-print(f"Loaded {len(df):,} restaurant-wave observations from {DATA}.")
+
+# The public extract has one row per restaurant-wave and no restaurant id, but
+# it stores `demp` (change in employment). Reconstruct the panel pairing by
+# row order within wave and validate it against that recorded change: for
+# every restaurant with both waves observed, demp must equal post - pre.
+waves = {w: part.reset_index(drop=True) for w, part in df.groupby("d")}
+pre, post = waves[0], waves[1]
+both = ~(pre["fte"].isna() | post["fte"].isna())
+implied_change = post.loc[both, "fte"] - pre.loc[both, "fte"]
+assert len(implied_change) > 0, "no restaurant has both waves observed"
+assert np.allclose(implied_change.values, post.loc[both, "demp"].values), (
+    "row-order pairing failed the `demp` consistency check; the extract's "
+    "rows are not aligned across waves, so clustering cannot be trusted"
+)
+
+# A stable restaurant id: position within wave, which the check above shows is
+# the true panel ordering. Clustering by it lets the two observations of the
+# same restaurant correlate, as the panel-data lesson requires.
+df = df.sort_values(["d"], kind="stable").reset_index(drop=True)
+df["restaurant"] = df.groupby("d").cumcount()
+print(f"Loaded {len(df):,} restaurant-wave observations from {DATA}")
+print(f"Reconstructed panel: {df['restaurant'].nunique()} restaurants x "
+      f"{df['d'].nunique()} waves (demp pairing verified on "
+      f"{int(both.sum())} complete pairs)")
 ```
 
 ## 1. Data Provenance and Estimand
@@ -98,7 +121,15 @@ $$
 In this design, the interaction coefficient $\tau$ is algebraically identical to the four-cell DiD above. Robust standard errors address heteroskedasticity, but they do not repair violations of parallel trends or other identification assumptions.
 
 ```python
-base = smf.ols("fte ~ nj + d + d_nj", data=df).fit(cov_type="HC1")
+# Cluster by restaurant: the same store appears in both waves, so its two
+# residuals are not independent. HC1 would treat all 820 rows as independent
+# and understate the uncertainty on the DiD coefficient. The group vector is
+# taken from the rows the regression actually uses, so it stays aligned after
+# statsmodels drops incomplete cases.
+design = df[["fte", "nj", "d", "d_nj"]].dropna()
+base = smf.ols("fte ~ nj + d + d_nj", data=design).fit(
+    cov_type="cluster", cov_kwds={"groups": df.loc[design.index, "restaurant"]}
+)
 print(base.summary().tables[1])
 assert np.isclose(base.params["d_nj"], did, atol=1e-10)
 print(f"Interaction equals manual DiD: {base.params['d_nj']:.4f}")
@@ -108,11 +139,22 @@ print(f"Interaction equals manual DiD: {base.params['d_nj']:.4f}")
 Controls can absorb residual composition differences across restaurant chains, ownership, and regions. They should not be chosen because they make the treatment coefficient more attractive. The estimand remains the post-policy differential change associated with New Jersey.
 
 ```python
-formula = "fte ~ nj + d + d_nj + bk + kfc + roys + co_owned + centralj + southj + pa1 + pa2"
-controlled = smf.ols(formula, data=df).fit(cov_type="HC1")
+# Two sets of dummies are perfectly collinear with the intercept and must be
+# restricted to a reference category, or the design matrix is singular:
+#   bk+kfc+roys+wendys == 1 for every row, and nj+pa1+pa2 == 1 for every row
+# (Pennsylvania splits into two regions, New Jersey is one). Drop one dummy
+# from each set; the suppressed chain and region are absorbed by the constant.
+formula = ("fte ~ nj + d + d_nj + kfc + roys + wendys + co_owned"
+           " + centralj + southj + pa1")
+cols = ["fte", "nj", "d", "d_nj", "kfc", "roys", "wendys", "co_owned",
+        "centralj", "southj", "pa1"]
+design = df[cols].dropna()
+controlled = smf.ols(formula, data=design).fit(
+    cov_type="cluster", cov_kwds={"groups": df.loc[design.index, "restaurant"]}
+)
 comparison = pd.DataFrame({
     "estimate": [base.params["d_nj"], controlled.params["d_nj"]],
-    "robust_se": [base.bse["d_nj"], controlled.bse["d_nj"]],
+    "clustered_se": [base.bse["d_nj"], controlled.bse["d_nj"]],
 }, index=["Two-by-two", "With controls"])
 display(comparison)
 print(f"Complete-case N in controlled model: {int(controlled.nobs)}")

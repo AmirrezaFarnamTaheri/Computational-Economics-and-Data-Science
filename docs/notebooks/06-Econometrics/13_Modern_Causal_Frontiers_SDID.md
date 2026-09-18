@@ -6,7 +6,7 @@
 
 # 13 Modern Causal Frontiers: Synthetic Difference-in-Differences and Matrix Completion
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/06-Econometrics/13_Modern_Causal_Frontiers_SDID.ipynb) [![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main?filepath=06-Econometrics/13_Modern_Causal_Frontiers_SDID.ipynb) [![Code License: MIT](https://img.shields.io/badge/Code%20License-MIT-yellow.svg)](../LICENSE) [![Content License: CC BY 4.0](https://img.shields.io/badge/Content%20License-CC%20BY%204.0-blue.svg)](https://creativecommons.org/licenses/by/4.0/)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/06-Econometrics/13_Modern_Causal_Frontiers_SDID.ipynb) [![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main?filepath=06-Econometrics/13_Modern_Causal_Frontiers_SDID.ipynb) [![Code License: MIT](https://img.shields.io/badge/Code%20License-MIT-yellow.svg)](https://raw.githubusercontent.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/main/LICENSE) [![Content License: CC BY 4.0](https://img.shields.io/badge/Content%20License-CC%20BY%204.0-blue.svg)](https://creativecommons.org/licenses/by/4.0/)
 ## The Lens: Building a Credible Counterfactual When Parallel Trends Are Too Crude
 Difference-in-differences (DiD) is persuasive when untreated units reveal the path the treated units would have followed. Synthetic control is persuasive when a weighted combination of controls reproduces the treated pre-period. Synthetic difference-in-differences (SDID) combines those ideas: it chooses unit weights and time weights to improve pre-treatment balance, then estimates a DiD-style contrast that retains an intercept correction.
 
@@ -64,25 +64,52 @@ If uniform weights are used, this collapses toward ordinary DiD. If pre-treatmen
 <a id="unit-time-balancing"></a>
 ## 2. Unit and Time Balancing
 
-We use ridge-regularized simplex problems. Unit weights solve
+We use ridge-regularized simplex problems with a free intercept in each. Unit
+weights solve
 
-$$\min_{\omega\ge 0,\;\mathbf{1}'\omega=1}
-\|Y_{co,pre}'\omega-\bar Y_{tr,pre}\|_2^2+\zeta_\omega\|\omega\|_2^2.$$
+$$\min_{\omega\ge 0,\;\mathbf{1}'\omega=1,\;\alpha_\omega}
+\|Y_{co,pre}'\omega+\alpha_\omega\mathbf{1}-\bar Y_{tr,pre}\|_2^2+\zeta_\omega\|\omega\|_2^2.$$
 
-Time weights reverse the regression: pre-period columns are combined to reproduce each control unit's average post-period outcome,
+Time weights reverse the regression: pre-period columns are combined to
+reproduce each control unit's average post-period outcome,
 
-$$\min_{\lambda\ge0,\;\mathbf{1}'\lambda=1}
-\|Y_{co,pre}\lambda-\bar Y_{co,post}\|_2^2+\zeta_\lambda\|\lambda\|_2^2.$$
+$$\min_{\lambda\ge0,\;\mathbf{1}'\lambda=1,\;\alpha_\lambda}
+\|Y_{co,pre}\lambda+\alpha_\lambda\mathbf{1}-\bar Y_{co,post}\|_2^2+\zeta_\lambda\|\lambda\|_2^2.$$
 
-The ridge terms prevent a near-perfect but fragile match from concentrating all weight on one unit or date.
+The intercept matters because SDID is designed for panels with permanent
+additive unit and time level differences. Matching levels without a free
+intercept forces the weighted control combination to reproduce the treated
+unit's *level*, not just its trajectory, which the estimator explicitly does
+not assume. This mirrors the reference implementation, which defaults to
+`omega.intercept = TRUE` and `lambda.intercept = TRUE`. The ridge terms
+prevent a near-perfect but fragile match from concentrating all weight on one
+unit or date.
 
-**Dimension notes:** $Y_{co,pre} \in \mathbb{R}^{T_0 \times N_0}$ is the pre-period control block, $\bar{Y}_{tr,pre} \in \mathbb{R}^{T_0}$ the treated unit's pre-period path; $\omega \in \Delta_{N_0-1}$ and $\lambda \in \Delta_{T_0-1}$ sit on simplices, and the ridge penalties $\zeta_\omega, \zeta_\lambda > 0$ are scalars.
+**Dimension notes:** $Y_{co,pre} \in \mathbb{R}^{N_0 \times T_0}$ is the
+pre-period control block (units as rows, periods as columns);
+$\bar{Y}_{tr,pre} \in \mathbb{R}^{T_0}$ the treated units' average
+pre-period path; $\bar{Y}_{co,post} \in \mathbb{R}^{N_0}$ the control
+units' average post-period outcomes. $\omega \in \Delta_{N_0-1}$ and
+$\lambda \in \Delta_{T_0-1}$ sit on simplices, and the ridge penalties
+$\zeta_\omega, \zeta_\lambda > 0$ are scalars.
 
 ```python
-def simplex_ridge(A, b, ridge=1e-3):
-    """Solve min ||A @ w - b||^2 + ridge*||w||^2 on the probability simplex."""
+def simplex_ridge(A, b, ridge=1e-3, intercept=True):
+    """Solve min ||A @ w + alpha - b||^2 + ridge*||w||^2 on the simplex.
+
+    The free intercept ``alpha`` is what lets SDID tolerate permanent
+    additive level differences between the treated and control blocks while
+    still balancing trajectories. With ``intercept=True`` the level is
+    residualized out of the matching problem, matching the reference
+    implementation's ``omega.intercept``/``lambda.intercept`` defaults.
+    """
     A, b = np.asarray(A, float), np.asarray(b, float)
     n = A.shape[1]
+    if intercept:
+        # Match the trajectory, not the level: center both sides so the free
+        # intercept is absorbed and the simplex weights balance slopes.
+        A = A - A.mean(axis=0)
+        b = b - b.mean()
     objective = lambda w: float(np.sum((A @ w - b) ** 2) + ridge * np.sum(w**2))
     gradient = lambda w: 2 * (A.T @ (A @ w - b) + ridge * w)
     result = minimize(

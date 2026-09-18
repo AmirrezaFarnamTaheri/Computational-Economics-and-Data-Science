@@ -75,6 +75,31 @@ jobs:
       - name: Validate documentation links and labs
         run: python scripts/audit_docs.py --strict
 
+      # audit_proofs triages theory-heavy notebooks and scores whether each
+      # derivation carries the structural ingredients of a proof. --strict makes
+      # a structurally incomplete derivation (score < 3) a failure rather than a
+      # silently-green report, and enumerates source notebooks only so the
+      # build/exec copies written below are not double-counted. Pure stdlib.
+      - name: Audit proof & derivation structure
+        run: python scripts/audit_proofs.py --strict
+
+      # The 129 committed pages under docs/notebooks are generated from the
+      # notebook sources by scripts/notebooks_to_docs.py; the docs-strict
+      # build below only builds whatever happens to be committed. Without
+      # this check a notebook fix can merge while its public reading page
+      # still shows the old code. Regenerating from a clean tree and asserting
+      # no diff makes drift a CI failure.
+      - name: Regenerate notebook documentation
+        run: python scripts/notebooks_to_docs.py --clean
+
+      - name: Committed docs match notebook sources
+        run: |
+          if ! git diff --exit-code --stat -- docs/notebooks; then
+            echo "::error::docs/notebooks is stale. Run 'python scripts/notebooks_to_docs.py --clean' and commit the result."
+            git diff --exit-code -- docs/notebooks
+            exit 1
+          fi
+
   deterministic-execution:
     # Pinned direct dependencies for the deterministic lecture subset.
     runs-on: ubuntu-latest

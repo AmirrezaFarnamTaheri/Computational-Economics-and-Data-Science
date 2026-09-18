@@ -10,7 +10,7 @@ This guide will help you set up the complete environment for the Computational E
     - **OS**: Windows 10+, macOS 10.14+, or Linux
     - **RAM**: 8 GB minimum, 16 GB recommended
     - **Storage**: 5 GB free space
-    - **Python**: 3.10 or higher
+    - **Python**: 3.11 minimum (3.13 recommended, matching `environment.yml`)
 
 !!! tip "Recommended Setup"
     - 16+ GB RAM for machine learning modules
@@ -61,7 +61,7 @@ Choose the method that works best for you:
 
     #### 5. Verify Installation
     ```bash
-    python --version  # Should be 3.10+
+    python --version  # Should be 3.11+ (3.13 recommended)
     jupyter lab --version
     ```
 
@@ -71,9 +71,9 @@ Choose the method that works best for you:
 
     If you prefer using pip, follow these steps:
 
-    #### 1. Ensure Python 3.11+ is Installed
+    #### 1. Ensure Python 3.11+ is Installed (3.13 Recommended)
     ```bash
-    python --version  # Should output 3.10.0 or higher
+    python --version  # Should output 3.11.0 or higher (3.13 recommended)
     ```
 
     #### 2. Clone the Repository

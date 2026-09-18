@@ -20,11 +20,33 @@ from scipy.optimize import linprog, minimize_scalar
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def load_cell(notebook: str, cell_index: int, extra: dict | None = None) -> dict:
-    """Execute one code cell of a notebook and return its namespace."""
+def _cell_source(nb: dict, cell_ref: int | str) -> str:
+    """Return the source of one cell, looked up by stable ID or by index.
+
+    Notebooks carry a stable ``id`` on every cell. Tests should pass that ID
+    (a string) so inserting or deleting prose elsewhere in the notebook cannot
+    silently shift the target onto a different cell -- the exact failure that
+    hit this PR when an authoring pass inserted markdown cells and four tests
+    began executing prose as Python. An int is still accepted as a positional
+    index for existing call sites, but new tests should use IDs.
+    """
+    if isinstance(cell_ref, str):
+        for cell in nb.get("cells", []):
+            if cell.get("id") == cell_ref:
+                src = cell["source"]
+                return "".join(src) if isinstance(src, list) else str(src)
+        raise KeyError(f"no cell with id={cell_ref!r}")
+    src = nb["cells"][cell_ref]["source"]
+    return "".join(src) if isinstance(src, list) else str(src)
+
+
+def load_cell(notebook: str, cell_ref: int | str, extra: dict | None = None) -> dict:
+    """Execute one code cell of a notebook and return its namespace.
+
+    ``cell_ref`` is a stable cell ID (preferred) or a positional index.
+    """
     nb = json.loads((ROOT / notebook).read_text(encoding="utf-8"))
-    src = nb["cells"][cell_index]["source"]
-    src = "".join(src) if isinstance(src, list) else src
+    src = _cell_source(nb, cell_ref)
     namespace: dict = {
         "np": np,
         "minimize_scalar": minimize_scalar,
@@ -32,7 +54,7 @@ def load_cell(notebook: str, cell_index: int, extra: dict | None = None) -> dict
     }
     if extra:
         namespace.update(extra)
-    exec(compile(src, f"{notebook}#cell{cell_index}", "exec"), namespace)
+    exec(compile(src, f"{notebook}#cell{cell_ref}", "exec"), namespace)
     return namespace
 
 

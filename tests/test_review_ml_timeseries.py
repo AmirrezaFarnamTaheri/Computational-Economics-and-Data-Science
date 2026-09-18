@@ -11,7 +11,17 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def source(path, cell):
+    """Return one cell's source, by stable cell ID (str) or positional index.
+
+    Prefer the ID: an inserted prose cell shifts every later index, which once
+    made this harness execute markdown as Python.
+    """
     notebook = json.loads((ROOT / path).read_text(encoding="utf-8"))
+    if isinstance(cell, str):
+        for c in notebook["cells"]:
+            if c.get("id") == cell:
+                return "".join(c["source"])
+        raise KeyError(f"no cell with id={cell!r} in {path}")
     return "".join(notebook["cells"][cell]["source"])
 
 
