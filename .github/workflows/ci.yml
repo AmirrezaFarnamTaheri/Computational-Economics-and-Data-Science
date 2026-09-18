@@ -94,9 +94,14 @@ jobs:
 
       - name: Committed docs match notebook sources
         run: |
-          if ! git diff --exit-code --stat -- docs/notebooks; then
-            echo "::error::docs/notebooks is stale. Run 'python scripts/notebooks_to_docs.py --clean' and commit the result."
-            git diff --exit-code -- docs/notebooks
+          # git diff ignores untracked files, so use porcelain status to catch
+          # both modified generated pages and newly generated pages that were
+          # never committed.
+          DOCS_STATUS="$(git status --porcelain --untracked-files=all -- docs/notebooks)"
+          if [ -n "$DOCS_STATUS" ]; then
+            echo "::error::docs/notebooks is stale or incomplete. Run 'python scripts/notebooks_to_docs.py --clean' and commit every generated page."
+            printf '%s\n' "$DOCS_STATUS"
+            git diff -- docs/notebooks || true
             exit 1
           fi
 
