@@ -1,8 +1,8 @@
 {
   "candidates": [
     {
-      "path": "Appendix/A1-Real-Analysis.ipynb",
-      "theory_term_hits": 69,
+      "path": "Appendix\\A1-Real-Analysis.ipynb",
+      "theory_term_hits": 73,
       "display_equations": 17,
       "dimensions": {
         "assumptions": true,
@@ -13,8 +13,20 @@
       "structural_score": 4
     },
     {
-      "path": "05-Micro-Models/02_General_Equilibrium.ipynb",
-      "theory_term_hits": 62,
+      "path": "build\\exec-tier2\\A1-Real-Analysis.ipynb",
+      "theory_term_hits": 73,
+      "display_equations": 17,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "05-Micro-Models\\02_General_Equilibrium.ipynb",
+      "theory_term_hits": 64,
       "display_equations": 14,
       "dimensions": {
         "assumptions": true,
@@ -25,9 +37,9 @@
       "structural_score": 4
     },
     {
-      "path": "01-Foundations/01_Introduction.ipynb",
-      "theory_term_hits": 59,
-      "display_equations": 10,
+      "path": "build\\exec-tier2\\02_General_Equilibrium.ipynb",
+      "theory_term_hits": 64,
+      "display_equations": 14,
       "dimensions": {
         "assumptions": true,
         "formal_statement": true,
@@ -37,9 +49,9 @@
       "structural_score": 4
     },
     {
-      "path": "Appendix/A2-Multivariate-Calculus.ipynb",
-      "theory_term_hits": 50,
-      "display_equations": 16,
+      "path": "01-Foundations\\01_Introduction.ipynb",
+      "theory_term_hits": 63,
+      "display_equations": 17,
       "dimensions": {
         "assumptions": true,
         "formal_statement": true,
@@ -49,8 +61,8 @@
       "structural_score": 4
     },
     {
-      "path": "09-Finance/04_Continuous_Time_Finance.ipynb",
-      "theory_term_hits": 48,
+      "path": "09-Finance\\04_Continuous_Time_Finance.ipynb",
+      "theory_term_hits": 53,
       "display_equations": 13,
       "dimensions": {
         "assumptions": true,
@@ -61,9 +73,9 @@
       "structural_score": 4
     },
     {
-      "path": "03-Economic-Modeling/01_Dynamic_Programming.ipynb",
-      "theory_term_hits": 47,
-      "display_equations": 18,
+      "path": "build\\exec-tier2\\04_Continuous_Time_Finance.ipynb",
+      "theory_term_hits": 53,
+      "display_equations": 13,
       "dimensions": {
         "assumptions": true,
         "formal_statement": true,
@@ -73,8 +85,44 @@
       "structural_score": 4
     },
     {
-      "path": "05-Micro-Models/03_Game_Theory_and_Auctions.ipynb",
-      "theory_term_hits": 39,
+      "path": "Appendix\\A2-Multivariate-Calculus.ipynb",
+      "theory_term_hits": 51,
+      "display_equations": 16,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "build\\exec-tier2\\A2-Multivariate-Calculus.ipynb",
+      "theory_term_hits": 51,
+      "display_equations": 16,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "03-Economic-Modeling\\01_Dynamic_Programming.ipynb",
+      "theory_term_hits": 49,
+      "display_equations": 20,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "05-Micro-Models\\03_Game_Theory_and_Auctions.ipynb",
+      "theory_term_hits": 44,
       "display_equations": 0,
       "dimensions": {
         "assumptions": true,
@@ -85,8 +133,20 @@
       "structural_score": 4
     },
     {
-      "path": "02-Numerical-Methods/04_Root_Finding.ipynb",
-      "theory_term_hits": 35,
+      "path": "build\\exec-tier2\\03_Game_Theory_and_Auctions.ipynb",
+      "theory_term_hits": 44,
+      "display_equations": 0,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "02-Numerical-Methods\\04_Root_Finding.ipynb",
+      "theory_term_hits": 38,
       "display_equations": 19,
       "dimensions": {
         "assumptions": true,
@@ -97,7 +157,43 @@
       "structural_score": 4
     },
     {
-      "path": "02-Numerical-Methods/03_Numerical_Differentiation.ipynb",
+      "path": "05-Micro-Models\\01_Consumer_and_Producer_Theory.ipynb",
+      "theory_term_hits": 34,
+      "display_equations": 2,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "build\\exec-tier2\\01_Consumer_and_Producer_Theory.ipynb",
+      "theory_term_hits": 34,
+      "display_equations": 2,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "09-Finance\\03_Option_Pricing.ipynb",
+      "theory_term_hits": 33,
+      "display_equations": 25,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "02-Numerical-Methods\\03_Numerical_Differentiation.ipynb",
       "theory_term_hits": 32,
       "display_equations": 12,
       "dimensions": {
@@ -109,32 +205,8 @@
       "structural_score": 4
     },
     {
-      "path": "09-Finance/03_Option_Pricing.ipynb",
+      "path": "05-Micro-Models\\06_Information_Economics.ipynb",
       "theory_term_hits": 32,
-      "display_equations": 25,
-      "dimensions": {
-        "assumptions": true,
-        "formal_statement": true,
-        "working_or_derivation": true,
-        "economic_interpretation": true
-      },
-      "structural_score": 4
-    },
-    {
-      "path": "05-Micro-Models/01_Consumer_and_Producer_Theory.ipynb",
-      "theory_term_hits": 30,
-      "display_equations": 2,
-      "dimensions": {
-        "assumptions": true,
-        "formal_statement": true,
-        "working_or_derivation": true,
-        "economic_interpretation": true
-      },
-      "structural_score": 4
-    },
-    {
-      "path": "05-Micro-Models/06_Information_Economics.ipynb",
-      "theory_term_hits": 29,
       "display_equations": 0,
       "dimensions": {
         "assumptions": true,
@@ -145,7 +217,19 @@
       "structural_score": 4
     },
     {
-      "path": "07-Machine-Learning/15_Reinforcement_Learning.ipynb",
+      "path": "build\\exec-tier2\\06_Information_Economics.ipynb",
+      "theory_term_hits": 31,
+      "display_equations": 0,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "07-Machine-Learning\\15_Reinforcement_Learning.ipynb",
       "theory_term_hits": 28,
       "display_equations": 8,
       "dimensions": {
@@ -157,7 +241,7 @@
       "structural_score": 4
     },
     {
-      "path": "10-Specialized-Models/02_General_Equilibrium_with_Heterogeneous_Agents.ipynb",
+      "path": "10-Specialized-Models\\02_General_Equilibrium_with_Heterogeneous_Agents.ipynb",
       "theory_term_hits": 28,
       "display_equations": 6,
       "dimensions": {
@@ -169,7 +253,31 @@
       "structural_score": 4
     },
     {
-      "path": "04-Macro-Models/08_Continuous_Time_Macro_HJB.ipynb",
+      "path": "build\\exec-tier2\\01_Job_Search.ipynb",
+      "theory_term_hits": 27,
+      "display_equations": 11,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "02-Numerical-Methods\\05_Optimization.ipynb",
+      "theory_term_hits": 26,
+      "display_equations": 8,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "build\\exec-tier2\\08_Continuous_Time_Macro_HJB.ipynb",
       "theory_term_hits": 26,
       "display_equations": 10,
       "dimensions": {
@@ -181,9 +289,9 @@
       "structural_score": 4
     },
     {
-      "path": "04-Macro-Models/01_Job_Search.ipynb",
+      "path": "04-Macro-Models\\01_Job_Search.ipynb",
       "theory_term_hits": 25,
-      "display_equations": 9,
+      "display_equations": 14,
       "dimensions": {
         "assumptions": true,
         "formal_statement": true,
@@ -193,9 +301,9 @@
       "structural_score": 4
     },
     {
-      "path": "02-Numerical-Methods/05_Optimization.ipynb",
-      "theory_term_hits": 22,
-      "display_equations": 8,
+      "path": "04-Macro-Models\\08_Continuous_Time_Macro_HJB.ipynb",
+      "theory_term_hits": 24,
+      "display_equations": 10,
       "dimensions": {
         "assumptions": true,
         "formal_statement": true,
@@ -205,7 +313,55 @@
       "structural_score": 4
     },
     {
-      "path": "04-Macro-Models/03A_RBC_Model_Foundations.ipynb",
+      "path": "04-Macro-Models\\06_Heterogeneous_Agent_Models.ipynb",
+      "theory_term_hits": 20,
+      "display_equations": 2,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "Appendix\\A4-Linear-Algebra.ipynb",
+      "theory_term_hits": 20,
+      "display_equations": 10,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "build\\exec-tier2\\06_Heterogeneous_Agent_Models.ipynb",
+      "theory_term_hits": 20,
+      "display_equations": 2,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "build\\exec-tier2\\A4-Linear-Algebra.ipynb",
+      "theory_term_hits": 20,
+      "display_equations": 10,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "04-Macro-Models\\03A_RBC_Model_Foundations.ipynb",
       "theory_term_hits": 19,
       "display_equations": 11,
       "dimensions": {
@@ -217,9 +373,9 @@
       "structural_score": 4
     },
     {
-      "path": "04-Macro-Models/06_Heterogeneous_Agent_Models.ipynb",
+      "path": "build\\exec-tier2\\03A_RBC_Model_Foundations.ipynb",
       "theory_term_hits": 19,
-      "display_equations": 2,
+      "display_equations": 11,
       "dimensions": {
         "assumptions": true,
         "formal_statement": true,
@@ -229,19 +385,7 @@
       "structural_score": 4
     },
     {
-      "path": "Appendix/A4-Linear-Algebra.ipynb",
-      "theory_term_hits": 19,
-      "display_equations": 10,
-      "dimensions": {
-        "assumptions": true,
-        "formal_statement": true,
-        "working_or_derivation": true,
-        "economic_interpretation": true
-      },
-      "structural_score": 4
-    },
-    {
-      "path": "03-Economic-Modeling/05_Optimal_Stopping_Problems.ipynb",
+      "path": "03-Economic-Modeling\\05_Optimal_Stopping_Problems.ipynb",
       "theory_term_hits": 18,
       "display_equations": 10,
       "dimensions": {
@@ -253,7 +397,7 @@
       "structural_score": 4
     },
     {
-      "path": "07-Machine-Learning/06_Deep_Learning_Foundations.ipynb",
+      "path": "07-Machine-Learning\\06_Deep_Learning_Foundations.ipynb",
       "theory_term_hits": 18,
       "display_equations": 8,
       "dimensions": {
@@ -265,20 +409,8 @@
       "structural_score": 4
     },
     {
-      "path": "08-Time-Series/06_Cointegration_and_Error_Correction_Models.ipynb",
+      "path": "10-Specialized-Models\\01_Agent_Based_Models.ipynb",
       "theory_term_hits": 18,
-      "display_equations": 8,
-      "dimensions": {
-        "assumptions": true,
-        "formal_statement": true,
-        "working_or_derivation": true,
-        "economic_interpretation": true
-      },
-      "structural_score": 4
-    },
-    {
-      "path": "10-Specialized-Models/01_Agent_Based_Models.ipynb",
-      "theory_term_hits": 17,
       "display_equations": 1,
       "dimensions": {
         "assumptions": true,
@@ -289,7 +421,31 @@
       "structural_score": 4
     },
     {
-      "path": "05-Micro-Models/04_Discrete_Choice_Models.ipynb",
+      "path": "build\\exec-tier2\\05_Optimal_Stopping_Problems.ipynb",
+      "theory_term_hits": 18,
+      "display_equations": 10,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "08-Time-Series\\06_Cointegration_and_Error_Correction_Models.ipynb",
+      "theory_term_hits": 17,
+      "display_equations": 8,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "05-Micro-Models\\04_Discrete_Choice_Models.ipynb",
       "theory_term_hits": 16,
       "display_equations": 9,
       "dimensions": {
@@ -301,7 +457,67 @@
       "structural_score": 4
     },
     {
-      "path": "01-Foundations/21_Symbolic_Computation_with_SymPy.ipynb",
+      "path": "06-Econometrics\\01_Linear_Model_and_OLS.ipynb",
+      "theory_term_hits": 16,
+      "display_equations": 2,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "06-Econometrics\\04_GMM.ipynb",
+      "theory_term_hits": 16,
+      "display_equations": 21,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "Appendix\\A3-Probability-Theory.ipynb",
+      "theory_term_hits": 16,
+      "display_equations": 10,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "build\\exec\\01_Linear_Model_and_OLS.ipynb",
+      "theory_term_hits": 16,
+      "display_equations": 2,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "build\\exec\\A3-Probability-Theory.ipynb",
+      "theory_term_hits": 16,
+      "display_equations": 10,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "01-Foundations\\21_Symbolic_Computation_with_SymPy.ipynb",
       "theory_term_hits": 15,
       "display_equations": 0,
       "dimensions": {
@@ -313,7 +529,7 @@
       "structural_score": 4
     },
     {
-      "path": "04-Macro-Models/02_Neoclassical_Growth.ipynb",
+      "path": "04-Macro-Models\\02_Neoclassical_Growth.ipynb",
       "theory_term_hits": 15,
       "display_equations": 20,
       "dimensions": {
@@ -325,9 +541,9 @@
       "structural_score": 4
     },
     {
-      "path": "06-Econometrics/01_Linear_Model_and_OLS.ipynb",
+      "path": "build\\exec-tier2\\02_Neoclassical_Growth.ipynb",
       "theory_term_hits": 15,
-      "display_equations": 2,
+      "display_equations": 20,
       "dimensions": {
         "assumptions": true,
         "formal_statement": true,
@@ -337,9 +553,9 @@
       "structural_score": 4
     },
     {
-      "path": "Appendix/A3-Probability-Theory.ipynb",
+      "path": "build\\exec\\04_GMM.ipynb",
       "theory_term_hits": 15,
-      "display_equations": 10,
+      "display_equations": 21,
       "dimensions": {
         "assumptions": true,
         "formal_statement": true,
@@ -349,7 +565,19 @@
       "structural_score": 4
     },
     {
-      "path": "03-Economic-Modeling/06_Robust_Control.ipynb",
+      "path": "build\\exec\\21_Symbolic_Computation_with_SymPy.ipynb",
+      "theory_term_hits": 15,
+      "display_equations": 0,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "03-Economic-Modeling\\06_Robust_Control.ipynb",
       "theory_term_hits": 14,
       "display_equations": 9,
       "dimensions": {
@@ -361,9 +589,9 @@
       "structural_score": 4
     },
     {
-      "path": "06-Econometrics/04_GMM.ipynb",
+      "path": "build\\exec-tier2\\06_Robust_Control.ipynb",
       "theory_term_hits": 14,
-      "display_equations": 21,
+      "display_equations": 9,
       "dimensions": {
         "assumptions": true,
         "formal_statement": true,
@@ -373,7 +601,7 @@
       "structural_score": 4
     },
     {
-      "path": "01-Foundations/22A_Computational_Complexity_Foundations.ipynb",
+      "path": "01-Foundations\\22A_Computational_Complexity_Foundations.ipynb",
       "theory_term_hits": 12,
       "display_equations": 4,
       "dimensions": {
@@ -385,7 +613,7 @@
       "structural_score": 4
     },
     {
-      "path": "03-Economic-Modeling/02_DP_with_Continuous_States.ipynb",
+      "path": "03-Economic-Modeling\\02_DP_with_Continuous_States.ipynb",
       "theory_term_hits": 12,
       "display_equations": 10,
       "dimensions": {
@@ -397,7 +625,31 @@
       "structural_score": 4
     },
     {
-      "path": "02-Numerical-Methods/06_Interpolation_and_Approximation.ipynb",
+      "path": "build\\exec-tier2\\02_DP_with_Continuous_States.ipynb",
+      "theory_term_hits": 12,
+      "display_equations": 10,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "build\\exec-tier2\\22A_Computational_Complexity_Foundations.ipynb",
+      "theory_term_hits": 12,
+      "display_equations": 4,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "02-Numerical-Methods\\06_Interpolation_and_Approximation.ipynb",
       "theory_term_hits": 11,
       "display_equations": 11,
       "dimensions": {
@@ -409,7 +661,31 @@
       "structural_score": 4
     },
     {
-      "path": "04-Macro-Models/04_OLG_Models.ipynb",
+      "path": "04-Macro-Models\\04_OLG_Models.ipynb",
+      "theory_term_hits": 11,
+      "display_equations": 2,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "04-Macro-Models\\05_New_Keynesian_Models.ipynb",
+      "theory_term_hits": 11,
+      "display_equations": 10,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "build\\exec-tier2\\04_OLG_Models.ipynb",
       "theory_term_hits": 11,
       "display_equations": 1,
       "dimensions": {
@@ -421,7 +697,7 @@
       "structural_score": 4
     },
     {
-      "path": "04-Macro-Models/05_New_Keynesian_Models.ipynb",
+      "path": "build\\exec-tier2\\05_New_Keynesian_Models.ipynb",
       "theory_term_hits": 11,
       "display_equations": 9,
       "dimensions": {
@@ -433,9 +709,9 @@
       "structural_score": 4
     },
     {
-      "path": "04-Macro-Models/07_Endogenous_Growth.ipynb",
+      "path": "build\\exec-tier2\\06_Interpolation_and_Approximation.ipynb",
       "theory_term_hits": 11,
-      "display_equations": 8,
+      "display_equations": 11,
       "dimensions": {
         "assumptions": true,
         "formal_statement": true,
@@ -445,7 +721,7 @@
       "structural_score": 4
     },
     {
-      "path": "06-Econometrics/11_Bayesian_Econometrics.ipynb",
+      "path": "06-Econometrics\\11_Bayesian_Econometrics.ipynb",
       "theory_term_hits": 10,
       "display_equations": 6,
       "dimensions": {
@@ -457,55 +733,7 @@
       "structural_score": 4
     },
     {
-      "path": "02-Numerical-Methods/01_Linear_Algebra.ipynb",
-      "theory_term_hits": 9,
-      "display_equations": 13,
-      "dimensions": {
-        "assumptions": true,
-        "formal_statement": true,
-        "working_or_derivation": true,
-        "economic_interpretation": true
-      },
-      "structural_score": 4
-    },
-    {
-      "path": "03-Economic-Modeling/07_Structural_Estimation.ipynb",
-      "theory_term_hits": 9,
-      "display_equations": 9,
-      "dimensions": {
-        "assumptions": true,
-        "formal_statement": true,
-        "working_or_derivation": true,
-        "economic_interpretation": true
-      },
-      "structural_score": 4
-    },
-    {
-      "path": "05-Micro-Models/05_Principal_Agent_Models.ipynb",
-      "theory_term_hits": 9,
-      "display_equations": 2,
-      "dimensions": {
-        "assumptions": true,
-        "formal_statement": true,
-        "working_or_derivation": true,
-        "economic_interpretation": true
-      },
-      "structural_score": 4
-    },
-    {
-      "path": "07-Machine-Learning/17_Causal_ML.ipynb",
-      "theory_term_hits": 9,
-      "display_equations": 2,
-      "dimensions": {
-        "assumptions": true,
-        "formal_statement": true,
-        "working_or_derivation": true,
-        "economic_interpretation": true
-      },
-      "structural_score": 4
-    },
-    {
-      "path": "08-Time-Series/01_Introduction_to_Time_Series.ipynb",
+      "path": "02-Numerical-Methods\\01_Linear_Algebra.ipynb",
       "theory_term_hits": 9,
       "display_equations": 14,
       "dimensions": {
@@ -517,8 +745,20 @@
       "structural_score": 4
     },
     {
-      "path": "02-Numerical-Methods/07_Numerical_Integration.ipynb",
-      "theory_term_hits": 8,
+      "path": "04-Macro-Models\\07_Endogenous_Growth.ipynb",
+      "theory_term_hits": 9,
+      "display_equations": 11,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "05-Micro-Models\\05_Principal_Agent_Models.ipynb",
+      "theory_term_hits": 9,
       "display_equations": 2,
       "dimensions": {
         "assumptions": true,
@@ -529,7 +769,79 @@
       "structural_score": 4
     },
     {
-      "path": "06-Econometrics/03_Causal_Inference.ipynb",
+      "path": "07-Machine-Learning\\17_Causal_ML.ipynb",
+      "theory_term_hits": 9,
+      "display_equations": 2,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "08-Time-Series\\01_Introduction_to_Time_Series.ipynb",
+      "theory_term_hits": 9,
+      "display_equations": 14,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "build\\exec\\01_Introduction_to_Time_Series.ipynb",
+      "theory_term_hits": 9,
+      "display_equations": 14,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "build\\exec\\01_Linear_Algebra.ipynb",
+      "theory_term_hits": 9,
+      "display_equations": 14,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "02-Numerical-Methods\\07_Numerical_Integration.ipynb",
+      "theory_term_hits": 8,
+      "display_equations": 3,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "03-Economic-Modeling\\07_Structural_Estimation.ipynb",
+      "theory_term_hits": 8,
+      "display_equations": 9,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "06-Econometrics\\03_Causal_Inference.ipynb",
       "theory_term_hits": 8,
       "display_equations": 6,
       "dimensions": {
@@ -541,7 +853,43 @@
       "structural_score": 4
     },
     {
-      "path": "05-Micro-Models/07_BLP_Demand_Estimation.ipynb",
+      "path": "build\\exec\\07_Numerical_Integration.ipynb",
+      "theory_term_hits": 8,
+      "display_equations": 3,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "03-Economic-Modeling\\03A_Discrete_Choice_DP_Rust.ipynb",
+      "theory_term_hits": 7,
+      "display_equations": 8,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "03-Economic-Modeling\\03B_Continuous_State_DP_Interpolation.ipynb",
+      "theory_term_hits": 7,
+      "display_equations": 8,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "05-Micro-Models\\07_BLP_Demand_Estimation.ipynb",
       "theory_term_hits": 7,
       "display_equations": 9,
       "dimensions": {
@@ -553,68 +901,8 @@
       "structural_score": 4
     },
     {
-      "path": "01-Foundations/20_Introduction_to_SciPy.ipynb",
-      "theory_term_hits": 6,
-      "display_equations": 0,
-      "dimensions": {
-        "assumptions": true,
-        "formal_statement": true,
-        "working_or_derivation": true,
-        "economic_interpretation": true
-      },
-      "structural_score": 4
-    },
-    {
-      "path": "01-Foundations/22B_Complexity_in_Economic_Applications.ipynb",
-      "theory_term_hits": 6,
-      "display_equations": 2,
-      "dimensions": {
-        "assumptions": true,
-        "formal_statement": true,
-        "working_or_derivation": true,
-        "economic_interpretation": true
-      },
-      "structural_score": 4
-    },
-    {
-      "path": "03-Economic-Modeling/03A_Discrete_Choice_DP_Rust.ipynb",
-      "theory_term_hits": 6,
-      "display_equations": 8,
-      "dimensions": {
-        "assumptions": true,
-        "formal_statement": true,
-        "working_or_derivation": true,
-        "economic_interpretation": true
-      },
-      "structural_score": 4
-    },
-    {
-      "path": "04-Macro-Models/03B_RBC_Model_Solution.ipynb",
-      "theory_term_hits": 6,
-      "display_equations": 1,
-      "dimensions": {
-        "assumptions": true,
-        "formal_statement": true,
-        "working_or_derivation": true,
-        "economic_interpretation": true
-      },
-      "structural_score": 4
-    },
-    {
-      "path": "07-Machine-Learning/16_Advanced_Deep_RL.ipynb",
-      "theory_term_hits": 6,
-      "display_equations": 10,
-      "dimensions": {
-        "assumptions": true,
-        "formal_statement": true,
-        "working_or_derivation": true,
-        "economic_interpretation": true
-      },
-      "structural_score": 4
-    },
-    {
-      "path": "09-Finance/01_Portfolio_Theory.ipynb",
-      "theory_term_hits": 6,
+      "path": "09-Finance\\01_Portfolio_Theory.ipynb",
+      "theory_term_hits": 7,
       "display_equations": 6,
       "dimensions": {
         "assumptions": true,
@@ -625,8 +913,8 @@
       "structural_score": 4
     },
     {
-      "path": "09-Finance/02_Asset_Pricing.ipynb",
-      "theory_term_hits": 6,
+      "path": "09-Finance\\02_Asset_Pricing.ipynb",
+      "theory_term_hits": 7,
       "display_equations": 9,
       "dimensions": {
         "assumptions": true,
@@ -637,7 +925,91 @@
       "structural_score": 4
     },
     {
-      "path": "09-Finance/05_Credit_Risk.ipynb",
+      "path": "build\\exec-tier2\\03B_Continuous_State_DP_Interpolation.ipynb",
+      "theory_term_hits": 7,
+      "display_equations": 8,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "build\\exec-tier2\\07_BLP_Demand_Estimation.ipynb",
+      "theory_term_hits": 7,
+      "display_equations": 9,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "01-Foundations\\20_Introduction_to_SciPy.ipynb",
+      "theory_term_hits": 6,
+      "display_equations": 0,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "01-Foundations\\22B_Complexity_in_Economic_Applications.ipynb",
+      "theory_term_hits": 6,
+      "display_equations": 2,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "04-Macro-Models\\03B_RBC_Model_Solution.ipynb",
+      "theory_term_hits": 6,
+      "display_equations": 1,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "06-Econometrics\\08_Difference_in_Differences.ipynb",
+      "theory_term_hits": 6,
+      "display_equations": 11,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "06-Econometrics\\12_Panel_Data_Methods.ipynb",
+      "theory_term_hits": 6,
+      "display_equations": 15,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "07-Machine-Learning\\16_Advanced_Deep_RL.ipynb",
       "theory_term_hits": 6,
       "display_equations": 10,
       "dimensions": {
@@ -649,7 +1021,19 @@
       "structural_score": 4
     },
     {
-      "path": "09-Finance/07_Financial_Frictions_BGG.ipynb",
+      "path": "09-Finance\\05_Credit_Risk.ipynb",
+      "theory_term_hits": 6,
+      "display_equations": 10,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "09-Finance\\07_Financial_Frictions_BGG.ipynb",
       "theory_term_hits": 6,
       "display_equations": 1,
       "dimensions": {
@@ -661,8 +1045,68 @@
       "structural_score": 4
     },
     {
-      "path": "03-Economic-Modeling/03B_Continuous_State_DP_Interpolation.ipynb",
-      "theory_term_hits": 5,
+      "path": "build\\exec-tier2\\03B_RBC_Model_Solution.ipynb",
+      "theory_term_hits": 6,
+      "display_equations": 1,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "build\\exec-tier2\\05_Credit_Risk.ipynb",
+      "theory_term_hits": 6,
+      "display_equations": 10,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "build\\exec-tier2\\07_Financial_Frictions_BGG.ipynb",
+      "theory_term_hits": 6,
+      "display_equations": 1,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "build\\exec-tier2\\20_Introduction_to_SciPy.ipynb",
+      "theory_term_hits": 6,
+      "display_equations": 0,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "build\\exec-tier2\\22B_Complexity_in_Economic_Applications.ipynb",
+      "theory_term_hits": 6,
+      "display_equations": 2,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "build\\exec\\03A_Discrete_Choice_DP_Rust.ipynb",
+      "theory_term_hits": 6,
       "display_equations": 8,
       "dimensions": {
         "assumptions": true,
@@ -673,8 +1117,8 @@
       "structural_score": 4
     },
     {
-      "path": "06-Econometrics/08_Difference_in_Differences.ipynb",
-      "theory_term_hits": 5,
+      "path": "build\\exec\\08_Difference_in_Differences.ipynb",
+      "theory_term_hits": 6,
       "display_equations": 11,
       "dimensions": {
         "assumptions": true,
@@ -685,7 +1129,7 @@
       "structural_score": 4
     },
     {
-      "path": "06-Econometrics/09_Classical_Time_Series_Analysis.ipynb",
+      "path": "06-Econometrics\\09_Classical_Time_Series_Analysis.ipynb",
       "theory_term_hits": 5,
       "display_equations": 8,
       "dimensions": {
@@ -697,19 +1141,7 @@
       "structural_score": 4
     },
     {
-      "path": "06-Econometrics/12_Panel_Data_Methods.ipynb",
-      "theory_term_hits": 5,
-      "display_equations": 15,
-      "dimensions": {
-        "assumptions": true,
-        "formal_statement": true,
-        "working_or_derivation": true,
-        "economic_interpretation": true
-      },
-      "structural_score": 4
-    },
-    {
-      "path": "04-Macro-Models/03C_RBC_Dynamics_and_Surprise_Shocks.ipynb",
+      "path": "04-Macro-Models\\03C_RBC_Dynamics_and_Surprise_Shocks.ipynb",
       "theory_term_hits": 4,
       "display_equations": 0,
       "dimensions": {
@@ -721,19 +1153,7 @@
       "structural_score": 4
     },
     {
-      "path": "06-Econometrics/06_Regression_Discontinuity.ipynb",
-      "theory_term_hits": 4,
-      "display_equations": 8,
-      "dimensions": {
-        "assumptions": true,
-        "formal_statement": true,
-        "working_or_derivation": true,
-        "economic_interpretation": true
-      },
-      "structural_score": 4
-    },
-    {
-      "path": "06-Econometrics/07_Synthetic_Control_Methods.ipynb",
+      "path": "06-Econometrics\\07_Synthetic_Control_Methods.ipynb",
       "theory_term_hits": 4,
       "display_equations": 1,
       "dimensions": {
@@ -745,7 +1165,7 @@
       "structural_score": 4
     },
     {
-      "path": "07-Machine-Learning/08_Recurrent_Neural_Networks.ipynb",
+      "path": "07-Machine-Learning\\08_Recurrent_Neural_Networks.ipynb",
       "theory_term_hits": 4,
       "display_equations": 8,
       "dimensions": {
@@ -757,7 +1177,7 @@
       "structural_score": 4
     },
     {
-      "path": "10-Specialized-Models/03_Network_Economics.ipynb",
+      "path": "10-Specialized-Models\\03_Network_Economics.ipynb",
       "theory_term_hits": 4,
       "display_equations": 2,
       "dimensions": {
@@ -769,7 +1189,7 @@
       "structural_score": 4
     },
     {
-      "path": "Appendix/T1_Publishing_with_Quarto.ipynb",
+      "path": "Appendix\\T1_Publishing_with_Quarto.ipynb",
       "theory_term_hits": 4,
       "display_equations": 0,
       "dimensions": {
@@ -781,7 +1201,7 @@
       "structural_score": 4
     },
     {
-      "path": "Appendix/T3_Autograding_with_Otter.ipynb",
+      "path": "Appendix\\T3_Autograding_with_Otter.ipynb",
       "theory_term_hits": 4,
       "display_equations": 0,
       "dimensions": {
@@ -793,7 +1213,43 @@
       "structural_score": 4
     },
     {
-      "path": "04-Macro-Models/03D_RBC_News_Shocks_and_Expectations.ipynb",
+      "path": "build\\exec-tier2\\03C_RBC_Dynamics_and_Surprise_Shocks.ipynb",
+      "theory_term_hits": 4,
+      "display_equations": 0,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "build\\exec-tier2\\07_Synthetic_Control_Methods.ipynb",
+      "theory_term_hits": 4,
+      "display_equations": 1,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "build\\exec-tier2\\T3_Autograding_with_Otter.ipynb",
+      "theory_term_hits": 4,
+      "display_equations": 0,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "04-Macro-Models\\03D_RBC_News_Shocks_and_Expectations.ipynb",
       "theory_term_hits": 3,
       "display_equations": 0,
       "dimensions": {
@@ -805,7 +1261,7 @@
       "structural_score": 4
     },
     {
-      "path": "06-Econometrics/13_Modern_Causal_Frontiers_SDID.ipynb",
+      "path": "06-Econometrics\\06_Regression_Discontinuity.ipynb",
       "theory_term_hits": 3,
       "display_equations": 8,
       "dimensions": {
@@ -817,7 +1273,19 @@
       "structural_score": 4
     },
     {
-      "path": "07-Machine-Learning/10_Transformers.ipynb",
+      "path": "06-Econometrics\\13_Modern_Causal_Frontiers_SDID.ipynb",
+      "theory_term_hits": 3,
+      "display_equations": 8,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "07-Machine-Learning\\10_Transformers.ipynb",
       "theory_term_hits": 3,
       "display_equations": 9,
       "dimensions": {
@@ -829,7 +1297,7 @@
       "structural_score": 4
     },
     {
-      "path": "08-Time-Series/02_ARMA_Models.ipynb",
+      "path": "08-Time-Series\\02_ARMA_Models.ipynb",
       "theory_term_hits": 3,
       "display_equations": 12,
       "dimensions": {
@@ -841,7 +1309,7 @@
       "structural_score": 4
     },
     {
-      "path": "08-Time-Series/07_Nonlinear_Time_Series_and_Particle_Filters.ipynb",
+      "path": "08-Time-Series\\07_Nonlinear_Time_Series_and_Particle_Filters.ipynb",
       "theory_term_hits": 3,
       "display_equations": 9,
       "dimensions": {
@@ -853,7 +1321,7 @@
       "structural_score": 4
     },
     {
-      "path": "09-Finance/08_Hawkes_Processes_and_Market_Impact.ipynb",
+      "path": "09-Finance\\08_Hawkes_Processes_and_Market_Impact.ipynb",
       "theory_term_hits": 3,
       "display_equations": 8,
       "dimensions": {
@@ -865,7 +1333,7 @@
       "structural_score": 4
     },
     {
-      "path": "10-Specialized-Models/04_Climate_Macro_Integrated_Assessment_DICE.ipynb",
+      "path": "10-Specialized-Models\\04_Climate_Macro_Integrated_Assessment_DICE.ipynb",
       "theory_term_hits": 3,
       "display_equations": 10,
       "dimensions": {
@@ -877,7 +1345,7 @@
       "structural_score": 4
     },
     {
-      "path": "Appendix/T4_Replication_Card_Krueger_1994.ipynb",
+      "path": "Appendix\\T4_Replication_Card_Krueger_1994.ipynb",
       "theory_term_hits": 3,
       "display_equations": 2,
       "dimensions": {
@@ -889,7 +1357,7 @@
       "structural_score": 4
     },
     {
-      "path": "Appendix/T5_Replication_Fama_French_Five_Factor.ipynb",
+      "path": "Appendix\\T5_Replication_Fama_French_Five_Factor.ipynb",
       "theory_term_hits": 3,
       "display_equations": 1,
       "dimensions": {
@@ -901,7 +1369,91 @@
       "structural_score": 4
     },
     {
-      "path": "06-Econometrics/05_Instrumental_Variables.ipynb",
+      "path": "build\\exec-tier2\\03D_RBC_News_Shocks_and_Expectations.ipynb",
+      "theory_term_hits": 3,
+      "display_equations": 0,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "build\\exec-tier2\\04_Climate_Macro_Integrated_Assessment_DICE.ipynb",
+      "theory_term_hits": 3,
+      "display_equations": 10,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "build\\exec-tier2\\07_Nonlinear_Time_Series_and_Particle_Filters.ipynb",
+      "theory_term_hits": 3,
+      "display_equations": 9,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "build\\exec-tier2\\08_Hawkes_Processes_and_Market_Impact.ipynb",
+      "theory_term_hits": 3,
+      "display_equations": 8,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "build\\exec-tier2\\13_Modern_Causal_Frontiers_SDID.ipynb",
+      "theory_term_hits": 3,
+      "display_equations": 8,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "build\\exec\\T4_Replication_Card_Krueger_1994.ipynb",
+      "theory_term_hits": 3,
+      "display_equations": 2,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "build\\exec\\T5_Replication_Fama_French_Five_Factor.ipynb",
+      "theory_term_hits": 3,
+      "display_equations": 1,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "06-Econometrics\\05_Instrumental_Variables.ipynb",
       "theory_term_hits": 2,
       "display_equations": 8,
       "dimensions": {
@@ -913,7 +1465,7 @@
       "structural_score": 4
     },
     {
-      "path": "06-Econometrics/10_Vector_Autoregression.ipynb",
+      "path": "06-Econometrics\\10_Vector_Autoregression.ipynb",
       "theory_term_hits": 2,
       "display_equations": 8,
       "dimensions": {
@@ -925,7 +1477,7 @@
       "structural_score": 4
     },
     {
-      "path": "07-Machine-Learning/01_Introduction_to_ML_for_Economists.ipynb",
+      "path": "07-Machine-Learning\\01_Introduction_to_ML_for_Economists.ipynb",
       "theory_term_hits": 2,
       "display_equations": 6,
       "dimensions": {
@@ -937,7 +1489,7 @@
       "structural_score": 4
     },
     {
-      "path": "07-Machine-Learning/09_LSTMs_and_GRUs.ipynb",
+      "path": "07-Machine-Learning\\09_LSTMs_and_GRUs.ipynb",
       "theory_term_hits": 2,
       "display_equations": 14,
       "dimensions": {
@@ -949,7 +1501,7 @@
       "structural_score": 4
     },
     {
-      "path": "07-Machine-Learning/12_Self_Supervised_Learning.ipynb",
+      "path": "07-Machine-Learning\\12_Self_Supervised_Learning.ipynb",
       "theory_term_hits": 2,
       "display_equations": 6,
       "dimensions": {
@@ -961,9 +1513,21 @@
       "structural_score": 4
     },
     {
-      "path": "08-Time-Series/03_ARIMA_and_Forecasting.ipynb",
+      "path": "08-Time-Series\\03_ARIMA_and_Forecasting.ipynb",
       "theory_term_hits": 2,
       "display_equations": 10,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "build\\exec\\10_Vector_Autoregression.ipynb",
+      "theory_term_hits": 2,
+      "display_equations": 8,
       "dimensions": {
         "assumptions": true,
         "formal_statement": true,

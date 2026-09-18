@@ -7,7 +7,7 @@ This document reconciles the four supplied planning artifacts against the actual
 ## Source-of-truth rules
 
 1. **The uploaded ZIP is authoritative for current project state.** Plan claims about counts, missing files, or already-completed work were re-verified against the archive before any edit.
-2. **The two master curriculum plans are duplicates.** `CURRICULUM_REVIEW_PLAN.md` and `2026-08-21-comprehensive-curriculum-review-plan.md` are byte-identical (same SHA-256), so they are treated as one specification, not two independent mandates.
+2. **The two master curriculum plans are duplicates.** `CURRICULUM_REVIEW_PLAN.md` and `2026-08-21-comprehensive-curriculum-review-plan.md` are byte-identical (same SHA-256), so they are treated as one specification, not two independent mandates. (The redundant `CURRICULUM_REVIEW_PLAN.md` copy was dropped during finalization; the dated blueprint is the retained specification.)
 3. **Newer verified repository state supersedes stale findings.** Examples: the archive already contained `pyproject.toml`, `.gitignore`, pre-commit configuration, tests, CI, non-zero image assets, and the removed `polyfill.io` reference.
 4. **Aspirational numerical or performance claims are not fabricated.** A feature is marked verified only when its evidence actually ran in this environment.
 5. **Pedagogical breadth is balanced with consolidation.** New notebooks were added only for materially missing frontiers; existing HANK, deep RL, causal ML, and finance content was enriched instead of duplicated.

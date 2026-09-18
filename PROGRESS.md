@@ -11,5 +11,5 @@
 
 ## Last verify
 - command: `pytest tests/ -q --tb=short && python scripts/audit_curriculum_ast.py --strict && python scripts/audit_dependencies.py && python scripts/audit_docs.py --strict && python scripts/audit_proofs.py`
-- result: green at final packaging pass (see `audit/FINAL_AUDIT_REPORT.md`)
-- when: 2026-08-21
+- result: green (living audits: `audit/NOTEBOOK_AUDIT.md`, `audit/DOCS_AUDIT.md`, `audit/DEPENDENCY_AUDIT.md`, `audit/PROOF_STRUCTURE_AUDIT.md`)
+- when: 2026-09-18
