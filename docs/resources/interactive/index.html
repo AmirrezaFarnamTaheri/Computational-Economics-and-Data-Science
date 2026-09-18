@@ -1,675 +1,336 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light dark">
   <title>Computational Economics & Data Science — Interactive Visual Laboratory</title>
-  
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              50: '#F0F9FF',
-              100: '#E0F2FE',
-              500: '#0284C7',
-              600: '#0369A1',
-              700: '#075985',
-              800: '#0C4A6E',
-              900: '#1E3A8A',
-            }
-          }
-        }
-      }
-    }
-  </script>
-
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-
-  <!-- KaTeX for math rendering -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
-
-  <!-- Three.js (r134) for Vanta and WebGL 3D Object -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-  <!-- Vanta.js Waves -->
-  <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
-
-  <!-- Mermaid.js -->
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js"></script>
-
   <style>
+    :root {
+      --bg:#f8fafc; --panel:#ffffff; --text:#0f172a; --muted:#475569;
+      --line:#cbd5e1; --accent:#0369a1; --accent-soft:#e0f2fe;
+      --dark:#0f172a; --dark-2:#1e293b; --good:#047857;
+      --radius:18px; --shadow:0 12px 30px rgba(15,23,42,.08);
+    }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
     body {
-      font-family: 'Inter', sans-serif;
+      margin:0; font:16px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:var(--bg); color:var(--text);
     }
-    code, pre {
-      font-family: 'JetBrains Mono', monospace;
+    a { color:inherit; }
+    .skip-link { position:absolute; left:-999px; top:8px; z-index:99; background:#fff; color:#000; padding:.6rem .8rem; border-radius:8px; }
+    .skip-link:focus { left:8px; }
+    header {
+      background:linear-gradient(135deg,#0f172a,#0c4a6e); color:#fff;
+      padding:4.5rem 1.25rem 3.5rem; border-bottom:1px solid #334155;
     }
-    .webgl-object-shell {
-      position: relative;
-      width: min(100%, 720px);
-      aspect-ratio: 1 / 1;
+    .hero,.wrap { width:min(1180px,calc(100% - 2rem)); margin-inline:auto; }
+    .hero h1 { max-width:900px; margin:.4rem 0 1rem; font-size:clamp(2.2rem,6vw,4.6rem); line-height:1.02; letter-spacing:-.04em; }
+    .hero p { max-width:760px; color:#dbeafe; font-size:1.08rem; }
+    nav { display:flex; flex-wrap:wrap; gap:.65rem; margin-top:1.3rem; }
+    nav a { text-decoration:none; border:1px solid #64748b; border-radius:999px; padding:.55rem .8rem; background:rgba(255,255,255,.07); }
+    nav a:focus-visible, button:focus-visible, input:focus-visible { outline:3px solid #38bdf8; outline-offset:3px; }
+    main { padding:2.5rem 0 5rem; }
+    section {
+      margin:0 0 2rem; background:var(--panel); border:1px solid var(--line);
+      border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden;
     }
-    .webgl-object-canvas {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      display: block;
+    .section-grid { display:grid; grid-template-columns:minmax(0,.9fr) minmax(320px,1.1fr); gap:2rem; padding:clamp(1.2rem,3vw,2.4rem); align-items:center; }
+    .eyebrow { font-size:.78rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); }
+    h2 { margin:.35rem 0 .6rem; font-size:clamp(1.65rem,4vw,2.45rem); line-height:1.12; }
+    h3 { margin:0 0 .35rem; }
+    .muted { color:var(--muted); }
+    .formula { background:#f1f5f9; border:1px solid #e2e8f0; border-radius:12px; padding:.8rem 1rem; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; overflow:auto; }
+    .controls { display:grid; gap:1rem; margin-top:1rem; }
+    .control-row label { display:flex; justify-content:space-between; gap:1rem; font-weight:700; font-size:.9rem; margin-bottom:.35rem; }
+    input[type="range"] { width:100%; min-height:32px; }
+    .canvas-shell { min-width:0; width:100%; border-radius:16px; overflow:hidden; border:1px solid #334155; background:#020617; }
+    canvas { display:block; width:100%; height:auto; max-width:100%; }
+    .surface-canvas { aspect-ratio:16/11; }
+    .globe-canvas { aspect-ratio:1/1; max-height:520px; margin:auto; }
+    .market-canvas { aspect-ratio:16/9; min-height:280px; }
+    .stat-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.75rem; margin:1rem 0; }
+    .stat { border:1px solid #e2e8f0; background:#f8fafc; border-radius:12px; padding:.8rem; }
+    .stat strong { display:block; font-size:1.35rem; color:var(--accent); }
+    button { border:0; border-radius:10px; background:var(--dark); color:#fff; padding:.7rem 1rem; font-weight:750; cursor:pointer; }
+    .legend { display:flex; flex-wrap:wrap; gap:.8rem; font-size:.85rem; margin-top:.7rem; }
+    .dot { width:.8rem; height:.8rem; display:inline-block; border-radius:999px; vertical-align:-.08rem; margin-right:.28rem; }
+    .workflow-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem; padding:clamp(1.2rem,3vw,2.4rem); }
+    .workflow { border:1px solid #e2e8f0; border-radius:14px; padding:1rem; }
+    .workflow ol { margin:.6rem 0 0; padding-left:1.25rem; }
+    .note { border-left:4px solid var(--accent); padding:.6rem .9rem; background:var(--accent-soft); color:#0c4a6e; border-radius:0 10px 10px 0; }
+    footer { border-top:1px solid var(--line); text-align:center; padding:2rem 1rem; color:var(--muted); font-size:.85rem; }
+    @media (max-width:820px) {
+      .section-grid,.workflow-grid { grid-template-columns:1fr; }
+      .visual-first { order:-1; }
+      .market-canvas { min-height:220px; }
     }
-    .cobe-container {
-      width: 100%;
-      max-width: 480px;
-      aspect-ratio: 1 / 1;
-      position: relative;
+    @media (prefers-reduced-motion:reduce) {
+      html { scroll-behavior:auto; }
+      *,*::before,*::after { animation-duration:.001ms!important; animation-iteration-count:1!important; transition-duration:.001ms!important; }
     }
-    #cobe-canvas {
-      width: 100%;
-      height: 100%;
-      opacity: 0;
-      transition: opacity 1s ease;
-    }
-    .mermaid-card svg {
-      max-width: 100%;
-      height: auto;
+    @media (prefers-color-scheme:dark) {
+      :root { --bg:#020617; --panel:#0f172a; --text:#e2e8f0; --muted:#cbd5e1; --line:#334155; --accent:#38bdf8; --accent-soft:#082f49; }
+      .formula,.stat { background:#111827; border-color:#334155; }
+      .note { color:#e0f2fe; }
     }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-900 antialiased selection:bg-sky-500 selection:text-white">
+<body>
+<a class="skip-link" href="#main">Skip to interactive laboratory</a>
+<header>
+  <div class="hero">
+    <div class="eyebrow" style="color:#7dd3fc">Interactive visual laboratory</div>
+    <h1>Computational Economics &amp; Data Science</h1>
+    <p>Self-contained, dependency-free demonstrations that connect an economic object to the code and the diagnostic shown on screen. Every visual below states what it computes—and what it does not.</p>
+    <nav aria-label="Laboratory sections">
+      <a href="#surface">Production surface</a>
+      <a href="#globe">Reference hubs</a>
+      <a href="#market">Price discovery</a>
+      <a href="#workflows">Model workflows</a>
+    </nav>
+  </div>
+</header>
 
-  <!-- Header / Hero with Vanta.js WebGL Animated Background -->
-  <header id="hero-vanta" class="relative overflow-hidden text-white min-h-[440px] flex flex-col justify-center items-center px-6 text-center border-b border-slate-800">
-    <div class="relative z-10 max-w-4xl mx-auto py-12">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-semibold uppercase tracking-wider text-sky-300 mb-6">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        Interactive Visual Laboratory
+<main id="main" class="wrap">
+  <section id="surface" aria-labelledby="surface-title">
+    <div class="section-grid">
+      <div>
+        <div class="eyebrow">Section 01 · Economic surface</div>
+        <h2 id="surface-title">Cobb–Douglas production surface</h2>
+        <p class="muted">This is an actual computed surface—not a decorative polyhedron. The canvas evaluates <em>Y = K<sup>α</sup>Z<sup>1−α</sup></em> on a grid of capital and productivity values and projects that grid into a rotatable wireframe view.</p>
+        <div class="formula" aria-label="Production function">Y(K,Z) = K^α Z^(1−α)</div>
+        <div class="controls">
+          <div class="control-row">
+            <label for="alpha-slider"><span>Capital share α</span><output id="alpha-value" for="alpha-slider">0.36</output></label>
+            <input id="alpha-slider" type="range" min="0.10" max="0.80" step="0.01" value="0.36">
+          </div>
+          <div class="control-row">
+            <label for="rotation-slider"><span>View rotation</span><output id="rotation-value" for="rotation-slider">28°</output></label>
+            <input id="rotation-slider" type="range" min="-65" max="65" step="1" value="28">
+          </div>
+        </div>
+        <p class="note">Interpretation: changing α changes the curvature and relative sensitivity to capital. The visualization is deterministic and has no hidden simulation state.</p>
       </div>
-      <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4 text-white">
-        Computational Economics &amp; Data Science
-      </h1>
-      <p class="text-base md:text-lg text-slate-200 max-w-2xl mx-auto mb-8 font-light">
-        A publication-grade interactive suite integrating WebGL 3D parameter manifolds, Cobe global macroeconomic nodes, and mathematical architectural pipelines.
-      </p>
-      <div class="flex flex-wrap justify-center gap-4 text-sm font-medium">
-        <a href="#threejs-section" class="px-5 py-2.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-semibold shadow-lg shadow-sky-500/20 transition">
-          WebGL 3D Manifold
-        </a>
-        <a href="#cobe-section" class="px-5 py-2.5 rounded-lg bg-white/10 hover:bg-white/20 backdrop-blur border border-white/20 transition">
-          Global Macro Globe
-        </a>
-        <a href="#matter-section" class="px-5 py-2.5 rounded-lg bg-white/10 hover:bg-white/20 backdrop-blur border border-white/20 transition">
-          Market-Clearing Lab
-        </a>
-        <a href="#mermaid-section" class="px-5 py-2.5 rounded-lg bg-white/10 hover:bg-white/20 backdrop-blur border border-white/20 transition">
-          Mermaid Architecture
-        </a>
+      <div class="visual-first">
+        <div class="canvas-shell">
+          <canvas id="surface-canvas" class="surface-canvas" width="960" height="660" role="img" aria-label="Wireframe Cobb-Douglas production surface over capital and productivity.">
+            Cobb-Douglas production surface. Use the capital-share and rotation controls to change the view.
+          </canvas>
+        </div>
       </div>
     </div>
-  </header>
+  </section>
 
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-24">
-
-    <!-- Section 1: WebGL 3D Geometric Object (Three.js PBR Engine) -->
-    <section id="threejs-section" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 lg:p-12">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-        
-        <div class="lg:col-span-6 space-y-6">
-          <div class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-sky-600">
-            <span>Section 01</span> &bull; <span>WebGL 3D Geometry</span>
-          </div>
-          <h2 class="text-3xl font-bold tracking-tight text-slate-900">
-            Real-Time 3D Economic Manifold &amp; Utility Frontier
-          </h2>
-          <p class="text-slate-600 leading-relaxed text-sm">
-            Interactive PBR-rendered 3D geometric manifold illustrating high-dimensional economic decision frontiers, continuous value functions $V(k, z)$, and production level sets.
-          </p>
-
-          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-2">
-            <div class="flex justify-between font-mono text-slate-700">
-              <span class="font-semibold">Geometry:</span>
-              <span>Icosahedron faceted manifold</span>
-            </div>
-            <div class="flex justify-between font-mono text-slate-700">
-              <span class="font-semibold">Material:</span>
-              <span>MeshStandardMaterial (Metalness 0.52, Roughness 0.32)</span>
-            </div>
-            <div class="flex justify-between font-mono text-slate-700">
-              <span class="font-semibold">Lighting:</span>
-              <span>Key Directional (2.2) + Rim (0.95) + Ambient Fill</span>
-            </div>
-          </div>
-
-          <!-- Controls -->
-          <div class="space-y-4 pt-2">
-            <div>
-              <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
-                <span>Surface Roughness / Friction:</span>
-                <span id="roughness-val" class="font-mono text-sky-600">0.32</span>
-              </div>
-              <input type="range" id="roughness-slider" min="0.05" max="0.95" step="0.01" value="0.32" 
-                     class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600">
-            </div>
-            <div>
-              <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
-                <span>Rotation Velocity:</span>
-                <span id="speed-val" class="font-mono text-sky-600">1.0x</span>
-              </div>
-              <input type="range" id="speed-slider" min="0.0" max="3.0" step="0.1" value="1.0" 
-                     class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600">
-            </div>
-          </div>
+  <section id="globe" aria-labelledby="globe-title">
+    <div class="section-grid">
+      <div>
+        <div class="eyebrow">Section 02 · Geographic context</div>
+        <h2 id="globe-title">Reference monetary-policy and trading hubs</h2>
+        <p class="muted">The globe marks a small, fixed set of reference locations. It does <strong>not</strong> infer capital flows, policy spillovers, or network edges. Those claims require dated data and a documented model.</p>
+        <div class="legend" aria-label="Reference hub legend">
+          <span><i class="dot" style="background:#38bdf8"></i>New York</span>
+          <span><i class="dot" style="background:#f59e0b"></i>Frankfurt</span>
+          <span><i class="dot" style="background:#34d399"></i>Tokyo</span>
+          <span><i class="dot" style="background:#f472b6"></i>London</span>
+          <span><i class="dot" style="background:#a78bfa"></i>Singapore</span>
         </div>
-
-        <div class="lg:col-span-6 flex justify-center items-center">
-          <div class="webgl-object-shell bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
-            <canvas class="webgl-object-canvas" data-webgl-3d-object></canvas>
+        <div class="controls">
+          <div class="control-row">
+            <label for="globe-rotation"><span>Longitude rotation</span><output id="globe-rotation-value" for="globe-rotation">0°</output></label>
+            <input id="globe-rotation" type="range" min="-180" max="180" step="1" value="0">
           </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- Section 2: Cobe.js Interactive Global Macroeconomic Globe -->
-    <section id="cobe-section" class="bg-slate-900 text-white rounded-2xl border border-slate-800 shadow-xl p-8 lg:p-12 overflow-hidden relative">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
-        
-        <div class="lg:col-span-6 space-y-6">
-          <div class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-sky-400">
-            <span>Section 02</span> &bull; <span>Cobe.js Globe</span>
-          </div>
-          <h2 class="text-3xl font-bold tracking-tight text-white">
-            Global Financial Architecture &amp; Central Banking Network
-          </h2>
-          <p class="text-slate-300 leading-relaxed text-sm">
-            High-performance WebGL spherical projection rendered at native DPR with live spatial markers for global macroeconomic monetary policy hubs and asset trading centers.
-          </p>
-
-          <div class="grid grid-cols-2 gap-3 text-xs pt-2">
-            <div class="p-3 rounded-lg bg-slate-800/80 border border-slate-700/60">
-              <div class="text-sky-400 font-bold">New York (Fed)</div>
-              <div class="text-slate-400 text-[11px] font-mono">40.71&deg; N, 74.00&deg; W</div>
-            </div>
-            <div class="p-3 rounded-lg bg-slate-800/80 border border-slate-700/60">
-              <div class="text-sky-400 font-bold">Frankfurt (ECB)</div>
-              <div class="text-slate-400 text-[11px] font-mono">50.11&deg; N, 8.68&deg; E</div>
-            </div>
-            <div class="p-3 rounded-lg bg-slate-800/80 border border-slate-700/60">
-              <div class="text-sky-400 font-bold">Tokyo (BoJ)</div>
-              <div class="text-slate-400 text-[11px] font-mono">35.67&deg; N, 139.65&deg; E</div>
-            </div>
-            <div class="p-3 rounded-lg bg-slate-800/80 border border-slate-700/60">
-              <div class="text-sky-400 font-bold">London (BoE)</div>
-              <div class="text-slate-400 text-[11px] font-mono">51.50&deg; N, 0.12&deg; W</div>
-            </div>
-          </div>
-
-          <p class="text-xs text-slate-400 italic">
-            Tip: Explore global nodes and monetary linkages interactively.
-          </p>
-        </div>
-
-        <div class="lg:col-span-6 flex justify-center items-center">
-          <div class="cobe-container flex justify-center items-center">
-            <canvas id="cobe-canvas"></canvas>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-
-    <!-- Section 3: Matter.js decentralized market-clearing laboratory -->
-    <section id="matter-section" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 lg:p-12">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-        <div class="lg:col-span-5 space-y-5">
-          <div class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-sky-600">
-            <span>Section 03</span> &bull; <span>Matter.js Market Lab</span>
-          </div>
-          <h2 class="text-3xl font-bold tracking-tight text-slate-900">Decentralized Bids, Asks &amp; Price Discovery</h2>
-          <p class="text-slate-600 text-sm leading-relaxed">
-            Buyer and seller particles collide in a bounded market. Each collision updates a stylized transaction price toward the midpoint of a buyer bid and seller ask, making convergence an observable process rather than a static supply-demand diagram. The simulation is pedagogical: it illustrates decentralized price discovery, not a calibrated microstructure model.
-          </p>
-          <div class="grid grid-cols-2 gap-3 text-xs">
-            <div class="rounded-lg border border-slate-200 bg-slate-50 p-3"><span class="font-semibold">Transactions</span><div id="market-trades" class="font-mono text-sky-700 text-lg">0</div></div>
-            <div class="rounded-lg border border-slate-200 bg-slate-50 p-3"><span class="font-semibold">Clearing price</span><div id="market-price" class="font-mono text-sky-700 text-lg">100.00</div></div>
-          </div>
-          <button id="market-reset" type="button" class="px-4 py-2 rounded-lg bg-slate-900 text-white hover:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500">Reset market</button>
-        </div>
-        <div class="lg:col-span-7">
-          <div id="matter-market" class="w-full min-h-[360px] rounded-xl overflow-hidden border border-slate-200 bg-slate-950" aria-label="Interactive buyer and seller market-clearing simulation"></div>
         </div>
       </div>
-    </section>
-
-    <!-- Section 4: Mermaid Educational Architecture Diagrams with KaTeX Math -->
-    <section id="mermaid-section" class="space-y-8">
-      <div class="text-center max-w-3xl mx-auto">
-        <div class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-sky-600 mb-2">
-          <span>Section 04</span> &bull; <span>Structural Workflows</span>
+      <div class="visual-first">
+        <div class="canvas-shell">
+          <canvas id="globe-canvas" class="globe-canvas" width="700" height="700" role="img" aria-label="Schematic globe with five labeled reference financial hubs.">
+            Schematic globe marking New York, Frankfurt, Tokyo, London and Singapore.
+          </canvas>
         </div>
-        <h2 class="text-3xl font-bold tracking-tight text-slate-900">
-          Academic Flowcharts &amp; Econometric Model Graphs
-        </h2>
-        <p class="text-slate-600 text-sm mt-2">
-          Verified Mermaid pipelines with full mathematical notation and KaTeX rendering.
-        </p>
       </div>
+    </div>
+  </section>
 
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        
-        <!-- Card 1: SVAR Identification -->
-        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between">
-          <div>
-            <h3 class="text-lg font-bold text-slate-900 mb-2">1. Structural VAR Identification</h3>
-            <p class="text-xs text-slate-500 mb-4">Cholesky lower-triangular decomposition mapping structural shocks $u_t$ to observable macro series $y_t$.</p>
-            <div class="mermaid-card bg-slate-50 p-4 rounded-lg border border-slate-200 overflow-x-auto text-xs">
-              <pre class="mermaid">
-flowchart TD
-    subgraph Shocks ["Structural Shocks"]
-        ugdp["u_GDP ~ N(0,1)<br/>Supply Shock"]
-        upi["u_pi ~ N(0,1)<br/>Cost-Push Shock"]
-        ur["u_R ~ N(0,1)<br/>Monetary Policy Shock"]
-    end
-    subgraph Observables ["Endogenous Variables"]
-        ygdp["GDP Growth"]
-        ypi["Inflation Rate"]
-        yr["Fed Funds Rate"]
-    end
-    ugdp --> ygdp
-    ugdp --> ypi
-    ugdp --> yr
-    upi --> ypi
-    upi --> yr
-    ur --> yr
-    classDef shock fill:#EFF6FF,stroke:#3B82F6,stroke-width:1.5px,color:#1E3A8A;
-    classDef obs fill:#ECFDF5,stroke:#10B981,stroke-width:1.5px,color:#065F46;
-    class ugdp,upi,ur shock;
-    class ygdp,ypi,yr obs;
-              </pre>
-            </div>
-          </div>
+  <section id="market" aria-labelledby="market-title">
+    <div class="section-grid">
+      <div>
+        <div class="eyebrow">Section 03 · Stylized simulation</div>
+        <h2 id="market-title">Decentralized bids, asks &amp; transaction-price discovery</h2>
+        <p class="muted">Buyers and sellers move in a bounded arena. When opposite sides meet and the buyer bid is at least the seller ask, a transaction occurs at their midpoint. The displayed price is an exponentially smoothed <strong>transaction-price estimate</strong>, not a solved Walrasian clearing price.</p>
+        <div class="stat-grid" aria-live="polite">
+          <div class="stat"><span>Transactions</span><strong id="market-trades">0</strong></div>
+          <div class="stat"><span>Smoothed transaction price</span><strong id="market-price">100.00</strong></div>
         </div>
-
-        <!-- Card 2: Box-Jenkins Modeling -->
-        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between">
-          <div>
-            <h3 class="text-lg font-bold text-slate-900 mb-2">2. Box-Jenkins Time Series Pipeline</h3>
-            <p class="text-xs text-slate-500 mb-4">Stationarity verification, ACF/PACF identification, estimation, and diagnostic checking.</p>
-            <div class="mermaid-card bg-slate-50 p-4 rounded-lg border border-slate-200 overflow-x-auto text-xs">
-              <pre class="mermaid">
-flowchart TD
-    A["Raw Series Y_t"] --> B["Stationarity Tests (ADF/KPSS)"]
-    B -->|Non-Stationary| C["Differencing (d)"]
-    C --> B
-    B -->|Stationary| D["ACF/PACF Identification (p,q)"]
-    D --> E["Maximum Likelihood Estimation"]
-    E --> F{"Ljung-Box Q Test"}
-    F -->|Fail| D
-    F -->|Pass| G["Out-of-Sample Forecasting"]
-    classDef step fill:#F8FAFC,stroke:#64748B,stroke-width:1.5px,color:#0F172A;
-    classDef dec fill:#FEF3C7,stroke:#F59E0B,stroke-width:2px,color:#92400E;
-    classDef out fill:#ECFDF5,stroke:#10B981,stroke-width:2px,color:#065F46;
-    class A,B,C,D,E step;
-    class F dec;
-    class G out;
-              </pre>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card 3: Aiyagari Equilibrium -->
-        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between">
-          <div>
-            <h3 class="text-lg font-bold text-slate-900 mb-2">3. Aiyagari General Equilibrium Algorithm</h3>
-            <p class="text-xs text-slate-500 mb-4">Nested fixed-point bisection on aggregate capital interest rate $r$ and household distribution $\mu(a, z)$.</p>
-            <div class="mermaid-card bg-slate-50 p-4 rounded-lg border border-slate-200 overflow-x-auto text-xs">
-              <pre class="mermaid">
-flowchart TD
-    guess["Guess r(0)"] --> vfi["Solve Bellman V(a,z; r)"]
-    vfi --> policy["Extract Policy a'(a,z)"]
-    policy --> dist["Invariant Distribution mu(a,z)"]
-    dist --> agg["Aggregate Supply K_s(r)"]
-    agg --> clear{"|K_s - K_d| < eps?"}
-    clear -->|No| update["Update r(k+1) via Bisection"]
-    update --> vfi
-    clear -->|Yes| eq["Equilibrium (r*, w*, mu*)"]
-    classDef outer fill:#EFF6FF,stroke:#3B82F6,stroke-width:1.8px,color:#1E3A8A;
-    classDef dec fill:#FEF3C7,stroke:#F59E0B,stroke-width:2px,color:#92400E;
-    classDef eq fill:#ECFDF5,stroke:#10B981,stroke-width:2px,color:#065F46;
-    class guess,vfi,policy,dist,agg,update outer;
-    class clear dec;
-    class eq eq;
-              </pre>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card 4: Fama-MacBeth Regression -->
-        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between">
-          <div>
-            <h3 class="text-lg font-bold text-slate-900 mb-2">4. Fama-MacBeth Two-Pass Pricing</h3>
-            <p class="text-xs text-slate-500 mb-4">Time-series estimation of asset factor exposures $\beta_i$ followed by cross-sectional estimation of risk premia $\lambda_t$.</p>
-            <div class="mermaid-card bg-slate-50 p-4 rounded-lg border border-slate-200 overflow-x-auto text-xs">
-              <pre class="mermaid">
-flowchart TD
-    A["Panel Returns R_it, Factors F_t"] --> B["Pass 1: Time-Series Betas"]
-    B --> C["Factor Exposures beta_i"]
-    C --> D["Pass 2: Cross-Sectional Lambdas"]
-    D --> E["Risk Premia Series lambda_t"]
-    E --> F["Time Averaging & Shanken Correction"]
-    classDef pass fill:#EFF6FF,stroke:#3B82F6,stroke-width:2px,color:#1E3A8A;
-    classDef res fill:#ECFDF5,stroke:#10B981,stroke-width:2px,color:#065F46;
-    class A,C,E pass;
-    class B,D,F res;
-              </pre>
-            </div>
-          </div>
-        </div>
-
+        <button id="market-reset" type="button">Reset simulation</button>
+        <p class="note">Pedagogical boundary: this illustrates decentralized price discovery only. It is not calibrated market microstructure and does not establish equilibrium.</p>
       </div>
-    </section>
+      <div class="visual-first">
+        <div class="canvas-shell">
+          <canvas id="market-canvas" class="market-canvas" width="960" height="540" role="img" aria-label="Stylized buyer and seller simulation used to illustrate transaction-price discovery.">
+            Stylized market simulation. Blue circles are buyers and amber circles are sellers.
+          </canvas>
+        </div>
+        <div class="legend"><span><i class="dot" style="background:#38bdf8"></i>Buyer</span><span><i class="dot" style="background:#f59e0b"></i>Seller</span></div>
+      </div>
+    </div>
+  </section>
 
-  </main>
+  <section id="workflows" aria-labelledby="workflow-title">
+    <div style="padding:2rem 2rem 0">
+      <div class="eyebrow">Section 04 · Auditable workflows</div>
+      <h2 id="workflow-title">From equation to code to diagnostic</h2>
+      <p class="muted">These are semantic workflow summaries rendered as ordinary HTML so they remain readable with scripts disabled, on narrow screens, and in assistive technology.</p>
+    </div>
+    <div class="workflow-grid">
+      <article class="workflow"><h3>Structural VAR identification</h3><ol><li>Estimate reduced-form VAR.</li><li>State identifying restrictions.</li><li>Map reduced-form to structural shocks.</li><li>Compute impulse responses.</li><li>Check sensitivity to ordering/restrictions.</li></ol></article>
+      <article class="workflow"><h3>Box–Jenkins time series</h3><ol><li>Inspect transformations and stationarity evidence.</li><li>Select candidate lag orders.</li><li>Estimate models.</li><li>Check residual dependence.</li><li>Evaluate forecasts out of sample.</li></ol></article>
+      <article class="workflow"><h3>Aiyagari equilibrium</h3><ol><li>Guess interest rate.</li><li>Recover wage from the firm problem.</li><li>Solve household Bellman problem.</li><li>Compute invariant distribution and capital supply.</li><li>Compare supply with firm capital demand and report residual.</li></ol></article>
+      <article class="workflow"><h3>Fama–MacBeth regression</h3><ol><li>Estimate time-series betas.</li><li>Run cross-sectional regressions by period.</li><li>Average risk premia.</li><li>Use appropriate standard errors.</li><li>Report sensitivity to factor definitions and sample.</li></ol></article>
+    </div>
+  </section>
+</main>
 
-  <footer class="bg-white border-t border-slate-200 py-8 text-center text-xs text-slate-500">
-    <p>Computational Economics &amp; Data Science Visual Laboratory &bull; Publication-Grade Open Science Suite</p>
-  </footer>
+<footer>Computational Economics &amp; Data Science Visual Laboratory · self-contained browser implementation</footer>
 
-  <!-- WebGL / Three.js / Cobe Scripts -->
-  <script type="module">
-    // 1. Initialize Vanta.js Waves on Hero
-    try {
-      if (window.VANTA && window.THREE) {
-        window.VANTA.WAVES({
-          el: "#hero-vanta",
-          mouseControls: true,
-          touchControls: true,
-          gyroControls: false,
-          minHeight: 200.00,
-          minWidth: 200.00,
-          scale: 1.00,
-          scaleMobile: 1.00,
-          color: 0x0f172a,
-          shininess: 35.00,
-          waveHeight: 14.00,
-          waveSpeed: 0.65,
-          zoom: 0.85
-        });
-      }
-    } catch(e) {
-      console.warn("Vanta.js initialization skipped:", e);
+<script>
+(() => {
+  "use strict";
+  const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const $ = (id) => document.getElementById(id);
+
+  function fitCanvas(canvas) {
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    const rect = canvas.getBoundingClientRect();
+    const width = Math.max(320, Math.round(rect.width * dpr));
+    const cssHeight = rect.width / (canvas.classList.contains("globe-canvas") ? 1 : canvas.classList.contains("market-canvas") ? 16/9 : 16/11);
+    const height = Math.max(220, Math.round(cssHeight * dpr));
+    if (canvas.width !== width || canvas.height !== height) {
+      canvas.width = width; canvas.height = height;
     }
+    return { ctx:canvas.getContext("2d"), w:width, h:height, dpr };
+  }
 
-    // 2. Initialize Three.js WebGL 3D Object (Icosahedron PBR Object)
-    function initWebGL3DObject(canvas, options = {}) {
-      if (!canvas) return () => {};
+  // --- Economic production surface ---
+  const surface = $("surface-canvas");
+  const alphaSlider = $("alpha-slider");
+  const rotationSlider = $("rotation-slider");
+  const alphaValue = $("alpha-value");
+  const rotationValue = $("rotation-value");
 
-      const renderer = new THREE.WebGLRenderer({
-        canvas,
-        antialias: true,
-        alpha: true,
-      });
-      renderer.setClearColor(0x000000, 0);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, options.maxDpr || 1.75));
-      renderer.outputColorSpace = THREE.SRGBColorSpace;
-      renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = options.exposure || 1.15;
-      renderer.shadowMap.enabled = true;
-      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
-      camera.position.set(0, 0.2, 5.0);
-
-      const geometry = new THREE.IcosahedronGeometry(options.radius || 1.4, options.detail || 1);
-      const material = new THREE.MeshStandardMaterial({
-        color: options.color || 0x38bdf8,
-        metalness: options.metalness ?? 0.52,
-        roughness: options.roughness ?? 0.32,
-        emissive: options.emissive || 0x0c4a6e,
-        emissiveIntensity: options.emissiveIntensity ?? 0.3,
-        flatShading: true,
-      });
-
-      const object = new THREE.Mesh(geometry, material);
-      object.castShadow = true;
-      object.receiveShadow = true;
-      scene.add(object);
-
-      const ambient = new THREE.AmbientLight(0xffffff, 0.45);
-      scene.add(ambient);
-
-      const key = new THREE.DirectionalLight(0xffffff, 2.2);
-      key.position.set(3.4, 4.2, 4.8);
-      key.castShadow = true;
-      key.shadow.mapSize.set(1024, 1024);
-      scene.add(key);
-
-      const rim = new THREE.DirectionalLight(options.rimColor || 0x38bdf8, 0.95);
-      rim.position.set(-4.2, 1.2, -2.8);
-      scene.add(rim);
-
-      const shadowPlane = new THREE.Mesh(
-        new THREE.PlaneGeometry(5.2, 5.2),
-        new THREE.ShadowMaterial({ opacity: 0.25 })
-      );
-      shadowPlane.position.set(0, -1.65, 0);
-      shadowPlane.rotation.x = -Math.PI / 2;
-      shadowPlane.receiveShadow = true;
-      scene.add(shadowPlane);
-
-      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      let rafId = 0;
-      let speedMultiplier = 1.0;
-
-      function resize() {
-        const width = Math.max(1, canvas.clientWidth);
-        const height = Math.max(1, canvas.clientHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, options.maxDpr || 1.75));
-        renderer.setSize(width, height, false);
-        camera.aspect = width / height;
-        camera.updateProjectionMatrix();
-      }
-
-      function render(time = 0) {
-        const t = time * 0.001 * speedMultiplier;
-        object.rotation.x = -0.16 + Math.sin(t * 0.45) * 0.06;
-        object.rotation.y = t * 0.32;
-        object.rotation.z = Math.sin(t * 0.32) * 0.08;
-        object.position.y = reduceMotion ? 0 : Math.sin(t * 0.8) * 0.08;
-
-        renderer.render(scene, camera);
-        if (!reduceMotion) rafId = requestAnimationFrame(render);
-      }
-
-      function handleResize() {
-        cancelAnimationFrame(rafId);
-        resize();
-        render();
-      }
-
-      resize();
-      render();
-      window.addEventListener("resize", handleResize);
-
-      // Slider hooks
-      const roughnessSlider = document.getElementById("roughness-slider");
-      const roughnessVal = document.getElementById("roughness-val");
-      if (roughnessSlider) {
-        roughnessSlider.addEventListener("input", (e) => {
-          material.roughness = parseFloat(e.target.value);
-          roughnessVal.textContent = parseFloat(e.target.value).toFixed(2);
-        });
-      }
-
-      const speedSlider = document.getElementById("speed-slider");
-      const speedVal = document.getElementById("speed-val");
-      if (speedSlider) {
-        speedSlider.addEventListener("input", (e) => {
-          speedMultiplier = parseFloat(e.target.value);
-          speedVal.textContent = parseFloat(e.target.value).toFixed(1) + "x";
-        });
-      }
-
-      return () => {
-        cancelAnimationFrame(rafId);
-        window.removeEventListener("resize", handleResize);
-        geometry.dispose();
-        material.dispose();
-        shadowPlane.geometry.dispose();
-        shadowPlane.material.dispose();
-        renderer.dispose();
-      };
+  function drawSurface() {
+    const {ctx,w,h} = fitCanvas(surface);
+    const alpha = Number(alphaSlider.value);
+    const rot = Number(rotationSlider.value) * Math.PI / 180;
+    ctx.clearRect(0,0,w,h);
+    ctx.fillStyle = "#020617"; ctx.fillRect(0,0,w,h);
+    const pad = .11*Math.min(w,h), scale = .22*Math.min(w,h);
+    const origin = {x:w*.5,y:h*.73};
+    const project = (k,z,y) => {
+      const x0=(k-2.05), z0=(z-1.0), y0=(y-1.0);
+      const xr=x0*Math.cos(rot)-z0*Math.sin(rot);
+      const zr=x0*Math.sin(rot)+z0*Math.cos(rot);
+      return {x:origin.x + scale*(xr + .55*zr), y:origin.y - scale*(1.15*y0 - .34*zr)};
+    };
+    const ks=22,zs=18;
+    const point=(i,j)=>{
+      const k=.15+(3.85*i/(ks-1)), z=.4+(1.2*j/(zs-1));
+      const y=Math.pow(k,alpha)*Math.pow(z,1-alpha);
+      return project(k,z,y);
+    };
+    ctx.lineWidth=Math.max(1,w/900);
+    for(let j=0;j<zs;j++){
+      ctx.beginPath();
+      for(let i=0;i<ks;i++){const p=point(i,j); if(i===0)ctx.moveTo(p.x,p.y);else ctx.lineTo(p.x,p.y);}
+      ctx.strokeStyle="rgba(56,189,248,.68)"; ctx.stroke();
     }
-
-    const canvas3d = document.querySelector("[data-webgl-3d-object]");
-    if (canvas3d) {
-      initWebGL3DObject(canvas3d, {
-        color: 0x38bdf8,
-        rimColor: 0x0284c7,
-        metalness: 0.52,
-        roughness: 0.32,
-        emissive: 0x0c4a6e
-      });
+    for(let i=0;i<ks;i++){
+      ctx.beginPath();
+      for(let j=0;j<zs;j++){const p=point(i,j); if(j===0)ctx.moveTo(p.x,p.y);else ctx.lineTo(p.x,p.y);}
+      ctx.strokeStyle="rgba(167,139,250,.45)"; ctx.stroke();
     }
+    ctx.fillStyle="#e2e8f0"; ctx.font=`${Math.max(12,w/65)}px system-ui`;
+    ctx.fillText("K →",w-pad*1.25,h-pad*.45);
+    ctx.fillText("productivity Z",pad*.42,h-pad*.45);
+    ctx.fillText("output Y",pad*.45,pad*.7);
+  }
+  alphaSlider.addEventListener("input",()=>{alphaValue.value=Number(alphaSlider.value).toFixed(2);drawSurface();});
+  rotationSlider.addEventListener("input",()=>{rotationValue.value=`${rotationSlider.value}°`;drawSurface();});
 
-    // 3. Initialize Cobe.js WebGL Globe via ESM dynamic import
-    import("https://cdn.skypack.dev/cobe").then(({ default: createGlobe }) => {
-      const cobeCanvas = document.getElementById("cobe-canvas");
-      if (!cobeCanvas) return;
+  // --- Schematic globe with explicit reference nodes ---
+  const globe=$("globe-canvas"), globeRotation=$("globe-rotation"), globeRotationValue=$("globe-rotation-value");
+  const hubs=[
+    ["New York",40.7128,-74.0060,"#38bdf8"],["Frankfurt",50.1109,8.6821,"#f59e0b"],
+    ["Tokyo",35.6762,139.6503,"#34d399"],["London",51.5074,-0.1278,"#f472b6"],
+    ["Singapore",1.3521,103.8198,"#a78bfa"]
+  ];
+  function drawGlobe(){
+    const {ctx,w,h}=fitCanvas(globe); const r=Math.min(w,h)*.39, cx=w/2, cy=h/2;
+    const lonShift=Number(globeRotation.value);
+    ctx.clearRect(0,0,w,h); ctx.fillStyle="#020617";ctx.fillRect(0,0,w,h);
+    ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.fillStyle="#0f172a";ctx.fill();ctx.strokeStyle="#64748b";ctx.lineWidth=2;ctx.stroke();
+    ctx.strokeStyle="rgba(148,163,184,.24)";ctx.lineWidth=1;
+    for(const lat of [-60,-30,0,30,60]){const yy=cy-r*Math.sin(lat*Math.PI/180);const rr=r*Math.cos(lat*Math.PI/180);ctx.beginPath();ctx.ellipse(cx,yy,rr,rr*.15,0,0,Math.PI*2);ctx.stroke();}
+    for(const lon of [-120,-60,0,60,120]){ctx.beginPath();ctx.ellipse(cx,cy,r*.34,r,(lon+lonShift)*Math.PI/180,0,Math.PI*2);ctx.stroke();}
+    for(const [name,lat,lon,color] of hubs){
+      const lam=(lon+lonShift)*Math.PI/180, phi=lat*Math.PI/180;
+      const x3=Math.cos(phi)*Math.sin(lam), y3=Math.sin(phi), z3=Math.cos(phi)*Math.cos(lam);
+      if(z3<-.15) continue;
+      const x=cx+r*x3, y=cy-r*y3, radius=Math.max(5,w/120);
+      ctx.beginPath();ctx.arc(x,y,radius,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();
+      ctx.fillStyle="#e2e8f0";ctx.font=`${Math.max(11,w/65)}px system-ui`;ctx.fillText(name,x+radius+4,y-3);
+    }
+  }
+  globeRotation.addEventListener("input",()=>{globeRotationValue.value=`${globeRotation.value}°`;drawGlobe();});
 
-      let phi = 0;
-      let width = 0;
-
-      function onResize() {
-        width = cobeCanvas.offsetWidth;
-      }
-      window.addEventListener('resize', onResize);
-      onResize();
-
-      const globe = createGlobe(cobeCanvas, {
-        devicePixelRatio: Math.min(window.devicePixelRatio || 1, 2),
-        width: width * 2,
-        height: width * 2,
-        phi: 0,
-        theta: 0.2,
-        dark: 1,
-        diffuse: 1.2,
-        mapSamples: 16000,
-        mapBrightness: 6,
-        baseColor: [0.12, 0.18, 0.30],
-        markerColor: [0.22, 0.74, 0.97],
-        glowColor: [0.15, 0.35, 0.65],
-        markers: [
-          { location: [40.7128, -74.0060], size: 0.08 }, // New York
-          { location: [50.1109, 8.6821], size: 0.08 },   // Frankfurt
-          { location: [35.6762, 139.6503], size: 0.08 }, // Tokyo
-          { location: [51.5074, -0.1278], size: 0.08 },  // London
-          { location: [1.3521, 103.8198], size: 0.07 },  // Singapore
-          { location: [22.3193, 114.1694], size: 0.07 }, // Hong Kong
-          { location: [47.3769, 8.5417], size: 0.06 },   // Zurich
-        ],
-        onRender: (state) => {
-          state.phi = phi;
-          phi += 0.007;
-          state.width = width * 2;
-          state.height = width * 2;
-        }
-      });
-
-      setTimeout(() => {
-        cobeCanvas.style.opacity = '1';
-      }, 100);
-    }).catch(err => {
-      console.warn("Cobe.js could not be loaded:", err);
+  // --- Stylized market transaction simulation ---
+  const market=$("market-canvas"), tradeEl=$("market-trades"), priceEl=$("market-price"), reset=$("market-reset");
+  let agents=[],trades=0,price=100,raf=0,lastTime=0;
+  function resetMarket(){
+    const {w,h}=fitCanvas(market);
+    const make=(side,i)=>({
+      side,x:(.12+.76*((i*37)%17)/16)*w,y:(.15+.7*((i*53)%19)/18)*h,
+      vx:(side==="buyer"?1:-1)*(20+(i%5)*6),vy:-22+(i%7)*7,
+      quote: side==="buyer" ? 94+(i%9)*1.8 : 97+(i%9)*1.8
     });
-
-
-    // 4. Initialize Matter.js decentralized market-clearing lab
-    function initMatterMarket() {
-      const host = document.getElementById("matter-market");
-      if (!host || !window.Matter) return;
-      const { Engine, Render, Runner, Bodies, Composite, Events, Body } = window.Matter;
-      const width = Math.max(host.clientWidth, 520);
-      const height = 360;
-      const engine = Engine.create({ gravity: { x: 0, y: 0 } });
-      const render = Render.create({ element: host, engine, options: { width, height, wireframes: false, background: "#020617", pixelRatio: Math.min(window.devicePixelRatio || 1, 2) } });
-      const walls = [
-        Bodies.rectangle(width / 2, -10, width, 20, { isStatic: true }),
-        Bodies.rectangle(width / 2, height + 10, width, 20, { isStatic: true }),
-        Bodies.rectangle(-10, height / 2, 20, height, { isStatic: true }),
-        Bodies.rectangle(width + 10, height / 2, 20, height, { isStatic: true })
-      ];
-      Composite.add(engine.world, walls);
-      let trades = 0;
-      let price = 100;
-      const tradeEl = document.getElementById("market-trades");
-      const priceEl = document.getElementById("market-price");
-      function seededValue(i, side) { return 100 + (side === "buyer" ? 7 : -7) + Math.sin(i * 1.71) * 6; }
-      function addAgents() {
-        const agents = [];
-        for (let i = 0; i < 16; i++) {
-          const side = i < 8 ? "buyer" : "seller";
-          const x = side === "buyer" ? 90 + (i % 4) * 45 : width - 90 - (i % 4) * 45;
-          const y = 65 + (i % 8) * 34;
-          const body = Bodies.circle(x, y, 11, {
-            restitution: 1.0, frictionAir: 0.002,
-            render: { fillStyle: side === "buyer" ? "#38bdf8" : "#f59e0b" },
-            plugin: { market: { side, quote: seededValue(i, side) } }
-          });
-          Body.setVelocity(body, { x: side === "buyer" ? 2.1 : -2.1, y: Math.sin(i * 2.3) * 1.8 });
-          agents.push(body);
+    agents=[...Array(18)].map((_,i)=>make("buyer",i)).concat([...Array(18)].map((_,i)=>make("seller",i+3)));
+    trades=0;price=100;tradeEl.textContent="0";priceEl.textContent=price.toFixed(2);lastTime=0;drawMarket();
+  }
+  function stepMarket(dt){
+    const {w,h}=fitCanvas(market);
+    for(const a of agents){
+      a.x+=a.vx*dt;a.y+=a.vy*dt;
+      if(a.x<10||a.x>w-10){a.vx*=-1;a.x=Math.max(10,Math.min(w-10,a.x));}
+      if(a.y<10||a.y>h-10){a.vy*=-1;a.y=Math.max(10,Math.min(h-10,a.y));}
+    }
+    for(const b of agents.filter(a=>a.side==="buyer")){
+      for(const s of agents.filter(a=>a.side==="seller")){
+        const dx=b.x-s.x,dy=b.y-s.y;
+        if(dx*dx+dy*dy<225 && b.quote>=s.quote){
+          const tx=(b.quote+s.quote)/2;price=.92*price+.08*tx;trades++;
+          tradeEl.textContent=String(trades);priceEl.textContent=price.toFixed(2);
+          b.vx*=-1;s.vx*=-1;b.quote=92+Math.random()*16;s.quote=94+Math.random()*16;
+          return;
         }
-        Composite.add(engine.world, agents);
       }
-      addAgents();
-      Events.on(engine, "collisionStart", event => {
-        for (const pair of event.pairs) {
-          const a = pair.bodyA.plugin.market;
-          const b = pair.bodyB.plugin.market;
-          if (!a || !b || a.side === b.side) continue;
-          const buyer = a.side === "buyer" ? a : b;
-          const seller = a.side === "seller" ? a : b;
-          if (buyer.quote >= seller.quote) {
-            price = 0.85 * price + 0.15 * ((buyer.quote + seller.quote) / 2);
-            trades += 1;
-            buyer.quote = Math.max(90, buyer.quote - 0.25);
-            seller.quote = Math.min(110, seller.quote + 0.25);
-            if (tradeEl) tradeEl.textContent = String(trades);
-            if (priceEl) priceEl.textContent = price.toFixed(2);
-          }
-        }
-      });
-      Render.run(render);
-      const runner = Runner.create();
-      Runner.run(runner, engine);
-      document.getElementById("market-reset")?.addEventListener("click", () => {
-        for (const body of Composite.allBodies(engine.world)) if (!body.isStatic) Composite.remove(engine.world, body);
-        trades = 0; price = 100;
-        if (tradeEl) tradeEl.textContent = "0";
-        if (priceEl) priceEl.textContent = "100.00";
-        addAgents();
-      });
     }
-    initMatterMarket();
+  }
+  function drawMarket(){
+    const {ctx,w,h}=fitCanvas(market);ctx.clearRect(0,0,w,h);ctx.fillStyle="#020617";ctx.fillRect(0,0,w,h);
+    ctx.strokeStyle="rgba(148,163,184,.16)";for(let i=1;i<5;i++){ctx.beginPath();ctx.moveTo(w*i/5,0);ctx.lineTo(w*i/5,h);ctx.stroke();}
+    for(const a of agents){ctx.beginPath();ctx.arc(a.x,a.y,Math.max(5,w/150),0,Math.PI*2);ctx.fillStyle=a.side==="buyer"?"#38bdf8":"#f59e0b";ctx.fill();}
+  }
+  function animateMarket(t){
+    const dt=lastTime?Math.min(.05,(t-lastTime)/1000):0;lastTime=t;stepMarket(dt);drawMarket();
+    if(!reducedMotion) raf=requestAnimationFrame(animateMarket);
+  }
+  reset.addEventListener("click",()=>{cancelAnimationFrame(raf);resetMarket();if(!reducedMotion)raf=requestAnimationFrame(animateMarket);});
+  window.addEventListener("resize",()=>{drawSurface();drawGlobe();drawMarket();});
 
-    // 5. Initialize Mermaid
-    if (window.mermaid) {
-      mermaid.initialize({
-        startOnLoad: true,
-        theme: 'neutral',
-        fontFamily: 'Inter',
-        securityLevel: 'loose'
-      });
-    }
-  </script>
+  drawSurface();drawGlobe();resetMarket();
+  if(!reducedMotion) raf=requestAnimationFrame(animateMarket);
+})();
+</script>
 </body>
 </html>
