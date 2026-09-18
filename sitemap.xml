@@ -2,350 +2,970 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/CODE_STYLE/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/COPYRIGHT_NOTICE/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/IMAGE_CATALOG/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/about/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/about/citation/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/about/contact/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/about/contributing/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/about/license/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/appendices/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/appendices/autograding/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/appendices/mathematics/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/appendices/publishing/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/bibliography/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/bibliography/01-foundations/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/bibliography/02-numerical-methods/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/bibliography/03-economic-modeling/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/bibliography/04-macro-models/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/bibliography/05-micro-models/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/bibliography/06-econometrics/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/bibliography/07-machine-learning/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/bibliography/08-time-series/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/bibliography/09-finance/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/bibliography/10-specialized-models/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/bibliography/11-appendix-mathematics/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/bibliography/12-high-performance-python/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/cheatsheets/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/cheatsheets/01-foundations/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/cheatsheets/02-numerical-methods/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/cheatsheets/03-economic-modeling/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/cheatsheets/04-macro-models/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/cheatsheets/05-micro-models/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/cheatsheets/06-econometrics/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/cheatsheets/07-machine-learning/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/cheatsheets/08-time-series/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/cheatsheets/09-finance/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/cheatsheets/10-specialized-models/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/cheatsheets/11-appendix-mathematics/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/cheatsheets/12-high-performance-python/</loc>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/getting-started/installation/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/getting-started/prerequisites/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/getting-started/quickstart/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/getting-started/structure/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/internal/archive/FULL_ROADMAP/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/internal/archive/INFRASTRUCTURE/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/internal/archive/PEDAGOGY/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/internal/archive/PREP_WORK_SUMMARY/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/01-foundations/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/01-foundations/01-introduction/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/01-foundations/02-dev-environment/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/01-foundations/03-python-fundamentals/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/01-foundations/12-13-numpy-pandas/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/01-foundations/15-apis/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/01-foundations/16-visualization/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/02-numerical-methods/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/02-numerical-methods/01-linear-algebra/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/02-numerical-methods/04-root-finding/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/02-numerical-methods/05-optimization/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/02-numerical-methods/07-integration/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/03-economic-modeling/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/03-economic-modeling/01-dynamic-programming/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/03-economic-modeling/02-continuous-states/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/03-economic-modeling/04-estimation/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/04-macro-models/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/04-macro-models/01-job-search/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/04-macro-models/02-growth/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/04-macro-models/03-rbc/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/04-macro-models/05-new-keynesian/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/05-micro-models/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/05-micro-models/01-consumer-producer/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/05-micro-models/02-general-equilibrium/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/05-micro-models/03-game-theory/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/05-micro-models/04-discrete-choice/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/06-econometrics/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/06-econometrics/01-ols/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/06-econometrics/02-mle/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/06-econometrics/03-causal-inference/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/06-econometrics/04-05-gmm-iv/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/06-econometrics/09-10-time-series/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/07-machine-learning/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/07-machine-learning/01-intro/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/07-machine-learning/06-deep-learning/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/07-machine-learning/07-09-sequences/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/07-machine-learning/10-transformers/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/07-machine-learning/17-causal-ml/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/08-time-series/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/08-time-series/02-arma/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/08-time-series/03-arima/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/08-time-series/04-var/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/08-time-series/05-garch/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/09-finance/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/09-finance/02-portfolio/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/09-finance/03-asset-pricing/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/09-finance/04-options/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/09-finance/05-continuous-time/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/10-specialized/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/10-specialized/01-abm/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/10-specialized/02-heterogeneous/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/modules/10-specialized/03-networks/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/01-Foundations/01_Introduction/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/01-Foundations/02_Professional_Development_Environment/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/01-Foundations/03_Python_Fundamentals_Data_Types/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/01-Foundations/04_Python_Data_Model/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/01-Foundations/05_Lists_and_Tuples/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/01-Foundations/06_Advanced_String_Processing/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/01-Foundations/07_Dictionaries/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/01-Foundations/08_Sets/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/01-Foundations/09_Control_Flow_and_Error_Handling/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/01-Foundations/10_Advanced_Functions/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/01-Foundations/11_Object_Oriented_Programming/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/01-Foundations/12_NumPy/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/01-Foundations/13_Pandas/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/01-Foundations/14_Introduction_to_Data_Acquisition/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/01-Foundations/15_Accessing_Economic_Data_via_APIs/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/01-Foundations/16_Data_Visualization/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/01-Foundations/17_Effective_Debugging/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/01-Foundations/18_Data_Acquisition_Web_Scraping/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/01-Foundations/19_Introduction_to_SQL/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/01-Foundations/20_Introduction_to_SciPy/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/01-Foundations/21_Symbolic_Computation_with_SymPy/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/01-Foundations/22A_Computational_Complexity_Foundations/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/01-Foundations/22B_Complexity_in_Economic_Applications/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/01-Foundations/23_Profiling_and_Performance/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/01-Foundations/24_Production_Code_Standards/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/02-Numerical-Methods/01_Linear_Algebra/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/02-Numerical-Methods/02_Numerical_Preliminaries/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/02-Numerical-Methods/03_Numerical_Differentiation/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/02-Numerical-Methods/04_Root_Finding/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/02-Numerical-Methods/05_Optimization/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/02-Numerical-Methods/06_Interpolation_and_Approximation/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/02-Numerical-Methods/07_Numerical_Integration/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/02-Numerical-Methods/08_Differential_Equations/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/03-Economic-Modeling/01_Dynamic_Programming/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/03-Economic-Modeling/02_DP_with_Continuous_States/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/03-Economic-Modeling/03A_Discrete_Choice_DP_Rust/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/03-Economic-Modeling/03B_Continuous_State_DP_Interpolation/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/03-Economic-Modeling/04_Estimation_and_Calibration/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/03-Economic-Modeling/05_Optimal_Stopping_Problems/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/03-Economic-Modeling/06_Robust_Control/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/03-Economic-Modeling/07_Structural_Estimation/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/04-Macro-Models/01_Job_Search/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/04-Macro-Models/02_Neoclassical_Growth/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/04-Macro-Models/03A_RBC_Model_Foundations/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/04-Macro-Models/03B_RBC_Model_Solution/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/04-Macro-Models/03C_RBC_Dynamics_and_Surprise_Shocks/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/04-Macro-Models/03D_RBC_News_Shocks_and_Expectations/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/04-Macro-Models/04_OLG_Models/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/04-Macro-Models/05_New_Keynesian_Models/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/04-Macro-Models/06_Heterogeneous_Agent_Models/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/04-Macro-Models/07_Endogenous_Growth/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/04-Macro-Models/08_Continuous_Time_Macro_HJB/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/05-Micro-Models/01_Consumer_and_Producer_Theory/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/05-Micro-Models/02_General_Equilibrium/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/05-Micro-Models/03_Game_Theory_and_Auctions/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/05-Micro-Models/04_Discrete_Choice_Models/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/05-Micro-Models/05_Principal_Agent_Models/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/05-Micro-Models/06_Information_Economics/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/05-Micro-Models/07_BLP_Demand_Estimation/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/06-Econometrics/01_Linear_Model_and_OLS/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/06-Econometrics/02A_MLE_Principles_and_Geometry/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/06-Econometrics/02B_MLE_Optimization_and_Applications/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/06-Econometrics/03_Causal_Inference/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/06-Econometrics/04_GMM/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/06-Econometrics/05_Instrumental_Variables/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/06-Econometrics/06_Regression_Discontinuity/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/06-Econometrics/07_Synthetic_Control_Methods/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/06-Econometrics/08_Difference_in_Differences/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/06-Econometrics/09_Classical_Time_Series_Analysis/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/06-Econometrics/10_Vector_Autoregression/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/06-Econometrics/11_Bayesian_Econometrics/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/06-Econometrics/12_Panel_Data_Methods/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/06-Econometrics/13_Modern_Causal_Frontiers_SDID/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/07-Machine-Learning/01_Introduction_to_ML_for_Economists/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/07-Machine-Learning/02_Gradient_Boosting_Machines/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/07-Machine-Learning/03_Support_Vector_Machines/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/07-Machine-Learning/04_Ensemble_Methods/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/07-Machine-Learning/05_Dimensionality_Reduction_and_Clustering/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/07-Machine-Learning/06_Deep_Learning_Foundations/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/07-Machine-Learning/07_Convolutional_Neural_Networks/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/07-Machine-Learning/08_Recurrent_Neural_Networks/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/07-Machine-Learning/09_LSTMs_and_GRUs/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/07-Machine-Learning/10_Transformers/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/07-Machine-Learning/11_Autoencoders/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/07-Machine-Learning/12_Self_Supervised_Learning/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/07-Machine-Learning/13_Generative_Models/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/07-Machine-Learning/14_Multi_modal_Fusion/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/07-Machine-Learning/15_Reinforcement_Learning/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/07-Machine-Learning/16_Advanced_Deep_RL/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/07-Machine-Learning/17_Causal_ML/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/07-Machine-Learning/18_Natural_Language_Processing/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/07-Machine-Learning/19_Graph_Neural_Networks/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/07-Machine-Learning/20_Geospatial_Data/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/07-Machine-Learning/21_ML_for_Macro_Forecasting/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/07-Machine-Learning/22_Style_Transfer_and_Advanced_Vision/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/08-Time-Series/01_Introduction_to_Time_Series/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/08-Time-Series/02_ARMA_Models/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/08-Time-Series/03_ARIMA_and_Forecasting/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/08-Time-Series/04A_VAR_Estimation_and_Granger/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/08-Time-Series/04B_VAR_Identification_and_Structural_Shocks/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/08-Time-Series/04C_VAR_Impulse_Responses_and_FEVD/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/08-Time-Series/05_Volatility_Modeling_ARCH_GARCH/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/08-Time-Series/06_Cointegration_and_Error_Correction_Models/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/08-Time-Series/07_Nonlinear_Time_Series_and_Particle_Filters/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/09-Finance/01_Portfolio_Theory/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/09-Finance/02_Asset_Pricing/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/09-Finance/03_Option_Pricing/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/09-Finance/04_Continuous_Time_Finance/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/09-Finance/05_Credit_Risk/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/09-Finance/06_High_Frequency_Data/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/09-Finance/07_Financial_Frictions_BGG/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/09-Finance/08_Hawkes_Processes_and_Market_Impact/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/10-Specialized-Models/01_Agent_Based_Models/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/10-Specialized-Models/02_General_Equilibrium_with_Heterogeneous_Agents/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/10-Specialized-Models/03_Network_Economics/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/10-Specialized-Models/04_Climate_Macro_Integrated_Assessment_DICE/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/Appendix/A1-Real-Analysis/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/Appendix/A2-Multivariate-Calculus/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/Appendix/A3-Probability-Theory/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/Appendix/A4-Linear-Algebra/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/Appendix/T1_Publishing_with_Quarto/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/Appendix/T2_Replication_Exercise_Chetty_2014/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/Appendix/T3_Autograding_with_Otter/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/Appendix/T4_Replication_Card_Krueger_1994/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/Appendix/T5_Replication_Fama_French_Five_Factor/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/high_performance_python/01_High_Performance_Computing/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/high_performance_python/02_Accelerating_Code_with_Numba/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/high_performance_python/03_Parallel_Computing_with_Dask/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/notebooks/high_performance_python/04_GPU_Acceleration_with_CuPy/</loc>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/resources/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/resources/code-style/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/resources/datasets/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/resources/faq/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/resources/notation/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/resources/references/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/resources/tools/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/resources/diagrams/aiyagari-equilibrium/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/resources/diagrams/box-jenkins-methodology/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/resources/diagrams/collider-bias-dag/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/resources/diagrams/fama-macbeth-twopass/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/resources/diagrams/reinforcement-learning-loop/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
     <url>
          <loc>https://amirrezafarnamtaheri.github.io/Computational-Economics-and-Data-Science/resources/diagrams/var-identification/</loc>
-         <lastmod>2026-08-21</lastmod>
+         <lastmod>2026-09-18</lastmod>
     </url>
 </urlset>
