@@ -1,35 +1,41 @@
+"""Refresh the bundled portfolio-price and Fama-French inputs.
+
+The command is intentionally fail-fast for automation: if either upstream
+refresh fails, the process exits non-zero instead of leaving a partial refresh
+that looks successful.
+"""
+
+from pathlib import Path
+
 import pandas as pd
 import pandas_datareader.data as web
 import yfinance as yf
 
-# --- Tickers and Date Range ---
-tickers = ["AAPL", "MSFT", "AMZN", "JPM", "XOM", "SPY"]
-start_date, end_date = "2015-01-01", "2022-12-31"
+ROOT = Path(__file__).resolve().parents[1]
+DATA_DIR = ROOT / "data"
+TICKERS = ["AAPL", "MSFT", "AMZN", "JPM", "XOM", "SPY"]
+START_DATE, END_DATE = "2015-01-01", "2022-12-31"
 
-# --- Download Stock Prices ---
-try:
-    print(f"Downloading price data for: {', '.join(tickers)}")
-    # Keep the price definition explicit. yfinance has changed the default
-    # auto_adjust behavior across releases; this course expects the distinct
-    # "Adj Close" field so historical splits/dividends are incorporated once.
+
+def download_prices() -> Path:
+    """Download adjusted closes with an explicit yfinance adjustment policy."""
+    print(f"Downloading price data for: {', '.join(TICKERS)}")
     prices = yf.download(
-        tickers,
-        start=start_date,
-        end=end_date,
+        TICKERS,
+        start=START_DATE,
+        end=END_DATE,
         auto_adjust=False,
         actions=False,
         progress=False,
     )
-
     if prices.empty:
         raise ValueError("yfinance returned no price observations.")
 
-    # Select adjusted close and verify that every requested ticker is present.
     if isinstance(prices.columns, pd.MultiIndex):
         if "Adj Close" not in prices.columns.get_level_values(0):
             raise ValueError("Expected an 'Adj Close' field from yfinance.")
         adj_close = prices["Adj Close"].copy()
-        missing_tickers = sorted(set(tickers) - set(adj_close.columns))
+        missing_tickers = sorted(set(TICKERS) - set(adj_close.columns))
         if missing_tickers:
             raise ValueError(f"Missing requested tickers: {missing_tickers}")
     else:
@@ -40,21 +46,48 @@ try:
     if adj_close.dropna(how="all").empty:
         raise ValueError("Adjusted-close data contains no usable observations.")
 
-    adj_close.to_csv("data/portfolio_prices.csv")
-    print("Price data saved to data/portfolio_prices.csv")
+    output = DATA_DIR / "portfolio_prices.csv"
+    adj_close.to_csv(output)
+    print(f"Price data saved to {output.relative_to(ROOT)}")
+    return output
 
-except Exception as e:
-    print(f"An error occurred during price download: {e}")
 
-# --- Download Fama-French Factors ---
-try:
+def download_fama_french() -> Path:
+    """Download the monthly Fama-French five-factor table."""
     print("Downloading Fama-French 5-factor data...")
-    # The [0] selects the monthly data table
     ff_factors = web.DataReader(
-        "F-F_Research_Data_5_Factors_2x3", "famafrench", start=start_date, end=end_date
+        "F-F_Research_Data_5_Factors_2x3",
+        "famafrench",
+        start=START_DATE,
+        end=END_DATE,
     )[0]
-    ff_factors.to_csv("data/fama_french_5_factors.csv")
-    print("Fama-French data saved to data/fama_french_5_factors.csv")
+    if ff_factors.empty:
+        raise ValueError("Fama-French provider returned no observations.")
+    output = DATA_DIR / "fama_french_5_factors.csv"
+    ff_factors.to_csv(output)
+    print(f"Fama-French data saved to {output.relative_to(ROOT)}")
+    return output
 
-except Exception as e:
-    print(f"An error occurred during Fama-French download: {e}")
+
+def main() -> int:
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    failures: list[str] = []
+    for label, loader in (
+        ("portfolio prices", download_prices),
+        ("Fama-French factors", download_fama_french),
+    ):
+        try:
+            loader()
+        except Exception as exc:
+            failures.append(f"{label}: {exc}")
+            print(f"FAIL: {label}: {exc}")
+
+    if failures:
+        print(f"Refresh incomplete: {len(failures)} source(s) failed.")
+        return 1
+    print("Refresh complete: all portfolio inputs downloaded successfully.")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

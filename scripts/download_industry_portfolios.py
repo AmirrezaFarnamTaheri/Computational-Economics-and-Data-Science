@@ -1,19 +1,34 @@
+"""Refresh the bundled 10-industry Fama-French portfolio table."""
+
+from pathlib import Path
+
 import pandas_datareader.data as web
 
-# --- Date Range ---
-start_date, end_date = "1963-07-01", "2023-12-31"
+ROOT = Path(__file__).resolve().parents[1]
+DATA_DIR = ROOT / "data"
+START_DATE, END_DATE = "1963-07-01", "2023-12-31"
 
-# --- Download 10 Industry Portfolios ---
-try:
-    print("Downloading 10 Industry Portfolios data...")
-    # The [0] selects the value-weighted monthly returns
-    industry_portfolios = web.DataReader(
-        "10_Industry_Portfolios", "famafrench", start=start_date, end=end_date
-    )[0]
 
-    output_path = "data/10_industry_portfolios.csv"
-    industry_portfolios.to_csv(output_path)
-    print(f"Data downloaded and saved to {output_path}")
+def main() -> int:
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    try:
+        print("Downloading 10 Industry Portfolios data...")
+        industry_portfolios = web.DataReader(
+            "10_Industry_Portfolios",
+            "famafrench",
+            start=START_DATE,
+            end=END_DATE,
+        )[0]
+        if industry_portfolios.empty:
+            raise ValueError("Fama-French provider returned no observations.")
+        output_path = DATA_DIR / "10_industry_portfolios.csv"
+        industry_portfolios.to_csv(output_path)
+        print(f"Data downloaded and saved to {output_path.relative_to(ROOT)}")
+    except Exception as exc:
+        print(f"FAIL: industry portfolio refresh: {exc}")
+        return 1
+    return 0
 
-except Exception as e:
-    print(f"An error occurred during data download: {e}")
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -67,7 +67,8 @@ def main():
             ok += 1
 
     print(f"\nDone: {ok}/{len(SERIES)} series downloaded to {DATA_DIR}")
+    return 0 if ok == len(SERIES) else 1
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
