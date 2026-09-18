@@ -92,3 +92,19 @@ def test_links_outside_repository_are_left_alone():
         assert out == "[nope](../does_not_exist.txt)", out
     finally:
         nb.unlink()
+
+
+def test_plain_relative_data_links_resolve_to_raw_urls():
+    """Ordinary Markdown links are rewritten, not only badge-style links."""
+    track_dir = generator.ROOT / "01-Foundations"
+    data_dir = generator.ROOT / "data"
+    nb = track_dir / "plain_link_probe.ipynb"
+    target = data_dir / "plain_link_probe.csv"
+    nb.write_text("{}", encoding="utf-8")
+    target.write_text("x\n1\n", encoding="utf-8")
+    try:
+        out = generator.rewrite_links("[sample](../data/plain_link_probe.csv)", nb)
+        assert out == f"[sample]({generator.RAW}/data/plain_link_probe.csv)"
+    finally:
+        nb.unlink()
+        target.unlink()

@@ -22,8 +22,11 @@ LINK_RE = re.compile(r"(\[[^\]]+\]\()([^)]+\.ipynb(?:#[^)]*)?)(\))")
 # docs/notebooks/<track>/, so they must be rewritten too. The lookbehind
 # accepts both plain links ``[t](dest)`` and links whose text is an image,
 # the badge pattern ``[![t](img)](dest)`` where the ``]`` follows a ``)``.
-FILE_RE = re.compile(
+BADGE_FILE_RE = re.compile(
     r"(?<=[)\]])\]\((?!https?://|mailto:|data:|attachment:|#)([^)]+)\)"
+)
+PLAIN_FILE_RE = re.compile(
+    r"(?<!!)\[[^\]]+\]\((?!https?://|mailto:|data:|attachment:|#)([^)]+)\)"
 )
 
 TRACKS = [
@@ -88,7 +91,19 @@ def rewrite_links(text: str, notebook: Path) -> str:
         return f"]({RAW}/{rel})"
 
     text = LINK_RE.sub(notebook_link, IMAGE_RE.sub(image, text))
-    return FILE_RE.sub(file_link, text)
+    text = BADGE_FILE_RE.sub(file_link, text)
+
+    def plain_file_link(match: re.Match[str]) -> str:
+        target = match.group(1).strip()
+        rewritten = file_link(
+            re.match(r".*", f"]({target})")
+        )
+        if rewritten == f"]({target})":
+            return match.group(0)
+        label = match.group(0).split("](", 1)[0] + "]("
+        return label + rewritten[2:]
+
+    return PLAIN_FILE_RE.sub(plain_file_link, text)
 
 
 def _mkdocs_slug(title: str) -> str:
