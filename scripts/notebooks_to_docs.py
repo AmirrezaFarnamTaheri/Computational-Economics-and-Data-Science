@@ -210,6 +210,94 @@ def convert_headings_and_anchors(text: str) -> str:
     return re.sub(r"(\[[^\]]*\]\()(#[^)\s]+)(\))", anchor, body)
 
 
+
+ANSI_ESCAPE_RE = re.compile(r"\x1b\[[0-?]*[ -/]*[@-~]")
+
+
+def output_text(value: object) -> str:
+    """Normalize the list-or-string text representation used by nbformat."""
+    if isinstance(value, list):
+        return "".join(str(part) for part in value)
+    return str(value)
+
+
+def render_saved_output(output: dict, cell_id: str, index: int) -> list[str]:
+    """Render one saved Jupyter output into portable Markdown/HTML.
+
+    Rich outputs choose one highest-fidelity representation to avoid publishing
+    the same result twice. PNG/SVG plots are embedded so the reading edition
+    carries the actual saved evidence instead of silently dropping it.
+    """
+    output_type = output.get("output_type")
+    label = f"Saved output from cell {cell_id or 'unknown'}, result {index + 1}"
+
+    if output_type == "stream":
+        value = ANSI_ESCAPE_RE.sub("", output_text(output.get("text", ""))).rstrip()
+        return [] if not value else ["~~~text", value, "~~~", ""]
+
+    if output_type == "error":
+        traceback = output.get("traceback") or []
+        value = "\n".join(
+            ANSI_ESCAPE_RE.sub("", str(line)) for line in traceback
+        ).rstrip()
+        if not value:
+            value = f"{output.get('ename', 'Error')}: {output.get('evalue', '')}".rstrip()
+        return [
+            f"> **Saved execution error — {label}.**",
+            "",
+            "~~~text",
+            value,
+            "~~~",
+            "",
+        ]
+
+    if output_type not in {"display_data", "execute_result"}:
+        return []
+
+    data = output.get("data") or {}
+    if "text/markdown" in data:
+        value = output_text(data["text/markdown"]).rstrip()
+        return [] if not value else [f"> **{label}.**", "", value, ""]
+
+    if "image/svg+xml" in data:
+        svg = output_text(data["image/svg+xml"]).strip()
+        return [] if not svg else [f'<figure aria-label="{label}">', svg, "</figure>", ""]
+
+    if "image/png" in data:
+        payload = output_text(data["image/png"]).replace("\n", "").strip()
+        if not payload:
+            return []
+        return [
+            f'<img src="data:image/png;base64,{payload}" alt="{label}" '
+            'loading="lazy" decoding="async">',
+            "",
+        ]
+
+    if "image/jpeg" in data:
+        payload = output_text(data["image/jpeg"]).replace("\n", "").strip()
+        if not payload:
+            return []
+        return [
+            f'<img src="data:image/jpeg;base64,{payload}" alt="{label}" '
+            'loading="lazy" decoding="async">',
+            "",
+        ]
+
+    if "text/plain" in data:
+        value = ANSI_ESCAPE_RE.sub("", output_text(data["text/plain"])).rstrip()
+        return [] if not value else ["~~~text", value, "~~~", ""]
+
+    return []
+
+
+def render_cell_outputs(cell: dict) -> list[str]:
+    """Render all saved outputs attached to one code cell."""
+    rendered: list[str] = []
+    cell_id = str(cell.get("id", ""))
+    for index, output in enumerate(cell.get("outputs") or []):
+        rendered.extend(render_saved_output(output, cell_id, index))
+    return rendered
+
 def convert(notebook: Path) -> str:
     nb = json.loads(notebook.read_text(encoding="utf-8"))
     rel = notebook.relative_to(ROOT).as_posix()
@@ -218,7 +306,7 @@ def convert(notebook: Path) -> str:
         "",
         f"> **Source notebook:** [`{rel}`]({blob_url(notebook)})",
         "",
-        "> Notebook outputs are intentionally omitted from the documentation build; code and narrative remain source-faithful.",
+        "> Saved notebook outputs are included when a portable representation is available, so plots, tables, diagnostics, and printed results remain visible in the reading edition.",
         "",
     ]
     for cell in nb.get("cells", []):
@@ -229,6 +317,7 @@ def convert(notebook: Path) -> str:
             lines += [rewrite_links(convert_headings_and_anchors(text), notebook), ""]
         elif cell.get("cell_type") == "code":
             lines += ["```python", text, "```", ""]
+            lines += render_cell_outputs(cell)
     return "\n".join(lines).rstrip() + "\n"
 
 
