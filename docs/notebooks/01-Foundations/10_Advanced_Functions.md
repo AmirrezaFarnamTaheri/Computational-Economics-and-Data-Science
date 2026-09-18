@@ -55,7 +55,7 @@ plt.rcParams.update(
 11. [Exercises](#exercises)
 12. [Challenge Exercise: A Pluggable Event System](#challenge-exercise-a-pluggable-event-system-for-simulations)
 
-## The Lens: 10-Advanced-Functions
+## The Lens: Functions as First-Class Citizens
 In Python, functions are **first-class objects**. This is a core design principle with profound implications for how we structure code. It means that a function can be treated like any other piece of data: it can be assigned to a variable, passed as an argument to another function, returned as a result from a function, and stored in data structures like lists or dictionaries. This paradigm elevates functions from mere executable blocks to versatile tools for abstraction and composition.
 
 This capability is the foundation for a style of programming known as **functional programming**, which emphasizes pure functions, immutability, and the avoidance of side effects. For the computational economist, these patterns are not mere academic curiosities; they are practical tools for building modular, testable, and maintainable models. For instance, a complex economic model can be composed of smaller, independent functions representing utility, production, and policy rules. These components can be swapped, tested in isolation, and reused across different models, leading to more robust and flexible research code.

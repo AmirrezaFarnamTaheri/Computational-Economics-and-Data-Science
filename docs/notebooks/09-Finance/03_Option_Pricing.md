@@ -61,7 +61,7 @@ except ImportError:
 ### Table of Contents
 
 1.  [Introduction to Options and Payoffs](#1-introduction-to-options-and-payoffs)
-    - [Call and Put Option Payoff Diagrams](#call-and-put-option-payoff-diagrams)
+    - [1. Introduction to Options and Payoffs](#1-introduction-to-options-and-payoffs)
 2.  [The No-Arbitrage Principle](#2-the-no-arbitrage-principle)
 3.  [Model 1: The Binomial Asset Pricing Model](#3-model-1-the-binomial-asset-pricing-model)
     - [Constructing a Binomial Tree](#constructing-a-binomial-tree)

@@ -107,6 +107,13 @@ We embed this mechanism into a standard New Keynesian DSGE model. The simplified
 
 This system shows how Net Worth ($n$) couples with Capital ($k$) and Investment ($i$) to drive Output ($y$).
 
+## Numerical Solution: Solving the Log-Linear System
+
+The BGG model is log-linearized around its steady state, which yields a system of expectational difference equations. The solution method is a generalized Schur (QZ) decomposition that orders the stable eigenvalues, delivering the recursive law of motion for the jump and predetermined variables. That reduced-form system is what the impulse responses below are computed from.
+## Case Study: The Impact of a Technology Shock
+
+A one-standard-deviation shock to total factor productivity propagates through the financial accelerator: higher expected output raises asset prices and borrowers' net worth, which narrows the external finance premium and amplifies the investment response relative to a frictionless model. The impulse responses below quantify that amplification channel.
+
 ```python
 class BGGModel:
     """

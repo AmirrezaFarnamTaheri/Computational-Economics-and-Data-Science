@@ -51,7 +51,7 @@ pd.options.display.float_format = "{:,.2f}".format
 10. [Summary](#summary)
 11. [Exercises](#exercises)
 
-## The Lens: 13-Pandas
+## The Lens: Tabular Data and the Relational Model
 While NumPy provides the engine for high-performance numerical computing, it lacks features for handling labeled, heterogeneous data—the kind of messy, real-world data ubiquitous in economics. **Pandas** is the library that solves this problem. It provides two primary data structures, the `Series` (1D) and the `DataFrame` (2D), which are built on NumPy but add meaningful labels for rows and columns. 
 
 This integration of data and labels, combined with a rich API for data manipulation (cleaning, merging, reshaping, aggregating), makes Pandas the indispensable tool for empirical analysis in Python. Whether you are cleaning survey data, analyzing financial time series, or preparing a dataset for an econometric model, Pandas provides the tools to do so efficiently and expressively.

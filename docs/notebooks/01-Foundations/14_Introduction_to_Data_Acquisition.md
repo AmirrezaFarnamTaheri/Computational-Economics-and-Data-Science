@@ -65,7 +65,7 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 6. [Summary](#summary)
 7. [Exercises](#exercises)
 
-## The Lens: 14-Introduction-to-Data-Acquisition
+## The Lens: Data as Fuel
 Modern empirical economics relies on novel and up-to-the-minute data. The ability to acquire data directly from its source is a crucial skill. This process falls into two categories:
 
 1.  **Using APIs (Application Programming Interfaces):** The structured, preferred method. An API is a formal contract provided by a data source (like the Federal Reserve or World Bank) that specifies how a programmer can request data in a clean, machine-readable format (usually JSON).

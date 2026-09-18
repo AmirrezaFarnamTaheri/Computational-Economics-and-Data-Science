@@ -32,7 +32,7 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 
 ## Table of Contents
 
-1. [Introduction](#introduction)
+- [The Lens: Nature's Experiments](#the-lens-natures-experiments)
 
 ## The Lens: Nature's Experiments
 **What problem are we solving?**

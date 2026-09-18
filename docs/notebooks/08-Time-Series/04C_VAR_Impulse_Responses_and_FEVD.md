@@ -62,7 +62,7 @@ Impulse responses (IRFs) and forecast error variance decompositions (FEVDs) tran
 
 ### Table of Contents
 1. [The Lens: Tracing Shock Propagation](#the-lens-tracing-shock-propagation)
-2. [Impulse Response Functions (IRFs)](#irf)
+- [1. Impulse Response Functions (IRFs)](#1-impulse-response-functions-irfs)
 3. [Forecast Error Variance Decomposition (FEVD)](#2-forecast-error-variance-decomposition-fevd)
 4. [Summary](#summary)
 
@@ -89,6 +89,10 @@ plt.figure(figsize=(10, 6))
 irf.plot(orth=True)
 plt.show()
 ```
+
+## 1. Impulse Response Functions (IRFs)
+
+An impulse response function traces how each variable in the system reacts over time to a one-unit shock in one innovation, holding everything else fixed. Because reduced-form VAR innovations are generally correlated, an IRF needs an identification assumption that orthogonalizes the shocks — a Cholesky ordering being the most common choice. IRFs answer the question 'what happens to output and prices if monetary policy tightens today', which is why they precede the variance decomposition below.
 
 <a id='fevd'></a>
 ## 2. Forecast Error Variance Decomposition (FEVD)

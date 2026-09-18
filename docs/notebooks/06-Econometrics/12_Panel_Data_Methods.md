@@ -35,7 +35,7 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 
 ## Table of Contents
 
-1. [Introduction](#introduction)
+- [The Lens: Tracking Individuals Over Time](#the-lens-tracking-individuals-over-time)
 
 ## The Lens: Tracking Individuals Over Time
 **What problem are we solving?**

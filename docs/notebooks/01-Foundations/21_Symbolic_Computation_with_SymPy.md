@@ -43,7 +43,7 @@ warnings.filterwarnings("ignore", category=FutureWarning)
     - [Integration](#integration)
     - [Limits](#limits)
 4. [Solving Equations](#solving-equations)
-    - [Algebraic Equations](#algebraic-equations)
+
     - [Systems of Equations](#systems-of-equations)
     - [Deriving the Euler Equation](#deriving-the-euler-equation)
 5. [Application: Consumer Utility Maximization](#application-consumer-utility-maximization)
@@ -51,7 +51,7 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 7. [Summary](#summary)
 8. [Exercises](#exercises)
 
-## The Lens: 21-Symbolic-Computation-with-SymPy
+## The Lens: Symbolic vs. Numerical Computation
 So far, we have focused on **numerical computation**: using arrays of numbers to approximate solutions. While powerful, this approach has limitations. It gives you an answer for *specific* parameter values, but it doesn't tell you the general relationship. It can tell you that "if price is 5, demand is 10", but not "demand is inversely proportional to price squared".
 
 **Symbolic computation** (or Computer Algebra) manipulates mathematical expressions directly, just as you would on paper. It allows you to:
@@ -98,6 +98,10 @@ display(expr.subs({x: 2, y: 1, z: 3}))
 
 SymPy excels at calculus. It can calculate derivatives, integrals, and limits symbolically.
 
+## Limits
+
+SymPy evaluates two-sided limits with `limit(expr, x, point)`, the natural starting point for any symbolic argument about continuity or differentiation. The classic sanity check is `limit(sin(x)/x, x, 0) == 1`. Limits also give the rigorous definition of a derivative, which is why they precede the differentiation and integration sections that follow.
+
 #### Differentiation
 Calculating marginal utility, marginal cost, or the gradient of a likelihood function is a one-line operation.
 
@@ -131,6 +135,10 @@ display(def_int)
 ### Solving Equations
 
 SymPy can solve algebraic equations and systems of equations symbolically. Note that `sp.solve` expects expressions equal to zero.
+
+## Systems of Equations
+
+`solve` accepts a list of equations and a list of unknowns, returning a list of solution dictionaries (or a single dictionary for one unknown). Linear systems are solved exactly, while nonlinear systems may return parametric solution families in terms of free symbols. For purely linear systems, `linsolve` returns a solution set directly.
 
 ```python
 print("Solving x^2 - 4 = 0 for x:")

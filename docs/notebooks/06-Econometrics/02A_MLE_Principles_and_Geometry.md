@@ -53,9 +53,9 @@ The log-likelihood surface encodes both fit and uncertainty. Its slope (the scor
 ### Table of Contents
 1. [Introduction: The Principle of Maximum Likelihood](#1-introduction-the-principle-of-maximum-likelihood)
 2. [The Likelihood and Log-Likelihood Functions](#the-lens-likelihood-as-geometry)
-3. [The Geometry of the Log-Likelihood Function](#geometry)
-   - [The Score Vector](#score)
-   - [The Fisher Information Matrix](#info)
+- [The Geometry of the Log-Likelihood Function](#the-geometry-of-the-log-likelihood-function)
+   - [The Score Vector](#the-score-vector)
+   - [The Fisher Information Matrix](#the-fisher-information-matrix)
 4. [Summary](#summary)
 
 ## Implementation Note
@@ -77,6 +77,16 @@ We maximize the **Log-Likelihood** $\mathcal{L}(\theta)$ because sums are easier
 $$ \mathcal{L}(\theta) = \ln L(\theta) = \sum_{i=1}^n \ln f(y_i; \theta) $$
 
 **Dimension notes:** the data vector is $\mathbf{y} = (y_1, \dots, y_n)$ with scalar observations $y_i \in \mathbb{R}$ drawn iid from $f(y; \theta)$; the parameter lives in $\theta \in \Theta \subseteq \mathbb{R}^p$; both $L(\theta \mid \mathbf{y})$ and the log-likelihood $\mathcal{L}(\theta)$ are scalar-valued functions on $\Theta$.
+
+## The Geometry of the Log-Likelihood Function
+
+Under regularity conditions the log-likelihood is locally concave around its maximizer, so maximum likelihood is a peak-climbing problem. How sharply the peak is curved determines how precisely the data identify the parameter: a flat ridge means many parameter values fit almost equally well. That curvature is the Fisher information, quantified below.
+## The Score Vector
+
+The score is the gradient of the log-likelihood with respect to the parameter vector. By the first-order condition the score vanishes at the maximum likelihood estimate, which is why Newton-type optimizers iterate toward a zero of the score. Under correct specification the score has expectation zero at the truth, and its outer product is the classical sandwich variance estimator.
+## The Fisher Information Matrix
+
+The Fisher information is the negative expected Hessian of the log-likelihood. It bounds the achievable precision of any unbiased estimator through the Cramér–Rao inequality, and the asymptotic variance of the maximum likelihood estimator is its inverse. Information therefore unifies two intuitions: curvature of the likelihood and statistical precision are the same statement.
 
 ### Example: MLE for a Bernoulli Process (Coin Flip)
 

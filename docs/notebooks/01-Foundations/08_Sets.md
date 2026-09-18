@@ -46,7 +46,7 @@ plt.rcParams.update(
 9. [Exercises](#exercises)
 10. [Challenge Exercise: Generating a Power Set](#challenge-exercise-generating-a-power-set)
 
-## The Lens: 08-Sets
+## The Lens: Sets as Mathematical Foundations
 A `set` is an unordered collection of **unique, hashable** elements. While lists store items in sequence and dictionaries store key-value pairs, sets are designed to efficiently test for membership and perform mathematical set operations like union, intersection, and difference. Their performance for these operations is exceptional, with an average time complexity of **O(1)** for additions, removals, and membership tests, thanks to their underlying hash map implementation (similar to dictionaries).
 
 In computational economics, sets are indispensable tools for a variety of tasks:

@@ -70,7 +70,7 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 
 > **Historical Context — From Numeric to NumPy (1995–2006).** Jim Hugunin's `Numeric` package (1995) brought array computing to Python; Travis Oliphant merged it with Numarray into NumPy in 2006. The vectorized `ndarray` design descends from APL and from Cleve Moler's late-1970s teaching tool MATLAB — every `.sum(axis=0)` you write carries that lineage.
 
-## The Lens: 12-NumPy
+## The Lens: Vectorization and the Scientific Stack
 NumPy (Numerical Python) is the fundamental package for scientific computing in Python. It provides a high-performance, multidimensional array object (`ndarray`) and a vast library of tools for working with these arrays. It forms the core of the **Python Scientific Stack**, a collection of essential libraries for data analysis and modeling that also includes `SciPy` (for common scientific operations), `pandas` (for data manipulation), and `Matplotlib` (for plotting).
 
 The reason for NumPy's centrality is its stunning performance. Operations on NumPy arrays are materially faster on sufficiently large, suitable workloads than equivalent operations on native Python lists. This is not a minor optimization; it is a fundamental capability that makes Python viable for computationally intensive work. This performance stems from its core data structure, the `ndarray`, which allows NumPy to execute highly optimized, pre-compiled C and Fortran code under the hood—a concept known as **vectorization**.

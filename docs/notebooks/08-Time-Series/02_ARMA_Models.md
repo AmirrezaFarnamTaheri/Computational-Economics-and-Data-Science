@@ -65,11 +65,11 @@ AR, MA, and ARMA models give a parsimonious way to capture persistence and short
 
 1.  [**Introduction: Modeling Stationary Time Series**](#1-introduction-modeling-stationary-time-series)
 2.  [**Autoregressive (AR) Models**](#2-autoregressive-ar-models)
-    - [Code Lab: Simulating and Estimating an AR(2) Process](#code-ar)
+    - [Simulating and Estimating an AR(2) Process](#simulating-and-estimating-an-ar2-process)
 3.  [**Moving Average (MA) Models**](#3-moving-average-ma-models)
     - [Code Lab: Simulating and Estimating an MA(2) Process](#code-lab-using-information-criteria-for-model-selection)
 4.  [**Autoregressive Moving Average (ARMA) Models**](#4-autoregressive-moving-average-arma-models)
-    - [Code Lab: Simulating and Estimating an ARMA(1,1) Process](#code-arma)
+    - [Simulating and Estimating an ARMA(1,1) Process](#simulating-and-estimating-an-arma11-process)
 5.  [**The Box-Jenkins Methodology**](#5-the-box-jenkins-methodology)
 6.  [**Information Criteria for Model Selection**](#6-information-criteria-for-model-selection)
 7.  [**Exercises**](#8-exercises)

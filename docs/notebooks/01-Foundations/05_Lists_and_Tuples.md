@@ -66,7 +66,7 @@ plt.rcParams.update(
 7. [Exercises](#exercises)
 8. [Challenge Exercise: Interpolating from a Sorted Sequence](#challenge-exercise-interpolating-from-a-sorted-sequence)
 
-## The Lens: 05-Lists-and-Tuples
+## The Lens: Sequences, Mutability, and Semantic Meaning
 Economic analysis is fundamentally concerned with ordered data: time series of asset prices, panel data observations for a set of individuals, or a sequence of policy actions. Python's primary built-in tools for managing such ordered data are its **sequence types**, with the `list` and `tuple` being the most fundamental.
 
 The crucial technical distinction between them is **mutability**: a `list` is mutable (its contents and size can be changed after creation), while a `tuple` is immutable. However, this technical difference reflects a deeper semantic distinction that should guide their proper use. The choice between a `list` and a `tuple` is a design decision that communicates intent to the reader of your code.

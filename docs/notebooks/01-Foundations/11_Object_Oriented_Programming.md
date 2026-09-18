@@ -50,7 +50,7 @@ plt.rcParams.update(
 7. [Summary](#summary)
 8. [Exercises](#exercises)
 
-## The Lens: 11-Object-Oriented-Programming
+## The Lens: Managing Complexity with OOP
 As computational models in economics—especially simulations like agent-based models (ABMs) or dynamic structural models—grow in scale, we face a fundamental challenge: managing **stateful complexity**. A purely procedural approach, consisting of functions operating on a collection of global data structures (e.g., lists of wealth, dictionaries of parameters), quickly becomes tangled. A change in one function can have unforeseen side effects on the shared state, making the system difficult to reason about, test, and extend. This is akin to having a large workshop where all tools and parts are thrown into a single pile; finding what you need and ensuring it works correctly becomes a nightmare.
 
 **Object-Oriented Programming (OOP)** is a paradigm designed specifically to solve this problem. It organizes code by bundling data (**attributes**) and the behavior that operates on that data (**methods**) into self-contained **objects**. This principle, known as **encapsulation**, creates logical, independent components that communicate through well-defined public interfaces. It's like organizing the workshop into labeled toolboxes, each containing specific tools (methods) and the parts they work on (attributes).

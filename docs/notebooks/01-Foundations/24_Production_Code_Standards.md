@@ -43,7 +43,7 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 6. [Summary](#summary)
 7. [Exercises](#exercises)
 
-## The Lens: 24-Production-Code-Standards
+## The Lens: From Research to Production
 The skills required to produce a high-quality research paper are not the same as those required to build a robust, reliable software system. This chapter bridges that gap, providing an introduction to the best practices required to turn the models developed in a research context into **production-ready** applications that can be deployed, monitored, and trusted in a live environment.
 
 **Why does this matter for economists?**

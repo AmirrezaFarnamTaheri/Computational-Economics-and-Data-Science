@@ -47,7 +47,7 @@ plt.rcParams.update(
 6. [Exercises](#exercises)
 7. [Solutions to Exercises](#solutions-to-exercises)
 
-## The Lens: 06-Advanced-String-Processing
+## The Lens: Text as Data in Economics
 A vast and growing amount of economic data is unstructured text. Central bank announcements, corporate filings, news articles, and social media posts all contain valuable information that requires specialized tools to unlock. This chapter moves beyond basic string manipulation to cover the advanced techniques essential for working with text as data.
 
 We will cover three core topics:

@@ -30,7 +30,7 @@ plt.rcParams.update(
 ```
 
 ### Table of Contents
-1. [Introduction: The Digital Substrate of Economics](#introduction-the-digital-substrate-of-economics)
+- [The Lens: The Digital Substrate of Economics](#the-lens-the-digital-substrate-of-economics)
 2. [Numerical Representation and Stability](#numerical-representation-and-stability)
     - [Integer Representation](#integer-representation)
     - [Floating-Point Representation: IEEE 754](#floating-point-representation-the-ieee-754-standard)

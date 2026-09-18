@@ -144,6 +144,10 @@ plt.legend()
 plt.show()
 ```
 
+## Solving Continuous DP with Interpolation
+
+When the state space is continuous, the value function cannot be tabulated on every state. The standard fix is to iterate the Bellman operator on a grid of representative points and to interpolate the value function between them; linear interpolation preserves the monotonicity and concavity that contraction arguments rely on. The endogenous grid method developed below improves on this by inverting the Euler equation, which removes the inner root-finding step entirely.
+
 ## Endogenous Grid Method: Inverting the Euler Equation Instead of Root-Finding
 
 Carroll's Endogenous Grid Method (EGM) changes which grid is treated as primitive. For the consumption-savings problem

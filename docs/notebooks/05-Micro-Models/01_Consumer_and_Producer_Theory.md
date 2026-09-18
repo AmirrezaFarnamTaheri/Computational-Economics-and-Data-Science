@@ -105,6 +105,10 @@ The theory of **Revealed Preference**, developed by Paul Samuelson, provides a n
 e x^2$ under a single-valued choice rule, if a bundle $x^1$ is chosen when bundle $x^2$ was also affordable, then it can never be the case that $x^2$ is chosen when $x^1$ is also affordable. Formally: If $p^1 \cdot x^1 \ge p^1 \cdot x^2$, then it must be that $p^2 \cdot x^2 < p^2 \cdot x^1$. A violation of WARP implies inconsistent choices.
 - **Strong Axiom of Revealed Preference (SARP):** This is the transitive closure of WARP. It rules out longer chains of inconsistent choices (e.g., $x^1$ revealed preferred to $x^2$, which is revealed preferred to $x^3$, which is then revealed preferred to $x^1$). If a consumer's choices satisfy SARP, then we can construct a utility function that rationalizes their behavior.
 
+## 2.2 Checking for WARP Violations
+
+Given observed pairs of prices and chosen bundles, WARP asks: whenever bundle $t$ was affordable when $s$ was chosen and the two bundles differ, bundle $s$ must not be strictly cheaper under prices $p_t$. A double loop over all pairs flags any violation. A single violation means the data cannot be rationalized by any locally non-satiated utility function, so the test is a first gate on any demand estimate built from revealed choices.
+
 ```python
 ### Checking for WARP Violations
 

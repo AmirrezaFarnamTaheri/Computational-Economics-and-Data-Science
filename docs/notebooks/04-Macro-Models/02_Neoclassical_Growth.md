@@ -255,6 +255,10 @@ plt.show()
 ### 3. The Stochastic RCK Model
 We now introduce aggregate productivity shocks. The production function becomes $Y_t = Z_t K_t^\alpha (AL_t)^{1-\alpha}$, where the technology shock $Z_t$ follows a Markov process. This transforms the problem into a stochastic dynamic programming problem, which we can solve with VFI.
 
+## 3.2 Solving with Value Function Iteration
+
+The stochastic Ramsey model has no closed-form solution, so the value function is computed numerically. Value function iteration discretizes capital onto a grid, applies the Bellman operator $T(V)(k) = \max_{k'} \{ u(k, k') + \beta \mathbb{E}[V(k') | k] \}$, and repeats until the update is smaller than a tolerance; convergence is guaranteed because $T$ is a contraction. The continuation value $V(k')$ between grid points is interpolated, and the Euler-equation residual serves as an independent accuracy check on the converged policy.
+
 ```python
 ### Solving the Stochastic RCK Model with VFI
 # --- Model Parameters ---

@@ -52,7 +52,7 @@ if not DEEP_RL_AVAILABLE: display(Markdown("> **Note:** TensorFlow and/or Gymnas
 4.  [**Deep Reinforcement Learning: Deep Q-Networks (DQN)**](#4-deep-reinforcement-learning-deep-q-networks-dqn)
     - [Code Lab: DQN for CartPole](#code-lab-deep-q-network-dqn-for-cartpole)
 5.  [**Policy Gradient Methods**](#5-policy-gradient-methods)
-    - [The Policy Gradient Theorem: A Proof Sketch](#pg-theorem)
+    - [5.1 The Policy Gradient Theorem: A Proof Sketch](#51-the-policy-gradient-theorem-a-proof-sketch)
 6.  [**Actor-Critic Methods**](#6-actor-critic-methods)
 7.  [**Case Study: Optimal Resource Extraction**](#7-case-study-optimal-resource-extraction-the-fish-pond-problem)
 8.  [**Exercises**](#8-exercises)

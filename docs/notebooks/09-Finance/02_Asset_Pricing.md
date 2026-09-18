@@ -46,7 +46,7 @@ if not PD_READER_AVAILABLE: print("The 'pandas_datareader' library is not instal
 ### Table of Contents
 
 1.  [The Unifying Theory: The Stochastic Discount Factor (SDF)](#1-the-unifying-theory-the-stochastic-discount-factor-sdf)
-    - [Deriving the SDF from Micro-foundations](#deriving-the-sdf-from-micro-foundations)
+    - [1. The Unifying Theory: The Stochastic Discount Factor (SDF)](#1-the-unifying-theory-the-stochastic-discount-factor-sdf)
 2.  [Model 1: The Consumption-Based CAPM (CCAPM)](#2-model-1-the-consumption-based-capm-ccapm)
     - [The Equity Premium Puzzle and the Hansen-Jagannathan Bound](#the-equity-premium-puzzle-and-the-hansen-jagannathan-bound)
 3.  [Model 2: The Capital Asset Pricing Model (CAPM)](#3-model-2-the-capital-asset-pricing-model)
@@ -55,7 +55,7 @@ if not PD_READER_AVAILABLE: print("The 'pandas_datareader' library is not instal
 6.  [Unified Case Study](#6-unified-case-study-testing-factor-models)
     - [Data Collection](#data-collection)
     - [Time-Series Regressions (First Pass)](#time-series-regressions-first-pass))
-    - [Fama-MacBeth Regressions (Second Pass)](#fama-macbeth-regressions-second-pass))
+    - [5. Testing Asset Pricing Models: Fama-MacBeth Regressions](#5-testing-asset-pricing-models-fama-macbeth-regressions))
     - [Analysis and Interpretation](#analysis-and-interpretation)
 7.  [Summary](#summary)
 8.  [Exercises](#8-exercises)
@@ -178,9 +178,17 @@ To test if these factors are actually "priced" (i.e., carry a risk premium), we 
 2.  **Cross-Sectional Regression:** For each time period $t$, run a cross-sectional regression of asset returns $R_{i,t}$ on the estimated betas. The slope coefficients $\lambda_{k,t}$ are the risk premia.
 3.  **T-Test:** Test if the time-series average of $\lambda_{k,t}$ is significantly different from zero.
 
+## Time-Series Regressions (First Pass)
+
+The first stage of Fama–MacBeth runs a separate time-series regression of each test asset's excess return on the factors: $R_{it}^e = \alpha_i + \beta_i' f_t + \varepsilon_{it}$. This estimates each asset's factor loadings (the betas) and its unexplained return (the pricing error $\alpha_i$). Only the loadings carry into the second stage.
+
 ### 6. Unified Case Study: Testing Factor Models
 
 We will download real data from Ken French's library and test the CAPM vs. the Fama-French 5-Factor model using 10 Industry Portfolios as our test assets.
+
+## Data Collection
+
+The case study needs monthly excess returns for test portfolios and for each factor. Factor returns come from the published Fama–French data library and the risk-free rate from the same source; test assets are long-window portfolios whose returns are aligned to the factor frequency. Everything is merged on the date index before estimation begins.
 
 ```python
 ### Data Collection

@@ -35,9 +35,9 @@ if not SYMPY_AVAILABLE: print("The 'sympy' library is not installed (`pip instal
 
 1.  [Introduction to Continuous Time](#1-introduction-to-continuous-time)
 2.  [The Tools of Stochastic Calculus](#2-the-tools-of-stochastic-calculus)
-    - [Brownian Motion and SDEs](#brownian-motion-and-sdes)
+
     - [Visualizing Geometric Brownian Motion](#visualizing-geometric-brownian-motion)
-    - [Itô's Lemma: The Chain Rule for Stochastic Processes](#itos-lemma-the-chain-rule-for-stochastic-processes)
+    - [Itô's Lemma: The Chain Rule](#itos-lemma-the-chain-rule)
 3.  [Dynamic Optimization in Continuous Time: The HJB Equation](#3-dynamic-optimization-in-continuous-time-the-hjb-equation)
 4.  [Application 1: Merton's Portfolio Problem (1969)](#4-application-1-mertons-portfolio-problem-1969)
     - [The Complete Symbolic Solution](#the-complete-symbolic-solution)
@@ -87,6 +87,10 @@ Standard calculus fails when variables are random and jagged (like stock charts)
 > **Learning path:** Building on [`03_Option_Pricing.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/09-Finance/03_Option_Pricing.ipynb); next continue with [`05_Credit_Risk.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/09-Finance/05_Credit_Risk.ipynb).
 
 > **Conceptual prerequisite:** Stochastic differential equations are the stochastic extension of ordinary differential equations. The lecture assumes comfort with the ODE material in [`02-Numerical-Methods/08_Differential_Equations.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/02-Numerical-Methods/08_Differential_Equations.ipynb) (Euler / Runge-Kutta, stability, terminal conditions); without that background the Ito-calculus chain rule can read as unmotivated.
+
+## 2. The Tools of Stochastic Calculus
+
+Continuous-time finance rests on three objects. Brownian motion $W_t$ is the stochastic process with independent Gaussian increments and continuous sample paths. Stochastic differential equations (SDEs) of the form $dX_t = \mu(X_t, t)\,dt + \sigma(X_t, t)\,dW_t$ describe variables driven by Brownian noise. Itô's lemma, the chain rule of this calculus, gives the differential of any function of such a process. The sections below develop each in turn.
 
 #### Visualizing Geometric Brownian Motion
 

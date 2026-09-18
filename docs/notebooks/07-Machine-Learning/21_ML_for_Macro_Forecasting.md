@@ -42,7 +42,7 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 
 ## Table of Contents
 
-1. [Introduction](#introduction)
+- [The Lens: Nowcasting and Forecasting the Economy](#the-lens-nowcasting-and-forecasting-the-economy)
 
 ## The Lens: Nowcasting and Forecasting the Economy
 **What problem are we solving?**

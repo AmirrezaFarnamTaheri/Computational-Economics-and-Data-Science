@@ -50,7 +50,7 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 8. [Summary](#summary)
 9. [Exercises](#exercises)
 
-## The Lens: 23-Profiling-and-Performance
+## The Lens: From Correctness to Speed
 Once your code is correct and well-tested, the next frontier is often performance. In computational economics, models can take hours or even days to run. The ability to identify and eliminate performance **bottlenecks** is a critical skill. **Profiling** is the systematic process of measuring the resource usage of your code—how much time it spends on each line or in each function—to find these bottlenecks.
 
 The cardinal rule of optimization, famously articulated by Donald Knuth, is: **"Premature optimization is the root of all evil."** Do not attempt to optimize code before you have: 

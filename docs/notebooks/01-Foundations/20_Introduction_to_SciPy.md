@@ -51,7 +51,7 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 8. [Summary](#summary)
 9. [Exercises](#exercises)
 
-## The Lens: 20-Introduction-to-SciPy
+## The Lens: SciPy as the Scientific Toolkit
 While NumPy provides the foundational array structure for high-performance computing, it is relatively low-level. It gives you the bricks, but **SciPy** (Scientific Python) gives you the tools to build the house. 
 
 SciPy builds on NumPy arrays to provide a vast library of high-level algorithms for optimization, integration, interpolation, eigenvalue problems, algebraic equations, and statistics. For an economist, SciPy is the toolbox that turns mathematical models into computational realities. Whether you are solving for a market equilibrium (root finding), estimating parameters (optimization), or analyzing income distributions (statistics), SciPy likely has a robust, tested implementation ready for you to use.

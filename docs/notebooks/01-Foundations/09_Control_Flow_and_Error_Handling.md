@@ -55,7 +55,7 @@ plt.rcParams.update(
 6. [Summary](#summary)
 7. [Exercises](#exercises)
 
-## The Lens: 09-Control-Flow-and-Error-Handling
+## The Lens: Directing Logic and Managing Failure
 A program is more than a static list of calculations; it is a dynamic process that must make decisions, repeat actions, and respond gracefully to unexpected situations. The constructs that govern this process are fundamental to programming. **Control flow** statements (`if`, `for`, `while`, `match`) direct the logical path of execution, forming the core of any algorithm. **Error handling** (`try...except`) provides the mechanism for building robust and resilient programs that can anticipate and manage failures without crashing.
 
 In computational economics, control flow directs everything from an agent's decision rule in a simulation to the iterative process of a numerical solver. Error handling is equally critical, ensuring that if a numerical routine fails to converge, a data file is missing, or an API call fails, the program can recover or terminate with a clear, informative message. This chapter covers the syntax and idiomatic application of these essential constructs, which form the verb structure of the Python language.

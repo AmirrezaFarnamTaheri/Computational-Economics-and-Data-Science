@@ -52,7 +52,7 @@ plt.rcParams.update(
 9. [Exercises](#exercises)
 10. [Curated References and Further Reading](#curated-references-and-further-reading)
 
-## The Lens: 04-Python-Data-Model
+## The Lens: The Grammar of Pythonic Objects
 Python's distinctive character—often described as "Pythonic"—is not an accident of syntax but the result of a deliberate design philosophy centered on consistency and readability. This philosophy is implemented through the **Python data model**, a formal specification that acts as a bridge between the language's core syntax and the objects you create and use. It is, in essence, the grammar of Python objects.
 
 The data model provides a set of protocols that allow user-defined objects to integrate seamlessly with the language's most natural idioms. It is the reason `len(my_collection)` is the universal way to get the size of any collection, from a built-in `list` to a complex `pandas.DataFrame`, rather than a class-specific method like `my_collection.length()`. It is the mechanism that allows the `+` operator to signify integer addition, string concatenation, and vector addition for a NumPy array. This is achieved by mapping the language's syntax to a set of special methods, often called "dunder" (double-underscore) methods, that you implement in your classes.
@@ -70,6 +70,10 @@ For a computational economist, mastering the data model is a practical necessity
 * **Learning-path prerequisite:** [`03_Python_Fundamentals_Data_Types.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/01-Foundations/03_Python_Fundamentals_Data_Types.ipynb)
 
 > **Learning path:** Building on [`03_Python_Fundamentals_Data_Types.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/01-Foundations/03_Python_Fundamentals_Data_Types.ipynb); next continue with [`05_Lists_and_Tuples.ipynb`](https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/01-Foundations/05_Lists_and_Tuples.ipynb).
+
+## Advanced Protocols for Framework Design
+
+Python's data model lets a class hook into the language itself through double-underscore methods: `__new__`/`__init__` control construction, `__enter__`/`__exit__` make objects usable with `with`, `__get__`/`__set__` turn objects into descriptors, and `__getattr__` enables lazy attribute access. Abstract base classes and metaclasses layer interface design and class construction on top of the same hooks. This notebook walks that toolkit in order, since these protocols are what separate a script from a reusable framework.
 
 ### Object Lifecycle: `__new__` vs `__init__`
 

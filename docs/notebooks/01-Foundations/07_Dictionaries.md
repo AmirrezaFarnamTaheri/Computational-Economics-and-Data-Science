@@ -40,7 +40,7 @@ plt.rcParams.update(
 2. [The Hash Map Mechanism](#the-hash-map-mechanism)
     - [The Hashable Requirement and Immutability](#the-hashable-requirement-and-immutability)
     - [Hash Collisions and Load Factor](#hash-collisions-load-factor-and-performance-degradation)
-    - [Advanced Topic: A Toy Hash Map Implementation](#advanced-topic-a-toy-hash-map-implementation)
+
     - [Performance: O(1) vs. O(n) in Practice](#performance-o1-vs-on-in-practice)
 3. [Idiomatic Dictionary Usage](#idiomatic-dictionary-usage)
     - [Dictionary Comprehensions](#dictionary-comprehensions)
@@ -59,7 +59,7 @@ plt.rcParams.update(
 7. [Exercises](#exercises)
 8. [Challenge Exercise: Building an Inverted Index](#challenge-exercise-building-an-inverted-index)
 
-## The Lens: 07-Dictionaries
+## The Lens: The Engine of Modern Python
 The dictionary, `dict`, is arguably Python's most important data structure. It is the fundamental implementation behind many core features of the language: object attributes are stored in an instance's `__dict__`, module namespaces are dictionaries, and class methods are looked up in a class's dictionary. Its defining characteristic is exceptional performance: insertion, deletion, and lookup operations have an **O(1) average time complexity**, meaning their speed is independent of the dictionary's size. This remarkable efficiency is the result of its underlying implementation as a **hash map** (also known as a hash table).
 
 This chapter examines the `dict`, moving beyond basic key-value usage to explore the internal mechanics of its hash map implementation. We will cover the critical requirement of key immutability, modern usage patterns, and the specialized, high-performance dictionary subclasses provided by the `collections` module. A firm grasp of dictionary mechanics is essential for writing efficient, robust, and idiomatic Python for computational research, especially when dealing with the sparse representations of objects (e.g., utility functions defined over a sparse grid) that are common in economics.

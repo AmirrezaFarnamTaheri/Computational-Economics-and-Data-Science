@@ -44,7 +44,7 @@ warnings.filterwarnings('ignore', category=FutureWarning)
     *   [3.2 Two-Step Estimators (Hotz-Miller / CCP)](#32-two-step-estimators-hotz-miller-ccp)
     *   [3.3 MPEC: Constrained Optimization](#33-mpec-constrained-optimization)
 4.  [Code Lab: Estimating a Bus Engine Replacement Model](#4-code-lab-estimating-a-bus-engine-replacement-model)
-    *   [4.1 The NFXP Implementation](#41-the-nfxp-implementation)
+
     *   [4.2 Counterfactuals: The Power of Structural Models](#42-counterfactuals-the-power-of-structural-models)
 5.  [Summary](#summary)
 6.  [Exercises](#6-exercises)
@@ -121,6 +121,10 @@ This avoids the nested loop structure entirely, which can be a significant advan
 
 ### 4. Code Lab: Estimating a Bus Engine Replacement Model
 We implement a simplified version of Rust's model using the NFXP algorithm. The state `s` is the machine's age. The agent chooses to replace ($a=1$) or maintain ($a=0$). The parameters to estimate are the replacement cost $\theta_R$ and the maintenance cost parameter $\theta_M$.
+
+## 4.1 The NFXP Implementation
+
+The nested fixed point algorithm alternates two loops. The inner loop solves the dynamic program to convergence for a given parameter vector, exploiting the contraction property of the Bellman operator. The outer loop maximizes the likelihood of the observed choice probabilities implied by that solution. The code lab below implements both loops for the bus engine replacement model.
 
 ```python
 ### NFXP Implementation for Bus Replacement Model

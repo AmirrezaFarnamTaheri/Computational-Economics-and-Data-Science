@@ -52,7 +52,7 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 10. [Summary](#summary)
 11. [Exercises](#exercises)
 
-## The Lens: 17-Effective-Debugging
+## The Lens: Debugging as a Scientific Process
 An unspoken truth of computational work is that you will spend far more time debugging your code than writing it. A bug is simply a difference between what you *think* your code is doing and what it is *actually* doing. Therefore, **debugging is the process of closing that gap in understanding.** It is not a haphazard process of randomly changing things; it is a systematic, scientific investigation into the behavior of a program.
 
 This chapter provides a guide to the tools and, more importantly, the mindset required for effective debugging. We will frame this process as a direct application of the scientific method:

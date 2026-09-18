@@ -55,7 +55,7 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 5. [Summary](#summary)
 6. [Exercises](#exercises)
 
-## The Lens: 18-Data-Acquisition-Web-Scraping
+## The Lens: Web Scraping as Data Excavation
 While APIs provide a clean pipeline to data, the vast majority of the world's information exists as unstructured HTML on websites. Web scraping is the digital equivalent of archaeological excavation: it involves carefully digging through layers of presentation code (HTML, CSS, JavaScript) to extract the valuable artifacts (data) buried underneath.
 
 This notebook focuses specifically on the techniques for this excavation. We will move beyond the simple examples in the introductory chapter to tackle more realistic scenarios, including navigating complex HTML structures and handling dynamic, JavaScript-heavy sites that resist simple request-based scraping.
@@ -83,6 +83,10 @@ Before writing a single line of code, you must understand the rules of the road.
 2.  **Rate Limiting**: Never slam a server with hundreds of requests per second. Use `time.sleep()` to add delays between requests.
 3.  **Terms of Service**: Read the site's ToS. Scraping public data is generally legal in many jurisdictions (e.g., the hiQ vs. LinkedIn ruling in the US), but violating ToS can lead to your IP being banned.
 4.  **Identify Yourself**: Set a custom `User-Agent` string in your headers that identifies your bot and provides a way to contact you (e.g., an email address).
+
+## Parsing HTML Structure
+
+An HTML document is a nested tree of tags, and scraping begins by parsing that tree. BeautifulSoup turns raw markup into traversable objects: `find` and `find_all` locate tags, the `select` method accepts CSS selectors, and the `attrs` dictionary reaches attributes like `href`. The goal is always the same: move from a string of HTML to the structured records a DataFrame can hold.
 
 ### Static Scraping with `requests` and `BeautifulSoup`
 
@@ -135,6 +139,10 @@ if html_content:
     print("Scraped Data:")
     display(df_quotes.head())
 ```
+
+## Handling JavaScript and Interaction
+
+Many modern pages render their data with JavaScript, so the HTML returned by a plain `requests` call contains only skeleton markup. Reading such a page requires a browser that actually executes the scripts and exposes the resulting DOM. That is what `playwright` provides, and it is also the right tool when the target data appears only after a click, a scroll, or an asynchronous load.
 
 ### Dynamic Scraping with `playwright`
 

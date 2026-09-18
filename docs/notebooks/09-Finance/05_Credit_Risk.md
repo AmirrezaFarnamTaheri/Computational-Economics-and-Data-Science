@@ -30,7 +30,7 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 3.  [Reduced-Form Models: Jarrow-Turnbull (1995)](#3-reduced-form-models-jarrow-turnbull-1995)
     - [Hazard Rates and Default Intensity](#hazard-rates-and-default-intensity)
 4.  [Application: Calibrating Merton's Model to Real Data](#4-application-calibrating-mertons-model-to-real-data)
-    - [The KMV Iterative Algorithm](#the-kmv-iterative-algorithm)
+
     - [Calculating Distance-to-Default (DD)](#calculating-distance-to-default-dd)
 5.  [The Credit Spread Puzzle](#5-the-credit-spread-puzzle)
 6.  [Summary](#summary)
@@ -155,6 +155,10 @@ $$ D(0, T) = F e^{-(r+\lambda(1-R))T} $$
 where $R$ is the recovery rate. The credit spread is simply $s = \lambda(1-R)$. These models are easier to calibrate to market data (e.g., the term structure of spreads) but lack the structural economic intuition of Merton.
 
 **Dimension notes:** default intensity $\lambda \ge 0$ scalar hazard; survival probability $e^{-\lambda T}$ scalar; credit spread enters the discount rate additively, keeping bond values scalar.
+
+## Hazard Rates and Default Intensity
+
+Reduced-form models treat default as the first arrival of a Poisson-type process with intensity $\lambda(t)$, also called the hazard rate. The survival probability to horizon $T$ is then $Q(\tau > T) = \exp\left(-\int_0^T \lambda(s)\,ds\right)$, and under recovery $R$ the credit spread on a short bond is approximately $\lambda(1-R)$. This is the modeling language of the Jarrow–Turnbull framework above.
 
 ### 4. Application: Calibrating Merton's Model to Real Data
 

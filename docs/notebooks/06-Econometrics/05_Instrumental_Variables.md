@@ -65,7 +65,7 @@ plt.show()
 
 ## Table of Contents
 
-1. [Introduction](#introduction)
+- [The Lens: Breaking the Endogeneity Loop](#the-lens-breaking-the-endogeneity-loop)
 
 ## The Lens: Breaking the Endogeneity Loop
 **What problem are we solving?**

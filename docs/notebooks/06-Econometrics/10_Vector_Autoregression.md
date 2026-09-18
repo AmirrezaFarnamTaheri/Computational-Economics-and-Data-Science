@@ -30,7 +30,7 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 
 ## Table of Contents
 
-1. [Introduction](#introduction)
+- [The Lens: Everything Depends on Everything](#the-lens-everything-depends-on-everything)
 
 ## The Lens: Everything Depends on Everything
 **What problem are we solving?**

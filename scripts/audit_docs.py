@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import re
+import unicodedata
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -17,8 +18,17 @@ HEADING_RE = re.compile(r"^(#{1,6})\s+(.+?)\s*$", re.MULTILINE)
 
 
 def _mkdocs_slug(title: str) -> str:
-    """Python-Markdown toc slug: lowercase, punctuation dropped, spaces->'-'."""
-    stripped = re.sub(r"[^\w\s-]", "", title.lower())
+    """Python-Markdown toc slug: lowercase, punctuation dropped, spaces->'-'.
+
+    Must stay byte-identical to ``notebooks_to_docs._mkdocs_slug``: this
+    function defines what the docs build actually emits, so any divergence
+    turns into false "broken anchor" findings. In particular Unicode headings
+    such as "Itô's Lemma" NFKD-normalize to "ito" -- without that step the
+    audit computes "itôs-..." and reports the page's own correct link as stale.
+    """
+    value = unicodedata.normalize("NFKD", title)
+    value = value.encode("ascii", "ignore").decode("ascii")
+    stripped = re.sub(r"[^\w\s-]", "", value.lower())
     return re.sub(r"[-\s]+", "-", stripped).strip("-")
 
 

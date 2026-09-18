@@ -62,7 +62,7 @@
     },
     {
       "path": "09-Finance\\04_Continuous_Time_Finance.ipynb",
-      "theory_term_hits": 53,
+      "theory_term_hits": 54,
       "display_equations": 13,
       "dimensions": {
         "assumptions": true,
@@ -230,7 +230,7 @@
     },
     {
       "path": "07-Machine-Learning\\15_Reinforcement_Learning.ipynb",
-      "theory_term_hits": 28,
+      "theory_term_hits": 29,
       "display_equations": 8,
       "dimensions": {
         "assumptions": true,
@@ -445,6 +445,30 @@
       "structural_score": 4
     },
     {
+      "path": "01-Foundations\\21_Symbolic_Computation_with_SymPy.ipynb",
+      "theory_term_hits": 16,
+      "display_equations": 0,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "04-Macro-Models\\02_Neoclassical_Growth.ipynb",
+      "theory_term_hits": 16,
+      "display_equations": 20,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
       "path": "05-Micro-Models\\04_Discrete_Choice_Models.ipynb",
       "theory_term_hits": 16,
       "display_equations": 9,
@@ -508,30 +532,6 @@
       "path": "build\\exec\\A3-Probability-Theory.ipynb",
       "theory_term_hits": 16,
       "display_equations": 10,
-      "dimensions": {
-        "assumptions": true,
-        "formal_statement": true,
-        "working_or_derivation": true,
-        "economic_interpretation": true
-      },
-      "structural_score": 4
-    },
-    {
-      "path": "01-Foundations\\21_Symbolic_Computation_with_SymPy.ipynb",
-      "theory_term_hits": 15,
-      "display_equations": 0,
-      "dimensions": {
-        "assumptions": true,
-        "formal_statement": true,
-        "working_or_derivation": true,
-        "economic_interpretation": true
-      },
-      "structural_score": 4
-    },
-    {
-      "path": "04-Macro-Models\\02_Neoclassical_Growth.ipynb",
-      "theory_term_hits": 15,
-      "display_equations": 20,
       "dimensions": {
         "assumptions": true,
         "formal_statement": true,
@@ -733,9 +733,33 @@
       "structural_score": 4
     },
     {
+      "path": "07-Machine-Learning\\17_Causal_ML.ipynb",
+      "theory_term_hits": 10,
+      "display_equations": 2,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
       "path": "02-Numerical-Methods\\01_Linear_Algebra.ipynb",
       "theory_term_hits": 9,
       "display_equations": 14,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "03-Economic-Modeling\\07_Structural_Estimation.ipynb",
+      "theory_term_hits": 9,
+      "display_equations": 9,
       "dimensions": {
         "assumptions": true,
         "formal_statement": true,
@@ -758,18 +782,6 @@
     },
     {
       "path": "05-Micro-Models\\05_Principal_Agent_Models.ipynb",
-      "theory_term_hits": 9,
-      "display_equations": 2,
-      "dimensions": {
-        "assumptions": true,
-        "formal_statement": true,
-        "working_or_derivation": true,
-        "economic_interpretation": true
-      },
-      "structural_score": 4
-    },
-    {
-      "path": "07-Machine-Learning\\17_Causal_ML.ipynb",
       "theory_term_hits": 9,
       "display_equations": 2,
       "dimensions": {
@@ -829,9 +841,9 @@
       "structural_score": 4
     },
     {
-      "path": "03-Economic-Modeling\\07_Structural_Estimation.ipynb",
+      "path": "03-Economic-Modeling\\03B_Continuous_State_DP_Interpolation.ipynb",
       "theory_term_hits": 8,
-      "display_equations": 9,
+      "display_equations": 8,
       "dimensions": {
         "assumptions": true,
         "formal_statement": true,
@@ -877,18 +889,6 @@
       "structural_score": 4
     },
     {
-      "path": "03-Economic-Modeling\\03B_Continuous_State_DP_Interpolation.ipynb",
-      "theory_term_hits": 7,
-      "display_equations": 8,
-      "dimensions": {
-        "assumptions": true,
-        "formal_statement": true,
-        "working_or_derivation": true,
-        "economic_interpretation": true
-      },
-      "structural_score": 4
-    },
-    {
       "path": "05-Micro-Models\\07_BLP_Demand_Estimation.ipynb",
       "theory_term_hits": 7,
       "display_equations": 9,
@@ -904,18 +904,6 @@
       "path": "09-Finance\\01_Portfolio_Theory.ipynb",
       "theory_term_hits": 7,
       "display_equations": 6,
-      "dimensions": {
-        "assumptions": true,
-        "formal_statement": true,
-        "working_or_derivation": true,
-        "economic_interpretation": true
-      },
-      "structural_score": 4
-    },
-    {
-      "path": "09-Finance\\02_Asset_Pricing.ipynb",
-      "theory_term_hits": 7,
-      "display_equations": 9,
       "dimensions": {
         "assumptions": true,
         "formal_statement": true,
@@ -1141,9 +1129,33 @@
       "structural_score": 4
     },
     {
+      "path": "09-Finance\\02_Asset_Pricing.ipynb",
+      "theory_term_hits": 5,
+      "display_equations": 9,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
       "path": "04-Macro-Models\\03C_RBC_Dynamics_and_Surprise_Shocks.ipynb",
       "theory_term_hits": 4,
       "display_equations": 0,
+      "dimensions": {
+        "assumptions": true,
+        "formal_statement": true,
+        "working_or_derivation": true,
+        "economic_interpretation": true
+      },
+      "structural_score": 4
+    },
+    {
+      "path": "06-Econometrics\\02A_MLE_Principles_and_Geometry.ipynb",
+      "theory_term_hits": 4,
+      "display_equations": 2,
       "dimensions": {
         "assumptions": true,
         "formal_statement": true,

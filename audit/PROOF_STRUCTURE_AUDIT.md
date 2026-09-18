@@ -2,7 +2,7 @@
 
 > This is a structural triage tool, not an automated mathematical correctness proof.
 
-Theory-heavy notebooks triaged: **128**
+Theory-heavy notebooks triaged: **129**
 
 | Notebook | Assumptions | Statement | Working | Economic interpretation | Score |
 |---|:---:|:---:|:---:|:---:|---:|
@@ -43,14 +43,14 @@ Theory-heavy notebooks triaged: **128**
 | `10-Specialized-Models\01_Agent_Based_Models.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `build\exec-tier2\05_Optimal_Stopping_Problems.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `08-Time-Series\06_Cointegration_and_Error_Correction_Models.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
+| `01-Foundations\21_Symbolic_Computation_with_SymPy.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
+| `04-Macro-Models\02_Neoclassical_Growth.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `05-Micro-Models\04_Discrete_Choice_Models.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `06-Econometrics\01_Linear_Model_and_OLS.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `06-Econometrics\04_GMM.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `Appendix\A3-Probability-Theory.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `build\exec\01_Linear_Model_and_OLS.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `build\exec\A3-Probability-Theory.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
-| `01-Foundations\21_Symbolic_Computation_with_SymPy.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
-| `04-Macro-Models\02_Neoclassical_Growth.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `build\exec-tier2\02_Neoclassical_Growth.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `build\exec\04_GMM.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `build\exec\21_Symbolic_Computation_with_SymPy.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
@@ -67,22 +67,21 @@ Theory-heavy notebooks triaged: **128**
 | `build\exec-tier2\05_New_Keynesian_Models.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `build\exec-tier2\06_Interpolation_and_Approximation.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `06-Econometrics\11_Bayesian_Econometrics.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
+| `07-Machine-Learning\17_Causal_ML.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `02-Numerical-Methods\01_Linear_Algebra.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
+| `03-Economic-Modeling\07_Structural_Estimation.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `04-Macro-Models\07_Endogenous_Growth.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `05-Micro-Models\05_Principal_Agent_Models.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
-| `07-Machine-Learning\17_Causal_ML.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `08-Time-Series\01_Introduction_to_Time_Series.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `build\exec\01_Introduction_to_Time_Series.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `build\exec\01_Linear_Algebra.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `02-Numerical-Methods\07_Numerical_Integration.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
-| `03-Economic-Modeling\07_Structural_Estimation.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
+| `03-Economic-Modeling\03B_Continuous_State_DP_Interpolation.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `06-Econometrics\03_Causal_Inference.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `build\exec\07_Numerical_Integration.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `03-Economic-Modeling\03A_Discrete_Choice_DP_Rust.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
-| `03-Economic-Modeling\03B_Continuous_State_DP_Interpolation.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `05-Micro-Models\07_BLP_Demand_Estimation.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `09-Finance\01_Portfolio_Theory.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
-| `09-Finance\02_Asset_Pricing.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `build\exec-tier2\03B_Continuous_State_DP_Interpolation.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `build\exec-tier2\07_BLP_Demand_Estimation.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `01-Foundations\20_Introduction_to_SciPy.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
@@ -101,7 +100,9 @@ Theory-heavy notebooks triaged: **128**
 | `build\exec\03A_Discrete_Choice_DP_Rust.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `build\exec\08_Difference_in_Differences.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `06-Econometrics\09_Classical_Time_Series_Analysis.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
+| `09-Finance\02_Asset_Pricing.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `04-Macro-Models\03C_RBC_Dynamics_and_Surprise_Shocks.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
+| `06-Econometrics\02A_MLE_Principles_and_Geometry.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `06-Econometrics\07_Synthetic_Control_Methods.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `07-Machine-Learning\08_Recurrent_Neural_Networks.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |
 | `10-Specialized-Models\03_Network_Economics.ipynb` | ✓ | ✓ | ✓ | ✓ | 4/4 |

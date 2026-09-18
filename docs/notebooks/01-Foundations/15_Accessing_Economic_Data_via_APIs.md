@@ -55,7 +55,7 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 4. [Summary](#summary)
 5. [Exercises](#exercises)
 
-## The Lens: 15-Accessing-Economic-Data-via-APIs
+## The Lens: Live Data and the Economic Pulse
 In the previous chapter, we learned that data acquisition is the fuel for economic analysis. While static files are useful, the most vibrant economic research relies on **live data**—streams of information that update as the economy evolves. 
 
 APIs (Application Programming Interfaces) are the standard way to tap into these streams. They provide a direct, structured pipeline to the world's most critical economic databases. By mastering APIs, you move from analyzing "snapshots" of the past to monitoring the "pulse" of the economy in real-time. This notebook focuses on two of the most important sources for any economist: the **Federal Reserve Economic Data (FRED)** for U.S. macroeconomics and the **World Bank** for global development indicators.

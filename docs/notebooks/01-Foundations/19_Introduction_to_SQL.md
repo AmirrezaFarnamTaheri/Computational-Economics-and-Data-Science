@@ -48,7 +48,7 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 8. [Summary](#summary)
 9. [Exercises](#exercises)
 
-## The Lens: 19-Introduction-to-SQL
+## The Lens: SQL as the Lingua Franca of Data
 While Pandas is powerful for analysis, data rarely originates in a CSV file. In the real world, especially in policy institutions, banks, and tech firms, data lives in **Relational Database Management Systems (RDBMS)**. 
 
 **Structured Query Language (SQL)** is the universal language for interacting with these systems. It is not just a way to retrieve data; it is a declarative programming paradigm for data manipulation. Unlike Python (imperative), where you tell the computer *how* to do something, in SQL you tell the database *what* you want, and its query optimizer figures out the most efficient way to get it.

@@ -29,7 +29,7 @@ np.set_printoptions(suppress=True, linewidth=120, precision=4)
 
 ## Table of Contents
 
-1. [Introduction](#introduction)
+- [The Lens: Parallel Worlds](#the-lens-parallel-worlds)
 
 ## The Lens: Parallel Worlds
 **What problem are we solving?**

@@ -59,7 +59,7 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 
 > **Historical Context — Tukey, Cleveland, and the Grammar of Graphics.** John Tukey's *Exploratory Data Analysis* (1977) legitimized drawing pictures before fitting models; William Cleveland's 1980s experiments established how humans read scales; Leland Wilkinson's *Grammar of Graphics* (1999) turned plots into composable objects — the idea behind ggplot and seaborn.
 
-## The Lens: 16-Data-Visualization
+## The Lens: From Data to Insight and Argument
 Data visualization is a critical tool for exploration, analysis, and, most importantly, **argumentation**. A well-designed plot is a form of non-verbal, quantitative reasoning. It can reveal patterns that tables of summary statistics hide, highlight outliers that might otherwise be missed, and communicate complex findings with an immediacy that words alone cannot achieve.
 
 This notebook introduces the core theories and dominant programming paradigms for visualization in Python. We will explore:

@@ -86,19 +86,19 @@ Methods like Causal Forests, Double/Debiased ML, and meta-learners allow economi
 
 ### On this page
 
-1.  [**Introduction: Prediction Serving Inference**](#intro)
-2.  [**The Architects of Causal ML**](#architects)
-3.  [**The Core Idea: Orthogonalization and the FWL Theorem**](#fwl)
-4.  [**Double/Debiased Machine Learning (DML)**](#dml)
-    - [The Problem: Regularization Bias](#bias)
-    - [The Solution: Neyman-Orthogonality](#orthogonality)
-    - [Code Lab: DML with the `DoubleML` Package](#code-dml)
-5.  [**Causal Forests for Heterogeneous Treatment Effects**](#causal-forest)
-    - [Code Lab: Causal Forests with `EconML`](#code-cf)
-6.  [**Case Study: Estimating Price Elasticity of Demand**](#casestudy)
-7.  [**Test your knowledge**](#exercises)
-8.  [**Key Takeaways**](#summary)
-9.  [**Further reading**](#meta-learners)
+- [1. Introduction: Prediction in Service of Inference](#1-introduction-prediction-in-service-of-inference)
+- [2. The Intellectual Architects of Causal ML](#2-the-intellectual-architects-of-causal-ml)
+- [3. The Core Idea: Orthogonalization and the Frisch-Waugh-Lovell Theorem](#3-the-core-idea-orthogonalization-and-the-frisch-waugh-lovell-theorem)
+- [4. Double/Debiased Machine Learning (DML)](#4-doubledebiased-machine-learning-dml)
+    - [4.1 The Problem: Regularization Bias](#41-the-problem-regularization-bias)
+    - [4.2 The Solution: Neyman-Orthogonality](#42-the-solution-neyman-orthogonality)
+    - [4.3 Code Lab: DML with the `DoubleML` Package](#43-code-lab-dml-with-the-doubleml-package)
+- [5. Causal Forests for Heterogeneous Treatment Effects](#5-causal-forests-for-heterogeneous-treatment-effects)
+    - [5.1 Code Lab: Causal Forests with `EconML`](#51-code-lab-causal-forests-with-econml)
+- [6. Case Study: Estimating Price Elasticity of Demand](#6-case-study-estimating-price-elasticity-of-demand)
+- [7. Exercises: Test Your Knowledge](#7-exercises-test-your-knowledge)
+- [8. Key Takeaways](#8-key-takeaways)
+- [9. References & Further Reading](#9-references-further-reading)
 
 <a id='intro'></a>
 ## 1. Introduction: Prediction in Service of Inference

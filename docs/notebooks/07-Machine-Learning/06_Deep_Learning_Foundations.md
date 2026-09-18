@@ -57,8 +57,7 @@ if not TENSORFLOW_AVAILABLE:
 
 1. [Introduction](#introduction)
 2. [Theoretical Foundations](#theoretical-foundations)
-3. [Backpropagation from Scratch](#backpropagation-from-scratch)
-4. [TensorFlow Implementation](#tensorflow-implementation)
+- [1.2 Backpropagation: The Engine of Learning](#12-backpropagation-the-engine-of-learning)
 
 ## The Lens: Universal Function Approximation
 **What problem are we solving?**
