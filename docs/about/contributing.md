@@ -139,7 +139,7 @@ Run existing tests before submitting:
 pytest
 
 # Validate notebooks
-python scripts/audit_notebooks.py
+python scripts/validate_notebooks.py
 
 # Check code style
 ruff check .
@@ -324,7 +324,7 @@ git checkout -b feature/my-feature
 
 # Test changes
 pytest
-python scripts/audit_notebooks.py
+python scripts/validate_notebooks.py
 
 # Commit
 git add .
@@ -345,7 +345,7 @@ git rebase upstream/main
 pytest
 ruff check .
 black --check .
-python scripts/audit_notebooks.py
+python scripts/validate_notebooks.py
 
 # Push
 git push origin feature/my-feature --force-with-lease

@@ -135,6 +135,7 @@ test-results/
 # Graphify & Agentic Tools
 graphify-out/
 .codemap/
+.codebase-memory/
 
 # Audit reports
 notebook_structure.md
@@ -241,3 +242,6 @@ dask-worker-space/
 !README.md
 !requirements.txt
 !environment.yml
+
+# Agent scratchpads (session intermediates)
+.agent_scratchpad/

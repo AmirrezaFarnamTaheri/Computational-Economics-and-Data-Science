@@ -1,0 +1,44 @@
+name: computational-economics-lock
+# Deterministic-execution lock (WP-12).
+#
+# Direct dependency pins for the standing quality gates (structural audit,
+# pytest suite, ruff, black) and dependency-light deterministic lectures.
+# NumPy and SciPy below require Python >=3.12; CI uses Python 3.13.
+# Transitive dependencies are resolved by pip. Seeded examples support
+# numerical comparison, not bit-for-bit equality across platforms.
+#
+# Scope note: this lock intentionally covers the deterministic core. Lectures
+# that require heavy or networked optional stacks (torch, tensorflow,
+# geopandas, prophet, API keys, ...) are exercised by their own optional
+# environments, not by the deterministic CI job.
+#
+# CI installs PyYAML explicitly before extracting the `pip:` block.
+# Conda users can create the environment
+# directly:  conda env create -f environment.lock.yml
+channels:
+  - conda-forge
+dependencies:
+  - python=3.13
+  - pip
+  - pip:
+      - numpy==2.5.2
+      - scipy==1.18.0
+      - pooch==1.9.0  # required by scipy.datasets.face in 02-Numerical-Methods/01
+      - numba==0.67.0
+      - matplotlib==3.11.1
+      - pandas==2.3.3
+      - statsmodels==0.15.0
+      - scikit-learn==1.9.1
+      - sympy==1.14.0
+      - seaborn==0.13.2
+      - networkx==3.5
+      - nbformat==5.10.4
+      - nbclient==0.10.2
+      - nbconvert==7.16.4
+      - ipykernel==6.29.5
+      - ipython==9.16.1
+      - hypothesis==6.165.10
+      - attrs==26.1.0
+      - pytest==9.1.1
+      - ruff==0.16.4
+      - black==26.5.1

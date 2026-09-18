@@ -1,84 +1,55 @@
 # Course Structure
 
-Overview of how the course is organized and recommended learning paths.
+The repository currently contains **129 notebooks**: **116 core-module notebooks** across ten modules, plus **9 Appendix notebooks** and **4 High-Performance Python notebooks**. Counts below are generated from the live source tree.
 
----
-
-## Module Organization
-
-The course consists of **10 comprehensive modules**, a **high-performance computing** track, and an **Appendix** with mathematical foundations and practical tooling.
-
-### Core Modules (1–3): Foundations & Methods
+## Core Modules
 
 | Module | Notebooks | Focus |
-|--------|-----------|-------|
-| **01 — Foundations** | 24 | Python fundamentals, NumPy, Pandas, data acquisition, visualization, profiling |
-| **02 — Numerical Methods** | 8 | Linear systems, optimization, root finding, interpolation, integration, differentiation, ODEs |
-| **03 — Economic Modeling** | 7 | Dynamic programming, continuous-state DP, optimal stopping, robust control, structural estimation |
+|---|---:|---|
+| **01-Foundations — Foundations** | 25 | Python, reproducibility, data tools, visualization, profiling |
+| **02-Numerical-Methods — Numerical Methods** | 8 | Linear algebra, root finding, optimization, approximation, integration, ODEs |
+| **03-Economic-Modeling — Economic Modeling** | 8 | Dynamic programming, calibration/estimation, optimal stopping, robust control, structural estimation |
+| **04-Macro-Models — Macro Models** | 11 | Search, growth, RBC, OLG, New Keynesian, heterogeneous agents, endogenous and continuous-time macro |
+| **05-Micro-Models — Micro Models** | 7 | Consumer/producer theory, equilibrium, games, discrete choice, information, BLP demand |
+| **06-Econometrics — Econometrics** | 14 | OLS, MLE, causal inference, GMM/IV/RDD, synthetic control, DiD/SDID, Bayesian and panel methods |
+| **07-Machine-Learning — Machine Learning** | 22 | Prediction, deep learning, reinforcement learning, causal ML, NLP, GNNs |
+| **08-Time-Series — Time Series** | 9 | ARMA/ARIMA, VAR, GARCH, cointegration, particle filtering and nonlinear state-space models |
+| **09-Finance — Finance** | 8 | Portfolio theory, asset pricing, options, continuous time, credit risk, market microstructure and Hawkes models |
+| **10-Specialized-Models — Specialized Models** | 4 | Agent-based, heterogeneous-agent GE, networks, climate-macro integrated assessment |
 
-### Application Modules (4–10): Economics, Finance & ML
+## Supplementary Tracks
 
-| Module | Notebooks | Focus |
-|--------|-----------|-------|
-| **04 — Macro Models** | 7 | Job search, neoclassical growth, RBC, OLG, New Keynesian, heterogeneous agents, endogenous growth |
-| **05 — Micro Models** | 6 | Consumer/producer theory, general equilibrium, game theory, discrete choice, principal-agent, information economics |
-| **06 — Econometrics** | 12 | OLS, MLE, causal inference, GMM, IV, RDD, synthetic control, DiD, time series, VAR, Bayesian, panel data |
-| **07 — Machine Learning** | 22 | Supervised/unsupervised learning, deep learning (CNN, RNN, Transformers), RL, causal ML, NLP, GNNs |
-| **08 — Time Series** | 6 | Stationary processes, ARMA/ARIMA, VAR, GARCH, cointegration |
-| **09 — Finance** | 7 | Portfolio theory, asset pricing, option pricing, continuous-time finance, credit risk, HFT, financial frictions (BGG) |
-| **10 — Specialized Models** | 3 | Agent-based models, heterogeneous-agent GE, network economics |
-
-### Supplementary
-
-| Section | Notebooks | Focus |
-|---------|-----------|-------|
-| **High-Performance Python** | 4 | HPC, Numba, Dask, GPU acceleration |
-| **Appendix** | 8 | Real analysis, multivariate calculus, probability theory, linear algebra, Quarto publishing, Otter grading, replication exercises |
-
----
+- **Appendix:** 9 notebooks covering mathematical foundations, publishing, autograding, and empirical replications (Chetty, Card–Krueger, and Fama–French).
+- **High-Performance Python:** 4 notebooks covering profiling, Numba, Dask, and GPU acceleration.
 
 ## Recommended Learning Paths
 
-### Path 1: Full Course (Sequential)
-
-Work through modules 01 → 10 in order. Each module builds on skills from earlier ones.
-
-### Path 2: Econometrics Focus
-
-`01 Foundations` → `02 Numerical Methods` → `06 Econometrics` → `08 Time Series` → `07 ML (selected)`
-
-### Path 3: Finance Focus
-
-`01 Foundations` → `02 Numerical Methods` → `03 Economic Modeling` → `08 Time Series` → `09 Finance`
-
-### Path 4: Machine Learning for Economists
-
-`01 Foundations` → `06 Econometrics (01–03)` → `07 Machine Learning` → `07-ML/17 Causal ML`
-
----
+1. **Full computational economics:** 01 → 02 → 03 → 04/05 → 06 → 08 → 09/10, using 07 where ML methods are needed.
+2. **Causal/empirical:** 01 → 02 → 06 → 07 (causal ML) → 08.
+3. **Macro/heterogeneous agents:** 01 → 02 → 03 → 04 → 10, with HJB/HANK and HPC as advanced extensions.
+4. **Finance:** 01 → 02 → 06/08 → 09.
 
 ## Repository Layout
 
-```
-├── 01-Foundations/          # Python, data tools, visualization
-├── 02-Numerical-Methods/    # Computational algorithms
-├── 03-Economic-Modeling/    # DP, estimation, calibration
-├── 04-Macro-Models/         # Macroeconomic models
-├── 05-Micro-Models/         # Microeconomic models
-├── 06-Econometrics/         # Statistical methods
-├── 07-Machine-Learning/     # ML and deep learning
-├── 08-Time-Series/          # Time series analysis
-├── 09-Finance/              # Financial economics
-├── 10-Specialized-Models/   # ABM, networks, hetero-agent GE
-├── Appendix/                # Math foundations & tools
-├── high_performance_python/  # HPC, Numba, Dask, GPU
-├── data/                    # Datasets (FRED, finance, research)
-├── images/                  # Generated figures
-├── scripts/                 # Utility & image generation scripts
-├── docs/                    # MkDocs documentation source
-└── tests/                   # Test suite
+```text
+01-Foundations/
+02-Numerical-Methods/
+03-Economic-Modeling/
+04-Macro-Models/
+05-Micro-Models/
+06-Econometrics/
+07-Machine-Learning/
+08-Time-Series/
+09-Finance/
+10-Specialized-Models/
+Appendix/
+high_performance_python/
+data/
+images/
+scripts/
+docs/
+tests/
+audit/
 ```
 
----
-
-For detailed module information, see [All Modules](../modules/index.md).
+For the live notebook inventory and searchable reading views, see [All Modules](../modules/index.md).

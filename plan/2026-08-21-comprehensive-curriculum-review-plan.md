@@ -624,3 +624,19 @@ To make the curriculum completely comprehensive, the plan incorporates **8 new a
 [ ] Checkpoint 4 (Visual & Interactive): 41 diagram scripts pass at 300 DPI; WebGL laboratory operates smoothly at 60 FPS.
 [ ] Checkpoint 5 (Test Suite & Docs): 56+ pytest tests pass; MkDocs Material site compiles with zero warnings under strict mode.
 ```
+
+---
+
+## 8. Asset Generation & Ephemeral Artifact Policy (Zero Binary Bloat)
+
+> **Golden Rule**: *If an asset-generating script or dynamic rendering code exists, the generated binary asset itself MUST NOT bloat the core repository or source distribution.*
+
+### Architectural Principles:
+1. **Code as the Single Source of Truth**:
+   - Every diagram, plot, surface mesh, and geometric curve is defined by pure code (Python scripts, D3.js vectors, Three.js shaders, or Mermaid/KaTeX definitions).
+   - Pre-rendered static bitmaps (e.g. 5 MB PNGs, GIFs) are treated as **ephemeral build artifacts** rather than permanent repository fixtures.
+2. **On-Demand Generation Pipelines**:
+   - `python scripts/export_figures.py` / `python tools/download_assets.py` deterministically generate and fetch required assets on demand for local offline usage or during CI/CD packaging.
+   - For web deployments, dynamic client-side vector rendering (SVG + KaTeX) and CDN fallback (e.g. `cdn.jsdelivr.net`) eliminate the need to bundle static binary weights.
+3. **Distribution Archive Policy**:
+   - Source archives and git repositories prioritize source scripts, interactive templates, and lightweight vector assets ($\le 250\text{ KB}$ each), reducing distribution size from $> 580\text{ MB}$ to $< 35\text{ MB}$.

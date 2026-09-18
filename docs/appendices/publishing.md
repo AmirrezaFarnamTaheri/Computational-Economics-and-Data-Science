@@ -1,5 +1,5 @@
 # Publishing with Quarto
 
-!!! note "Content coming soon"
-    This page will be auto-generated from the course notebooks.
-    See the corresponding `.ipynb` files in the repository for the full content.
+The publishing appendix shows how to turn computational research into a reproducible article, report, or course chapter while keeping the executable notebook as the source of truth.
+
+[Read the complete Quarto notebook](../notebooks/Appendix/T1_Publishing_with_Quarto.md){ .md-button }

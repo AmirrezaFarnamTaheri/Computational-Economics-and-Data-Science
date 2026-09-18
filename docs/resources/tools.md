@@ -10,7 +10,7 @@ Essential tools and software for computational economics and data science.
 
 **Download:** [python.org](https://www.python.org/)
 
-The foundation of the course. Use Python 3.10 or higher.
+The foundation of the course. Use Python 3.11 or higher.
 
 ### Conda/Miniconda
 

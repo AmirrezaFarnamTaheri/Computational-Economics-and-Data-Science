@@ -19,8 +19,8 @@ The curriculum is built on two core principles:
 
 1.  **Clone the repository:**
     ```bash
-    git clone <repository-url>
-    cd <repository-name>
+    git clone https://github.com/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science.git
+    cd Computational-Economics-and-Data-Science
     ```
 2.  **Set up the Conda environment:**
     The recommended way to set up the environment is using `conda` (or the faster `mamba`) and the provided `environment.yml` file. This ensures a reproducible environment with all necessary packages.
@@ -64,7 +64,7 @@ All images are either:
 2. Downloaded from CC-licensed sources (see `scripts/download_images.py`)
 3. Created specifically for this course
 
-See `images/*/LICENSE.txt` files for specific attributions.
+See [image metadata](images/metadata.json) and the [copyright notice](docs/COPYRIGHT_NOTICE.md) for the attribution information currently recorded. External images retain their source licenses; the metadata is not a complete rights audit.
 
 ## Course Structure
 
@@ -82,6 +82,8 @@ Supplementary notebooks for publishing and course infrastructure.
 - **`T1_Publishing_with_Quarto.ipynb`**: Producing publication-ready HTML/PDF reports from notebooks with Quarto.
 - **`T2_Replication_Exercise_Chetty_2014.ipynb`**: A full replication exercise using public mobility data.
 - **`T3_Autograding_with_Otter.ipynb`**: Building autograded assignments with Otter-Grader.
+- **`T4_Replication_Card_Krueger_1994.ipynb`**: Reproducing the canonical two-wave New Jersey–Pennsylvania minimum-wage Difference-in-Differences design from a bundled 820-row restaurant panel, with manual and regression estimators.
+- **`T5_Replication_Fama_French_Five_Factor.ipynb`**: Five-factor time-series regressions for bundled U.S. industry portfolios, with heteroskedasticity-robust inference and transparent sample-scope caveats.
 
 ### Part 1: Foundations (`01-Foundations/`)
 This section covers the bedrock skills needed for any computational work.
@@ -102,8 +104,9 @@ This section covers the workhorse algorithms of computational economics.
 This section introduces the core concepts of dynamic modeling and structural estimation.
 - **`01_Dynamic_Programming.ipynb`**: A deep dive into dynamic programming, Bellman equations, and the creation of a reusable solver for discrete DP problems.
 - **`02_DP_with_Continuous_States.ipynb`**: Advanced DP methods for continuous state spaces.
-- **`03_Estimation_and_Calibration.ipynb`**: The distinction between calibrating and estimating models.
-- **`04-07_*`**: Advanced topics including optimal stopping, robust control, and both classical and Bayesian structural estimation.
+- **`04_Estimation_and_Calibration.ipynb`**: The distinction between calibrating and estimating models.
+- **`03A_Discrete_Choice_DP_Rust.ipynb`** and **`03B_Continuous_State_DP_Interpolation.ipynb`**: Discrete-choice and interpolated continuous-state dynamic programming.
+- **`05-07_*`**: Optimal stopping, robust control, and structural estimation.
 
 ### Part 4: Macro Models (`04-Macro-Models/`)
 Application of computational methods to macroeconomic models.
@@ -115,7 +118,7 @@ Application of computational methods to macroeconomic models.
 - **`03D_RBC_News_Shocks_and_Expectations.ipynb`**: Anticipated shocks, expectations, and investment-led booms.
 - **`04_OLG_Models.ipynb`**: Overlapping Generations models.
 - **`05_New_Keynesian_Models.ipynb`**: Introduction to models with nominal rigidities, including a computational implementation.
-- **`06-11_*`**: Advanced topics including Search and Matching, and Heterogeneous Agent (TANK and HANK) models.
+- **`06-08_*`**: Heterogeneous-agent models, endogenous growth, and continuous-time macroeconomics with HJB equations.
 
 ### Part 5: Micro Models (`05-Micro-Models/`)
 Application of computational methods to microeconomic theory.
@@ -127,10 +130,10 @@ A comprehensive treatment of modern econometric methods.
 - **`02A_MLE_Principles_and_Geometry.ipynb`**: The intuition and geometry of maximum likelihood.
 - **`02B_MLE_Optimization_and_Applications.ipynb`**: Numerical MLE and applied estimation workflows.
 - **`03-06_*`**: The "credibility revolution": Causal inference using Instrumental Variables (IV), Regression Discontinuity (RDD), and Difference-in-Differences (DiD).
-- **`07_Classical_Time_Series_Analysis.ipynb`**: Introductory time series analysis.
+- **`09_Classical_Time_Series_Analysis.ipynb`**: Introductory time series analysis.
 - **`10_Vector_Autoregression.ipynb`**: A new, in-depth notebook on VAR models, including estimation, identification, and impulse response analysis.
-- **`09_Bayesian_Econometrics.ipynb`**: An introduction to Bayesian inference.
-- **`10_Panel_Data_Methods.ipynb`**: Fixed and random effects models.
+- **`11_Bayesian_Econometrics.ipynb`**: An introduction to Bayesian inference.
+- **`12_Panel_Data_Methods.ipynb`**: Fixed and random effects models.
 
 ### Part 7: Machine Learning (`07-Machine-Learning/`)
 This section provides a comprehensive tour of modern machine learning, from foundational concepts to the latest deep learning architectures.

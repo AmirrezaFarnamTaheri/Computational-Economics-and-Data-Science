@@ -1,5 +1,10 @@
-# Module 10: Specialized Models
+# 10 Specialized Models
 
-!!! note "Content coming soon"
-    This page will be auto-generated from the course notebooks.
-    See the corresponding `.ipynb` files in the repository for the full content.
+**4 notebooks** form this module.
+
+| Notebook | Focus | Reading view |
+|---|---|---|
+| `01_Agent_Based_Models.ipynb` | **What economic problem are we solving?** Standard economics assumes "representative agents"—identical, perfectly rational clones who solve complex optimization problems instantly. But the real world is messy. People are diverse (heterogeneous), they copy their neighbors (interaction), and they use rules of thumb (bounded rationality). We need a way to model **emergence**: how simple individual behaviors create compl | [Read](../../notebooks/10-Specialized-Models/01_Agent_Based_Models.md) |
+| `02_General_Equilibrium_with_Heterogeneous_Agents.ipynb` | **What economic problem are we solving?** Standard representative-agent models (like the RBC model) assume everyone is identical. This simplifies the math but ignores a fundamental reality: people face different risks and have different levels of wealth. We cannot study **inequality**, **poverty traps**, or **social insurance** in a world of clones. Why do people save? Not just to smooth consumption over time, but to | [Read](../../notebooks/10-Specialized-Models/02_General_Equilibrium_with_Heterogeneous_Agents.md) |
+| `03_Network_Economics.ipynb` | **What economic problem are we solving?** Traditional economics often assumes agents interact anonymously through a central market (e.g., "the price mechanism"). But in reality, **who you know matters**. Trade occurs over supply chains; banks lend to specific counterparties; ideas spread through social circles. When connections are not uniform, the **structure** of the network itself becomes a key driver of economic  | [Read](../../notebooks/10-Specialized-Models/03_Network_Economics.md) |
+| `04_Climate_Macro_Integrated_Assessment_DICE.ipynb` | # 04 Climate-Macro Integrated Assessment: A DICE-Inspired Laboratory [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AmirrezaFarnamTaheri/Computational-Economics-and-Data-Science/blob/main/10-Specialized-Models/04_Climate_Macro_Integrated_Assessment_DICE.ipynb) [![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Amirr | [Read](../../notebooks/10-Specialized-Models/04_Climate_Macro_Integrated_Assessment_DICE.md) |

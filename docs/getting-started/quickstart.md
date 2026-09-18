@@ -23,7 +23,7 @@ Open a terminal and navigate to the course directory:
 cd Computational-Economics-and-Data-Science
 
 # Activate environment
-conda activate computational-econ
+conda activate computational-economics
 
 # Start Jupyter Lab
 jupyter lab

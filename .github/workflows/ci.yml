@@ -36,20 +36,20 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.13'
 
       - name: Cache pip
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-test-${{ hashFiles('requirements.txt') }}
+          key: ${{ runner.os }}-pip-test-${{ hashFiles('requirements-test.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-test-
 
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install pytest nbformat numpy scipy
+          pip install -r requirements-test.txt
 
       - name: Run tests
         run: pytest tests/ -v --tb=short
@@ -67,7 +67,156 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install nbformat
+          pip install nbformat ipython
 
-      - name: Validate notebook JSON
-        run: python scripts/audit_notebooks.py
+      - name: Validate curriculum notebooks
+        run: python scripts/validate_notebooks.py
+
+      - name: Validate documentation links and labs
+        run: python scripts/audit_docs.py --strict
+
+      # audit_proofs triages theory-heavy notebooks and scores whether each
+      # derivation carries the structural ingredients of a proof. --strict makes
+      # a structurally incomplete derivation (score < 3) a failure rather than a
+      # silently-green report, and enumerates source notebooks only so the
+      # build/exec copies written below are not double-counted. Pure stdlib.
+      - name: Audit proof & derivation structure
+        run: python scripts/audit_proofs.py --strict
+
+      # The 129 committed pages under docs/notebooks are generated from the
+      # notebook sources by scripts/notebooks_to_docs.py; the docs-strict
+      # build below only builds whatever happens to be committed. Without
+      # this check a notebook fix can merge while its public reading page
+      # still shows the old code. Regenerating from a clean tree and asserting
+      # no diff makes drift a CI failure.
+      - name: Regenerate notebook documentation
+        run: python scripts/notebooks_to_docs.py --clean
+
+      - name: Committed docs match notebook sources
+        run: |
+          if ! git diff --exit-code --stat -- docs/notebooks; then
+            echo "::error::docs/notebooks is stale. Run 'python scripts/notebooks_to_docs.py --clean' and commit the result."
+            git diff --exit-code -- docs/notebooks
+            exit 1
+          fi
+
+  deterministic-execution:
+    # Pinned direct dependencies for the deterministic lecture subset.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install lockfile parser
+        run: python -m pip install PyYAML
+
+      - name: Extract pins from environment.lock.yml
+        run: |
+          python - <<'PY'
+          import pathlib, yaml
+          deps = yaml.safe_load(pathlib.Path("environment.lock.yml").read_text())["dependencies"]
+          pins = [p for d in deps if isinstance(d, dict) for p in d.get("pip", [])]
+          if not pins:
+              raise SystemExit("environment.lock.yml has no pip requirements")
+          pathlib.Path("requirements-ci.txt").write_text("\n".join(pins) + "\n")
+          PY
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-lock-${{ hashFiles('environment.lock.yml') }}
+
+      - name: Install pinned environment
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements-ci.txt
+
+      - name: Show resolved versions
+        run: |
+          python -c "import numpy, scipy, pandas, matplotlib, numba; print('numpy', numpy.__version__); print('scipy', scipy.__version__); print('pandas', pandas.__version__); print('matplotlib', matplotlib.__version__); print('numba', numba.__version__)"
+
+      - name: Strict structural audit (129 / 0)
+        run: python scripts/audit_curriculum_ast.py --strict --output-dir build/audit
+
+      - name: Run test suite (includes solution-function harness)
+        run: pytest tests/ -q --tb=short
+
+      - name: Lint and format gates
+        run: |
+          ruff check .
+          black --check .
+
+      - name: Top-to-bottom execution of deterministic lectures
+        # ci/deterministic_notebooks.txt is the canonical list of lectures
+        # whose top-to-bottom execution is in scope for CI. Each entry is a
+        # repo-relative path to a .ipynb file. The list is curated: lectures
+        # that require GPU, network, multiprocessing spawn, or proprietary
+        # data are intentionally excluded; see plan/ docs for the inclusion
+        # rule. WP-12 set up the lock + tier-0 entries; this job now covers
+        # the full dependency-light tier (74 lectures as of 2026-08-27).
+        run: |
+          mkdir -p build/exec
+          mapfile -t NOTEBOOKS < <(grep -v '^\s*#' ci/deterministic_notebooks.txt | grep -v '^\s*$')
+          if [ ${#NOTEBOOKS[@]} -eq 0 ]; then
+            echo "::error::ci/deterministic_notebooks.txt is empty"
+            exit 1
+          fi
+          echo "Executing ${#NOTEBOOKS[@]} deterministic lectures from ci/deterministic_notebooks.txt"
+          for nb in "${NOTEBOOKS[@]}"; do
+            if [ ! -f "$nb" ]; then
+              echo "::error::Listed notebook not found: $nb"
+              exit 1
+            fi
+          done
+          jupyter nbconvert --to notebook --execute \
+            --ExecutePreprocessor.timeout=600 \
+            --output-dir build/exec \
+            "${NOTEBOOKS[@]}"
+
+      - name: Upload executed notebooks
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: executed-notebooks
+          path: build/exec/
+
+  docs-strict:
+    # mkdocs --strict catches broken anchor links, missing nav targets,
+    # missing referenced images, and unreferenced / missing markdown files.
+    # The cheat-sheet (WP-8) and bibliography (WP-9) sections added new nav
+    # entries whose links have only been checked manually; this job makes
+    # any regression a CI failure.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history is required so mkdocs-git-revision-date-localized
+          # can resolve page dates; a shallow clone makes it warn, which
+          # fails `mkdocs build --strict`.
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-docs-${{ hashFiles('mkdocs.yml', 'docs/**') }}
+
+      - name: Install mkdocs + theme + plugins
+        run: |
+          pip install --upgrade pip
+          pip install mkdocs mkdocs-material
+          pip install mkdocs-git-revision-date-localized-plugin mkdocs-minify-plugin
+          pip install mkdocs-glightbox mkdocs-redirects
+
+      - name: Build docs in strict mode
+        run: mkdocs build --strict
