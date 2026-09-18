@@ -9,14 +9,36 @@ start_date, end_date = "2015-01-01", "2022-12-31"
 # --- Download Stock Prices ---
 try:
     print(f"Downloading price data for: {', '.join(tickers)}")
-    prices = yf.download(tickers, start=start_date, end=end_date)
+    # Keep the price definition explicit. yfinance has changed the default
+    # auto_adjust behavior across releases; this course expects the distinct
+    # "Adj Close" field so historical splits/dividends are incorporated once.
+    prices = yf.download(
+        tickers,
+        start=start_date,
+        end=end_date,
+        auto_adjust=False,
+        actions=False,
+        progress=False,
+    )
 
-    # Select 'Adj Close' and save
+    if prices.empty:
+        raise ValueError("yfinance returned no price observations.")
+
+    # Select adjusted close and verify that every requested ticker is present.
     if isinstance(prices.columns, pd.MultiIndex):
-        adj_close = prices["Adj Close"]
+        if "Adj Close" not in prices.columns.get_level_values(0):
+            raise ValueError("Expected an 'Adj Close' field from yfinance.")
+        adj_close = prices["Adj Close"].copy()
+        missing_tickers = sorted(set(tickers) - set(adj_close.columns))
+        if missing_tickers:
+            raise ValueError(f"Missing requested tickers: {missing_tickers}")
     else:
-        # If only one ticker is downloaded, the columns are not multi-level
-        adj_close = prices[["Adj Close"]]
+        if "Adj Close" not in prices.columns:
+            raise ValueError("Expected an 'Adj Close' field from yfinance.")
+        adj_close = prices[["Adj Close"]].copy()
+
+    if adj_close.dropna(how="all").empty:
+        raise ValueError("Adjusted-close data contains no usable observations.")
 
     adj_close.to_csv("data/portfolio_prices.csv")
     print("Price data saved to data/portfolio_prices.csv")
