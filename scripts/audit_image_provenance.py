@@ -45,7 +45,13 @@ def main() -> int:
                 blocking.append(f"generated asset missing license: {asset}")
         elif p.status == "verified-external":
             entry = entries.get(asset, {})
-            required = ("source_url", "creator", "license", "attribution", "retrieved_at")
+            required = (
+                "source_url",
+                "creator",
+                "license",
+                "attribution",
+                "retrieved_at",
+            )
             missing = [key for key in required if not str(entry.get(key, "")).strip()]
             if missing:
                 blocking.append(
