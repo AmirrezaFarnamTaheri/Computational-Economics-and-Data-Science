@@ -138,7 +138,7 @@ def check_interactive_lab(page: Page, output_dir: Path) -> dict[str, object]:
             el.dispatchEvent(new Event('input', { bubbles: true }));
         }"""
     )
-    assert alpha_output.input_value() == "0.60"
+    assert alpha_output.evaluate("(el) => el.value") == "0.60"
     after = page.locator("#surface-canvas").evaluate("(el) => el.toDataURL()")
     assert before != after, "surface canvas did not redraw after alpha changed"
 
