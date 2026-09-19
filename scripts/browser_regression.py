@@ -51,12 +51,35 @@ def assert_no_horizontal_overflow(page: Page) -> None:
     overflow = page.evaluate(
         "() => document.documentElement.scrollWidth - window.innerWidth"
     )
-    assert overflow <= 1, f"horizontal overflow is {overflow}px"
+    if overflow > 1:
+        offenders = page.evaluate(
+            """() => [...document.querySelectorAll('body *')]
+                .map((el) => {
+                    const rect = el.getBoundingClientRect();
+                    return {
+                        tag: el.tagName.toLowerCase(),
+                        id: el.id || '',
+                        classes: typeof el.className === 'string' ? el.className : '',
+                        left: Math.round(rect.left),
+                        right: Math.round(rect.right),
+                        width: Math.round(rect.width),
+                    };
+                })
+                .filter((item) => item.right > window.innerWidth + 1 || item.left < -1)
+                .sort((a, b) => (b.right - window.innerWidth) - (a.right - window.innerWidth))
+                .slice(0, 12)"""
+        )
+        raise AssertionError(
+            f"horizontal overflow is {overflow}px; top offenders: {offenders}"
+        )
 
 
 def check_optimization_layout(page: Page, output_dir: Path) -> dict[str, object]:
     """Check the historical figure/caption block at desktop and mobile sizes."""
-    page.goto("/notebooks/02-Numerical-Methods/05_Optimization/", wait_until="domcontentloaded")
+    page.goto(
+        "/notebooks/02-Numerical-Methods/05_Optimization/",
+        wait_until="domcontentloaded",
+    )
     page.locator("figure.course-figure.course-portrait").first.wait_for()
 
     figure = page.locator("figure.course-figure.course-portrait").first
@@ -72,9 +95,9 @@ def check_optimization_layout(page: Page, output_dir: Path) -> dict[str, object]
     if image.count():
         image_box = image.bounding_box()
         assert image_box is not None
-        assert caption_box["y"] + 0.5 >= image_box["y"] + image_box["height"], (
-            "caption overlaps or sits beside the historical image"
-        )
+        assert (
+            caption_box["y"] + 0.5 >= image_box["y"] + image_box["height"]
+        ), "caption overlaps or sits beside the historical image"
         image_state = "published"
     else:
         # Unverified historical assets are intentionally replaced by the
@@ -93,7 +116,9 @@ def check_optimization_layout(page: Page, output_dir: Path) -> dict[str, object]
     page.reload(wait_until="domcontentloaded")
     page.locator("figure.course-figure.course-portrait").first.wait_for()
     assert_no_horizontal_overflow(page)
-    mobile_box = page.locator("figure.course-figure.course-portrait").first.bounding_box()
+    mobile_box = page.locator(
+        "figure.course-figure.course-portrait"
+    ).first.bounding_box()
     assert mobile_box is not None
     assert mobile_box["width"] <= 358, "portrait overflows the mobile content column"
     page.screenshot(path=output_dir / "optimization-mobile.png", full_page=True)
@@ -132,12 +157,10 @@ def check_interactive_lab(page: Page, output_dir: Path) -> dict[str, object]:
     alpha = page.locator("#alpha-slider")
     alpha_output = page.locator("#alpha-value")
     before = page.locator("#surface-canvas").evaluate("(el) => el.toDataURL()")
-    alpha.evaluate(
-        """el => {
+    alpha.evaluate("""el => {
             el.value = '0.60';
             el.dispatchEvent(new Event('input', { bubbles: true }));
-        }"""
-    )
+        }""")
     assert alpha_output.evaluate("(el) => el.value") == "0.60"
     after = page.locator("#surface-canvas").evaluate("(el) => el.toDataURL()")
     assert before != after, "surface canvas did not redraw after alpha changed"
@@ -220,9 +243,7 @@ def main() -> int:
                 report["optimization"] = check_optimization_layout(
                     page, args.output_dir
                 )
-                report["interactive"] = check_interactive_lab(
-                    page, args.output_dir
-                )
+                report["interactive"] = check_interactive_lab(page, args.output_dir)
                 assert not page_errors, f"browser page errors: {page_errors}"
                 context.close()
 
@@ -237,9 +258,9 @@ def main() -> int:
                     "pageerror", lambda error: reduced_errors.append(str(error))
                 )
                 report["reduced_motion"] = check_reduced_motion(reduced_page)
-                assert not reduced_errors, (
-                    f"reduced-motion page errors: {reduced_errors}"
-                )
+                assert (
+                    not reduced_errors
+                ), f"reduced-motion page errors: {reduced_errors}"
                 reduced.close()
             finally:
                 browser.close()
