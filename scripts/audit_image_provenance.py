@@ -14,7 +14,6 @@ try:
     )
 except ImportError:
     from image_provenance import (
-        ROOT,
         iter_assets,
         metadata,
         provenance_for,
