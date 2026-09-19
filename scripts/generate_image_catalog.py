@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """Regenerate the image catalog from repository truth."""
 
-from pathlib import Path
-
 try:
     from scripts.image_provenance import ROOT, catalog_markdown
 except ImportError:
