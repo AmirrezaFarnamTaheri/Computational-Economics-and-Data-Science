@@ -48,10 +48,21 @@ The repository has several deliberately different execution surfaces:
 | **Deterministic core** | The notebooks listed in `ci/deterministic_notebooks.txt` execute top-to-bottom in CI from a pinned direct-dependency environment and use bundled/offline fixtures where required. | `environment.lock.yml` |
 | **Full curriculum** | Broad local environment for optional ML, geospatial, Bayesian, causal, and data-access lessons. Hardware- or provider-specific behavior can still vary. | `environment.yml` / `requirements.txt` |
 | **Optional-stack lessons** | Some notebooks require TensorFlow/PyTorch, geospatial libraries, GPU support, external datasets, or network services. They are expected to guard unavailable optional dependencies rather than silently claim empirical results. | See each notebook's setup cell and the environment matrix |
-| **Reading site** | Generated pages preserve notebook narrative, code, and portable saved outputs. Dynamic widgets and environment-specific execution still require a notebook kernel. | `mkdocs build --strict` |
+| **Reading site** | Generated pages preserve notebook narrative, code, and portable saved outputs. Dynamic widgets and environment-specific execution still require a notebook kernel. | `python scripts/notebooks_to_docs.py --clean && mkdocs build --strict` |
 | **Exercises** | Some cells are intentionally learner-completed; an exercise prompt is not a promise that every extension is pre-solved. | Notebook-specific |
 
 See [the environment and capability matrix](docs/ENVIRONMENT_MATRIX.md) for the supported Python versions, dependency scopes, CI lanes, and limitations.
+
+### Building the documentation locally
+
+Notebook reading pages are generated artifacts rather than a second source of truth. Rebuild them from the canonical notebooks before previewing or publishing the documentation:
+
+```bash
+python scripts/notebooks_to_docs.py --clean
+mkdocs serve
+```
+
+The generated `docs/notebooks/` tree is intentionally ignored by Git. CI and the deployment workflow regenerate it from the exact notebook revision they are validating, which prevents stale reading pages from drifting away from notebook content.
 
 ## Visualization System
 
