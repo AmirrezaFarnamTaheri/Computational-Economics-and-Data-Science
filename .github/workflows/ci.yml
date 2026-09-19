@@ -77,8 +77,13 @@ jobs:
       - name: Validate curriculum notebooks
         run: python scripts/validate_notebooks.py
 
-      - name: Generate notebook reading pages
-        run: python scripts/notebooks_to_docs.py --clean
+      - name: Generate documentation assets
+        run: |
+          python scripts/notebooks_to_docs.py --clean
+          python scripts/generate_image_catalog.py
+
+      - name: Validate image provenance
+        run: python scripts/audit_image_provenance.py --strict
 
       - name: Validate documentation links and labs
         run: python scripts/audit_docs.py --strict
@@ -209,8 +214,13 @@ jobs:
           pip install mkdocs-git-revision-date-localized-plugin mkdocs-minify-plugin
           pip install mkdocs-glightbox mkdocs-redirects
 
-      - name: Generate notebook reading pages
-        run: python scripts/notebooks_to_docs.py --clean
+      - name: Generate documentation assets
+        run: |
+          python scripts/notebooks_to_docs.py --clean
+          python scripts/generate_image_catalog.py
+
+      - name: Validate image provenance
+        run: python scripts/audit_image_provenance.py --strict
 
       - name: Build docs in strict mode
         run: mkdocs build --strict
