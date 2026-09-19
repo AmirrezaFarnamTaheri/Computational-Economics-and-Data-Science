@@ -245,11 +245,16 @@ def _bootstrap_name_errors(source: str) -> list[str]:
     Later notebook cells deliberately share state and are validated by the
     ordered execution lane. The first code cell, however, must bootstrap from a
     clean kernel and therefore cannot depend on aliases that it defines later.
+
+    Compound statements need sequential treatment inside their suites. In
+    particular, a try block may import a name, define a helper, and call the
+    helper later in the same suite. Treating the whole try as one AST node
+    incorrectly reports those legitimate loads as undefined.
     """
     tree = ast.parse(_parseable_source(source))
-    known = set(_BOOTSTRAP_BUILTINS)
     errors: list[str] = []
-    for statement in tree.body:
+
+    def report_immediate_loads(statement: ast.stmt, known: set[str]) -> None:
         visitor = _ImmediateLoadVisitor()
         visitor.visit(statement)
         for name in sorted(visitor.loads - known - _bound_names(statement)):
@@ -257,9 +262,51 @@ def _bootstrap_name_errors(source: str) -> list[str]:
                 f"line {getattr(statement, 'lineno', '?')}: "
                 f"{name!r} used before import/definition"
             )
-        known.update(_bound_names(statement))
-    return errors
 
+    def analyze_statements(
+        statements: list[ast.stmt], known: set[str]
+    ) -> set[str]:
+        local_known = set(known)
+        for statement in statements:
+            if isinstance(statement, ast.Try):
+                try_known = analyze_statements(statement.body, local_known)
+
+                branch_known_sets: list[set[str]] = [try_known]
+                for handler in statement.handlers:
+                    handler_known = set(local_known)
+                    if handler.type is not None:
+                        report_immediate_loads(
+                            ast.Expr(value=handler.type), handler_known
+                        )
+                    if handler.name:
+                        handler_known.add(handler.name)
+                    handler_known = analyze_statements(
+                        handler.body, handler_known
+                    )
+                    branch_known_sets.append(handler_known)
+
+                if statement.orelse:
+                    try_known = analyze_statements(
+                        statement.orelse, try_known
+                    )
+                    branch_known_sets[0] = try_known
+
+                merged_known = set(local_known)
+                for branch_known in branch_known_sets:
+                    merged_known.update(branch_known)
+                if statement.finalbody:
+                    merged_known = analyze_statements(
+                        statement.finalbody, merged_known
+                    )
+                local_known.update(merged_known - local_known)
+                continue
+
+            report_immediate_loads(statement, local_known)
+            local_known.update(_bound_names(statement))
+        return local_known
+
+    analyze_statements(tree.body, set(_BOOTSTRAP_BUILTINS))
+    return errors
 
 def _resolve_image(notebook: Path, target: str, root: Path) -> Path | None:
     target = target.strip().split("#", 1)[0].split("?", 1)[0]
