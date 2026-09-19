@@ -32,7 +32,7 @@ PERMALINK_FALLBACK = os.environ.get(
 RAW = f"{RAW_BASE}/{PERMALINK_FALLBACK}"
 IMAGE_RE = re.compile(r"(!\[[^\]]*\]\()([^)]+)(\))")
 HTML_IMAGE_RE = re.compile(
-    r'''(<img\b[^>]*\bsrc=["'])([^"']+)(["'][^>]*>)''',
+    r"""(<img\b[^>]*\bsrc=["'])([^"']+)(["'][^>]*>)""",
     re.IGNORECASE,
 )
 LINK_RE = re.compile(r"(\[[^\]]+\]\()([^)]+\.ipynb(?:#[^)]*)?)(\))")
