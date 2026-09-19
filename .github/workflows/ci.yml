@@ -96,6 +96,42 @@ jobs:
       - name: Audit proof & derivation structure
         run: python scripts/audit_proofs.py --strict
 
+  notebook-bootstrap-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-bootstrap-${{ hashFiles('requirements-bootstrap.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-bootstrap-
+
+      - name: Install bootstrap dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements-bootstrap.txt
+
+      - name: Validate capability manifest
+        run: python scripts/audit_notebook_capabilities.py
+
+      - name: Execute every notebook bootstrap
+        run: python scripts/smoke_notebook_bootstraps.py --timeout 45
+
+      - name: Upload bootstrap report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: notebook-bootstrap-smoke
+          path: build/bootstrap-smoke.json
+
   deterministic-execution:
     # Pinned direct dependencies for the deterministic lecture subset.
     runs-on: ubuntu-latest
