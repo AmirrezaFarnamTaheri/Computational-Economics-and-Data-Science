@@ -72,6 +72,8 @@ def smoke(path: Path, timeout: int) -> tuple[bool, str]:
 
     harness = (
         "import os\n"
+        "import sys\n"
+        "sys.path.insert(0, os.getcwd())\n"
         "os.environ.setdefault('MPLBACKEND', 'Agg')\n"
         "os.environ.setdefault('COURSE_RUN_MODE', 'quick')\n" + code
     )
