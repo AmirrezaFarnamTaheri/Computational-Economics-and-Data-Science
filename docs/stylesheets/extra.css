@@ -89,7 +89,7 @@
 /* Notebook figures and provenance notices must stay inside narrow viewports. */
 .md-typeset .course-figure {
   box-sizing: border-box;
-  max-width: 100% !important;
+  max-width: 100%;
 }
 
 .md-typeset .course-figure img {
