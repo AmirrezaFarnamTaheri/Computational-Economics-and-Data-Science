@@ -7,7 +7,6 @@ import argparse
 
 try:
     from scripts.image_provenance import (
-        ROOT,
         iter_assets,
         metadata,
         provenance_for,
