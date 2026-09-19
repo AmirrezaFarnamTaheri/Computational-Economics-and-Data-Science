@@ -6,9 +6,21 @@ from __future__ import annotations
 import argparse
 
 try:
-    from scripts.image_provenance import ROOT, iter_assets, metadata, provenance_for, source_references
+    from scripts.image_provenance import (
+        ROOT,
+        iter_assets,
+        metadata,
+        provenance_for,
+        source_references,
+    )
 except ImportError:
-    from image_provenance import ROOT, iter_assets, metadata, provenance_for, source_references
+    from image_provenance import (
+        ROOT,
+        iter_assets,
+        metadata,
+        provenance_for,
+        source_references,
+    )
 
 
 def main() -> int:
