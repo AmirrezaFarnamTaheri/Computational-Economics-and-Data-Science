@@ -73,8 +73,7 @@ def smoke(path: Path, timeout: int) -> tuple[bool, str]:
     harness = (
         "import os\n"
         "os.environ.setdefault('MPLBACKEND', 'Agg')\n"
-        "os.environ.setdefault('COURSE_RUN_MODE', 'quick')\n"
-        + code
+        "os.environ.setdefault('COURSE_RUN_MODE', 'quick')\n" + code
     )
     env = os.environ.copy()
     env.setdefault("MPLBACKEND", "Agg")
@@ -110,7 +109,9 @@ def smoke(path: Path, timeout: int) -> tuple[bool, str]:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--timeout", type=int, default=45)
-    parser.add_argument("--report", type=Path, default=ROOT / "build" / "bootstrap-smoke.json")
+    parser.add_argument(
+        "--report", type=Path, default=ROOT / "build" / "bootstrap-smoke.json"
+    )
     args = parser.parse_args()
 
     results: list[dict] = []
@@ -118,7 +119,9 @@ def main() -> int:
     for path in iter_notebooks():
         ok, detail = smoke(path, args.timeout)
         rel = path.relative_to(ROOT).as_posix()
-        results.append({"notebook": rel, "status": "pass" if ok else "fail", "detail": detail})
+        results.append(
+            {"notebook": rel, "status": "pass" if ok else "fail", "detail": detail}
+        )
         print(f"{'PASS' if ok else 'FAIL'} {rel}")
         if not ok:
             failed += 1
