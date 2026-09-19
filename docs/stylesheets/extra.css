@@ -109,3 +109,18 @@
   overflow-wrap: anywhere;
   word-break: break-word;
 }
+
+
+/* Notebook code blocks must scroll locally instead of widening the page. */
+.md-typeset .highlight,
+.md-typeset pre {
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.md-typeset pre > code {
+  box-sizing: border-box;
+  display: block;
+  max-width: 100%;
+}
