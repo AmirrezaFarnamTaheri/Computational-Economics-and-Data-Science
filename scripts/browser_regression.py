@@ -52,8 +52,7 @@ def assert_no_horizontal_overflow(page: Page) -> None:
         "() => document.documentElement.scrollWidth - window.innerWidth"
     )
     if overflow > 1:
-        offenders = page.evaluate(
-            """() => [...document.querySelectorAll('body *')]
+        offenders = page.evaluate("""() => [...document.querySelectorAll('body *')]
                 .map((el) => {
                     const rect = el.getBoundingClientRect();
                     return {
@@ -67,8 +66,7 @@ def assert_no_horizontal_overflow(page: Page) -> None:
                 })
                 .filter((item) => item.right > window.innerWidth + 1 || item.left < -1)
                 .sort((a, b) => (b.right - window.innerWidth) - (a.right - window.innerWidth))
-                .slice(0, 12)"""
-        )
+                .slice(0, 12)""")
         raise AssertionError(
             f"horizontal overflow is {overflow}px; top offenders: {offenders}"
         )
