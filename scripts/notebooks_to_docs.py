@@ -55,8 +55,6 @@ TRACKS = [
 ]
 
 
-
-
 @functools.lru_cache(maxsize=None)
 def path_revision(path_text: str) -> str:
     """Return the immutable commit that most recently changed a repository path."""
@@ -100,6 +98,7 @@ def notebook_docs_target(notebook: Path, target: Path, anchor: str | None = None
     if anchor:
         relative += f"#{_mkdocs_slug(anchor)}"
     return relative
+
 
 def source(cell: dict) -> str:
     value = cell.get("source", "")
@@ -210,7 +209,6 @@ def convert_headings_and_anchors(text: str) -> str:
     return re.sub(r"(\[[^\]]*\]\()(#[^)\s]+)(\))", anchor, body)
 
 
-
 ANSI_ESCAPE_RE = re.compile(r"\x1b\[[0-?]*[ -/]*[@-~]")
 
 
@@ -297,6 +295,7 @@ def render_cell_outputs(cell: dict) -> list[str]:
     for index, output in enumerate(cell.get("outputs") or []):
         rendered.extend(render_saved_output(output, cell_id, index))
     return rendered
+
 
 def convert(notebook: Path) -> str:
     nb = json.loads(notebook.read_text(encoding="utf-8"))
