@@ -1,0 +1,166 @@
+{
+  "schema_version": 1,
+  "policy_document": "docs/resources/mathematical-validation.md",
+  "claims": [
+    {
+      "id": "dp-transition-kernel",
+      "source": "03-Economic-Modeling/dp_solver.py",
+      "claim": "Transition kernels are stochastic matrices and VFI nonconvergence is explicit.",
+      "structure_complete": true,
+      "mathematical_review": {
+        "status": "not-claimed",
+        "reviewer": null,
+        "evidence": null
+      },
+      "numerical_validation": {
+        "status": "validated",
+        "evidence": "tests/test_dp_solver.py",
+        "selector": "test_rejects_invalid_transition_probabilities; test_vfi_nonconvergence_is_explicit"
+      },
+      "release_labels": [
+        "numerically-validated"
+      ]
+    },
+    {
+      "id": "crr-probability-and-expiry-greeks",
+      "source": "09-Finance/03_Option_Pricing.ipynb",
+      "source_cell": "f5cfecfd",
+      "claim": "The CRR tree rejects inadmissible risk-neutral probabilities and expiry delta follows the payoff slope convention.",
+      "structure_complete": true,
+      "mathematical_review": {
+        "status": "not-claimed",
+        "reviewer": null,
+        "evidence": null
+      },
+      "numerical_validation": {
+        "status": "validated",
+        "evidence": "tests/test_review_finance_appendix.py",
+        "selector": "test_binomial_rejects_invalid_probability; test_expiry_delta_matches_payoff_slope"
+      },
+      "release_labels": [
+        "numerically-validated"
+      ]
+    },
+    {
+      "id": "diversified-cge-domain",
+      "source": "05-Micro-Models/02_General_Equilibrium.ipynb",
+      "source_cell": "cge_class",
+      "claim": "Unsupported specialization and singular factor-allocation systems cannot masquerade as market clearing.",
+      "structure_complete": true,
+      "mathematical_review": {
+        "status": "not-claimed",
+        "reviewer": null,
+        "evidence": null
+      },
+      "numerical_validation": {
+        "status": "validated",
+        "evidence": "tests/test_audit_remediation_regressions.py",
+        "selector": "test_cge_rejects_unsupported_diversification_region"
+      },
+      "release_labels": [
+        "numerically-validated"
+      ]
+    },
+    {
+      "id": "aiyagari-price-income-closure",
+      "source": "10-Specialized-Models/02_General_Equilibrium_with_Heterogeneous_Agents.ipynb",
+      "source_cell": "8d10c53c",
+      "claim": "Household labor income uses the equilibrium wage times productivity and accepted equilibria report a capital-market residual.",
+      "structure_complete": true,
+      "mathematical_review": {
+        "status": "not-claimed",
+        "reviewer": null,
+        "evidence": null
+      },
+      "numerical_validation": {
+        "status": "validated",
+        "evidence": "tests/test_audit_remediation_regressions.py",
+        "selector": "test_aiyagari_contract_uses_productivity_wage_and_residual"
+      },
+      "release_labels": [
+        "numerically-validated"
+      ]
+    },
+    {
+      "id": "portfolio-frequency-contract",
+      "source": "09-Finance/01_Portfolio_Theory.ipynb",
+      "source_cell": "data_load",
+      "claim": "Annualization matches the observation frequency and Black-Litterman risk aversion is computed from a price index rather than returns.",
+      "structure_complete": true,
+      "mathematical_review": {
+        "status": "not-claimed",
+        "reviewer": null,
+        "evidence": null
+      },
+      "numerical_validation": {
+        "status": "validated",
+        "evidence": "tests/test_audit_remediation_regressions.py",
+        "selector": "test_portfolio_frequency_and_black_litterman_inputs"
+      },
+      "release_labels": [
+        "numerically-validated"
+      ]
+    },
+    {
+      "id": "spectral-theorem-completeness",
+      "source": "Appendix/A4-Linear-Algebra.ipynb",
+      "source_cell": "7969b436",
+      "claim": "The real symmetric spectral-theorem proof includes the completeness step via an invariant orthogonal complement.",
+      "structure_complete": true,
+      "mathematical_review": {
+        "status": "independent-signoff-required",
+        "reviewer": null,
+        "evidence": null
+      },
+      "numerical_validation": {
+        "status": "not-applicable",
+        "evidence": null,
+        "selector": null
+      },
+      "release_labels": [
+        "structure-complete"
+      ]
+    },
+    {
+      "id": "bayes-screening-exercise",
+      "source": "Appendix/A3-Probability-Theory.ipynb",
+      "source_cell": "01bb2635",
+      "claim": "The screening exercise supplies sensitivity, specificity and prevalence, so its posterior is identified.",
+      "structure_complete": true,
+      "mathematical_review": {
+        "status": "independent-signoff-required",
+        "reviewer": null,
+        "evidence": null
+      },
+      "numerical_validation": {
+        "status": "validated",
+        "evidence": "tests/test_audit_remediation_regressions.py",
+        "selector": "test_bayes_screening_exercise_is_fully_identified"
+      },
+      "release_labels": [
+        "structure-complete",
+        "numerically-validated"
+      ]
+    },
+    {
+      "id": "geospatial-gdp-units",
+      "source": "07-Machine-Learning/20_Geospatial_Data.ipynb",
+      "source_cell": "be7dfa1d",
+      "claim": "GDP reported in millions of dollars is converted to dollars before per-capita division.",
+      "structure_complete": true,
+      "mathematical_review": {
+        "status": "not-claimed",
+        "reviewer": null,
+        "evidence": null
+      },
+      "numerical_validation": {
+        "status": "validated",
+        "evidence": "tests/test_audit_remediation_regressions.py",
+        "selector": "test_geospatial_gdp_per_capita_converts_millions"
+      },
+      "release_labels": [
+        "numerically-validated"
+      ]
+    }
+  ]
+}
