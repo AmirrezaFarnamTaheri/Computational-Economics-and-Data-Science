@@ -12,6 +12,11 @@ import subprocess
 import unicodedata
 from pathlib import Path
 
+try:
+    from scripts.image_provenance import provenance_for
+except ImportError:
+    from image_provenance import provenance_for
+
 ROOT = Path(__file__).resolve().parents[1]
 DOCS_ROOT = ROOT / "docs" / "notebooks"
 REPO = (
@@ -26,6 +31,10 @@ PERMALINK_FALLBACK = os.environ.get(
 )
 RAW = f"{RAW_BASE}/{PERMALINK_FALLBACK}"
 IMAGE_RE = re.compile(r"(!\[[^\]]*\]\()([^)]+)(\))")
+HTML_IMAGE_RE = re.compile(
+    r"(<img\\b[^>]*\\bsrc=[\\\"'])([^\\\"']+)([\\\"'][^>]*>)",
+    re.IGNORECASE,
+)
 LINK_RE = re.compile(r"(\[[^\]]+\]\()([^)]+\.ipynb(?:#[^)]*)?)(\))")
 # Any other relative link to a file in the repository: README, LICENSE, data
 # files, PDFs. Copied unchanged these resolve to a nonexistent path under
@@ -109,7 +118,9 @@ def source(cell: dict) -> str:
     return "".join(value) if isinstance(value, list) else str(value)
 
 
-def rewrite_links(text: str, notebook: Path) -> str:
+def rewrite_links(
+    text: str, notebook: Path, *, enforce_provenance: bool = False
+) -> str:
     def repository_file_url(target: str) -> str | None:
         file_part, _sep, _frag = target.strip().partition("#")
         if not file_part:
@@ -125,6 +136,16 @@ def rewrite_links(text: str, notebook: Path) -> str:
             return None
         return raw_url(ROOT / rel)
 
+    def provenance_block(resolved: Path) -> str:
+        rel = resolved.relative_to(ROOT.resolve()).as_posix()
+        return (
+            '<div class="figure-provenance-blocked" role="note">'
+            "<strong>Figure omitted from the published reading site.</strong> "
+            f"Provenance for <code>{rel}</code> is not yet verified. "
+            "The local source notebook retains the asset for provenance review."
+            "</div>"
+        )
+
     def image(match: re.Match[str]) -> str:
         target = match.group(2).strip()
         if re.match(r"^(?:https?:|data:|attachment:)", target, re.I):
@@ -134,6 +155,21 @@ def rewrite_links(text: str, notebook: Path) -> str:
             rel = resolved.relative_to(ROOT.resolve()).as_posix()
         except ValueError:
             return match.group(0)
+        if enforce_provenance and not provenance_for(resolved).publishable:
+            return provenance_block(resolved)
+        return f"{match.group(1)}{raw_url(ROOT / rel)}{match.group(3)}"
+
+    def html_image(match: re.Match[str]) -> str:
+        target = match.group(2).strip()
+        if re.match(r"^(?:https?:|data:|attachment:)", target, re.I):
+            return match.group(0)
+        resolved = (notebook.parent / target.split("#", 1)[0]).resolve()
+        try:
+            rel = resolved.relative_to(ROOT.resolve()).as_posix()
+        except ValueError:
+            return match.group(0)
+        if enforce_provenance and not provenance_for(resolved).publishable:
+            return provenance_block(resolved)
         return f"{match.group(1)}{raw_url(ROOT / rel)}{match.group(3)}"
 
     def notebook_link(match: re.Match[str]) -> str:
@@ -167,7 +203,9 @@ def rewrite_links(text: str, notebook: Path) -> str:
         prefix = match.group(0).rsplit("](", 1)[0]
         return f"{prefix}]({url})"
 
-    text = LINK_RE.sub(notebook_link, IMAGE_RE.sub(image, text))
+    text = IMAGE_RE.sub(image, text)
+    text = HTML_IMAGE_RE.sub(html_image, text)
+    text = LINK_RE.sub(notebook_link, text)
     text = BADGE_FILE_RE.sub(badge_file_link, text)
     return PLAIN_FILE_RE.sub(plain_file_link, text)
 
@@ -321,7 +359,14 @@ def convert(notebook: Path) -> str:
         if not text:
             continue
         if cell.get("cell_type") == "markdown":
-            lines += [rewrite_links(convert_headings_and_anchors(text), notebook), ""]
+            lines += [
+                rewrite_links(
+                    convert_headings_and_anchors(text),
+                    notebook,
+                    enforce_provenance=True,
+                ),
+                "",
+            ]
         elif cell.get("cell_type") == "code":
             lines += ["```python", text, "```", ""]
             lines += render_cell_outputs(cell)
