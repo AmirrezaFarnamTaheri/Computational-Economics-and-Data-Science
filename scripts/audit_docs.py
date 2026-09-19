@@ -158,7 +158,7 @@ def main() -> int:
         'id="globe-canvas"',
         'id="market-canvas"',
         'id="market-reset"',
-        'prefers-reduced-motion',
+        "prefers-reduced-motion",
         'aria-labelledby="surface-title"',
         'aria-labelledby="globe-title"',
         'aria-labelledby="market-title"',
