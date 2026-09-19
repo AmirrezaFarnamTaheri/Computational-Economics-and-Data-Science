@@ -78,7 +78,9 @@ def validate_claim(claim: dict) -> list[str]:
     numerical = claim.get("numerical_validation") or {}
     numerical_status = numerical.get("status")
     if numerical_status not in NUMERICAL_STATUSES:
-        errors.append(prefix + f"invalid numerical_validation status: {numerical_status}")
+        errors.append(
+            prefix + f"invalid numerical_validation status: {numerical_status}"
+        )
     if numerical_status == "validated":
         evidence = numerical.get("evidence")
         selector = numerical.get("selector")
