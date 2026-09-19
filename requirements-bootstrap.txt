@@ -1,0 +1,26 @@
+# Clean-kernel bootstrap smoke environment.
+# Heavy optional frameworks (TensorFlow, PyTorch, geospatial stacks, GPU stacks)
+# must be guarded in notebook setup cells and are intentionally absent here.
+-r requirements-test.txt
+ipython>=9
+seaborn>=0.13
+statsmodels>=0.14
+scikit-learn>=1.9
+linearmodels>=6
+ipywidgets>=8
+requests>=2.32
+beautifulsoup4>=4.12
+sympy>=1.13
+arviz>=0.22
+numba>=0.61
+arch>=7
+pandas-datareader>=0.10
+networkx>=3.4
+xgboost>=3
+altair>=5
+attrs>=24
+dask[dataframe,distributed]>=2025
+fredapi>=0.5
+plotnine>=0.14
+vega-datasets>=0.9
+wbdata>=1

@@ -25,7 +25,6 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_functions = ["test_*"]
 addopts = "-v --tb=short"
-filterwarnings = [
-    "ignore::DeprecationWarning",
-    "ignore::PendingDeprecationWarning",
-]
+# Do not globally hide deprecations: course code should surface ecosystem drift.
+# Narrow third-party warning filters belong next to the specific test that
+# requires them, with an explanatory comment and expiry condition.

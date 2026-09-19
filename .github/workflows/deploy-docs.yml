@@ -37,6 +37,14 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements-docs.txt
 
+      - name: Generate documentation assets
+        run: |
+          python scripts/notebooks_to_docs.py --clean
+          python scripts/generate_image_catalog.py
+
+      - name: Validate image provenance
+        run: python scripts/audit_image_provenance.py --strict
+
       - name: Build documentation
         run: mkdocs build
 

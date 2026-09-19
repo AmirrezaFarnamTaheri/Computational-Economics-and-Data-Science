@@ -84,3 +84,43 @@
   height: 100%;
   border: 0;
 }
+
+
+/* Notebook figures and provenance notices must stay inside narrow viewports. */
+.md-typeset .course-figure {
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+.md-typeset .course-figure img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.md-typeset .figure-provenance-blocked {
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.md-typeset .figure-provenance-path {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+
+/* Notebook code blocks must scroll locally instead of widening the page. */
+.md-typeset .highlight,
+.md-typeset pre {
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.md-typeset pre > code {
+  box-sizing: border-box;
+  display: block;
+  max-width: 100%;
+}

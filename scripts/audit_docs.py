@@ -150,7 +150,19 @@ def main() -> int:
     interactive = (DOCS / "resources" / "interactive" / "index.html").read_text(
         encoding="utf-8"
     )
-    for token in ("three.min.js", "cobe", "mermaid", "matter-js", "market-reset"):
+    # The interactive lab is intentionally dependency-free. Validate the
+    # user-facing modules and accessibility/resilience hooks rather than stale
+    # third-party library names that the lab no longer uses.
+    for token in (
+        'id="surface-canvas"',
+        'id="globe-canvas"',
+        'id="market-canvas"',
+        'id="market-reset"',
+        "prefers-reduced-motion",
+        'aria-labelledby="surface-title"',
+        'aria-labelledby="globe-title"',
+        'aria-labelledby="market-title"',
+    ):
         if token not in interactive:
             findings.append(f"interactive lab missing required component: {token}")
 

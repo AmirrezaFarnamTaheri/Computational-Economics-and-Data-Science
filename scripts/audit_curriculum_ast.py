@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+import builtins
 import json
 import re
 from collections import Counter
@@ -71,6 +72,7 @@ class NotebookResult:
     missing_cell_ids: list[int]
     duplicate_cell_ids: list[str]
     syntax_errors: list[str]
+    bootstrap_name_errors: list[str]
     placeholders: list[str]
     blanket_warning_suppression: list[int]
     broken_images: list[str]
@@ -88,6 +90,7 @@ class NotebookResult:
                 self.missing_cell_ids,
                 self.duplicate_cell_ids,
                 self.syntax_errors,
+                self.bootstrap_name_errors,
                 self.placeholders,
                 self.blanket_warning_suppression,
                 self.broken_images,
@@ -157,6 +160,147 @@ def _parseable_source(source: str) -> str:
     return _transform_python(source)
 
 
+_BOOTSTRAP_BUILTINS = frozenset(dir(builtins)) | {"get_ipython", "__name__"}
+
+
+def _bound_names(node: ast.AST) -> set[str]:
+    """Return names bound by one top-level statement after it executes."""
+    names: set[str] = set()
+    if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+        names.add(node.name)
+    elif isinstance(node, (ast.Import, ast.ImportFrom)):
+        for alias in node.names:
+            if alias.asname:
+                names.add(alias.asname)
+            elif isinstance(node, ast.Import):
+                names.add(alias.name.split(".", 1)[0])
+            else:
+                names.add(alias.name)
+    else:
+        for child in ast.walk(node):
+            if isinstance(child, ast.Name) and isinstance(
+                child.ctx, (ast.Store, ast.Del)
+            ):
+                names.add(child.id)
+            elif isinstance(
+                child, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)
+            ):
+                names.add(child.name)
+            elif isinstance(child, (ast.Import, ast.ImportFrom)):
+                for alias in child.names:
+                    if alias.asname:
+                        names.add(alias.asname)
+                    elif isinstance(child, ast.Import):
+                        names.add(alias.name.split(".", 1)[0])
+                    else:
+                        names.add(alias.name)
+            elif isinstance(child, ast.ExceptHandler) and child.name:
+                names.add(child.name)
+    return names
+
+
+class _ImmediateLoadVisitor(ast.NodeVisitor):
+    """Collect names evaluated immediately by a top-level statement.
+
+    Function/class bodies and lambdas execute later, so their interior names are
+    excluded from the bootstrap ordering check. Decorators, defaults, bases and
+    assignment expressions are still visited because they execute immediately.
+    """
+
+    def __init__(self) -> None:
+        self.loads: set[str] = set()
+
+    def visit_Name(self, node: ast.Name) -> None:
+        if isinstance(node.ctx, ast.Load):
+            self.loads.add(node.id)
+
+    def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
+        for decorator in node.decorator_list:
+            self.visit(decorator)
+        for default in (*node.args.defaults, *node.args.kw_defaults):
+            if default is not None:
+                self.visit(default)
+        if node.returns is not None:
+            self.visit(node.returns)
+
+    visit_AsyncFunctionDef = visit_FunctionDef
+
+    def visit_ClassDef(self, node: ast.ClassDef) -> None:
+        for decorator in node.decorator_list:
+            self.visit(decorator)
+        for base in node.bases:
+            self.visit(base)
+        for keyword in node.keywords:
+            self.visit(keyword.value)
+
+    def visit_Lambda(self, node: ast.Lambda) -> None:
+        for default in (*node.args.defaults, *node.args.kw_defaults):
+            if default is not None:
+                self.visit(default)
+
+
+def _bootstrap_name_errors(source: str) -> list[str]:
+    """Catch use-before-import/definition in the first executable code cell.
+
+    Later notebook cells deliberately share state and are validated by the
+    ordered execution lane. The first code cell, however, must bootstrap from a
+    clean kernel and therefore cannot depend on aliases that it defines later.
+
+    Compound statements need sequential treatment inside their suites. In
+    particular, a try block may import a name, define a helper, and call the
+    helper later in the same suite. Treating the whole try as one AST node
+    incorrectly reports those legitimate loads as undefined.
+    """
+    tree = ast.parse(_parseable_source(source))
+    errors: list[str] = []
+
+    def report_immediate_loads(statement: ast.stmt, known: set[str]) -> None:
+        visitor = _ImmediateLoadVisitor()
+        visitor.visit(statement)
+        for name in sorted(visitor.loads - known - _bound_names(statement)):
+            errors.append(
+                f"line {getattr(statement, 'lineno', '?')}: "
+                f"{name!r} used before import/definition"
+            )
+
+    def analyze_statements(statements: list[ast.stmt], known: set[str]) -> set[str]:
+        local_known = set(known)
+        for statement in statements:
+            if isinstance(statement, ast.Try):
+                try_known = analyze_statements(statement.body, local_known)
+
+                branch_known_sets: list[set[str]] = [try_known]
+                for handler in statement.handlers:
+                    handler_known = set(local_known)
+                    if handler.type is not None:
+                        report_immediate_loads(
+                            ast.Expr(value=handler.type), handler_known
+                        )
+                    if handler.name:
+                        handler_known.add(handler.name)
+                    handler_known = analyze_statements(handler.body, handler_known)
+                    branch_known_sets.append(handler_known)
+
+                if statement.orelse:
+                    try_known = analyze_statements(statement.orelse, try_known)
+                    branch_known_sets[0] = try_known
+
+                merged_known = set(local_known)
+                for branch_known in branch_known_sets:
+                    merged_known.update(branch_known)
+                if statement.finalbody:
+                    merged_known = analyze_statements(statement.finalbody, merged_known)
+                local_known.update(merged_known - local_known)
+                continue
+
+            report_immediate_loads(statement, local_known)
+            local_known.update(_bound_names(statement))
+        return local_known
+
+    analyze_statements(tree.body, set(_BOOTSTRAP_BUILTINS))
+    return errors
+
+
 def _resolve_image(notebook: Path, target: str, root: Path) -> Path | None:
     target = target.strip().split("#", 1)[0].split("?", 1)[0]
     if not target or re.match(r"^(?:https?:|data:|attachment:)", target, re.I):
@@ -207,6 +351,7 @@ def audit_notebook(path: Path, root: Path) -> NotebookResult:
     duplicate_ids = sorted(cell_id for cell_id, count in counts.items() if count > 1)
 
     syntax_errors: list[str] = []
+    bootstrap_name_errors: list[str] = []
     placeholders: list[str] = []
     blanket_warnings: list[int] = []
     for index, source in code_cells:
@@ -220,6 +365,17 @@ def audit_notebook(path: Path, root: Path) -> NotebookResult:
             ast.parse(_parseable_source(source), filename=f"{path}::cell-{index}")
         except SyntaxError as exc:
             syntax_errors.append(f"cell {index}: line {exc.lineno}: {exc.msg}")
+
+    if code_cells:
+        first_index, first_source = code_cells[0]
+        try:
+            bootstrap_name_errors = [
+                f"cell {first_index}: {item}"
+                for item in _bootstrap_name_errors(first_source)
+            ]
+        except SyntaxError:
+            # The syntax gate above already reports this source.
+            bootstrap_name_errors = []
 
     broken_images: list[str] = []
     for match in IMAGE_RE.finditer(markdown):
@@ -250,6 +406,7 @@ def audit_notebook(path: Path, root: Path) -> NotebookResult:
         missing_cell_ids=missing_ids,
         duplicate_cell_ids=duplicate_ids,
         syntax_errors=syntax_errors,
+        bootstrap_name_errors=bootstrap_name_errors,
         placeholders=placeholders,
         blanket_warning_suppression=blanket_warnings,
         broken_images=sorted(set(broken_images)),
@@ -286,7 +443,7 @@ def markdown_report(results: list[NotebookResult]) -> str:
         f"- Notebooks audited: **{len(results)}**",
         f"- Cells inspected: **{total_cells}** ({total_code} code)",
         f"- Notebooks with blocking findings: **{len(failures)}**",
-        "- Audit scope: structural requirements, three-tier exercises, cell identities, Python/IPython syntax, strong placeholder markers, blanket warning suppression, and local Markdown/code image integrity.",
+        "- Audit scope: structural requirements, three-tier exercises, cell identities, Python/IPython syntax, clean-kernel bootstrap name ordering, strong placeholder markers, blanket warning suppression, and local Markdown/code image integrity.",
         "- Runtime semantics are verified separately; a clean static audit is not evidence that optional network/GPU paths execute in every environment.",
         "",
     ]
@@ -365,6 +522,21 @@ def main() -> int:
     print(
         f"Audited {len(results)} notebooks; blocking findings in {summary['blocking_notebooks']}."
     )
+    for result in results:
+        if not result.errors:
+            continue
+        print(f"BLOCKING: {result.path}")
+        for key, value in asdict(result).items():
+            if key in {
+                "path",
+                "cells",
+                "code_cells",
+                "markdown_cells",
+                "empty_cells",
+            }:
+                continue
+            if value:
+                print(f"  {key}: {value}")
     print(
         f"Reports: {output / 'NOTEBOOK_AUDIT.md'} and {output / 'notebook_audit.json'}"
     )

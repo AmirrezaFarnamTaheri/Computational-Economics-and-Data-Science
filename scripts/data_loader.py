@@ -40,6 +40,13 @@ def cached_download(
     """Download *url* once and return a deterministic local cache path."""
     target = CACHE_DIR / cache_name
     if target.exists() and not refresh:
+        if sha256 is not None:
+            actual = hashlib.sha256(target.read_bytes()).hexdigest()
+            if actual.lower() != sha256.lower():
+                raise ValueError(
+                    f"SHA-256 mismatch for cached {target}: "
+                    f"expected {sha256}, got {actual}"
+                )
         return target
     response = requests.get(url, timeout=timeout)
     response.raise_for_status()
@@ -64,9 +71,12 @@ def load_bundled_fred(series: str) -> pd.Series:
         raise ValueError(f"Expected date + value columns in {path}")
     dates = pd.to_datetime(frame.iloc[:, 0], errors="coerce")
     values = pd.to_numeric(frame.iloc[:, 1], errors="coerce")
-    result = (
-        pd.Series(values.to_numpy(), index=dates, name=series).dropna().sort_index()
-    )
+    valid = dates.notna() & values.notna()
+    result = pd.Series(
+        values.loc[valid].to_numpy(),
+        index=pd.DatetimeIndex(dates.loc[valid]),
+        name=series,
+    ).sort_index()
     if result.empty:
         raise ValueError(f"No numeric observations in {path}")
     return result

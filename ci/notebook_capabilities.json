@@ -1,0 +1,1302 @@
+{
+  "schema_version": 1,
+  "policy": {
+    "canonical_source": "source notebooks",
+    "bootstrap_definition": "first executable code cell in a fresh subprocess with COURSE_RUN_MODE=quick",
+    "bootstrap_coverage": "all canonical notebooks",
+    "deterministic_full_run_list": "ci/deterministic_notebooks.txt",
+    "evidence_note": "CI job results are the freshness authority; this manifest records ownership and required evidence rather than stale timestamps."
+  },
+  "notebooks": {
+    "01-Foundations/01_Introduction.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "01-Foundations/02_Professional_Development_Environment.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "01-Foundations/03_Python_Fundamentals_Data_Types.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "01-Foundations/04_Python_Data_Model.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "01-Foundations/05_Lists_and_Tuples.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "01-Foundations/06_Advanced_String_Processing.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "01-Foundations/07_Dictionaries.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "01-Foundations/08_Sets.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "01-Foundations/09_Control_Flow_and_Error_Handling.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "01-Foundations/10_Advanced_Functions.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "01-Foundations/11_Object_Oriented_Programming.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "01-Foundations/12_NumPy.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "01-Foundations/13_Pandas.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "01-Foundations/14_Introduction_to_Data_Acquisition.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Live data/API or web-acquisition lesson; full execution depends on external services."
+    },
+    "01-Foundations/15_Accessing_Economic_Data_via_APIs.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Live data/API or web-acquisition lesson; full execution depends on external services."
+    },
+    "01-Foundations/16_Data_Visualization.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "01-Foundations/17_Effective_Debugging.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "01-Foundations/18_Data_Acquisition_Web_Scraping.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Live data/API or web-acquisition lesson; full execution depends on external services."
+    },
+    "01-Foundations/19_Introduction_to_SQL.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "01-Foundations/20_Introduction_to_SciPy.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "01-Foundations/21_Symbolic_Computation_with_SymPy.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "01-Foundations/22A_Computational_Complexity_Foundations.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "01-Foundations/22B_Complexity_in_Economic_Applications.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "01-Foundations/23_Profiling_and_Performance.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "01-Foundations/24_Production_Code_Standards.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "02-Numerical-Methods/01_Linear_Algebra.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "02-Numerical-Methods/02_Numerical_Preliminaries.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "02-Numerical-Methods/03_Numerical_Differentiation.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "02-Numerical-Methods/04_Root_Finding.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "02-Numerical-Methods/05_Optimization.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "02-Numerical-Methods/06_Interpolation_and_Approximation.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "02-Numerical-Methods/07_Numerical_Integration.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "02-Numerical-Methods/08_Differential_Equations.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "03-Economic-Modeling/01_Dynamic_Programming.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "03-Economic-Modeling/02_DP_with_Continuous_States.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "03-Economic-Modeling/03A_Discrete_Choice_DP_Rust.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "03-Economic-Modeling/03B_Continuous_State_DP_Interpolation.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "03-Economic-Modeling/04_Estimation_and_Calibration.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "03-Economic-Modeling/05_Optimal_Stopping_Problems.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "03-Economic-Modeling/06_Robust_Control.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "03-Economic-Modeling/07_Structural_Estimation.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "04-Macro-Models/01_Job_Search.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "04-Macro-Models/02_Neoclassical_Growth.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "04-Macro-Models/03A_RBC_Model_Foundations.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "04-Macro-Models/03B_RBC_Model_Solution.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "04-Macro-Models/03C_RBC_Dynamics_and_Surprise_Shocks.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "04-Macro-Models/03D_RBC_News_Shocks_and_Expectations.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "04-Macro-Models/04_OLG_Models.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "04-Macro-Models/05_New_Keynesian_Models.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "04-Macro-Models/06_Heterogeneous_Agent_Models.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "04-Macro-Models/07_Endogenous_Growth.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "04-Macro-Models/08_Continuous_Time_Macro_HJB.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "05-Micro-Models/01_Consumer_and_Producer_Theory.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "05-Micro-Models/02_General_Equilibrium.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "05-Micro-Models/03_Game_Theory_and_Auctions.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "05-Micro-Models/04_Discrete_Choice_Models.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "05-Micro-Models/05_Principal_Agent_Models.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "05-Micro-Models/06_Information_Economics.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "05-Micro-Models/07_BLP_Demand_Estimation.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "06-Econometrics/01_Linear_Model_and_OLS.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "06-Econometrics/02A_MLE_Principles_and_Geometry.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "06-Econometrics/02B_MLE_Optimization_and_Applications.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "06-Econometrics/03_Causal_Inference.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "06-Econometrics/04_GMM.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "06-Econometrics/05_Instrumental_Variables.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "06-Econometrics/06_Regression_Discontinuity.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "06-Econometrics/07_Synthetic_Control_Methods.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "06-Econometrics/08_Difference_in_Differences.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "06-Econometrics/09_Classical_Time_Series_Analysis.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "06-Econometrics/10_Vector_Autoregression.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "06-Econometrics/11_Bayesian_Econometrics.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "06-Econometrics/12_Panel_Data_Methods.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "06-Econometrics/13_Modern_Causal_Frontiers_SDID.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "07-Machine-Learning/01_Introduction_to_ML_for_Economists.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "07-Machine-Learning/02_Gradient_Boosting_Machines.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "07-Machine-Learning/03_Support_Vector_Machines.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "07-Machine-Learning/04_Ensemble_Methods.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "07-Machine-Learning/05_Dimensionality_Reduction_and_Clustering.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "07-Machine-Learning/06_Deep_Learning_Foundations.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Deep-learning or reinforcement-learning optional stack and/or external model/data resources."
+    },
+    "07-Machine-Learning/07_Convolutional_Neural_Networks.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Deep-learning or reinforcement-learning optional stack and/or external model/data resources."
+    },
+    "07-Machine-Learning/08_Recurrent_Neural_Networks.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Deep-learning or reinforcement-learning optional stack and/or external model/data resources."
+    },
+    "07-Machine-Learning/09_LSTMs_and_GRUs.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Deep-learning or reinforcement-learning optional stack and/or external model/data resources."
+    },
+    "07-Machine-Learning/10_Transformers.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Deep-learning or reinforcement-learning optional stack and/or external model/data resources."
+    },
+    "07-Machine-Learning/11_Autoencoders.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Deep-learning or reinforcement-learning optional stack and/or external model/data resources."
+    },
+    "07-Machine-Learning/12_Self_Supervised_Learning.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Deep-learning or reinforcement-learning optional stack and/or external model/data resources."
+    },
+    "07-Machine-Learning/13_Generative_Models.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Deep-learning or reinforcement-learning optional stack and/or external model/data resources."
+    },
+    "07-Machine-Learning/14_Multi_modal_Fusion.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Deep-learning or reinforcement-learning optional stack and/or external model/data resources."
+    },
+    "07-Machine-Learning/15_Reinforcement_Learning.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Deep-learning or reinforcement-learning optional stack and/or external model/data resources."
+    },
+    "07-Machine-Learning/16_Advanced_Deep_RL.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Deep-learning or reinforcement-learning optional stack and/or external model/data resources."
+    },
+    "07-Machine-Learning/17_Causal_ML.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Causal-ML optional stack (EconML/DoubleML) is outside the deterministic core."
+    },
+    "07-Machine-Learning/18_Natural_Language_Processing.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "NLP optional corpora/model resources are capability- and network-dependent."
+    },
+    "07-Machine-Learning/19_Graph_Neural_Networks.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "07-Machine-Learning/20_Geospatial_Data.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Geospatial optional stack and external reference datasets."
+    },
+    "07-Machine-Learning/21_ML_for_Macro_Forecasting.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Macroeconomic data acquisition is network-dependent."
+    },
+    "07-Machine-Learning/22_Style_Transfer_and_Advanced_Vision.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Deep-learning or reinforcement-learning optional stack and/or external model/data resources."
+    },
+    "08-Time-Series/01_Introduction_to_Time_Series.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "08-Time-Series/02_ARMA_Models.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "08-Time-Series/03_ARIMA_and_Forecasting.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "08-Time-Series/04A_VAR_Estimation_and_Granger.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "08-Time-Series/04B_VAR_Identification_and_Structural_Shocks.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "08-Time-Series/04C_VAR_Impulse_Responses_and_FEVD.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "08-Time-Series/05_Volatility_Modeling_ARCH_GARCH.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "08-Time-Series/06_Cointegration_and_Error_Correction_Models.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "08-Time-Series/07_Nonlinear_Time_Series_and_Particle_Filters.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "09-Finance/01_Portfolio_Theory.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "09-Finance/02_Asset_Pricing.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "09-Finance/03_Option_Pricing.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "09-Finance/04_Continuous_Time_Finance.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "09-Finance/05_Credit_Risk.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "09-Finance/06_High_Frequency_Data.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "09-Finance/07_Financial_Frictions_BGG.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "09-Finance/08_Hawkes_Processes_and_Market_Impact.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "10-Specialized-Models/01_Agent_Based_Models.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "10-Specialized-Models/02_General_Equilibrium_with_Heterogeneous_Agents.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "10-Specialized-Models/03_Network_Economics.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "10-Specialized-Models/04_Climate_Macro_Integrated_Assessment_DICE.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "Appendix/A1-Real-Analysis.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "Appendix/A2-Multivariate-Calculus.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "Appendix/A3-Probability-Theory.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "Appendix/A4-Linear-Algebra.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "Appendix/T1_Publishing_with_Quarto.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Quarto/system publishing toolchain is not part of deterministic Python CI."
+    },
+    "Appendix/T2_Replication_Exercise_Chetty_2014.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "Appendix/T3_Autograding_with_Otter.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "Appendix/T4_Replication_Card_Krueger_1994.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "Appendix/T5_Replication_Fama_French_Five_Factor.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "high_performance_python/01_High_Performance_Computing.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Requires optional/heavier dependencies, external data, or a capability outside the deterministic execution contract."
+    },
+    "high_performance_python/02_Accelerating_Code_with_Numba.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.lock.yml",
+      "full_run_owner": "deterministic-execution",
+      "full_run_status": "required on every pull request",
+      "last_full_run_evidence": "GitHub Actions deterministic-execution job for the current revision",
+      "skip_reason": null
+    },
+    "high_performance_python/03_Parallel_Computing_with_Dask.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "Dask/distributed performance lesson; full run is resource-sensitive."
+    },
+    "high_performance_python/04_GPU_Acceleration_with_CuPy.ipynb": {
+      "bootstrap_environment": "requirements-bootstrap.txt",
+      "bootstrap_owner_job": "notebook-bootstrap-smoke",
+      "bootstrap_requirement": "required on every pull request",
+      "full_run_environment": "environment.yml",
+      "full_run_owner": "capability-dependent/manual or scheduled verification",
+      "full_run_status": "not required on generic hosted CPU PR runners",
+      "last_full_run_evidence": "No portable generic-runner full-run claim; see skip_reason and notebook capability requirements.",
+      "skip_reason": "GPU/CuPy hardware capability; full run requires a compatible CUDA runner."
+    }
+  }
+}

@@ -32,15 +32,27 @@ class DiscreteDP:
     """
 
     def __init__(self, R: np.ndarray, Q: np.ndarray, beta: float):
-        self.R = np.asarray(R)
-        self.Q = np.asarray(Q)
-        self.beta = beta
-        if not (0 < self.beta < 1):
-            raise ValueError("beta must be in (0, 1).")
+        self.R = np.asarray(R, dtype=float)
+        self.Q = np.asarray(Q, dtype=float)
+        self.beta = float(beta)
+
+        if self.R.ndim != 2 or self.R.size == 0:
+            raise ValueError("R must be a non-empty 2D reward array.")
+        if not np.all(np.isfinite(self.R)):
+            raise ValueError("R must contain only finite rewards.")
+        if not np.isfinite(self.beta) or not (0 < self.beta < 1):
+            raise ValueError("beta must be finite and in (0, 1).")
 
         self.n_states, self.n_actions = self.R.shape
         if self.Q.shape != (self.n_states, self.n_actions, self.n_states):
             raise ValueError("The shape of Q is not compatible with R.")
+        if not np.all(np.isfinite(self.Q)):
+            raise ValueError("Q must contain only finite transition probabilities.")
+        if np.any(self.Q < 0):
+            raise ValueError("Q transition probabilities must be nonnegative.")
+        row_sums = self.Q.sum(axis=2)
+        if not np.allclose(row_sums, 1.0, rtol=0.0, atol=1e-12):
+            raise ValueError("Each Q[s, a, :] row must sum to 1.")
 
     def bellman_operator(self, V: np.ndarray) -> np.ndarray:
         """
@@ -109,24 +121,31 @@ class DiscreteDP:
         history : list
             A list of value functions at each iteration (if track_history is True).
         """
-        V = np.zeros(self.n_states)  # Initial guess
-        history = [V] if track_history else None
+        if not np.isfinite(tol) or tol <= 0:
+            raise ValueError("tol must be a finite positive number.")
+        if not isinstance(max_iter, (int, np.integer)) or max_iter <= 0:
+            raise ValueError("max_iter must be a positive integer.")
 
-        for i in range(max_iter):
+        V = np.zeros(self.n_states)  # Initial guess
+        history = [V.copy()] if track_history else None
+
+        for i in range(1, max_iter + 1):
             V_new = self.bellman_operator(V)
-            if np.max(np.abs(V - V_new)) < tol:
+            residual = float(np.max(np.abs(V_new - V)))
+            if track_history:
+                history.append(V_new.copy())
+            if residual < tol:
                 if verbose:
-                    print(f"VFI converged in {i} iterations.")
+                    print(f"VFI converged in {i} iterations (residual={residual:.3e}).")
                 policy = self.compute_greedy(V_new)
                 return V_new, policy, history
             V = V_new
-            if track_history:
-                history.append(V)
 
-        if verbose:
-            print("VFI failed to converge.")
-        policy = self.compute_greedy(V)
-        return V, policy, history
+        residual = float(np.max(np.abs(self.bellman_operator(V) - V)))
+        raise RuntimeError(
+            f"VFI failed to converge within {max_iter} iterations; "
+            f"Bellman residual={residual:.3e}, tolerance={tol:.3e}."
+        )
 
     def policy_evaluation(self, policy: np.ndarray) -> np.ndarray:
         """

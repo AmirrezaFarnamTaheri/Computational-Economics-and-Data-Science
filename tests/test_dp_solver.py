@@ -93,6 +93,24 @@ class TestValidation:
         with pytest.raises(ValueError, match="shape of Q"):
             DiscreteDP(R, Q_bad, beta=0.9)
 
+    @pytest.mark.parametrize(
+        "Q_bad",
+        [
+            np.array([[[2.0]]]),
+            np.array([[[-0.1, 1.1], [0.5, 0.5]], [[0.5, 0.5], [0.5, 0.5]]]),
+        ],
+    )
+    def test_rejects_invalid_transition_probabilities(self, Q_bad):
+        n_states, n_actions = Q_bad.shape[:2]
+        with pytest.raises(ValueError, match="transition|sum to 1|nonnegative"):
+            DiscreteDP(np.ones((n_states, n_actions)), Q_bad, beta=0.9)
+
+    def test_rejects_nonfinite_rewards_and_transitions(self):
+        with pytest.raises(ValueError, match="finite rewards"):
+            DiscreteDP(np.array([[np.nan]]), np.array([[[1.0]]]), beta=0.9)
+        with pytest.raises(ValueError, match="finite transition"):
+            DiscreteDP(np.array([[1.0]]), np.array([[[np.nan]]]), beta=0.9)
+
     def test_dimensions_inferred_from_reward_array(self):
         dp = random_dp(np.random.default_rng(0), n_states=5, n_actions=3)
         assert dp.n_states == 5
@@ -217,6 +235,23 @@ class TestSolverAgreement:
         ]
         for e_next, e_prev in zip(errors[1:], errors[:-1]):
             assert e_next <= dp.beta * e_prev + 1e-12
+
+    def test_vfi_history_includes_returned_final_iterate(self):
+        dp = single_state_dp(reward=1.0, beta=0.5)
+        V, _, history = dp.solve_vfi(tol=0.1, track_history=True, verbose=False)
+        assert history is not None
+        np.testing.assert_allclose(history[-1], V)
+
+    def test_vfi_nonconvergence_is_explicit(self):
+        dp = single_state_dp(reward=1.0, beta=0.99)
+        with pytest.raises(RuntimeError, match="failed to converge.*residual"):
+            dp.solve_vfi(tol=1e-14, max_iter=1, verbose=False)
+
+    @pytest.mark.parametrize("tol,max_iter", [(0.0, 10), (-1.0, 10), (1e-7, 0)])
+    def test_vfi_rejects_invalid_controls(self, tol, max_iter):
+        dp = single_state_dp()
+        with pytest.raises(ValueError):
+            dp.solve_vfi(tol=tol, max_iter=max_iter, verbose=False)
 
     def test_vfi_history_disabled_by_default(self):
         dp = random_dp(np.random.default_rng(29))

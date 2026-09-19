@@ -273,6 +273,7 @@ nav:
     - resources/index.md
     - Code Style Guide: resources/code-style.md
     - Notation Glossary: resources/notation.md
+    - Mathematical Validation: resources/mathematical-validation.md
     - References: resources/references.md
     - Software Tools: resources/tools.md
     - Datasets: resources/datasets.md

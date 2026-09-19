@@ -58,6 +58,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # The docs generator pins repository links to the last commit that
+          # changed each source path. A shallow merge checkout makes every
+          # path appear to come from the synthetic PR merge commit.
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -72,6 +77,14 @@ jobs:
       - name: Validate curriculum notebooks
         run: python scripts/validate_notebooks.py
 
+      - name: Generate documentation assets
+        run: |
+          python scripts/notebooks_to_docs.py --clean
+          python scripts/generate_image_catalog.py
+
+      - name: Validate image provenance
+        run: python scripts/audit_image_provenance.py --strict
+
       - name: Validate documentation links and labs
         run: python scripts/audit_docs.py --strict
 
@@ -83,22 +96,41 @@ jobs:
       - name: Audit proof & derivation structure
         run: python scripts/audit_proofs.py --strict
 
-      # The 129 committed pages under docs/notebooks are generated from the
-      # notebook sources by scripts/notebooks_to_docs.py; the docs-strict
-      # build below only builds whatever happens to be committed. Without
-      # this check a notebook fix can merge while its public reading page
-      # still shows the old code. Regenerating from a clean tree and asserting
-      # no diff makes drift a CI failure.
-      - name: Regenerate notebook documentation
-        run: python scripts/notebooks_to_docs.py --clean
+  notebook-bootstrap-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-      - name: Committed docs match notebook sources
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-bootstrap-${{ hashFiles('requirements-bootstrap.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-bootstrap-
+
+      - name: Install bootstrap dependencies
         run: |
-          if ! git diff --exit-code --stat -- docs/notebooks; then
-            echo "::error::docs/notebooks is stale. Run 'python scripts/notebooks_to_docs.py --clean' and commit the result."
-            git diff --exit-code -- docs/notebooks
-            exit 1
-          fi
+          pip install --upgrade pip
+          pip install -r requirements-bootstrap.txt
+
+      - name: Validate capability manifest
+        run: python scripts/audit_notebook_capabilities.py
+
+      - name: Execute every notebook bootstrap
+        run: python scripts/smoke_notebook_bootstraps.py --timeout 45
+
+      - name: Upload bootstrap report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: notebook-bootstrap-smoke
+          path: build/bootstrap-smoke.json
 
   deterministic-execution:
     # Pinned direct dependencies for the deterministic lecture subset.
@@ -218,5 +250,57 @@ jobs:
           pip install mkdocs-git-revision-date-localized-plugin mkdocs-minify-plugin
           pip install mkdocs-glightbox mkdocs-redirects
 
+      - name: Generate documentation assets
+        run: |
+          python scripts/notebooks_to_docs.py --clean
+          python scripts/generate_image_catalog.py
+
+      - name: Validate image provenance
+        run: python scripts/audit_image_provenance.py --strict
+
       - name: Build docs in strict mode
         run: mkdocs build --strict
+
+
+  browser-regression:
+    # Static audits cannot prove rendered layout or interaction behavior. This
+    # lane builds the real site and exercises representative pages in Chromium.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install docs and browser dependencies
+        run: |
+          pip install --upgrade pip
+          pip install mkdocs mkdocs-material
+          pip install mkdocs-git-revision-date-localized-plugin mkdocs-minify-plugin
+          pip install mkdocs-glightbox mkdocs-redirects playwright
+          python -m playwright install --with-deps chromium
+
+      - name: Generate documentation assets
+        run: |
+          python scripts/notebooks_to_docs.py --clean
+          python scripts/generate_image_catalog.py
+
+      - name: Validate image provenance
+        run: python scripts/audit_image_provenance.py --strict
+
+      - name: Build docs
+        run: mkdocs build --strict
+
+      - name: Run rendered browser regressions
+        run: python scripts/browser_regression.py
+
+      - name: Upload browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-regression
+          path: build/browser-regression/
