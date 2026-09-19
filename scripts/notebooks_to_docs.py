@@ -141,7 +141,7 @@ def rewrite_links(
         return (
             '<div class="figure-provenance-blocked" role="note">'
             "<strong>Figure omitted from the published reading site.</strong> "
-            f"Provenance for <code>{rel}</code> is not yet verified. "
+            f'Provenance for <code class="figure-provenance-path">{rel}</code> is not yet verified. '
             "The local source notebook retains the asset for provenance review."
             "</div>"
         )
