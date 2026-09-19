@@ -215,6 +215,7 @@ temp/
 *.exe
 
 # Documentation builds
+docs/notebooks/
 docs/_build/
 docs/.doctrees/
 site/
