@@ -58,6 +58,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # The docs generator pins repository links to the last commit that
+          # changed each source path. A shallow merge checkout makes every
+          # path appear to come from the synthetic PR merge commit.
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -72,6 +77,9 @@ jobs:
       - name: Validate curriculum notebooks
         run: python scripts/validate_notebooks.py
 
+      - name: Generate notebook reading pages
+        run: python scripts/notebooks_to_docs.py --clean
+
       - name: Validate documentation links and labs
         run: python scripts/audit_docs.py --strict
 
@@ -82,28 +90,6 @@ jobs:
       # build/exec copies written below are not double-counted. Pure stdlib.
       - name: Audit proof & derivation structure
         run: python scripts/audit_proofs.py --strict
-
-      # The 129 committed pages under docs/notebooks are generated from the
-      # notebook sources by scripts/notebooks_to_docs.py; the docs-strict
-      # build below only builds whatever happens to be committed. Without
-      # this check a notebook fix can merge while its public reading page
-      # still shows the old code. Regenerating from a clean tree and asserting
-      # no diff makes drift a CI failure.
-      - name: Regenerate notebook documentation
-        run: python scripts/notebooks_to_docs.py --clean
-
-      - name: Committed docs match notebook sources
-        run: |
-          # git diff ignores untracked files, so use porcelain status to catch
-          # both modified generated pages and newly generated pages that were
-          # never committed.
-          DOCS_STATUS="$(git status --porcelain --untracked-files=all -- docs/notebooks)"
-          if [ -n "$DOCS_STATUS" ]; then
-            echo "::error::docs/notebooks is stale or incomplete. Run 'python scripts/notebooks_to_docs.py --clean' and commit every generated page."
-            printf '%s\n' "$DOCS_STATUS"
-            git diff -- docs/notebooks || true
-            exit 1
-          fi
 
   deterministic-execution:
     # Pinned direct dependencies for the deterministic lecture subset.
@@ -222,6 +208,9 @@ jobs:
           pip install mkdocs mkdocs-material
           pip install mkdocs-git-revision-date-localized-plugin mkdocs-minify-plugin
           pip install mkdocs-glightbox mkdocs-redirects
+
+      - name: Generate notebook reading pages
+        run: python scripts/notebooks_to_docs.py --clean
 
       - name: Build docs in strict mode
         run: mkdocs build --strict
