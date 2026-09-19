@@ -468,6 +468,21 @@ def main() -> int:
     print(
         f"Audited {len(results)} notebooks; blocking findings in {summary['blocking_notebooks']}."
     )
+    for result in results:
+        if not result.errors:
+            continue
+        print(f"BLOCKING: {result.path}")
+        for key, value in asdict(result).items():
+            if key in {
+                "path",
+                "cells",
+                "code_cells",
+                "markdown_cells",
+                "empty_cells",
+            }:
+                continue
+            if value:
+                print(f"  {key}: {value}")
     print(
         f"Reports: {output / 'NOTEBOOK_AUDIT.md'} and {output / 'notebook_audit.json'}"
     )
