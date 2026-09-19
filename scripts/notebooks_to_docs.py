@@ -90,11 +90,15 @@ def blob_url(path: Path) -> str:
     return f"{REPO}/blob/{path_revision(str(resolved))}/{rel}"
 
 
-def notebook_docs_target(notebook: Path, target: Path, anchor: str | None = None) -> str:
+def notebook_docs_target(
+    notebook: Path, target: Path, anchor: str | None = None
+) -> str:
     """Return a local MkDocs source link for a notebook-to-notebook reference."""
     current_doc = DOCS_ROOT / notebook.relative_to(ROOT).with_suffix(".md")
     target_doc = DOCS_ROOT / target.relative_to(ROOT).with_suffix(".md")
-    relative = os.path.relpath(target_doc, start=current_doc.parent).replace(os.sep, "/")
+    relative = os.path.relpath(target_doc, start=current_doc.parent).replace(
+        os.sep, "/"
+    )
     if anchor:
         relative += f"#{_mkdocs_slug(anchor)}"
     return relative
@@ -239,7 +243,9 @@ def render_saved_output(output: dict, cell_id: str, index: int) -> list[str]:
             ANSI_ESCAPE_RE.sub("", str(line)) for line in traceback
         ).rstrip()
         if not value:
-            value = f"{output.get('ename', 'Error')}: {output.get('evalue', '')}".rstrip()
+            value = (
+                f"{output.get('ename', 'Error')}: {output.get('evalue', '')}".rstrip()
+            )
         return [
             f"> **Saved execution error — {label}.**",
             "",
@@ -259,7 +265,9 @@ def render_saved_output(output: dict, cell_id: str, index: int) -> list[str]:
 
     if "image/svg+xml" in data:
         svg = output_text(data["image/svg+xml"]).strip()
-        return [] if not svg else [f'<figure aria-label="{label}">', svg, "</figure>", ""]
+        return (
+            [] if not svg else [f'<figure aria-label="{label}">', svg, "</figure>", ""]
+        )
 
     if "image/png" in data:
         payload = output_text(data["image/png"]).replace("\n", "").strip()
