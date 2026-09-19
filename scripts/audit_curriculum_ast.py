@@ -263,9 +263,7 @@ def _bootstrap_name_errors(source: str) -> list[str]:
                 f"{name!r} used before import/definition"
             )
 
-    def analyze_statements(
-        statements: list[ast.stmt], known: set[str]
-    ) -> set[str]:
+    def analyze_statements(statements: list[ast.stmt], known: set[str]) -> set[str]:
         local_known = set(known)
         for statement in statements:
             if isinstance(statement, ast.Try):
@@ -280,24 +278,18 @@ def _bootstrap_name_errors(source: str) -> list[str]:
                         )
                     if handler.name:
                         handler_known.add(handler.name)
-                    handler_known = analyze_statements(
-                        handler.body, handler_known
-                    )
+                    handler_known = analyze_statements(handler.body, handler_known)
                     branch_known_sets.append(handler_known)
 
                 if statement.orelse:
-                    try_known = analyze_statements(
-                        statement.orelse, try_known
-                    )
+                    try_known = analyze_statements(statement.orelse, try_known)
                     branch_known_sets[0] = try_known
 
                 merged_known = set(local_known)
                 for branch_known in branch_known_sets:
                     merged_known.update(branch_known)
                 if statement.finalbody:
-                    merged_known = analyze_statements(
-                        statement.finalbody, merged_known
-                    )
+                    merged_known = analyze_statements(statement.finalbody, merged_known)
                 local_known.update(merged_known - local_known)
                 continue
 
@@ -307,6 +299,7 @@ def _bootstrap_name_errors(source: str) -> list[str]:
 
     analyze_statements(tree.body, set(_BOOTSTRAP_BUILTINS))
     return errors
+
 
 def _resolve_image(notebook: Path, target: str, root: Path) -> Path | None:
     target = target.strip().split("#", 1)[0].split("?", 1)[0]
