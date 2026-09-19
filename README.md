@@ -6,7 +6,7 @@
 
 This repository hosts a Graduate-level course on modern computational methods in economics and data science. It is designed to be a comprehensive, self-contained resource for graduate students and researchers. The curriculum begins with a rigorous introduction to the mathematical foundations of economic theory and progresses to the computational frontier of economic research, including deep learning and causal machine learning.
 
-The course takes a "code-first" approach, emphasizing the practical implementation of economic models and econometric techniques. Each notebook is a self-contained lesson, complete with theoretical explanations, historical context, mathematical derivations, and fully executable Python code.
+The course takes a "code-first" approach, emphasizing the practical implementation of economic models and econometric techniques. Each notebook is a self-contained lesson with theory, historical context, derivations, and executable code where its declared dependencies and data are available. The repository distinguishes a deterministic offline CI subset from lessons that require optional stacks, larger compute budgets, network access, or learner-supplied work.
 
 ## Course Philosophy
 
@@ -38,6 +38,20 @@ The curriculum is built on two core principles:
     ```bash
     jupyter lab
     ```
+
+## Execution and Readiness
+
+The repository has several deliberately different execution surfaces:
+
+| Surface | What it guarantees | Primary setup |
+|---|---|---|
+| **Deterministic core** | The notebooks listed in `ci/deterministic_notebooks.txt` execute top-to-bottom in CI from a pinned direct-dependency environment and use bundled/offline fixtures where required. | `environment.lock.yml` |
+| **Full curriculum** | Broad local environment for optional ML, geospatial, Bayesian, causal, and data-access lessons. Hardware- or provider-specific behavior can still vary. | `environment.yml` / `requirements.txt` |
+| **Optional-stack lessons** | Some notebooks require TensorFlow/PyTorch, geospatial libraries, GPU support, external datasets, or network services. They are expected to guard unavailable optional dependencies rather than silently claim empirical results. | See each notebook's setup cell and the environment matrix |
+| **Reading site** | Generated pages preserve notebook narrative, code, and portable saved outputs. Dynamic widgets and environment-specific execution still require a notebook kernel. | `mkdocs build --strict` |
+| **Exercises** | Some cells are intentionally learner-completed; an exercise prompt is not a promise that every extension is pre-solved. | Notebook-specific |
+
+See [the environment and capability matrix](docs/ENVIRONMENT_MATRIX.md) for the supported Python versions, dependency scopes, CI lanes, and limitations.
 
 ## Visualization System
 
@@ -129,7 +143,12 @@ A comprehensive treatment of modern econometric methods.
 - **`01_Linear_Model_and_OLS.ipynb`**: The theory and geometry of Ordinary Least Squares.
 - **`02A_MLE_Principles_and_Geometry.ipynb`**: The intuition and geometry of maximum likelihood.
 - **`02B_MLE_Optimization_and_Applications.ipynb`**: Numerical MLE and applied estimation workflows.
-- **`03-06_*`**: The "credibility revolution": Causal inference using Instrumental Variables (IV), Regression Discontinuity (RDD), and Difference-in-Differences (DiD).
+- **`03_Causal_Inference.ipynb`**: Identification, potential outcomes, selection bias, and causal estimands.
+- **`04_GMM.ipynb`**: Generalized Method of Moments and moment-condition estimation.
+- **`05_Instrumental_Variables.ipynb`**: Instrumental variables and two-stage least squares.
+- **`06_Regression_Discontinuity.ipynb`**: Sharp/fuzzy regression-discontinuity designs and diagnostics.
+- **`07_Synthetic_Control_Methods.ipynb`**: Synthetic controls and comparative case-study design.
+- **`08_Difference_in_Differences.ipynb`**: Difference-in-Differences, parallel trends, and staggered-adoption issues.
 - **`09_Classical_Time_Series_Analysis.ipynb`**: Introductory time series analysis.
 - **`10_Vector_Autoregression.ipynb`**: A new, in-depth notebook on VAR models, including estimation, identification, and impulse response analysis.
 - **`11_Bayesian_Econometrics.ipynb`**: An introduction to Bayesian inference.
