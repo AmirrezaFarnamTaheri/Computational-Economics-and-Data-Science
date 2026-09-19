@@ -75,7 +75,9 @@ def main() -> int:
             if record["full_run_owner"] != "deterministic-execution":
                 errors.append(f"{path}: deterministic notebook full-run owner drifted")
         elif not str(record["skip_reason"] or "").strip():
-            errors.append(f"{path}: non-deterministic notebook requires a concrete skip_reason")
+            errors.append(
+                f"{path}: non-deterministic notebook requires a concrete skip_reason"
+            )
 
     print(
         f"Capability manifest: {len(actual)} notebooks; "
