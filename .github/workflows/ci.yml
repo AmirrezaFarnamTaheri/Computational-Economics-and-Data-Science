@@ -260,3 +260,47 @@ jobs:
 
       - name: Build docs in strict mode
         run: mkdocs build --strict
+
+
+  browser-regression:
+    # Static audits cannot prove rendered layout or interaction behavior. This
+    # lane builds the real site and exercises representative pages in Chromium.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install docs and browser dependencies
+        run: |
+          pip install --upgrade pip
+          pip install mkdocs mkdocs-material
+          pip install mkdocs-git-revision-date-localized-plugin mkdocs-minify-plugin
+          pip install mkdocs-glightbox mkdocs-redirects playwright
+          python -m playwright install --with-deps chromium
+
+      - name: Generate documentation assets
+        run: |
+          python scripts/notebooks_to_docs.py --clean
+          python scripts/generate_image_catalog.py
+
+      - name: Validate image provenance
+        run: python scripts/audit_image_provenance.py --strict
+
+      - name: Build docs
+        run: mkdocs build --strict
+
+      - name: Run rendered browser regressions
+        run: python scripts/browser_regression.py
+
+      - name: Upload browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-regression
+          path: build/browser-regression/
