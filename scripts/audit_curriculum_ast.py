@@ -182,7 +182,9 @@ def _bound_names(node: ast.AST) -> set[str]:
                 child.ctx, (ast.Store, ast.Del)
             ):
                 names.add(child.id)
-            elif isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            elif isinstance(
+                child, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)
+            ):
                 names.add(child.name)
             elif isinstance(child, (ast.Import, ast.ImportFrom)):
                 for alias in child.names:
